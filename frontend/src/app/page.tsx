@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Header } from '@/components/Header';
+import { StatusStrip } from '@/components/StatusStrip';
 import { CursorEffect } from '@/components/CursorEffect';
 import { ForecastHero } from '@/components/ForecastHero';
 import { ModelContribution } from '@/components/ModelContribution';
@@ -16,11 +17,13 @@ import { ModelIntelligencePage } from '@/components/pages/ModelIntelligencePage'
 import { ExtremeWeatherPage } from '@/components/pages/ExtremeWeatherPage';
 import { ModelPerformancePage } from '@/components/pages/ModelPerformancePage';
 import { DataHealthPage } from '@/components/pages/DataHealthPage';
+import { RpiPage } from '@/components/pages/RpiPage';
 import { NavPage, CityForecast } from '@/types';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<NavPage>('overview');
   const [selectedCity, setSelectedCity] = useState<string | null>('Kanpur');
+
 
   const handleCitySelect = (city: CityForecast | string) => {
     const cityName = typeof city === 'string' ? city : city.city;
@@ -35,6 +38,8 @@ export default function Home() {
         return <ModelIntelligencePage />;
       case 'extreme-weather':
         return <ExtremeWeatherPage />;
+      case 'rpi':
+        return <RpiPage selectedCity={selectedCity} onSelectCity={handleCitySelect} />;
       case 'model-performance':
         return <ModelPerformancePage />;
       case 'data-health':
@@ -44,7 +49,7 @@ export default function Home() {
         return (
           <div className="space-y-6">
             {/* Top Forecast Decision Hero */}
-            <ForecastHero />
+            <ForecastHero selectedCity={selectedCity} />
 
             {/* Core Operational Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -54,19 +59,19 @@ export default function Home() {
                   selectedCity={selectedCity}
                   onSelectCity={handleCitySelect}
                 />
-                <ForecastTimeline />
+                <ForecastTimeline selectedCity={selectedCity} />
                 
                 {/* 2-Column Equal Height Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <ModelComparison />
-                  <ExtremeWeatherPanel />
+                  <ModelComparison selectedCity={selectedCity} />
+                  <ExtremeWeatherPanel selectedCity={selectedCity} />
                 </div>
               </div>
 
               {/* Right Column (Controls & Deep Intelligence) - 5 cols */}
               <div className="lg:col-span-5 space-y-6">
-                <RegionSelector onSelectCity={handleCitySelect} />
-                <ModelContribution />
+                <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
+                <ModelContribution selectedCity={selectedCity} />
                 <ModelSkillPanel />
                 <DataHealthPanel />
               </div>
@@ -77,7 +82,8 @@ export default function Home() {
   };
 
   return (
-    <div className=" min-h-screen">
+    <div className="relative min-h-screen overflow-x-hidden">
+
       {/* Under-Lightning Electric Cursor */}
       <CursorEffect />
 
@@ -85,13 +91,14 @@ export default function Home() {
       <Header currentPage={currentPage} onNavigate={setCurrentPage} />
 
       {/* Main Content with generous top padding to prevent ANY header overlap */}
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-36 pb-20">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-36 pb-20">
+        <StatusStrip />
         {renderContent()}
       </main>
 
       {/* Enterprise Scientific Footer */}
       <footer
-        className="max-w-[1440px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500"
+        className="relative z-10 max-w-[1440px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500"
         style={{ borderTop: '1px solid rgba(148,163,184,0.18)' }}
       >
         <div className="flex flex-wrap items-center gap-2">
