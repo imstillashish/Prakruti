@@ -5,7 +5,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { WhyForecastModal } from '@/components/WhyForecast';
-import { getForecastMetrics, MOCK_FORECAST } from '@/lib/api';
+import { getForecastMetrics, MOCK_FORECAST, getMetadata, formatLastUpdated } from '@/lib/api';
 import type { ForecastMetrics } from '@/types';
 
 function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: number }) {
@@ -115,9 +115,12 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   const city = selectedCity || 'Kanpur';
   const [whyOpen, setWhyOpen] = useState(false);
   const [forecast, setForecast] = useState<ForecastMetrics>(MOCK_FORECAST);
+  const [lastUpdated, setLastUpdated] = useState<string>('2026-09-26T23:45:12');
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
+
+  const lastUpdatedDisplay = formatLastUpdated(lastUpdated);
 
   const metrics = [
     {
@@ -254,7 +257,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
           <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3.5 border-t border-slate-100">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <RefreshCw size={13} className="text-blue-500 animate-spin" style={{ animationDuration: '8s' }} />
-              <span>Blending run completed {forecast.updatedMinutesAgo} minutes ago</span>
+              <span>Last Updated: {lastUpdatedDisplay}</span>
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <span className="font-medium text-slate-700">Target Station: {city}</span>
