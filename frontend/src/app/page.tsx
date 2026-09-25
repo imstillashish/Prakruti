@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Header } from '@/components/Header';
+import { BackendConnectingIndicator } from '@/components/BackendConnectingIndicator';
 import { StatusStrip } from '@/components/StatusStrip';
 import { CursorEffect } from '@/components/CursorEffect';
 import { ForecastHero } from '@/components/ForecastHero';
@@ -89,6 +90,9 @@ export default function Home() {
 
       {/* Floating Boxed Taskbar Panel */}
       <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+
+      {/* Global Backend Connecting / Cold Start Indicator */}
+      <BackendConnectingIndicator />
 
       {/* Main Content with generous top padding to prevent ANY header overlap */}
       <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-36 pb-20">
