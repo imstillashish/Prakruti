@@ -253,97 +253,104 @@ export default function RealLeafletMap({
   };
 
   return (
-    <div className="relative w-full h-[520px] rounded-2xl overflow-hidden shadow-inner">
+    <div className="relative w-full h-[520px] overflow-hidden border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Map Controls Bar */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2.5">
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 font-mono">
         {/* Zoom & Reset Controls */}
-        <div className="flex flex-col bg-white/85 backdrop-blur-md rounded-xl p-1 shadow-lg border border-white/70">
+        <div className="flex flex-col bg-white p-1 shadow-md border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
           <button
             onClick={handleZoomIn}
-            className="p-2 hover:bg-slate-100 rounded-lg text-slate-700 transition-colors"
+            className="p-1.5 hover:bg-[#f7f7f7] text-[#212121] transition-colors"
             title="Zoom In"
             type="button"
+            style={{ borderRadius: 0 }}
           >
-            <ZoomIn size={16} />
+            <ZoomIn size={15} />
           </button>
-          <div className="h-px bg-slate-200 my-0.5" />
+          <div className="h-px bg-[#dbdbdb] my-0.5" />
           <button
             onClick={handleZoomOut}
-            className="p-2 hover:bg-slate-100 rounded-lg text-slate-700 transition-colors"
+            className="p-1.5 hover:bg-[#f7f7f7] text-[#212121] transition-colors"
             title="Zoom Out"
             type="button"
+            style={{ borderRadius: 0 }}
           >
-            <ZoomOut size={16} />
+            <ZoomOut size={15} />
           </button>
-          <div className="h-px bg-slate-200 my-0.5" />
+          <div className="h-px bg-[#dbdbdb] my-0.5" />
           <button
             onClick={handleReset}
-            className="p-2 hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-[#f2fcf7] text-[#212121] hover:text-[#168a49] transition-colors"
             title="Reset to All-India View"
             type="button"
+            style={{ borderRadius: 0 }}
           >
-            <RotateCcw size={16} />
+            <RotateCcw size={15} />
           </button>
         </div>
 
         {/* Mapbox & Cartographic Tile Mode Switcher */}
-        <div className="bg-white/85 backdrop-blur-md rounded-xl p-1.5 shadow-lg border border-white/70 flex flex-col gap-1 min-w-[130px]">
-          <span className="text-[10px] font-bold text-slate-400 px-2 py-0.5 uppercase tracking-wider">
-            Imagery
+        <div className="bg-white p-1.5 shadow-md border border-[#dbdbdb] flex flex-col gap-1 min-w-[125px]" style={{ borderRadius: 0 }}>
+          <span className="text-[10px] font-bold text-[#808080] px-1.5 py-0.5 uppercase tracking-wider">
+            Layer
           </span>
           <button
             onClick={() => setActiveTile('satellite')}
-            className={`flex items-center gap-2 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-left ${
+            style={{ borderRadius: 0 }}
+            className={`flex items-center gap-1.5 px-2 py-1 text-xs font-mono transition-colors text-left ${
               activeTile === 'satellite'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#1db961] text-white font-bold'
+                : 'text-[#575757] hover:bg-[#f7f7f7]'
             }`}
             type="button"
           >
-            <Satellite size={13} />
-            <span>Satellite HD</span>
+            <Satellite size={12} />
+            <span>Satellite</span>
           </button>
 
           <button
             onClick={() => setActiveTile('terrain')}
-            className={`flex items-center gap-2 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-left ${
+            style={{ borderRadius: 0 }}
+            className={`flex items-center gap-1.5 px-2 py-1 text-xs font-mono transition-colors text-left ${
               activeTile === 'terrain'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#1db961] text-white font-bold'
+                : 'text-[#575757] hover:bg-[#f7f7f7]'
             }`}
             type="button"
           >
-            <Mountain size={13} />
-            <span>Terrain 3D</span>
+            <Mountain size={12} />
+            <span>Terrain</span>
           </button>
 
           <button
             onClick={() => setActiveTile('positron')}
-            className={`flex items-center gap-2 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-left ${
+            style={{ borderRadius: 0 }}
+            className={`flex items-center gap-1.5 px-2 py-1 text-xs font-mono transition-colors text-left ${
               activeTile === 'positron'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#1db961] text-white font-bold'
+                : 'text-[#575757] hover:bg-[#f7f7f7]'
             }`}
             type="button"
           >
-            <SunMedium size={13} />
+            <SunMedium size={12} />
             <span>Scientific</span>
           </button>
 
           <button
             onClick={() => setActiveTile('osm')}
-            className={`flex items-center gap-2 px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-left ${
+            style={{ borderRadius: 0 }}
+            className={`flex items-center gap-1.5 px-2 py-1 text-xs font-mono transition-colors text-left ${
               activeTile === 'osm'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#1db961] text-white font-bold'
+                : 'text-[#575757] hover:bg-[#f7f7f7]'
             }`}
             type="button"
           >
-            <Globe2 size={13} />
-            <span>Geographic</span>
+            <Globe2 size={12} />
+            <span>Topographic</span>
           </button>
         </div>
       </div>
@@ -355,53 +362,48 @@ export default function RealLeafletMap({
 
         return (
           <div
-            className="absolute bottom-4 left-4 z-10 p-4 rounded-2xl shadow-xl border border-white/80 max-w-[260px] animate-in fade-in-50 slide-in-from-bottom-2 duration-200"
+            className="absolute bottom-4 left-4 z-10 p-3.5 shadow-md border border-[#dbdbdb] max-w-[260px] bg-white font-mono"
             style={{
-              background: 'rgba(255, 255, 255, 0.90)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
+              borderRadius: 0,
             }}
           >
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-sm font-extrabold uppercase tracking-wide text-slate-800">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-bold uppercase tracking-wide text-[#212121]">
                 {activeCardCity.city}
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100/70 text-blue-700 font-bold border border-blue-200/50">
+              <span
+                style={{ borderRadius: 0 }}
+                className="text-[10px] px-1.5 py-0.2 bg-[#f0f0f0] text-[#424242] border border-[#dbdbdb]"
+              >
                 {activeCardCity.state}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block text-[10px] font-medium">Rainfall</span>
-                <span className="font-extrabold text-sky-600 text-sm">{activeCardCity.rainfall} mm</span>
+            <div className="grid grid-cols-2 gap-1.5 text-xs">
+              <div className="bg-[#f7f7f7] p-1.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+                <span className="text-[#808080] block text-[10px]">Rainfall</span>
+                <span className="font-bold text-[#1db961] text-sm">{activeCardCity.rainfall} mm</span>
               </div>
-              <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block text-[10px] font-medium">Temperature</span>
-                <span className="font-extrabold text-orange-600 text-sm">{activeCardCity.temperature}°C</span>
+              <div className="bg-[#f7f7f7] p-1.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+                <span className="text-[#808080] block text-[10px]">Temperature</span>
+                <span className="font-bold text-[#c0554d] text-sm">{activeCardCity.temperature}°C</span>
               </div>
-              <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block text-[10px] font-medium">Wind Speed</span>
-                <span className="font-extrabold text-purple-600 text-sm">{activeCardCity.wind} km/h</span>
+              <div className="bg-[#f7f7f7] p-1.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+                <span className="text-[#808080] block text-[10px]">Wind</span>
+                <span className="font-bold text-[#575757] text-sm">{activeCardCity.wind} km/h</span>
               </div>
-              <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block text-[10px] font-medium">Confidence</span>
-                <span className="font-extrabold text-emerald-600 text-sm">{activeCardCity.confidence}%</span>
+              <div className="bg-[#f7f7f7] p-1.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+                <span className="text-[#808080] block text-[10px]">Confidence</span>
+                <span className="font-bold text-[#168a49] text-sm">{activeCardCity.confidence}%</span>
               </div>
             </div>
-            <div className="mt-2.5 pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-              <span>Dominant Model:</span>
-              <span className="font-bold text-blue-700">{activeCardCity.dominantModel}</span>
+            <div className="mt-2 pt-1.5 border-t border-[#f0f0f0] text-[11px] text-[#575757] flex items-center justify-between">
+              <span>Dominant:</span>
+              <span className="font-bold text-[#168a49]">{activeCardCity.dominantModel}</span>
             </div>
-            {activeCardCity.confidenceLabel && (
-              <div className="mt-1 text-[10px] text-slate-500 flex items-center justify-between">
-                <span>Rating:</span>
-                <span className="font-semibold text-emerald-600">{activeCardCity.confidenceLabel}</span>
-              </div>
-            )}
             {activeCardCity.explanation && (
-              <div className="mt-1.5 pt-1.5 border-t border-slate-100/80 text-[10px] text-slate-500 italic leading-snug">
-                &quot;{activeCardCity.explanation}&quot;
+              <div className="mt-1 pt-1 border-t border-[#f0f0f0] text-[10px] text-[#808080] leading-snug">
+                {activeCardCity.explanation}
               </div>
             )}
           </div>
@@ -411,26 +413,24 @@ export default function RealLeafletMap({
       {/* Model Dominance Overlay */}
       {layer === 'model_dominance' && (
         <div
-          className="absolute top-4 left-4 z-10 rounded-2xl p-3.5 shadow-lg border border-white/80 max-w-[220px]"
-          style={{
-            background: 'rgba(255, 255, 255, 0.90)',
-            backdropFilter: 'blur(20px)',
-          }}
+          className="absolute top-4 left-4 z-10 p-3 shadow-md border border-[#dbdbdb] max-w-[220px] bg-white font-mono"
+          style={{ borderRadius: 0 }}
         >
-          <div className="text-[11px] font-bold text-slate-800 mb-2 flex items-center gap-1.5">
-            <Sparkles size={13} className="text-blue-600" />
+          <div className="text-[11px] font-bold text-[#212121] mb-1.5 flex items-center gap-1.5">
+            <Sparkles size={12} className="text-[#1db961]" />
             REGIONAL DOMINANCE
           </div>
-          <div className="space-y-1.5 text-[11px] text-slate-600">
+          <div className="space-y-1 text-[11px] text-[#575757]">
             {MOCK_REGION_DOMINANCE.slice(0, 4).map((r) => (
               <div key={r.region} className="flex justify-between items-center">
-                <span className="text-slate-400">{r.region}:</span>
-                <span className="font-bold text-slate-800">{r.dominantModel}</span>
+                <span className="text-[#808080]">{r.region}:</span>
+                <span className="font-bold text-[#212121]">{r.dominantModel}</span>
               </div>
             ))}
           </div>
         </div>
       )}
+
 
       {/* Leaflet CSS Overrides to Prevent Tailwind `img` Reset Collisions */}
       <style jsx global>{`

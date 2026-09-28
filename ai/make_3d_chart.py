@@ -73,9 +73,9 @@ def compute_rmse(actual, forecast):
 
 
 def main():
-    # If run from workspace root instead of SIH_MVP202681, change to project root
-    if not os.path.exists('outputs') and os.path.exists('SIH_MVP202681/outputs'):
-        os.chdir('SIH_MVP202681')
+    # If run from a subdirectory, walk up to the project root
+    while not os.path.exists('outputs') and os.path.abspath(os.curdir) != os.path.abspath(os.pardir):
+        os.chdir('..')
 
     # 1. Load data and parse datetime
     data_path = 'outputs/interim/ml_table.csv'

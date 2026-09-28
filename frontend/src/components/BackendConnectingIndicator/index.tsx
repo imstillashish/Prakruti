@@ -122,47 +122,41 @@ export function BackendConnectingIndicator() {
     >
       {isConnecting && (
         <div
-          className="pointer-events-auto flex flex-col items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl shadow-xl transition-all"
+          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-white border border-[#fed7aa] shadow-lg transition-all"
           style={{
-            background: 'rgba(255, 251, 235, 0.96)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
-            boxShadow: '0 12px 36px -4px rgba(245, 158, 11, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05)',
+            borderRadius: 0,
+            borderLeft: '3px solid #d97706',
           }}
         >
           {/* Main Title Row */}
           <div className="flex items-center gap-2">
-            <span className="text-sm">🟠</span>
-            <span className="text-xs sm:text-sm font-bold text-amber-900 tracking-tight">
-              Fetching Live Backend Data...
+            <span className="w-2 h-2 bg-[#d97706] animate-pulse" />
+            <span className="text-xs font-mono font-bold text-[#212121]">
+              Connecting to Live Forecast Backend...
             </span>
           </div>
 
           {/* Subtitle with Animated Spinner */}
-          <div className="flex items-center gap-2 text-[11px] sm:text-xs text-amber-800 font-medium text-center">
+          <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#808080]">
             <span
-              className="w-3.5 h-3.5 rounded-full border-2 border-amber-600 border-t-transparent animate-spin inline-block flex-shrink-0"
+              className="w-2.5 h-2.5 border border-[#d97706] border-t-transparent animate-spin inline-block flex-shrink-0"
               aria-label="Loading spinner"
             />
-            <span>Render server is waking up (may take up to 60 seconds)</span>
+            <span>Render server is waking up (may take up to 60s)</span>
           </div>
         </div>
       )}
 
       {isConnected && (
         <div
-          className="pointer-events-auto flex items-center gap-2 px-4 sm:px-5 py-2 rounded-2xl shadow-xl transition-all"
+          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#c4f3d8] shadow-lg transition-all"
           style={{
-            background: 'rgba(240, 253, 244, 0.96)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
-            boxShadow: '0 12px 36px -4px rgba(16, 185, 129, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05)',
+            borderRadius: 0,
+            borderLeft: '3px solid #1db961',
           }}
         >
-          <span className="text-sm">🟢</span>
-          <span className="text-xs sm:text-sm font-bold text-emerald-900 tracking-tight">
+          <span className="w-2 h-2 bg-[#1db961]" />
+          <span className="text-xs font-mono font-bold text-[#168a49]">
             Live Backend Connected
           </span>
         </div>

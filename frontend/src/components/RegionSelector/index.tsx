@@ -16,7 +16,6 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
   const [state, setState] = useState('Uttar Pradesh');
   const [district, setDistrict] = useState('Kanpur');
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   // 1. Fetch dynamic cities list from API
   useEffect(() => {
@@ -29,10 +28,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
         }
       })
       .catch(() => {
-        if (mounted) {
-          setIsError(true);
-          setIsLoading(false);
-        }
+        if (mounted) setIsLoading(false);
       });
     return () => {
       mounted = false;
@@ -94,22 +90,23 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
   };
 
   return (
-    <GlassCard padding="md" variant="orange">
-      <div className="flex items-center justify-between mb-4">
+    <GlassCard padding="md" variant="default">
+      <div className="flex items-center justify-between mb-3 border-b border-[#dbdbdb] pb-2 font-mono">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
-            <MapPin size={14} />
-          </div>
-          <span className="text-xs font-bold tracking-widest text-slate-700 uppercase" style={{ letterSpacing: '0.12em' }}>
-            REGION SELECTOR
+          <MapPin size={14} className="text-[#1db961]" />
+          <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
+            STATION SELECTOR
           </span>
         </div>
-        <span className="text-[10px] text-blue-600 font-semibold px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100 flex items-center gap-1">
-          <Navigation size={10} /> Auto-Zoom
+        <span
+          style={{ borderRadius: 0 }}
+          className="text-[10px] text-[#12723c] font-semibold px-2 py-0.5 bg-[#f2fcf7] border border-[#95eebc] flex items-center gap-1"
+        >
+          <Navigation size={10} /> Auto-Sync
         </span>
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-3">
         <CustomDropdown
           label="Country"
           options={['India']}
@@ -133,17 +130,17 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       </div>
 
       <div
-        className="mt-4 rounded-xl px-3.5 py-3 flex items-center justify-between"
-        style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}
+        className="mt-3.5 p-3 flex items-center justify-between font-mono bg-[#f7f7f7] border border-[#dbdbdb]"
+        style={{ borderRadius: 0 }}
       >
         <div className="flex items-center gap-2">
-          <MapPin size={13} className="text-blue-600" />
-          <span className="text-xs text-slate-700">
-            <span className="font-bold text-blue-700">{district === 'All Districts' ? state : district}</span>
-            <span className="text-slate-400"> · {state}</span>
+          <MapPin size={13} className="text-[#1db961]" />
+          <span className="text-xs text-[#212121]">
+            <span className="font-bold text-[#14522f]">{district === 'All Districts' ? state : district}</span>
+            <span className="text-[#808080]"> · {state}</span>
           </span>
         </div>
-        <span className="text-[10px] text-slate-400 font-medium">Synced with Map</span>
+        <span className="text-[10px] text-[#808080]">Active Synoptic Station</span>
       </div>
     </GlassCard>
   );

@@ -1,4 +1,4 @@
-Files Member 3 should read for the dashboard.
+Files to read for the dashboard.
 
 ## Final Output Files
 

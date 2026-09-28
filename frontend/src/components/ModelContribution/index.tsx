@@ -14,7 +14,6 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
   const [weights, setWeights] = useState<ModelWeight[]>(MOCK_MODEL_WEIGHTS);
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -26,10 +25,7 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
         }
       })
       .catch(() => {
-        if (mounted) {
-          setIsError(true);
-          setIsLoading(false);
-        }
+        if (mounted) setIsLoading(false);
       });
     return () => {
       mounted = false;
@@ -39,45 +35,50 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
   const total = weights.reduce((s, w) => s + w.weight, 0);
 
   return (
-    <GlassCard padding="md" variant="blue">
-      <div className="flex items-center justify-between mb-5">
+    <GlassCard padding="md" variant="default">
+      <div className="flex items-center justify-between mb-4 border-b border-[#dbdbdb] pb-3 font-mono">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold tracking-widest text-slate-500" style={{ letterSpacing: '0.12em' }}>
+            <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
               MODEL CONTRIBUTION
             </span>
             <Tooltip
               content={
-                <div className="space-y-1 p-1">
-                  <p className="font-medium text-slate-700 text-xs">Weights adapt according to:</p>
+                <div className="space-y-1 p-1 font-mono text-[11px]">
+                  <p className="font-bold text-[#212121]">Weights adapt according to:</p>
                   {['Region', 'Season', 'Lead Time', 'Historical Skill', 'Weather Regime'].map(f => (
-                    <div key={f} className="text-slate-500 text-xs flex items-center gap-1">
-                      <span className="w-1 h-1 bg-blue-400 rounded-full" />{f}
+                    <div key={f} className="text-[#575757] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-[#1db961]" />{f}
                     </div>
                   ))}
                 </div>
               }
             >
-              <Info size={13} className="text-slate-300 cursor-help" />
+              <Info size={13} className="text-[#808080] cursor-help" />
             </Tooltip>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">Adaptive blending weights</p>
+          <p className="text-[11px] text-[#808080] mt-0.5 font-sans">Inverse-RMSE adaptive blending weights</p>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
+        <div className="flex items-center gap-1.5 text-xs text-[#168a49] font-mono font-semibold">
           <TrendingUp size={13} />
           Dynamic
         </div>
       </div>
 
-      {/* Stacked bar */}
-      <div className="h-2.5 rounded-full overflow-hidden flex mb-5" role="img" aria-label="Model weight distribution">
+      {/* Stacked bar with sharp edges */}
+      <div
+        className="h-2.5 overflow-hidden flex mb-4 border border-[#dbdbdb]"
+        style={{ borderRadius: 0 }}
+        role="img"
+        aria-label="Model weight distribution"
+      >
         {weights.map((w) => (
           <div
             key={w.id}
             style={{
               width: `${(w.weight / total) * 100}%`,
               background: w.color,
-              transition: 'width 0.8s cubic-bezier(0.16,1,0.3,1)',
+              borderRadius: 0,
               opacity: hoveredModel && hoveredModel !== w.id ? 0.35 : 1,
             }}
           />
@@ -85,7 +86,7 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
       </div>
 
       {/* Individual model rows */}
-      <div className="space-y-3">
+      <div className="space-y-2.5 font-mono">
         {weights.map((w) => (
           <div
             key={w.id}
@@ -93,30 +94,30 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
             onMouseEnter={() => setHoveredModel(w.id)}
             onMouseLeave={() => setHoveredModel(null)}
           >
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between mb-1 text-xs">
               <div className="flex items-center gap-2">
                 <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: w.color }}
+                  className="w-2 h-2 flex-shrink-0"
+                  style={{ background: w.color, borderRadius: 0 }}
                 />
-                <span className="text-sm text-slate-700">{w.name}</span>
+                <span className="text-[#333333] font-medium">{w.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-400">RMSE {w.rmse}</span>
-                <span className="text-sm font-semibold" style={{ color: w.color }}>{w.weight}%</span>
+                <span className="text-[11px] text-[#808080]">RMSE {w.rmse}</span>
+                <span className="font-bold text-[#212121]">{w.weight}%</span>
               </div>
             </div>
             <div
-              className="h-1.5 rounded-full overflow-hidden"
-              style={{ background: 'rgba(148,163,184,0.12)' }}
+              className="h-1.5 overflow-hidden bg-[#f0f0f0] border border-[#dbdbdb]"
+              style={{ borderRadius: 0 }}
             >
               <div
-                className="h-full rounded-full"
+                className="h-full"
                 style={{
                   width: `${w.weight}%`,
                   background: w.color,
+                  borderRadius: 0,
                   opacity: hoveredModel && hoveredModel !== w.id ? 0.35 : 1,
-                  transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1)',
                 }}
               />
             </div>
@@ -126,12 +127,10 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
 
       {/* NCMRWF note */}
       <div
-        className="mt-5 rounded-xl px-3.5 py-3"
-        style={{ background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)' }}
+        className="mt-4 p-3 bg-[#f2fcf7] border border-[#95eebc] text-xs font-sans text-[#14522f]"
+        style={{ borderRadius: 0 }}
       >
-        <p className="text-xs text-slate-500">
-          <span className="font-medium text-blue-600">AI Model</span> currently demonstrates stronger historical performance for this region and lead time, while NWP contributes additional physical consistency.
-        </p>
+        <span className="font-bold">Inverse-RMSE Layer 1:</span> Weights dynamically favor models with the lowest localized prediction error over historical 61-day verification windows.
       </div>
     </GlassCard>
   );

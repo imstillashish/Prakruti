@@ -35,12 +35,12 @@ export function ModelIntelligencePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-600">
-          <BrainCircuit size={20} />
+        <div className="w-8 h-8 flex items-center justify-center bg-[#f7f7f7] text-[#212121] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <BrainCircuit size={18} />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Model Intelligence</h1>
-          <p className="text-xs text-slate-400">Adaptive weighting logic, dominance mapping, and cross-model comparison</p>
+          <h1 className="text-lg font-bold text-[#212121]">Model Intelligence</h1>
+          <p className="text-xs text-[#808080]">Dynamic multi-model weighting logic, spatial dominance, and comparative skill metrics</p>
         </div>
       </div>
 
@@ -50,23 +50,23 @@ export function ModelIntelligencePage() {
       </div>
 
       {/* Regional dominance */}
-      <GlassCard padding="md" variant="blue">
-        <h2 className="text-xs font-semibold tracking-widest text-slate-500 mb-4" style={{ letterSpacing: '0.12em' }}>
+      <GlassCard padding="md">
+        <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase mb-4">
           REGIONAL MODEL DOMINANCE
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {dominance.map((r) => (
             <div
               key={r.region}
-              className="rounded-xl p-3.5"
-              style={{ background: 'rgba(148,163,184,0.06)', border: '1px solid rgba(148,163,184,0.12)' }}
+              className="p-3 bg-white border border-[#dbdbdb]"
+              style={{ borderRadius: 0 }}
             >
-              <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                <MapPin size={11} className="text-blue-500" />
+              <div className="flex items-center gap-1.5 text-xs text-[#808080] mb-1 font-mono">
+                <MapPin size={11} className="text-[#1db961]" />
                 {r.region}
               </div>
-              <div className="text-sm font-semibold text-slate-800">{r.dominantModel}</div>
-              <div className="text-xs text-emerald-600 mt-1">{r.confidence}% confidence</div>
+              <div className="text-sm font-bold text-[#212121]">{r.dominantModel}</div>
+              <div className="text-xs font-mono text-[#168a49] mt-1 font-semibold">{r.confidence}% confidence</div>
             </div>
           ))}
         </div>

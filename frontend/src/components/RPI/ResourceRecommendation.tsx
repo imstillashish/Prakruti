@@ -102,7 +102,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
         </div>
 
         {/* Category filter tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-100/80 border border-slate-200/70">
+        <div className="flex flex-wrap items-center gap-1 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
           {CATEGORY_TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -111,11 +111,12 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-white text-blue-600 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                    ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                    : 'text-[#575757] hover:text-[#212121]'
                 }`}
+                style={{ borderRadius: 0 }}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
@@ -126,26 +127,26 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
       </div>
 
       {/* Trigger rule condition banner */}
-      <div className="mt-4 mb-5 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2 text-slate-600">
-          <Info className="w-4 h-4 text-blue-500 shrink-0" />
+      <div className="mt-3 mb-4 px-3 py-2 bg-[#f7f7f7] border border-[#dbdbdb] flex flex-wrap items-center justify-between gap-3 text-xs font-mono" style={{ borderRadius: 0 }}>
+        <div className="flex items-center gap-2 text-[#575757]">
+          <Info className="w-3.5 h-3.5 text-[#1db961] shrink-0" />
           <span>
-            <strong className="text-slate-700 font-semibold">Active Risk Drivers:</strong>{' '}
-            Rainfall <strong className="text-slate-800">{rpiData.rainfall} mm</strong> (Risk: {rpiData.rainRisk}%) · Temp{' '}
-            <strong className="text-slate-800">{rpiData.temperature}°C</strong> (Risk: {rpiData.heatRisk}%) · Wind{' '}
-            <strong className="text-slate-800">{rpiData.wind} km/h</strong> (Risk: {rpiData.windRisk}%)
+            <strong className="text-[#212121] font-bold">Active Risk Drivers:</strong>{' '}
+            Rain <strong className="text-[#212121]">{rpiData.rainfall} mm</strong> ({rpiData.rainRisk}%) · Temp{' '}
+            <strong className="text-[#212121]">{rpiData.temperature}°C</strong> ({rpiData.heatRisk}%) · Wind{' '}
+            <strong className="text-[#212121]">{rpiData.wind} km/h</strong> ({rpiData.windRisk}%)
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] text-slate-500">Auto-Dispatched:</span>
-          <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 text-[11px]">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[11px] text-[#808080]">Mobilized:</span>
+          <span className="font-bold text-[#168a49] bg-white px-1.5 py-0.2 border border-[#dbdbdb] text-[11px]">
             {dispatchedIds.size} / {rpiData.recommendations.length} Orders
           </span>
         </div>
       </div>
 
-      {/* Grid of Action Cards with Framer Motion hover elevation */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Grid of Action Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <AnimatePresence mode="popLayout">
           {filteredRecs.map((rec, index) => {
             const isDispatched = dispatchedIds.has(rec.id);
@@ -153,25 +154,25 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
               <motion.div
                 key={rec.id}
                 layout
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.28, delay: index * 0.05 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className={`relative rounded-2xl p-4.5 border transition-colors flex flex-col justify-between ${
+                transition={{ duration: 0.2, delay: index * 0.03 }}
+                className={`relative p-3.5 border flex flex-col justify-between transition-colors ${
                   isDispatched
-                    ? 'bg-emerald-50/50 border-emerald-300 shadow-sm'
-                    : 'bg-white/80 backdrop-blur-md border-slate-200/80 hover:border-blue-300 hover:shadow-md'
+                    ? 'bg-[#e6faee] border-[#1db961]'
+                    : 'bg-white border-[#dbdbdb] hover:border-[#1db961]'
                 }`}
+                style={{ borderRadius: 0 }}
               >
                 <div>
                   {/* Top Bar: Action Code & Priority Badge */}
-                  <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="p-1 rounded-md bg-slate-100 text-slate-600">
+                      <span className="p-1 bg-[#f7f7f7] border border-[#dbdbdb] text-[#575757]" style={{ borderRadius: 0 }}>
                         {getCategoryIcon(rec.category)}
                       </span>
-                      <span className="text-[10px] font-mono font-bold tracking-wider text-slate-500 bg-slate-100/90 px-1.5 py-0.5 rounded border border-slate-200/60">
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#575757] bg-[#f7f7f7] px-1.5 py-0.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
                         {rec.actionCode}
                       </span>
                     </div>
@@ -182,28 +183,29 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                   </div>
 
                   {/* Title */}
-                  <h4 className="text-sm font-bold text-slate-800 leading-snug mb-2">
+                  <h4 className="text-xs font-bold text-[#212121] leading-snug mb-1.5">
                     {rec.title}
                   </h4>
 
                   {/* Description */}
-                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                  <p className="text-xs text-[#575757] leading-relaxed mb-3">
                     {rec.description}
                   </p>
                 </div>
 
                 {/* Footer Bar: Department & Operational Dispatch Button */}
-                <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span className="truncate max-w-[200px]" title={rec.department}>
-                      🏛️ {rec.department}
+                <div className="pt-2.5 border-t border-[#f0f0f0] flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[#808080]">
+                    <span className="truncate max-w-[190px]" title={rec.department}>
+                      {rec.department}
                     </span>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`text-[9px] font-bold px-1.5 py-0.2 border ${
                         isDispatched
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-slate-100 text-slate-600'
+                          ? 'bg-[#c4f3d8] text-[#168a49] border-[#1db961]'
+                          : 'bg-[#f7f7f7] text-[#575757] border-[#dbdbdb]'
                       }`}
+                      style={{ borderRadius: 0 }}
                     >
                       {isDispatched ? 'DISPATCHED' : rec.status}
                     </span>
@@ -212,11 +214,12 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                   <button
                     type="button"
                     onClick={() => handleDispatch(rec.id)}
-                    className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    className={`w-full py-1.5 px-3 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                       isDispatched
-                        ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-sm'
+                        ? 'bg-[#168a49] text-white hover:bg-[#126e3a]'
+                        : 'bg-[#212121] text-white hover:bg-[#333333]'
                     }`}
+                    style={{ borderRadius: 0 }}
                   >
                     {isDispatched ? (
                       <>

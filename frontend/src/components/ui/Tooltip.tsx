@@ -23,12 +23,13 @@ export function Tooltip({ content, children, className }: TooltipProps) {
       {visible && (
         <div
           className={cn(
-            'absolute z-50 bottom-full mb-2 left-1/2 -translate-x-1/2',
-            'bg-white/90 backdrop-blur-md border border-slate-200/60',
-            'rounded-xl shadow-lg px-3 py-2 text-xs text-slate-700',
-            'min-w-max max-w-xs animate-in fade-in-0 zoom-in-95 duration-150',
+            'absolute z-50 bottom-full mb-1.5 left-1/2 -translate-x-1/2',
+            'bg-[#212121] text-white border border-[#333333]',
+            'px-2.5 py-1 text-xs font-mono shadow-md',
+            'min-w-max max-w-xs animate-in fade-in-0 duration-100',
             className
           )}
+          style={{ borderRadius: 0 }}
           role="tooltip"
         >
           {content}

@@ -94,27 +94,28 @@ export default function Home() {
       {/* Global Backend Connecting / Cold Start Indicator */}
       <BackendConnectingIndicator />
 
-      {/* Main Content with generous top padding to prevent ANY header overlap */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-36 pb-20">
+      {/* Main Content */}
+      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-20 pb-20">
         <StatusStrip />
         {renderContent()}
       </main>
 
-      {/* Enterprise Scientific Footer */}
+      {/* Footer */}
       <footer
-        className="relative z-10 max-w-[1440px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500"
-        style={{ borderTop: '1px solid rgba(148,163,184,0.18)' }}
+        className="relative z-10 max-w-[1440px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3"
+        style={{ borderTop: '1px solid #dbdbdb' }}
       >
-        <div className="flex flex-wrap items-center gap-2.5">
-          <img src="/logo-emblem.png" alt="नभदृष्टि Logo" className="w-5 h-5 object-contain rounded" />
-          <span className="font-bold text-slate-700">नभदृष्टि Hybrid AI–NWP Platform</span>
-          <span>·</span>
+        <div className="flex flex-wrap items-center gap-2" style={{ fontFamily: 'var(--font-family-mono)', fontSize: 11, color: '#575757' }}>
+          <span style={{ fontWeight: 700, color: '#212121' }}>Prakruti · प्रकृति</span>
+          <span style={{ color: '#dbdbdb' }}>·</span>
+          <span>Hybrid AI–NWP Platform</span>
+          <span style={{ color: '#dbdbdb' }}>·</span>
           <span>MoES / NCMRWF</span>
-          <span>·</span>
-          <span>Smart India Hackathon 2026 (PS: 26081)</span>
+          <span style={{ color: '#dbdbdb' }}>·</span>
+          <span>SIH 2026 · PS: 26081</span>
         </div>
-        <div className="text-slate-400 text-center sm:text-right">
-          Real CartoDB Geographic Grid · 45 Indian Synoptic Observation Stations
+        <div style={{ fontFamily: 'var(--font-family-mono)', fontSize: 10, color: '#808080' }}>
+          45 Indian Synoptic Stations · CartoDB Positron
         </div>
       </footer>
     </div>

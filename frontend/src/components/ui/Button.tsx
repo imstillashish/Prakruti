@@ -7,16 +7,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: 'bg-blue-500 hover:bg-blue-600 text-white shadow-sm shadow-blue-200',
-  secondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm',
-  ghost: 'hover:bg-slate-100 text-slate-600',
-  glass: 'bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-white/30 text-slate-700 shadow-sm',
+  primary: 'bg-[#1db961] hover:bg-[#168a49] text-white border border-[#168a49] font-medium shadow-xs',
+  secondary: 'bg-white hover:bg-[#f7f7f7] text-[#212121] border border-[#dbdbdb] font-medium',
+  ghost: 'hover:bg-[#f0f0f0] text-[#333333]',
+  glass: 'bg-white hover:bg-[#f7f7f7] border border-[#dbdbdb] text-[#212121]',
 };
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-xs rounded-lg',
-  md: 'px-4 py-2 text-sm rounded-xl',
-  lg: 'px-5 py-2.5 text-sm rounded-xl',
+  sm: 'px-3 py-1.5 text-xs',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-5 py-2.5 text-sm',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -24,8 +24,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        style={{ borderRadius: 0 }}
         className={cn(
-          'inline-flex items-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]',
+          'inline-flex items-center gap-2 font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#1db961] disabled:opacity-50 disabled:cursor-not-allowed',
           variants[variant],
           sizes[size],
           className

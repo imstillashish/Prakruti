@@ -42,31 +42,30 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
     >
       <div
         className={cn(
-          'glass-card w-full',
+          'w-full bg-white border border-[#dbdbdb] shadow-xl',
           sizes[size],
           'max-h-[85vh] overflow-y-auto',
           className
         )}
         style={{
-          background: 'rgba(255,255,255,0.88)',
-          backdropFilter: 'blur(32px)',
-          WebkitBackdropFilter: 'blur(32px)',
-          animation: 'modalIn 0.3s cubic-bezier(0.16,1,0.3,1)',
+          borderRadius: 0,
+          animation: 'modalIn 0.2s cubic-bezier(0.16,1,0.3,1)',
         }}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
-            <h2 className="text-sm font-semibold tracking-widest text-slate-500 uppercase">{title}</h2>
+          <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#dbdbdb]">
+            <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600"
+              className="p-1 hover:bg-[#f7f7f7] border border-transparent hover:border-[#dbdbdb] transition-colors text-[#808080] hover:text-[#212121]"
+              style={{ borderRadius: 0 }}
               aria-label="Close"
             >
-              <X size={16} />
+              <X size={15} />
             </button>
           </div>
         )}
-        <div className="px-6 py-5">{children}</div>
+        <div className="px-5 py-4">{children}</div>
       </div>
       <style>{`
         @keyframes modalIn {

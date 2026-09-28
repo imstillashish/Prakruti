@@ -41,31 +41,31 @@ export function CustomDropdown({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all duration-200 text-left',
-          'bg-white/70 hover:bg-white/90 border border-slate-200/80 shadow-xs backdrop-blur-md',
-          'focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400',
-          isOpen && 'border-blue-400 ring-2 ring-blue-400/20'
+          'w-full flex items-center justify-between px-3.5 py-2.5 text-sm transition-colors duration-150 text-left',
+          'bg-white hover:bg-[#f7f7f7] border border-[#dbdbdb] shadow-xs',
+          'focus:outline-none focus:border-[#1db961]',
+          isOpen && 'border-[#1db961]'
         )}
+        style={{ borderRadius: 0 }}
       >
-        <span className={cn('truncate font-medium', value ? 'text-slate-800' : 'text-slate-400')}>
+        <span className={cn('truncate font-medium', value ? 'text-[#212121]' : 'text-[#808080]')}>
           {value || placeholder}
         </span>
         <ChevronDown
           size={15}
-          className={cn('text-slate-400 transition-transform duration-200 shrink-0 ml-2', isOpen && 'rotate-180 text-blue-500')}
+          className={cn('text-[#808080] transition-transform duration-200 shrink-0 ml-2', isOpen && 'rotate-180 text-[#1db961]')}
         />
       </button>
 
       {isOpen && (
         <div
           className={cn(
-            'absolute left-0 right-0 z-50 mt-1.5 max-h-56 overflow-y-auto rounded-xl py-1.5',
-            'bg-white/90 backdrop-blur-2xl border border-white/60 shadow-xl shadow-slate-900/10',
-            'animate-in fade-in-0 zoom-in-95 duration-150'
+            'absolute left-0 right-0 z-50 mt-1 max-h-56 overflow-y-auto py-1',
+            'bg-white border border-[#dbdbdb] shadow-md',
+            'animate-in fade-in-0 duration-100'
           )}
           style={{
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            borderRadius: 0,
           }}
         >
           {options.length === 0 ? (

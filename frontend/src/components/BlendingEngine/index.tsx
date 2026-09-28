@@ -63,65 +63,62 @@ export function BlendingEngineModal({ open, onClose }: BlendingEngineModalProps)
 
   return (
     <Modal open={open} onClose={onClose} title="BLENDING ENGINE" size="md">
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Stats grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {[
-            { label: 'Models analyzed', value: status.modelsAnalyzed },
-            { label: 'Regions evaluated', value: status.regionsEvaluated },
-            { label: 'Lead time', value: status.leadTime },
-            { label: 'Current regime', value: status.currentRegime },
-            { label: 'Adaptive weighting', value: 'Enabled' },
-            { label: 'Confidence', value: `${status.confidence}%` },
+            { label: 'Models Analyzed', value: status.modelsAnalyzed },
+            { label: 'Stations Evaluated', value: status.regionsEvaluated },
+            { label: 'Lead Time', value: status.leadTime },
+            { label: 'Current Regime', value: status.currentRegime },
+            { label: 'Adaptive Weighting', value: 'Enabled' },
+            { label: 'Engine Confidence', value: `${status.confidence}%` },
           ].map(s => (
             <div key={s.label}
-              className="rounded-xl p-3"
-              style={{ background: 'rgba(148,163,184,0.06)', border: '1px solid rgba(148,163,184,0.12)' }}
+              className="p-3 bg-[#f7f7f7] border border-[#dbdbdb]"
+              style={{ borderRadius: 0 }}
             >
-              <div className="text-xs text-slate-400 mb-1">{s.label}</div>
-              <div className="text-sm font-semibold text-slate-800">{s.value}</div>
+              <div className="text-[10px] font-mono text-[#808080] mb-0.5">{s.label}</div>
+              <div className="text-xs font-bold text-[#212121]">{s.value}</div>
             </div>
           ))}
         </div>
 
         {/* Animated pipeline */}
         <div
-          className="rounded-xl p-5"
-          style={{ background: 'rgba(148,163,184,0.04)', border: '1px solid rgba(148,163,184,0.1)' }}
+          className="p-4 bg-white border border-[#dbdbdb]"
+          style={{ borderRadius: 0 }}
         >
-          <h3 className="text-xs font-semibold tracking-wider text-slate-400 mb-4" style={{ letterSpacing: '0.1em' }}>
+          <h3 className="text-xs font-mono font-bold tracking-wider text-[#212121] mb-3">
             BLENDING PIPELINE
           </h3>
           <div className="flex items-center gap-2 flex-wrap">
             {PIPELINE.map((p, i) => (
               <div key={p.label} className="flex items-center gap-2">
                 <div
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300"
+                  className="px-2.5 py-1 text-xs font-mono font-medium transition-colors"
                   style={{
-                    background: animStep >= i ? `${p.color}18` : 'rgba(148,163,184,0.08)',
-                    border: `1px solid ${animStep >= i ? `${p.color}40` : 'rgba(148,163,184,0.15)'}`,
-                    color: animStep >= i ? p.color : '#94a3b8',
+                    borderRadius: 0,
+                    background: animStep >= i ? '#e6faee' : '#f7f7f7',
+                    border: `1px solid ${animStep >= i ? '#1db961' : '#dbdbdb'}`,
+                    color: animStep >= i ? '#168a49' : '#808080',
                   }}
                 >
                   {p.label}
                 </div>
                 {i < PIPELINE.length - 1 && (
-                  <div
-                    className="text-xs transition-colors duration-300"
-                    style={{ color: animStep > i ? '#94a3b8' : '#e2e8f0' }}
-                  >
-                    +
-                  </div>
+                  <span className="text-xs font-mono text-[#dbdbdb]">+</span>
                 )}
               </div>
             ))}
-            <div className="text-xs text-slate-300 mx-1">→</div>
+            <span className="text-xs font-mono text-[#808080] mx-1">→</span>
             <div
-              className="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-500"
+              className="px-3 py-1 text-xs font-mono font-bold transition-colors"
               style={{
-                background: animStep >= PIPELINE.length ? 'rgba(59,130,246,0.12)' : 'rgba(148,163,184,0.06)',
-                border: `1px solid ${animStep >= PIPELINE.length ? 'rgba(59,130,246,0.3)' : 'rgba(148,163,184,0.15)'}`,
-                color: animStep >= PIPELINE.length ? '#3b82f6' : '#94a3b8',
+                borderRadius: 0,
+                background: animStep >= PIPELINE.length ? '#1db961' : '#f7f7f7',
+                border: `1px solid ${animStep >= PIPELINE.length ? '#168a49' : '#dbdbdb'}`,
+                color: animStep >= PIPELINE.length ? '#ffffff' : '#808080',
               }}
             >
               FINAL FORECAST
@@ -130,15 +127,15 @@ export function BlendingEngineModal({ open, onClose }: BlendingEngineModalProps)
         </div>
 
         {/* Timing */}
-        <div className="grid grid-cols-3 gap-3 text-xs">
+        <div className="grid grid-cols-3 gap-2 text-xs font-mono p-2.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
           {[
-            { label: 'Last recalculation', value: status.lastRecalculation },
-            { label: 'Last data refresh', value: status.lastDataRefresh },
-            { label: 'Next update', value: status.nextUpdate },
+            { label: 'Last Recalculation', value: status.lastRecalculation },
+            { label: 'Data Ingest', value: status.lastDataRefresh },
+            { label: 'Next Cycle', value: status.nextUpdate },
           ].map(t => (
             <div key={t.label} className="text-center">
-              <div className="text-slate-400 mb-0.5">{t.label}</div>
-              <div className="font-semibold text-slate-700">{t.value}</div>
+              <div className="text-[10px] text-[#808080] mb-0.5">{t.label}</div>
+              <div className="font-bold text-[#212121] text-[11px]">{t.value}</div>
             </div>
           ))}
         </div>

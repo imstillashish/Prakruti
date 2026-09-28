@@ -9,18 +9,17 @@ import type { SkillMetric } from '@/types';
 type Period = 'Today' | '7 Days' | '30 Days' | 'Season';
 
 const MODELS = [
-  { key: 'blended', label: 'Blended AI-NWP', color: '#2563eb' },
-  { key: 'ai', label: 'AI Weather Model', color: '#0ea5e9' },
-  { key: 'nwpA', label: 'ECMWF IFS', color: '#6366f1' },
-  { key: 'nwpB', label: 'GFS Seamless', color: '#8b5cf6' },
-  { key: 'ensemble', label: 'Ensemble Mean', color: '#06b6d4' },
+  { key: 'blended', label: 'Hybrid AI-NWP Blend', color: '#1db961' },
+  { key: 'ai', label: 'AI Residual Model', color: '#23dc73' },
+  { key: 'nwpA', label: 'ECMWF IFS (0.25°)', color: '#168a49' },
+  { key: 'nwpB', label: 'GFS Seamless', color: '#575757' },
+  { key: 'ensemble', label: 'Ensemble Mean', color: '#808080' },
 ] as const;
 
 export function ModelSkillPanel() {
   const [period, setPeriod] = useState<Period>('Today');
   const [metrics, setMetrics] = useState<SkillMetric[]>(MOCK_SKILL_METRICS);
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -32,10 +31,7 @@ export function ModelSkillPanel() {
         }
       })
       .catch(() => {
-        if (mounted) {
-          setIsError(true);
-          setIsLoading(false);
-        }
+        if (mounted) setIsLoading(false);
       });
     return () => {
       mounted = false;
@@ -50,30 +46,29 @@ export function ModelSkillPanel() {
   })).sort((a, b) => a.rmse - b.rmse);
 
   return (
-    <GlassCard padding="md" variant="green">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+    <GlassCard padding="md" variant="default">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-[#dbdbdb] pb-3 font-mono">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
-            <BarChart2 size={14} />
-          </div>
-          <span className="text-xs font-bold tracking-widest text-slate-700 uppercase" style={{ letterSpacing: '0.12em' }}>
+          <BarChart2 size={14} className="text-[#1db961]" />
+          <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
             MODEL SKILL SCORE
           </span>
-          <Tooltip content={<div className="p-1.5 text-xs text-slate-700 max-w-[210px]">RMSE (Root Mean Square Error) against ERA5 reanalysis ground truth. Lower is better.</div>}>
-            <Info size={13} className="text-slate-400 cursor-help" />
+          <Tooltip content={<div className="p-1 font-mono text-[11px] text-[#212121] max-w-[210px]">Root Mean Square Error against ERA5 ground reanalysis. Lower values indicate superior accuracy.</div>}>
+            <Info size={13} className="text-[#808080] cursor-help" />
           </Tooltip>
         </div>
 
-        {/* Separated Pill Buttons */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100/80 border border-slate-200/80 shadow-2xs">
+        {/* Sharp Time Range Selector */}
+        <div className="flex items-center gap-1 border border-[#dbdbdb] p-0.5 bg-[#f7f7f7]" style={{ borderRadius: 0 }}>
           {(['Today', '7 Days', '30 Days', 'Season'] as Period[]).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              style={{ borderRadius: 0 }}
+              className={`px-2 py-0.5 text-xs font-mono transition-colors ${
                 period === p
-                  ? 'bg-white text-blue-600 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-[#1db961] text-white font-semibold'
+                  : 'text-[#575757] hover:text-[#212121] hover:bg-white'
               }`}
               type="button"
             >
@@ -83,41 +78,43 @@ export function ModelSkillPanel() {
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5 font-mono">
         {tableRows.map((m, i) => (
           <div
             key={m.key}
-            className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 transition-all ${
+            className={`flex items-center gap-2.5 p-2.5 border transition-colors ${
               i === 0
-                ? 'bg-blue-50/80 border border-blue-200/70 shadow-xs'
-                : 'bg-white/40 hover:bg-white/70 border border-slate-100'
+                ? 'bg-[#f2fcf7] border-[#95eebc]'
+                : 'bg-white border-[#dbdbdb] hover:bg-[#f7f7f7]'
             }`}
+            style={{ borderRadius: 0 }}
           >
             <span
-              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
-              style={{ background: m.color }}
+              className="w-2 h-2 shrink-0"
+              style={{ background: m.color, borderRadius: 0 }}
             />
-            <span className={`text-xs flex-1 ${i === 0 ? 'font-bold text-slate-900' : 'text-slate-700'}`}>
+            <span className={`text-xs flex-1 ${i === 0 ? 'font-bold text-[#14522f]' : 'text-[#333333]'}`}>
               {m.label}
             </span>
             {i === 0 && (
-              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200">
-                <Award size={11} /> Top Skill
+              <span
+                style={{ borderRadius: 0 }}
+                className="flex items-center gap-1 text-[10px] font-bold text-[#14522f] bg-[#e6faee] px-1.5 py-0.2 border border-[#95eebc]"
+              >
+                <Award size={10} /> Top Skill
               </span>
             )}
-            <span className="text-xs font-bold text-slate-800">{m.rmse.toFixed(1)}</span>
-            <span className="text-[11px] text-slate-400 font-medium w-12 text-right">RMSE mm</span>
+            <span className="text-xs font-bold text-[#212121]">{m.rmse.toFixed(1)}</span>
+            <span className="text-[11px] text-[#808080] w-14 text-right">RMSE mm</span>
           </div>
         ))}
       </div>
 
       <div
-        className="mt-4 rounded-xl px-3.5 py-3"
-        style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.12)' }}
+        className="mt-3.5 p-3 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]"
+        style={{ borderRadius: 0 }}
       >
-        <p className="text-xs text-slate-600 leading-relaxed">
-          Blended AI-NWP reduces error by <span className="font-bold text-blue-700">~18.2%</span> compared to the best individual model for this lead cycle.
-        </p>
+        Hybrid AI blend reduces error by <span className="font-bold text-[#168a49]">~18.2%</span> relative to any isolated NWP model run.
       </div>
     </GlassCard>
   );

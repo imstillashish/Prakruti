@@ -68,12 +68,12 @@ export function ExtremeWeatherPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-600">
-          <ShieldAlert size={20} />
+        <div className="w-8 h-8 flex items-center justify-center bg-[#fdf5e6] text-[#b4544a] border border-[#f3d9d6]" style={{ borderRadius: 0 }}>
+          <ShieldAlert size={18} />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Extreme Weather Guidance</h1>
-          <p className="text-xs text-slate-400">Probabilistic risk alerts for heavy rain, heatwave, and high wind</p>
+          <h1 className="text-lg font-bold text-[#212121]">Extreme Weather Guidance</h1>
+          <p className="text-xs text-[#808080]">Real-time severe event risk, threshold breaches, and emergency advisories</p>
         </div>
       </div>
 
@@ -84,21 +84,21 @@ export function ExtremeWeatherPage() {
 
       {/* Active alerts log */}
       <GlassCard padding="md" variant="red">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#dbdbdb]">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
-              <AlertTriangle size={15} />
+            <div className="w-7 h-7 bg-[#fdf5e6] flex items-center justify-center text-[#b4544a] border border-[#f3d9d6]" style={{ borderRadius: 0 }}>
+              <AlertTriangle size={14} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xs font-bold tracking-widest text-slate-800 uppercase" style={{ letterSpacing: '0.12em' }}>
+                <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
                   ACTIVE ALERT REGISTRY
                 </h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-[#f7f7f7] border border-[#dbdbdb] text-[#575757]">
                   {filteredAlerts.length} / {alerts.length} Active
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-[#808080]">
                 Gridded hazard threshold breaches from multi-model blending
               </p>
             </div>
@@ -107,18 +107,19 @@ export function ExtremeWeatherPage() {
           {/* Filters: Red/Orange pills + Statewise selector */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Severity Filter Tabs */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100/90 border border-slate-200/70">
+            <div className="flex items-center gap-1 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
               <button
                 type="button"
                 onClick={() => setSeverityFilter('all')}
-                className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                className={`py-1 px-2.5 text-xs font-mono transition-all flex items-center gap-1.5 ${
                   severityFilter === 'all'
-                    ? 'bg-white text-slate-800 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                    : 'text-[#575757] hover:text-[#212121]'
                 }`}
+                style={{ borderRadius: 0 }}
               >
                 <span>All</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-700 font-bold">
+                <span className="text-[10px] px-1 bg-[#f0f0f0] text-[#575757] font-mono">
                   {alerts.length}
                 </span>
               </button>
@@ -126,16 +127,17 @@ export function ExtremeWeatherPage() {
               <button
                 type="button"
                 onClick={() => setSeverityFilter('danger')}
-                className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                className={`py-1 px-2.5 text-xs font-mono transition-all flex items-center gap-1.5 ${
                   severityFilter === 'danger'
-                    ? 'bg-red-500 text-white shadow-xs'
-                    : 'text-red-700 hover:bg-red-50'
+                    ? 'bg-[#b4544a] text-white font-bold'
+                    : 'text-[#b4544a] hover:bg-[#faeae8]'
                 }`}
+                style={{ borderRadius: 0 }}
               >
-                <span className={`w-2 h-2 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-red-500 animate-pulse'}`} />
+                <span className={`w-1.5 h-1.5 ${severityFilter === 'danger' ? 'bg-white' : 'bg-[#b4544a]'}`} />
                 <span>Red</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                  severityFilter === 'danger' ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
+                <span className={`text-[10px] px-1 font-mono ${
+                  severityFilter === 'danger' ? 'bg-[#983e35] text-white' : 'bg-[#faeae8] text-[#b4544a]'
                 }`}>
                   {redCount}
                 </span>
@@ -144,16 +146,17 @@ export function ExtremeWeatherPage() {
               <button
                 type="button"
                 onClick={() => setSeverityFilter('warning')}
-                className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                className={`py-1 px-2.5 text-xs font-mono transition-all flex items-center gap-1.5 ${
                   severityFilter === 'warning'
-                    ? 'bg-amber-500 text-white shadow-xs'
-                    : 'text-amber-800 hover:bg-amber-50'
+                    ? 'bg-[#d97706] text-white font-bold'
+                    : 'text-[#d97706] hover:bg-[#fffbeb]'
                 }`}
+                style={{ borderRadius: 0 }}
               >
-                <span className={`w-2 h-2 rounded-full ${severityFilter === 'warning' ? 'bg-white' : 'bg-amber-500 animate-pulse'}`} />
+                <span className={`w-1.5 h-1.5 ${severityFilter === 'warning' ? 'bg-white' : 'bg-[#d97706]'}`} />
                 <span>Orange</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                  severityFilter === 'warning' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800'
+                <span className={`text-[10px] px-1 font-mono ${
+                  severityFilter === 'warning' ? 'bg-[#b45309] text-white' : 'bg-[#fffbeb] text-[#d97706]'
                 }`}>
                   {orangeCount}
                 </span>
@@ -162,13 +165,14 @@ export function ExtremeWeatherPage() {
 
             {/* Statewise Dropdown Filter */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
-                <MapPin size={13} />
+              <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-[#808080]">
+                <MapPin size={12} />
               </div>
               <select
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="text-xs font-semibold pl-7 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-blue-500 cursor-pointer appearance-none"
+                className="text-xs font-mono pl-6 pr-7 py-1.5 bg-white border border-[#dbdbdb] text-[#212121] focus:outline-none focus:border-[#1db961] cursor-pointer appearance-none"
+                style={{ borderRadius: 0 }}
               >
                 <option value="all">All States ({alerts.length})</option>
                 {uniqueStates.map(([st, count]) => (
@@ -177,8 +181,8 @@ export function ExtremeWeatherPage() {
                   </option>
                 ))}
               </select>
-              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-slate-400">
-                <ChevronDown size={13} />
+              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#808080]">
+                <ChevronDown size={12} />
               </div>
             </div>
 
@@ -190,10 +194,11 @@ export function ExtremeWeatherPage() {
                   setSeverityFilter('all');
                   setSelectedState('all');
                 }}
-                className="px-2.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-xs font-medium flex items-center gap-1 transition-colors"
+                className="px-2 py-1.5 border border-[#dbdbdb] bg-white hover:bg-[#f7f7f7] text-[#575757] hover:text-[#212121] text-xs font-mono flex items-center gap-1 transition-colors"
+                style={{ borderRadius: 0 }}
                 title="Reset filters"
               >
-                <RotateCcw size={12} />
+                <RotateCcw size={11} />
                 <span>Reset</span>
               </button>
             )}
@@ -201,15 +206,15 @@ export function ExtremeWeatherPage() {
         </div>
 
         {/* Alerts list */}
-        <div className="space-y-2.5 max-h-[580px] overflow-y-auto pr-1">
+        <div className="space-y-2 max-h-[580px] overflow-y-auto pr-1">
           {filteredAlerts.length === 0 ? (
-            <div className="py-14 px-4 text-center rounded-2xl bg-slate-50/80 border border-slate-100">
-              <div className="w-11 h-11 mx-auto mb-3 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 size={22} />
+            <div className="py-12 px-4 text-center bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+              <div className="w-9 h-9 mx-auto mb-2 bg-[#e6faee] text-[#168a49] flex items-center justify-center border border-[#c4f3d8]" style={{ borderRadius: 0 }}>
+                <CheckCircle2 size={18} />
               </div>
-              <h4 className="text-sm font-bold text-slate-800">No Active Alerts Found</h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                No {severityFilter === 'danger' ? 'Red' : severityFilter === 'warning' ? 'Orange' : ''} hazard advisories match the chosen state or severity filter.
+              <h4 className="text-xs font-mono font-bold text-[#212121]">NO ACTIVE ALERTS MATCHING CRITERIA</h4>
+              <p className="text-xs text-[#808080] mt-1 max-w-sm mx-auto">
+                No active hazard advisories match the current filter selection.
               </p>
               <button
                 type="button"
@@ -217,9 +222,10 @@ export function ExtremeWeatherPage() {
                   setSeverityFilter('all');
                   setSelectedState('all');
                 }}
-                className="mt-4 px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition-colors shadow-xs"
+                className="mt-3 px-3 py-1 bg-[#212121] text-white text-xs font-mono hover:bg-[#333333] transition-colors"
+                style={{ borderRadius: 0 }}
               >
-                Reset All Filters
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -228,42 +234,43 @@ export function ExtremeWeatherPage() {
               return (
                 <div
                   key={alert.id}
-                  className="flex items-center justify-between p-3.5 rounded-xl transition-all hover:scale-[1.003] hover:shadow-xs"
+                  className="flex items-center justify-between p-3 transition-colors"
                   style={{
-                    background: isRed ? 'rgba(239,68,68,0.04)' : 'rgba(245,158,11,0.04)',
-                    border: isRed ? '1px solid rgba(239,68,68,0.18)' : '1px solid rgba(245,158,11,0.18)',
+                    borderRadius: 0,
+                    background: isRed ? '#fffafa' : '#fffdfa',
+                    border: isRed ? '1px solid #f3d9d6' : '1px solid #fed7aa',
                   }}
                 >
-                  <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0">
                     <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      className="w-2 h-2 shrink-0"
                       style={{
-                        background: isRed ? '#ef4444' : '#f59e0b',
-                        boxShadow: isRed ? '0 0 8px rgba(239,68,68,0.6)' : '0 0 8px rgba(245,158,11,0.6)',
+                        background: isRed ? '#b4544a' : '#d97706',
                       }}
                     />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-slate-800 truncate">{alert.title}</span>
+                        <span className="text-xs font-bold text-[#212121] truncate">{alert.title}</span>
                         <span
-                          className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md tracking-wider shrink-0 ${
+                          className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 border shrink-0 ${
                             isRed
-                              ? 'bg-red-100 text-red-700 border border-red-200'
-                              : 'bg-amber-100 text-amber-800 border border-amber-200'
+                              ? 'bg-[#faeae8] text-[#b4544a] border-[#f3d9d6]'
+                              : 'bg-[#fffbeb] text-[#b4544a] border-[#fed7aa]'
                           }`}
+                          style={{ borderRadius: 0 }}
                         >
-                          {isRed ? 'Red Alert' : 'Orange Alert'}
+                          {isRed ? 'RED ALERT' : 'ORANGE ALERT'}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                        <MapPin size={11} className="text-slate-400 shrink-0" />
+                      <div className="text-xs text-[#575757] flex items-center gap-1 mt-0.5">
+                        <MapPin size={10} className="text-[#808080] shrink-0" />
                         <span className="truncate">{alert.location}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right shrink-0 ml-3">
-                    <div className="text-xs text-slate-700 font-semibold">{alert.window}</div>
-                    <div className="text-xs font-bold text-blue-600 mt-0.5 bg-white/80 px-2 py-0.5 rounded-md border border-slate-200/60 inline-block">
+                  <div className="text-right shrink-0 ml-3 font-mono">
+                    <div className="text-xs text-[#575757] font-semibold">{alert.window}</div>
+                    <div className="text-[10px] text-[#212121] mt-0.5 bg-white px-1.5 py-0.5 border border-[#dbdbdb] inline-block" style={{ borderRadius: 0 }}>
                       {alert.timestamp}
                     </div>
                   </div>

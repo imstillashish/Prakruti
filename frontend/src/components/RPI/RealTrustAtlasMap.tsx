@@ -269,7 +269,7 @@ export default function RealTrustAtlasMap({
   };
 
   return (
-    <div className="relative w-full h-[560px] rounded-2xl overflow-hidden shadow-inner border border-slate-200/80">
+    <div className="relative w-full h-[560px] overflow-hidden border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Top Floating Bar: Map API Status & Station Search */}
@@ -280,135 +280,143 @@ export default function RealTrustAtlasMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Station / District..."
-            className="w-48 sm:w-56 pl-8 pr-3 py-1.5 rounded-xl text-xs bg-white/95 backdrop-blur-md border border-slate-200 shadow-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-48 sm:w-56 pl-7 pr-3 py-1 text-xs font-mono bg-white border border-[#dbdbdb] text-[#212121] placeholder-[#808080] focus:outline-none focus:border-[#1db961]"
+            style={{ borderRadius: 0 }}
           />
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-[#808080] absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
         </form>
 
-        <div className="px-2.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md flex items-center gap-1.5 text-[11px] font-semibold text-slate-700">
+        <div className="px-2 py-1 bg-white border border-[#dbdbdb] flex items-center gap-1.5 text-[10px] font-mono font-semibold text-[#575757]" style={{ borderRadius: 0 }}>
           <span
-            className={`w-2 h-2 rounded-full ${
-              apiConnected ? 'bg-emerald-500 animate-pulse' : 'bg-blue-500'
+            className={`w-1.5 h-1.5 ${
+              apiConnected ? 'bg-[#1db961]' : 'bg-[#2563eb]'
             }`}
           />
-          <span>{MAPBOX_ACCESS_TOKEN ? 'Mapbox API (HD GL)' : 'Leaflet CartoDB API'}</span>
+          <span>{MAPBOX_ACCESS_TOKEN ? 'Mapbox API (HD GL)' : 'Leaflet CartoDB'}</span>
         </div>
       </div>
 
       {/* Top Right Floating Controls: Tile Switcher & Zoom */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
+      <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-1.5">
         {/* Tile Layer Selector Bar */}
-        <div className="p-1 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-md flex items-center gap-1">
+        <div className="p-0.5 bg-white border border-[#dbdbdb] flex items-center gap-0.5" style={{ borderRadius: 0 }}>
           <button
             onClick={() => setActiveTile('satellite')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'satellite'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#212121] text-white font-bold'
+                : 'text-[#575757] hover:text-[#212121]'
             }`}
+            style={{ borderRadius: 0 }}
             type="button"
             title="Satellite Streets"
           >
-            <Satellite size={12} />
+            <Satellite size={11} />
             <span className="hidden sm:inline">Satellite</span>
           </button>
 
           <button
             onClick={() => setActiveTile('terrain')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'terrain'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#212121] text-white font-bold'
+                : 'text-[#575757] hover:text-[#212121]'
             }`}
+            style={{ borderRadius: 0 }}
             type="button"
             title="Topographic Terrain"
           >
-            <Mountain size={12} />
+            <Mountain size={11} />
             <span className="hidden sm:inline">Terrain</span>
           </button>
 
           <button
             onClick={() => setActiveTile('positron')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'positron'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#212121] text-white font-bold'
+                : 'text-[#575757] hover:text-[#212121]'
             }`}
+            style={{ borderRadius: 0 }}
             type="button"
             title="Scientific Light Map"
           >
-            <SunMedium size={12} />
+            <SunMedium size={11} />
             <span className="hidden sm:inline">Light</span>
           </button>
 
           <button
             onClick={() => setActiveTile('osm')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'osm'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-[#212121] text-white font-bold'
+                : 'text-[#575757] hover:text-[#212121]'
             }`}
+            style={{ borderRadius: 0 }}
             type="button"
             title="OpenStreetMap"
           >
-            <Globe2 size={12} />
+            <Globe2 size={11} />
             <span className="hidden sm:inline">OSM</span>
           </button>
         </div>
 
         {/* Zoom & Reset Buttons */}
-        <div className="flex flex-col gap-1 shadow-md">
+        <div className="flex flex-col gap-0.5 border border-[#dbdbdb] bg-white" style={{ borderRadius: 0 }}>
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomIn()}
-            className="w-8 h-8 rounded-lg bg-white/95 text-slate-700 hover:bg-slate-100 flex items-center justify-center font-bold text-sm shadow-xs border border-slate-200 transition-all cursor-pointer"
+            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-[#f0f0f0]"
+            style={{ borderRadius: 0 }}
             title="Zoom In"
           >
-            <ZoomIn size={14} />
+            <ZoomIn size={13} />
           </button>
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomOut()}
-            className="w-8 h-8 rounded-lg bg-white/95 text-slate-700 hover:bg-slate-100 flex items-center justify-center font-bold text-sm shadow-xs border border-slate-200 transition-all cursor-pointer"
+            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-[#f0f0f0]"
+            style={{ borderRadius: 0 }}
             title="Zoom Out"
           >
-            <ZoomOut size={14} />
+            <ZoomOut size={13} />
           </button>
           <button
             type="button"
             onClick={() => {
               mapInstanceRef.current?.flyTo(MAP_CONFIG.defaultCenter, MAP_CONFIG.defaultZoom, { duration: 1.2 });
             }}
-            className="w-8 h-8 rounded-lg bg-white/95 text-slate-700 hover:bg-slate-100 flex items-center justify-center text-xs shadow-xs border border-slate-200 transition-all cursor-pointer"
+            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center text-xs transition-colors cursor-pointer"
+            style={{ borderRadius: 0 }}
             title="Reset View"
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={12} />
           </button>
         </div>
       </div>
 
       {/* Bottom Floating Legend Bar */}
-      <div className="absolute bottom-4 left-4 z-20 px-3.5 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg flex flex-wrap items-center gap-4 text-xs font-semibold">
-        <div className="flex items-center gap-1.5 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
-          <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+      <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 bg-white border border-[#dbdbdb] flex flex-wrap items-center gap-3 text-xs font-mono" style={{ borderRadius: 0 }}>
+        <div className="flex items-center gap-1.5 text-[#575757] font-bold uppercase tracking-wider text-[10px]">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#1db961]" />
           <span>Dominant Model:</span>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-blue-600 ring-2 ring-blue-100" />
-            <span className="text-slate-700">ECMWF</span>
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 bg-[#2563eb]" />
+            <span className="text-[#212121] text-[11px]">ECMWF</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
-            <span className="text-slate-700">ICON</span>
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 bg-[#1db961]" />
+            <span className="text-[#212121] text-[11px]">ICON</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-purple-500 ring-2 ring-purple-100" />
-            <span className="text-slate-700">GFS</span>
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 bg-[#8b5cf6]" />
+            <span className="text-[#212121] text-[11px]">GFS</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-orange-500 ring-2 ring-orange-100" />
-            <span className="text-slate-700">GEM</span>
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 bg-[#f97316]" />
+            <span className="text-[#212121] text-[11px]">GEM</span>
           </div>
         </div>
       </div>

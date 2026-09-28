@@ -35,12 +35,12 @@ export function ModelPerformancePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-600">
-          <BarChart3 size={20} />
+        <div className="w-8 h-8 flex items-center justify-center bg-[#f7f7f7] text-[#212121] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <BarChart3 size={18} />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Model Performance &amp; Skill</h1>
-          <p className="text-xs text-slate-400">Historical validation against ERA5 reanalysis across lead times and regions</p>
+          <h1 className="text-lg font-bold text-[#212121]">Model Performance &amp; Skill</h1>
+          <p className="text-xs text-[#808080]">Historical validation against ERA5 reanalysis across lead times and stations</p>
         </div>
       </div>
 
@@ -50,38 +50,38 @@ export function ModelPerformancePage() {
       <PerformanceMatrix3D />
 
       {/* Historical skill summary */}
-      <GlassCard padding="md" variant="green">
-        <h2 className="text-xs font-semibold tracking-widest text-slate-500 mb-4" style={{ letterSpacing: '0.12em' }}>
-          SKILL SCORES OVER TIME (RMSE mm)
+      <GlassCard padding="md">
+        <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase mb-4">
+          HISTORICAL SKILL SCORES (RMSE mm)
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs font-mono border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 text-xs text-slate-400">
-                <th className="text-left pb-2 font-medium">Period</th>
-                <th className="text-right pb-2 font-medium text-blue-600">Blended</th>
-                <th className="text-right pb-2 font-medium">AI Model</th>
-                <th className="text-right pb-2 font-medium">ECMWF IFS</th>
-                <th className="text-right pb-2 font-medium">GFS</th>
-                <th className="text-right pb-2 font-medium">Ensemble</th>
+              <tr className="border-b border-[#dbdbdb] text-[#808080]">
+                <th className="text-left pb-2 font-bold uppercase">Period</th>
+                <th className="text-right pb-2 font-bold text-[#168a49] uppercase">Blended (Ours)</th>
+                <th className="text-right pb-2 font-bold uppercase">AI Model</th>
+                <th className="text-right pb-2 font-bold uppercase">ECMWF IFS</th>
+                <th className="text-right pb-2 font-bold uppercase">GFS</th>
+                <th className="text-right pb-2 font-bold uppercase">Ensemble</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-[#f0f0f0]">
               {metrics.map((row) => (
-                <tr key={row.period} className="text-slate-700">
-                  <td className="py-2.5 font-medium">{row.period}</td>
-                  <td className="py-2.5 text-right font-bold text-blue-600">{row.blended}</td>
-                  <td className="py-2.5 text-right text-slate-500">{row.ai}</td>
-                  <td className="py-2.5 text-right text-slate-500">{row.nwpA}</td>
-                  <td className="py-2.5 text-right text-slate-500">{row.nwpB}</td>
-                  <td className="py-2.5 text-right text-slate-500">{row.ensemble}</td>
+                <tr key={row.period} className="text-[#333333] hover:bg-[#f7f7f7]">
+                  <td className="py-2.5 font-bold text-[#212121]">{row.period}</td>
+                  <td className="py-2.5 text-right font-bold text-[#168a49] bg-[#e6faee] px-2">{row.blended}</td>
+                  <td className="py-2.5 text-right text-[#575757] px-2">{row.ai}</td>
+                  <td className="py-2.5 text-right text-[#575757] px-2">{row.nwpA}</td>
+                  <td className="py-2.5 text-right text-[#575757] px-2">{row.nwpB}</td>
+                  <td className="py-2.5 text-right text-[#575757] px-2">{row.ensemble}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-slate-400 mt-4">
-          Skill scores evaluated on 61-day reanalysis dataset (July–Sept 2026). Lower RMSE indicates higher accuracy.
+        <p className="text-[11px] font-mono text-[#808080] mt-3">
+          Evaluated against 61-day ERA5 reanalysis dataset. Lower RMSE indicates superior accuracy.
         </p>
       </GlassCard>
     </div>

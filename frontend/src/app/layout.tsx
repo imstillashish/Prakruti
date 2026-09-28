@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'नभदृष्टि — Forecast Intelligence | PS 202681',
+  title: 'Prakruti · प्रकृति — Forecast Intelligence | SIH 2026',
   description:
-    'नभदृष्टि: AI–NWP Multi-Model Forecast Blending System. Dynamically blended weather forecasts for India. Built for Smart India Hackathon 2026, Ministry of Earth Sciences.',
-  keywords: 'नभदृष्टि, NabhDrishti, weather forecast, NWP, AI, blending, NCMRWF, MoES, India',
+    'Prakruti (प्रकृति): AI–NWP Multi-Model Forecast Blending System. Dynamically blended weather forecasts for India. Built for Smart India Hackathon 2026, Ministry of Earth Sciences.',
+  keywords: 'Prakruti, प्रकृति, weather forecast, NWP, AI, blending, NCMRWF, MoES, India',
   icons: {
     icon: '/icon.png',
     shortcut: '/favicon.ico',

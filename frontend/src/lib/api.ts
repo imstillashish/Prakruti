@@ -290,7 +290,7 @@ export async function fetchWithReconnect<T = any>(
         setBackendStatus(true, false, STARTING_AI_WEATHER_ENGINE_MSG, 'connecting');
         if (!coldStartLogged) {
           coldStartLogged = true;
-          console.info(`[NabhDrishti] Backend is waking up. ${STARTING_AI_WEATHER_ENGINE_MSG}`);
+          console.info(`[Prakruti] Backend is waking up. ${STARTING_AI_WEATHER_ENGINE_MSG}`);
         }
 
         const elapsed = Date.now() - attemptStart;
@@ -315,7 +315,7 @@ export async function fetchWithReconnect<T = any>(
     setBackendStatus(false, true, SERVER_WAKING_UP_MSG, 'error');
     if (!coldStartExhaustedLogged) {
       coldStartExhaustedLogged = true;
-      console.warn(`[NabhDrishti] Cold start retries exhausted after ${Math.round((Date.now() - startTime) / 1000)}s: ${SERVER_WAKING_UP_MSG}`);
+      console.warn(`[Prakruti] Cold start retries exhausted after ${Math.round((Date.now() - startTime) / 1000)}s: ${SERVER_WAKING_UP_MSG}`);
     }
     throw new Error(SERVER_WAKING_UP_MSG);
   };

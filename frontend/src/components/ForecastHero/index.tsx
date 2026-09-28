@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CloudRain, Thermometer, Wind, Info, RefreshCw, HelpCircle, Sparkles } from 'lucide-react';
+import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, AlertTriangle, ChevronRight, Activity } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { WhyForecastModal } from '@/components/WhyForecast';
 import { getForecastMetrics, MOCK_FORECAST, getMetadata, formatLastUpdated } from '@/lib/api';
 import type { ForecastMetrics } from '@/types';
@@ -15,7 +14,7 @@ function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: num
   useEffect(() => {
     const start = ref.current;
     const end = value;
-    const duration = 800;
+    const duration = 600;
     const startTime = performance.now();
 
     const tick = (now: number) => {
@@ -33,80 +32,6 @@ function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: num
   return <span>{display.toFixed(decimals)}</span>;
 }
 
-function ConfidenceRing({
-  value,
-  label,
-  dominantModel,
-  explanation,
-}: {
-  value: number;
-  label?: string;
-  dominantModel?: string;
-  explanation?: string;
-}) {
-  const radius = 34;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
-  const color = value >= 80 ? '#10b981' : value >= 60 ? '#f59e0b' : '#ef4444';
-
-  return (
-    <Tooltip
-      content={
-        <div className="space-y-1.5 p-1 max-w-[240px]">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-1">
-            <span className="font-bold text-slate-800 text-xs">ECE Confidence</span>
-            <span className="font-bold text-xs text-blue-600">{label || 'High'}</span>
-          </div>
-          {dominantModel && (
-            <div className="text-[11px] text-slate-600">
-              Dominant Model: <span className="font-semibold text-slate-800">{dominantModel}</span>
-            </div>
-          )}
-          {explanation ? (
-            <p className="text-[11px] text-slate-600 leading-snug italic bg-blue-50/70 p-1.5 rounded-lg border border-blue-100/70">
-              &quot;{explanation}&quot;
-            </p>
-          ) : (
-            <ul className="space-y-1 text-slate-600 text-[11px]">
-              {['Historical regional skill (50%)', 'Inter-model agreement (30%)', 'Lead-time decay curve (20%)'].map(f => (
-                <li key={f} className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      }
-    >
-      <div className="flex flex-col items-center justify-center cursor-help">
-        <svg width="84" height="84" viewBox="0 0 84 84">
-          <circle cx="42" cy="42" r={radius} fill="none" strokeWidth="6" stroke="rgba(148,163,184,0.18)" />
-          <circle
-            cx="42" cy="42" r={radius}
-            fill="none" strokeWidth="6"
-            stroke={color}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            transform="rotate(-90 42 42)"
-            style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.16,1,0.3,1)' }}
-          />
-          <text x="42" y="42" textAnchor="middle" dominantBaseline="central" fill={color} fontSize="17" fontWeight="800">
-            {value}%
-          </text>
-        </svg>
-        <span className="text-[11px] font-semibold text-slate-700 mt-1">
-          {label ? `${label} Confidence` : 'Blend Reliability'}
-        </span>
-        <span className="text-[10px] text-slate-400">
-          {dominantModel ? `Dominant: ${dominantModel}` : 'High Agreement'}
-        </span>
-      </div>
-    </Tooltip>
-  );
-}
-
 interface ForecastHeroProps {
   selectedCity?: string | null;
 }
@@ -117,167 +42,227 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   const [forecast, setForecast] = useState<ForecastMetrics>(MOCK_FORECAST);
   const [lastUpdated, setLastUpdated] = useState<string>('2026-09-26T23:45:12');
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
 
   const lastUpdatedDisplay = formatLastUpdated(lastUpdated);
 
-  const metrics = [
-    {
-      icon: CloudRain,
-      label: 'Rainfall',
-      value: forecast.rainfall,
-      unit: 'mm',
-      uncertainty: `±${forecast.rainfallUncertainty} mm`,
-      color: '#0284c7',
-      decimals: 0,
-      bg: 'linear-gradient(145deg, rgba(239, 246, 255, 0.94) 0%, rgba(219, 234, 254, 0.78) 100%)',
-      border: 'rgba(186, 230, 253, 0.9)',
-      shadow: '0 8px 24px -2px rgba(2, 132, 199, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95)',
-    },
-    {
-      icon: Thermometer,
-      label: 'Temperature',
-      value: forecast.temperature,
-      unit: '°C',
-      uncertainty: `±${forecast.temperatureUncertainty} °C`,
-      color: '#ea580c',
-      decimals: 1,
-      bg: 'linear-gradient(145deg, rgba(255, 247, 237, 0.94) 0%, rgba(254, 237, 213, 0.78) 100%)',
-      border: 'rgba(254, 215, 170, 0.9)',
-      shadow: '0 8px 24px -2px rgba(234, 88, 12, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95)',
-    },
-    {
-      icon: Wind,
-      label: 'Wind Speed',
-      value: forecast.wind,
-      unit: 'km/h',
-      uncertainty: `±${forecast.windUncertainty} km/h`,
-      color: '#dc2626',
-      decimals: 0,
-      bg: 'linear-gradient(145deg, rgba(254, 242, 242, 0.94) 0%, rgba(254, 226, 226, 0.78) 100%)',
-      border: 'rgba(254, 202, 202, 0.9)',
-      shadow: '0 8px 24px -2px rgba(220, 38, 38, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95)',
-    },
-  ];
+  // Layperson-Friendly Synthesis
+  const isHeavyRain = forecast.rainfall >= 15;
+  const isLightRain = forecast.rainfall > 0 && forecast.rainfall < 15;
+  const isHeatwave = forecast.temperature >= 38;
+  const isHighWind = forecast.wind >= 30;
+
+  let directSummary = "Clear and pleasant weather. Good conditions for outdoor plans and travel.";
+  let badgeLabel = "Mild & Clear";
+  let badgeColor = "bg-[#f2fcf7] text-[#12723c] border-[#95eebc]";
+  let gearAdvice = "No rain protection needed today.";
+  let commuteAdvice = "Normal travel conditions on all major transit routes.";
+  let outdoorAdvice = "Ideal conditions for open-air tasks and transport.";
+
+  if (isHeavyRain) {
+    directSummary = `Heavy rain expected (~${forecast.rainfall} mm). Waterlogging and transport delays likely.`;
+    badgeLabel = "Heavy Downpour";
+    badgeColor = "bg-[#fbf5f4] text-[#80332d] border-[#cf746e]";
+    gearAdvice = "Carry an umbrella and waterproof footwear.";
+    commuteAdvice = "Expect delays and waterlogging on low-lying roads.";
+    outdoorAdvice = "Postpone non-essential field or outdoor activities.";
+  } else if (isLightRain) {
+    directSummary = `Scattered light showers expected (~${forecast.rainfall} mm). Roads may be damp.`;
+    badgeLabel = "Light Showers";
+    badgeColor = "bg-[#f2fcf7] text-[#14522f] border-[#95eebc]";
+    gearAdvice = "Keep a compact umbrella handy.";
+    commuteAdvice = "Minor traffic slowing due to wet road surfaces.";
+    outdoorAdvice = "Outdoor work possible with brief shower interruptions.";
+  } else if (isHeatwave) {
+    directSummary = `Extreme heat today (${forecast.temperature}°C). High heat index during midday.`;
+    badgeLabel = "Heat Alert";
+    badgeColor = "bg-[#fbf5f4] text-[#9e3f38] border-[#dfa8a5]";
+    gearAdvice = "Wear light cotton clothing and sun protection.";
+    commuteAdvice = "AC transit recommended between 12 PM and 4 PM.";
+    outdoorAdvice = "Avoid heavy outdoor exertion during peak afternoon heat.";
+  } else if (isHighWind) {
+    directSummary = `Gusty winds up to ${forecast.wind} km/h. Secure loose outdoor objects.`;
+    badgeLabel = "Squally Wind";
+    badgeColor = "bg-[#fbf5f4] text-[#9e3f38] border-[#dfa8a5]";
+    gearAdvice = "Wind-resistant outerwear advised.";
+    commuteAdvice = "Exercise extra caution when cycling or driving two-wheelers.";
+    outdoorAdvice = "Secure awnings, lightweight tarps, and loose rooftop items.";
+  }
 
   return (
     <>
-      <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
-        {/* Subtle Atmospheric Refraction Glow */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 70% 60% at 85% 15%, rgba(14,165,233,0.08) 0%, transparent 65%)',
-          }}
-        />
-
-        <div className="relative">
-          {/* Top Headline Section */}
-          <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+      <div
+        className="glass-card mb-6"
+        style={{
+          borderRadius: 0,
+          border: '1px solid #dbdbdb',
+          background: '#ffffff',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
+        {/* Top Header: City & Immediate Human Answer */}
+        <div className="p-4 sm:p-6 border-b border-[#dbdbdb]">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <span
-                  className="text-xs font-extrabold tracking-widest text-blue-600 uppercase"
-                  style={{ letterSpacing: '0.14em' }}
-                >
-                  HYBRID FORECAST INTELLIGENCE
+              <div className="flex items-center gap-2 mb-1.5 font-mono text-xs">
+                <span className="font-bold text-[#168a49] tracking-wider uppercase">
+                  Station: {city}
                 </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60 shadow-2xs">
-                  <Sparkles size={11} className="text-blue-500" />
-                  Optimal Dynamic Blend
+                <span className="text-[#dbdbdb]">|</span>
+                <span
+                  style={{ borderRadius: 0 }}
+                  className={`px-2 py-0.5 text-[11px] font-medium border ${badgeColor}`}
+                >
+                  {badgeLabel}
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-tight">
-                AI + NWP + Multi-Model Ensemble → One Coherent Forecast
+              <h1 className="text-xl sm:text-2xl font-extrabold text-[#212121] tracking-tight font-display">
+                {directSummary}
               </h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Adaptive weighting dynamically calibrated for region, season, lead-time, and active regime
+              <p className="text-xs text-[#575757] mt-1">
+                Real-time consensus synthesized from ECMWF, GFS, ICON, and GEM numerical models.
               </p>
             </div>
 
+            {/* Quick Scientific Evidence Trigger */}
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setWhyOpen(true)}
-              className="text-slate-700 hover:text-blue-600 bg-white/80 border-slate-200/80 shadow-xs"
+              className="text-[#212121] hover:bg-[#f7f7f7] border-[#dbdbdb] text-xs font-mono"
             >
-              <HelpCircle size={15} />
-              Why this forecast?
+              <Activity size={14} className="text-[#1db961]" />
+              Inspect Model Evidence
             </Button>
           </div>
+        </div>
 
-          {/* Metrics Grid with Blue, Orange, Red & Yellow Glass Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {metrics.map((m) => (
-              <div
-                key={m.label}
-                className="rounded-2xl p-5 transition-all hover:translate-y-[-2px] hover:shadow-md"
-                style={{
-                  background: m.bg,
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
-                  border: `1px solid ${m.border}`,
-                  boxShadow: m.shadow,
-                }}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center shadow-2xs"
-                    style={{ background: `${m.color}15` }}
-                  >
-                    <m.icon size={15} style={{ color: m.color }} />
-                  </div>
-                  <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">{m.label}</span>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl font-extrabold text-slate-800 tracking-tight">
-                    <AnimatedNumber value={m.value} decimals={m.decimals} />
-                  </span>
-                  <span className="text-base font-bold text-slate-500">{m.unit}</span>
-                </div>
-                <div className="mt-2.5 text-xs text-slate-500 font-medium">
-                  Uncertainty: <span className="font-semibold text-slate-700">{m.uncertainty}</span>
-                </div>
-              </div>
-            ))}
-
-            {/* Confidence Ring Card - Yellow/Gold Accent */}
-            <div
-              className="rounded-2xl p-5 flex flex-col items-center justify-center transition-all hover:translate-y-[-2px] hover:shadow-md"
-              style={{
-                background: 'linear-gradient(145deg, rgba(254, 252, 232, 0.94) 0%, rgba(254, 249, 195, 0.78) 100%)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(253, 224, 71, 0.9)',
-                boxShadow: '0 8px 24px -2px rgba(202, 138, 4, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95)',
-              }}
-            >
-              <ConfidenceRing
-                value={forecast.confidence}
-                label={forecast.confidenceLabel}
-                dominantModel={forecast.dominantModel}
-                explanation={forecast.explanation}
-              />
+        {/* 4 Core Metrics: Sharp, High-Contrast, Big Numbers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#dbdbdb] border-b border-[#dbdbdb]">
+          {/* Temperature */}
+          <div className="p-4 sm:p-5 bg-white">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Air Temperature</span>
+              <Thermometer size={16} className="text-[#c0554d]" />
+            </div>
+            <div className="flex items-baseline gap-1 font-mono">
+              <span className="text-3xl sm:text-4xl font-bold text-[#212121] tracking-tight">
+                <AnimatedNumber value={forecast.temperature} decimals={1} />
+              </span>
+              <span className="text-sm font-semibold text-[#808080]">°C</span>
+            </div>
+            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+              Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.temperatureUncertainty} °C</span>
             </div>
           </div>
 
-          {/* Footer Metadata */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3.5 border-t border-slate-100">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <RefreshCw size={13} className="text-blue-500 animate-spin" style={{ animationDuration: '8s' }} />
-              <span>Last Updated: {lastUpdatedDisplay}</span>
+          {/* Rainfall */}
+          <div className="p-4 sm:p-5 bg-white">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Precipitation</span>
+              <CloudRain size={16} className="text-[#1db961]" />
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="font-medium text-slate-700">Target Station: {city}</span>
-              <span className="text-slate-300">·</span>
-              <span>Lead Time: 24h</span>
-              <span className="text-slate-300">·</span>
-              <span className="text-emerald-600 font-semibold">Active Monsoon Regime</span>
+            <div className="flex items-baseline gap-1 font-mono">
+              <span className="text-3xl sm:text-4xl font-bold text-[#212121] tracking-tight">
+                <AnimatedNumber value={forecast.rainfall} decimals={0} />
+              </span>
+              <span className="text-sm font-semibold text-[#808080]">mm</span>
+            </div>
+            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+              Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.rainfallUncertainty} mm</span>
+            </div>
+          </div>
+
+          {/* Wind Speed */}
+          <div className="p-4 sm:p-5 bg-white">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Wind (10m)</span>
+              <Wind size={16} className="text-[#575757]" />
+            </div>
+            <div className="flex items-baseline gap-1 font-mono">
+              <span className="text-3xl sm:text-4xl font-bold text-[#212121] tracking-tight">
+                <AnimatedNumber value={forecast.wind} decimals={0} />
+              </span>
+              <span className="text-sm font-semibold text-[#808080]">km/h</span>
+            </div>
+            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+              Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.windUncertainty} km/h</span>
+            </div>
+          </div>
+
+          {/* Confidence Score */}
+          <div className="p-4 sm:p-5 bg-[#f7f7f7]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Blend Reliability</span>
+              <ShieldCheck size={16} className="text-[#168a49]" />
+            </div>
+            <div className="flex items-baseline gap-1 font-mono">
+              <span className="text-3xl sm:text-4xl font-bold text-[#14522f] tracking-tight">
+                <AnimatedNumber value={forecast.confidence} decimals={0} />
+              </span>
+              <span className="text-sm font-semibold text-[#168a49]">%</span>
+            </div>
+            <div className="mt-2 text-[11px] font-mono text-[#168a49]">
+              {forecast.dominantModel ? `Dominant: ${forecast.dominantModel}` : 'Multi-Model Consensus'}
             </div>
           </div>
         </div>
-      </GlassCard>
+
+        {/* Layperson Daily Guidance: 3 Practical Action Rungs */}
+        <div className="p-4 sm:p-6 bg-[#fcfcfc]">
+          <h2 className="text-xs font-mono uppercase tracking-wider text-[#575757] mb-3">
+            Practical Daily Guidance for {city}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            {/* Gear */}
+            <div
+              className="p-3 bg-white border border-[#dbdbdb] flex items-start gap-2.5"
+              style={{ borderRadius: 0 }}
+            >
+              <Umbrella size={16} className="text-[#1db961] shrink-0 mt-0.5" />
+              <div>
+                <div className="font-bold text-[#212121]">Personal Gear</div>
+                <div className="text-[#575757] mt-0.5 leading-relaxed">{gearAdvice}</div>
+              </div>
+            </div>
+
+            {/* Commute */}
+            <div
+              className="p-3 bg-white border border-[#dbdbdb] flex items-start gap-2.5"
+              style={{ borderRadius: 0 }}
+            >
+              <Car size={16} className="text-[#575757] shrink-0 mt-0.5" />
+              <div>
+                <div className="font-bold text-[#212121]">Transit &amp; Travel</div>
+                <div className="text-[#575757] mt-0.5 leading-relaxed">{commuteAdvice}</div>
+              </div>
+            </div>
+
+            {/* Outdoors */}
+            <div
+              className="p-3 bg-white border border-[#dbdbdb] flex items-start gap-2.5"
+              style={{ borderRadius: 0 }}
+            >
+              <Sun size={16} className="text-[#f59e0b] shrink-0 mt-0.5" />
+              <div>
+                <div className="font-bold text-[#212121]">Work &amp; Outdoors</div>
+                <div className="text-[#575757] mt-0.5 leading-relaxed">{outdoorAdvice}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Telemetry Timestamp */}
+          <div className="mt-4 pt-3 border-t border-[#f0f0f0] flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-[#808080]">
+            <div className="flex items-center gap-2">
+              <RefreshCw size={12} className="text-[#1db961]" />
+              <span>Cycle: {lastUpdatedDisplay}</span>
+            </div>
+            <div>
+              Ground reference: ERA5 Synoptic Reanalysis (MoES/NCMRWF)
+            </div>
+          </div>
+        </div>
+      </div>
 
       <WhyForecastModal open={whyOpen} onClose={() => setWhyOpen(false)} selectedCity={city} />
     </>

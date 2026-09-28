@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Bell, Settings, ChevronDown, Wind, ShieldAlert, Cpu } from 'lucide-react';
+import { Bell, Cpu } from 'lucide-react';
 import { NavPage } from '@/types';
 import { BlendingEngineModal } from '@/components/BlendingEngine';
 import { AlertDrawer } from '@/components/AlertCenter';
@@ -14,7 +14,7 @@ interface HeaderProps {
 const NAV_ITEMS: { id: NavPage; label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'forecast', label: 'Forecast' },
-  { id: 'rpi', label: 'RPI' },
+  { id: 'rpi', label: 'RPI & Trust Atlas' },
   { id: 'model-intelligence', label: 'Model Intelligence' },
   { id: 'extreme-weather', label: 'Extreme Weather' },
   { id: 'model-performance', label: 'Performance' },
@@ -40,101 +40,100 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
 
   return (
     <>
-      {/* Floating Boxed Taskbar Panel */}
-      <header className="fixed top-3 left-3 right-3 sm:left-6 sm:right-6 z-40 max-w-[1400px] mx-auto">
-        <div
-          className="rounded-2xl px-5 py-2.5 transition-all duration-300"
-          style={{
-            background: 'rgba(255, 255, 255, 0.78)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255, 255, 255, 0.7)',
-            boxShadow: '0 8px 32px 0 rgba(15, 23, 42, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9)',
-          }}
-        >
+      {/* Floating Boxed Taskbar Panel with Sharp Architectural Edges */}
+      <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#dbdbdb] shadow-xs">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-2">
           {/* Main Top Bar */}
           <div className="flex items-center justify-between gap-4">
             {/* Logo & Brand Identity */}
             <div className="flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-xs border border-slate-200/80 p-0.5"
+                style={{ borderRadius: 0 }}
+                className="w-9 h-9 flex items-center justify-center overflow-hidden bg-white border border-[#dbdbdb] p-0.5"
               >
                 <img
                   src="/logo-emblem.png"
-                  alt="नभदृष्टि Logo"
+                  alt="Prakruti Logo"
                   className="w-full h-full object-contain"
                 />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-base font-extrabold text-slate-900 tracking-tight">
-                    नभदृष्टि
+                  <span className="text-base font-extrabold text-[#212121] tracking-tight font-display">
+                    Prakruti <span className="text-[13px] font-bold text-[#424242]">· प्रकृति</span>
                   </span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-blue-100/70 text-blue-700 font-semibold border border-blue-200/50">
+                  <span
+                    style={{ borderRadius: 0 }}
+                    className="text-[10px] px-1.5 py-0.2 bg-[#f0f0f0] text-[#424242] font-mono border border-[#dbdbdb]"
+                  >
                     MoES · NCMRWF
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-400 font-medium tracking-wide">
-                  AI–NWP Forecast Blending System
+                <div className="text-[10px] text-[#808080] font-sans tracking-wide">
+                  AI–NWP Multi-Model Weather Blending System
                 </div>
               </div>
             </div>
 
             {/* Center Operational Metadata */}
-            <div className="hidden lg:flex items-center gap-5 text-xs">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100/70 border border-slate-200/60">
-                <span className="text-slate-400">Region:</span>
-                <span className="font-semibold text-slate-700">All-India Gridded</span>
+            <div className="hidden lg:flex items-center gap-4 text-xs font-mono">
+              <div
+                style={{ borderRadius: 0 }}
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f7f7f7] border border-[#dbdbdb]"
+              >
+                <span className="text-[#808080]">Coverage:</span>
+                <span className="font-semibold text-[#212121]">45 Synoptic Stations</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100/70 border border-slate-200/60">
-                <span className="text-slate-400">Last Updated</span>
-                <span className="font-semibold text-slate-700">{lastUpdatedDisplay}</span>
+              <div
+                style={{ borderRadius: 0 }}
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f7f7f7] border border-[#dbdbdb]"
+              >
+                <span className="text-[#808080]">Cycle:</span>
+                <span className="font-semibold text-[#212121]">{lastUpdatedDisplay}</span>
               </div>
             </div>
 
-            {/* Right Action Icons & Engine Pill */}
-            <div className="flex items-center gap-2.5">
+            {/* Right Action Buttons */}
+            <div className="flex items-center gap-2">
               {/* Blending Engine Active Trigger Button */}
               <button
                 type="button"
                 onClick={() => setEngineOpen(true)}
-                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
-                style={{
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  color: '#047857',
-                  border: '1px solid rgba(16, 185, 129, 0.25)',
-                }}
+                style={{ borderRadius: 0 }}
+                className="flex items-center gap-2 px-3 py-1 text-xs font-mono font-medium transition-colors bg-[#f2fcf7] text-[#12723c] border border-[#95eebc] hover:bg-[#e6faee]"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 status-pulse" />
-                <span className="hidden sm:inline">Blending Engine Active</span>
-                <span className="sm:hidden">Active</span>
+                <span className="w-1.5 h-1.5 bg-[#23dc73] status-pulse" style={{ borderRadius: 0 }} />
+                <span className="hidden sm:inline">Engine Active</span>
+                <span className="sm:hidden">Engine</span>
               </button>
 
               {/* Alert Center Trigger */}
               <button
                 type="button"
                 onClick={() => setAlertOpen(true)}
-                className="relative p-2 rounded-xl bg-white/70 hover:bg-white text-slate-600 border border-slate-200/60 transition-all hover:shadow-xs"
+                style={{ borderRadius: 0 }}
+                className="relative p-1.5 bg-white hover:bg-[#f7f7f7] text-[#424242] border border-[#dbdbdb] transition-colors"
                 title="Active Weather Alerts"
               >
-                <Bell size={16} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <Bell size={15} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#b4544a]" style={{ borderRadius: 0 }} />
               </button>
 
               {/* System Diagnostics Trigger */}
               <button
                 type="button"
                 onClick={() => onNavigate('data-health')}
-                className="p-2 rounded-xl bg-white/70 hover:bg-white text-slate-600 border border-slate-200/60 transition-all hover:shadow-xs"
+                style={{ borderRadius: 0 }}
+                className="p-1.5 bg-white hover:bg-[#f7f7f7] text-[#424242] border border-[#dbdbdb] transition-colors"
                 title="Data & Model Health"
               >
-                <Cpu size={16} />
+                <Cpu size={15} />
               </button>
             </div>
           </div>
 
-          {/* Navigation Bar inside Boxed Panel */}
-          <nav className="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-slate-100 overflow-x-auto no-scrollbar">
+          {/* Navigation Bar */}
+          <nav className="flex items-center gap-1 mt-2 pt-1.5 border-t border-[#f0f0f0] overflow-x-auto no-scrollbar">
             {NAV_ITEMS.map((item) => {
               const isActive = currentPage === item.id;
               return (
@@ -142,10 +141,11 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                   key={item.id}
                   type="button"
                   onClick={() => onNavigate(item.id)}
-                  className={`relative flex-shrink-0 px-3.5 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 ${
+                  style={{ borderRadius: 0 }}
+                  className={`flex-shrink-0 px-3 py-1 text-xs font-medium transition-colors ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                      ? 'bg-[#1db961] text-white font-semibold'
+                      : 'text-[#575757] hover:text-[#212121] hover:bg-[#f0f0f0]'
                   }`}
                 >
                   {item.label}

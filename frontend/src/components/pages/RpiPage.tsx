@@ -95,27 +95,25 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
   return (
     <div className="space-y-7">
       {/* Top Emergency Operations Center Control Bar with Region Selector */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-2xl bg-white/75 backdrop-blur-xl border border-slate-200/80 shadow-xs"
+      <div
+        className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 bg-white border border-[#dbdbdb]"
+        style={{ borderRadius: 0 }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+          <div className="w-9 h-9 bg-[#212121] flex items-center justify-center text-white" style={{ borderRadius: 0 }}>
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
+              <h2 className="text-xs font-mono font-bold text-[#212121] tracking-wider uppercase">
                 RISK PRIORITY INDEX (RPI) MODULE
               </h2>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                Decision Support
+              <span className="px-1.5 py-0.2 text-[9px] font-mono font-bold bg-[#f7f7f7] text-[#575757] border border-[#dbdbdb]">
+                EOC DECISION SUPPORT
               </span>
             </div>
-            <p className="text-xs text-slate-500">
-              Disaster Risk Mitigation & Resource Pre-Positioning Dashboard for National & State EOCs
+            <p className="text-xs text-[#808080]">
+              Disaster Risk Mitigation &amp; Resource Pre-Positioning Dashboard for National &amp; State EOCs
             </p>
           </div>
         </div>
@@ -125,44 +123,46 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
           <button
             type="button"
             onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200/80 text-slate-700 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold bg-[#f7f7f7] hover:bg-[#ebebeb] text-[#212121] border border-[#dbdbdb] transition-colors cursor-pointer"
+            style={{ borderRadius: 0 }}
             title="Refresh Synoptic RPI Run"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-600' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#1db961]' : ''}`} />
             <span>{isRefreshing ? 'Recalculating...' : 'Refresh Index'}</span>
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Section 1 Hero + Section 2 Recommendations + Section 3 Model Trust Atlas (12 or 8/4) */}
-        <div className="lg:col-span-12 space-y-7">
+        <div className="lg:col-span-12 space-y-6">
           {/* Section 1 — Risk Priority Index Hero Card */}
           {isLoading ? (
-            <div className="w-full h-72 rounded-2xl bg-slate-100/70 animate-pulse flex flex-col items-center justify-center text-slate-400 gap-3 border border-slate-200/60">
-              <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-              <span className="text-xs font-medium tracking-wide">
+            <div className="w-full h-72 bg-[#f7f7f7] animate-pulse flex flex-col items-center justify-center text-[#808080] gap-3 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+              <div className="w-8 h-8 border-2 border-[#1db961] border-t-transparent animate-spin" />
+              <span className="text-xs font-mono">
                 Starting AI weather engine… This may take up to 60 seconds.
               </span>
             </div>
           ) : errorMessage && !rpiData ? (
-            <div className="w-full h-72 rounded-2xl bg-slate-50 flex flex-col items-center justify-center text-slate-500 gap-3 border border-slate-200/60 p-6 text-center">
-              <span className="text-xs font-medium text-slate-700">
+            <div className="w-full h-72 bg-white flex flex-col items-center justify-center text-[#575757] gap-3 border border-[#dbdbdb] p-6 text-center" style={{ borderRadius: 0 }}>
+              <span className="text-xs font-mono text-[#b4544a]">
                 {errorMessage}
               </span>
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 shadow-2xs hover:bg-slate-50 text-slate-700 cursor-pointer"
+                className="px-3 py-1 text-xs font-mono font-bold bg-white border border-[#dbdbdb] hover:bg-[#f7f7f7] text-[#212121] cursor-pointer"
+                style={{ borderRadius: 0 }}
               >
                 Try Again
               </button>
             </div>
           ) : !rpiData ? (
-            <div className="w-full h-72 rounded-2xl bg-slate-100/70 animate-pulse flex flex-col items-center justify-center text-slate-400 gap-3 border border-slate-200/60">
-              <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-              <span className="text-xs font-medium tracking-wide">
+            <div className="w-full h-72 bg-[#f7f7f7] animate-pulse flex flex-col items-center justify-center text-[#808080] gap-3 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+              <div className="w-8 h-8 border-2 border-[#1db961] border-t-transparent animate-spin" />
+              <span className="text-xs font-mono">
                 Starting AI weather engine… This may take up to 60 seconds.
               </span>
             </div>

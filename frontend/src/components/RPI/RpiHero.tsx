@@ -82,27 +82,27 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
   const strokeDashoffset = circumference - (Math.min(100, Math.max(0, rpiData.rpiScore)) / 100) * circumference;
 
   return (
-    <GlassCard padding="lg" variant="blue" className="relative overflow-hidden">
+    <GlassCard padding="lg" variant="blue" className="relative overflow-hidden" style={{ borderRadius: 0 }}>
       {/* Top Government EOC Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-200/70">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-600 shadow-xs">
-            <Building2 className="w-5 h-5" />
+          <div className="w-9 h-9 bg-[#f7f7f7] border border-[#dbdbdb] flex items-center justify-center text-[#212121]" style={{ borderRadius: 0 }}>
+            <Building2 className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold tracking-widest text-slate-800 uppercase" style={{ letterSpacing: '0.12em' }}>
-                GOVERNMENT EMERGENCY OPERATIONS CENTER (EOC)
+              <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
+                EMERGENCY OPERATIONS CENTER (EOC)
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
-                MoES / NDMA Module
+              <span className="px-1.5 py-0.2 text-[10px] font-mono font-bold bg-[#f7f7f7] text-[#575757] border border-[#dbdbdb]">
+                MoES / NDMA
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-              <span>National Disaster Decision Support Framework</span>
+            <div className="flex items-center gap-2 text-xs font-mono text-[#808080] mt-0.5">
+              <span>National Disaster Decision Framework</span>
               <span>·</span>
               <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-slate-400" />
+                <Calendar className="w-3 h-3 text-[#808080]" />
                 Live 24h Synoptic Horizon
               </span>
             </div>
@@ -110,52 +110,48 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
         </div>
 
         {/* EOC Readiness Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-semibold text-slate-700">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]" style={{ borderRadius: 0 }}>
+          <span className="w-2 h-2 bg-[#1db961]" />
           <span>Automated Risk Scoring Active</span>
         </div>
       </div>
 
       {/* Main Hero Body */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-5">
         {/* Left Side: Station Identity & RPI Summary (5 Cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-3.5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-              TARGET synoptic OBSERVATION STATION
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#808080] block mb-0.5">
+              TARGET SYNOPTIC OBSERVATION STATION
             </span>
-            <div className="flex items-baseline gap-2.5">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <div className="flex items-baseline gap-2">
+              <h1 className="text-3xl font-extrabold text-[#212121] tracking-tight">
                 {rpiData.city}
               </h1>
-              <span className="text-sm font-semibold text-slate-500">· {rpiData.state}</span>
+              <span className="text-sm font-mono text-[#808080]">· {rpiData.state}</span>
             </div>
           </div>
 
-          {/* Priority Badge with Framer Motion color transition */}
-          <motion.div
-            layout
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${priorityInfo.bgBadge} ${priorityInfo.textBadge} ${priorityInfo.borderBadge}`}
-            style={{ boxShadow: `0 0 16px ${priorityInfo.glow}` }}
+          {/* Priority Badge */}
+          <div
+            className={`inline-flex items-center gap-1.5 px-3 py-1 border text-xs font-mono font-bold ${priorityInfo.bgBadge} ${priorityInfo.textBadge} ${priorityInfo.borderBadge}`}
+            style={{ borderRadius: 0 }}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>{priorityInfo.label}</span>
-          </motion.div>
+          </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed font-medium">
-            {priorityInfo.sublabel}. RPI synthesizes multi-hazard meteorological severity with numerical weather prediction confidence scores.
+          <p className="text-xs text-[#575757] leading-relaxed">
+            {priorityInfo.sublabel}. Synthesis of multi-hazard rainfall, heat, wind, and forecast confidence.
           </p>
 
           {/* RPI Formula Reference Banner */}
-          <div className="p-3 rounded-xl bg-slate-50/90 border border-slate-200/80 text-[11px] text-slate-600 leading-snug">
-            <div className="font-bold text-slate-700 text-[10.5px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-blue-600" />
-              <span>Standard Operational Formula:</span>
+          <div className="p-2.5 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]" style={{ borderRadius: 0 }}>
+            <div className="font-bold text-[#212121] text-[10px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <Activity className="w-3 h-3 text-[#1db961]" />
+              <span>Operational Formula:</span>
             </div>
-            <code className="text-slate-800 font-mono text-[10.5px] block bg-white px-2 py-1 rounded border border-slate-200/60 font-semibold">
+            <code className="text-[#212121] text-[10px] block bg-white px-2 py-0.5 border border-[#dbdbdb] font-semibold" style={{ borderRadius: 0 }}>
               RPI = 35% Rain + 25% Heat + 20% Wind + 20% Confidence
             </code>
           </div>
@@ -222,85 +218,77 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
           </span>
 
           {/* 1. Rainfall Metric */}
-          <div className="p-3 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <CloudRain className="w-3.5 h-3.5 text-sky-600" />
+          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+            <div className="flex justify-between items-center text-xs mb-1">
+              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
+                <CloudRain className="w-3.5 h-3.5 text-[#1db961]" />
                 Rainfall (35% wt)
               </span>
-              <span className="font-bold text-slate-900 font-mono">
-                {rpiData.rainfall} mm <span className="text-slate-400 font-normal">({rpiData.rainRisk}%)</span>
+              <span className="font-bold text-[#212121] font-mono text-xs">
+                {rpiData.rainfall} mm <span className="text-[#808080] font-normal">({rpiData.rainRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${rpiData.rainRisk}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="h-full rounded-full bg-sky-500"
+            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+              <div
+                className="h-full bg-[#1db961]"
+                style={{ width: `${rpiData.rainRisk}%`, borderRadius: 0 }}
               />
             </div>
           </div>
 
           {/* 2. Temperature Metric */}
-          <div className="p-3 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <Thermometer className="w-3.5 h-3.5 text-orange-500" />
+          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+            <div className="flex justify-between items-center text-xs mb-1">
+              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
+                <Thermometer className="w-3.5 h-3.5 text-[#d97706]" />
                 Temperature (25% wt)
               </span>
-              <span className="font-bold text-slate-900 font-mono">
-                {rpiData.temperature}°C <span className="text-slate-400 font-normal">({rpiData.heatRisk}%)</span>
+              <span className="font-bold text-[#212121] font-mono text-xs">
+                {rpiData.temperature}°C <span className="text-[#808080] font-normal">({rpiData.heatRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${rpiData.heatRisk}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.05 }}
-                className="h-full rounded-full bg-orange-500"
+            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+              <div
+                className="h-full bg-[#d97706]"
+                style={{ width: `${rpiData.heatRisk}%`, borderRadius: 0 }}
               />
             </div>
           </div>
 
           {/* 3. Wind Metric */}
-          <div className="p-3 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <Wind className="w-3.5 h-3.5 text-purple-500" />
+          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+            <div className="flex justify-between items-center text-xs mb-1">
+              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
+                <Wind className="w-3.5 h-3.5 text-[#575757]" />
                 Wind Velocity (20% wt)
               </span>
-              <span className="font-bold text-slate-900 font-mono">
-                {rpiData.wind} km/h <span className="text-slate-400 font-normal">({rpiData.windRisk}%)</span>
+              <span className="font-bold text-[#212121] font-mono text-xs">
+                {rpiData.wind} km/h <span className="text-[#808080] font-normal">({rpiData.windRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${rpiData.windRisk}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-                className="h-full rounded-full bg-purple-500"
+            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+              <div
+                className="h-full bg-[#575757]"
+                style={{ width: `${rpiData.windRisk}%`, borderRadius: 0 }}
               />
             </div>
           </div>
 
           {/* 4. Confidence Metric */}
-          <div className="p-3 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+            <div className="flex justify-between items-center text-xs mb-1">
+              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#168a49]" />
                 Confidence (20% wt)
               </span>
-              <span className="font-bold text-slate-900 font-mono">
-                {rpiData.confidence}% <span className="text-slate-400 font-normal">Reliability</span>
+              <span className="font-bold text-[#212121] font-mono text-xs">
+                {rpiData.confidence}% <span className="text-[#808080] font-normal">Score</span>
               </span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${rpiData.confidence}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
-                className="h-full rounded-full bg-emerald-500"
+            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+              <div
+                className="h-full bg-[#168a49]"
+                style={{ width: `${rpiData.confidence}%`, borderRadius: 0 }}
               />
             </div>
           </div>

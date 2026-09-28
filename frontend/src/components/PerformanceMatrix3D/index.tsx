@@ -363,19 +363,19 @@ export function PerformanceMatrix3D() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-500/15 to-indigo-500/15 flex items-center justify-center text-blue-600">
-            <Box size={15} />
+          <div className="w-7 h-7 bg-[#f7f7f7] border border-[#dbdbdb] flex items-center justify-center text-[#212121]" style={{ borderRadius: 0 }}>
+            <Box size={14} />
           </div>
           <div>
-            <span className="text-xs font-bold tracking-widest text-slate-700 uppercase" style={{ letterSpacing: '0.12em' }}>
+            <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
               3D PERFORMANCE MATRIX
             </span>
             <Tooltip content={
-              <div className="p-1.5 text-xs text-slate-700 max-w-[240px]">
-                Interactive 3D visualization of RMSE error across models (X), lead times (Z), and error magnitude (Y). Drag to rotate, scroll to zoom. Hover bars for details.
+              <div className="p-1 text-xs font-mono text-white max-w-[240px]">
+                Interactive 3D model comparison across lead times. Drag to rotate, scroll to zoom.
               </div>
             }>
-              <Info size={13} className="text-slate-400 cursor-help ml-1.5 inline" />
+              <Info size={12} className="text-[#808080] cursor-help ml-1.5 inline" />
             </Tooltip>
           </div>
         </div>
@@ -383,16 +383,17 @@ export function PerformanceMatrix3D() {
         {/* Controls row */}
         <div className="flex items-center gap-2">
           {/* Variable selector */}
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100/80 border border-slate-200/80 shadow-2xs">
+          <div className="flex items-center gap-0.5 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
             {(Object.keys(VARIABLE_CONFIG) as VariableKey[]).map((v) => (
               <button
                 key={v}
                 onClick={() => setVariable(v)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+                className={`px-2 py-1 text-xs font-mono transition-colors ${
                   variable === v
-                    ? 'bg-white text-blue-600 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                    ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                    : 'text-[#575757] hover:text-[#212121]'
                 }`}
+                style={{ borderRadius: 0 }}
                 type="button"
               >
                 {VARIABLE_CONFIG[v].icon} {VARIABLE_CONFIG[v].label}
@@ -401,25 +402,27 @@ export function PerformanceMatrix3D() {
           </div>
 
           {/* Color mode toggle */}
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100/80 border border-slate-200/80 shadow-2xs">
+          <div className="flex items-center gap-0.5 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
             <button
               onClick={() => setColorMode('model')}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-2 py-1 text-xs font-mono transition-colors ${
                 colorMode === 'model'
-                  ? 'bg-white text-blue-600 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                  : 'text-[#575757] hover:text-[#212121]'
               }`}
+              style={{ borderRadius: 0 }}
               type="button"
             >
               By Model
             </button>
             <button
               onClick={() => setColorMode('skill')}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-2 py-1 text-xs font-mono transition-colors ${
                 colorMode === 'skill'
-                  ? 'bg-white text-blue-600 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                  : 'text-[#575757] hover:text-[#212121]'
               }`}
+              style={{ borderRadius: 0 }}
               type="button"
             >
               By Skill
@@ -429,11 +432,12 @@ export function PerformanceMatrix3D() {
           {/* Auto-rotate toggle */}
           <button
             onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-2.5 py-1.5 text-xs font-semibold rounded-xl border transition-all ${
+            className={`px-2.5 py-1 text-xs font-mono border transition-colors ${
               autoRotate
-                ? 'bg-blue-50 text-blue-600 border-blue-200'
-                : 'bg-white text-slate-500 border-slate-200 hover:text-slate-700'
+                ? 'bg-[#e6faee] text-[#168a49] border-[#1db961]'
+                : 'bg-white text-[#575757] border-[#dbdbdb] hover:text-[#212121]'
             }`}
+            style={{ borderRadius: 0 }}
             type="button"
           >
             {autoRotate ? '⟳ Rotating' : '⟳ Paused'}
@@ -454,48 +458,49 @@ export function PerformanceMatrix3D() {
       </div>
 
       {/* Legend + Best Model Summary */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mt-4">
+      <div className="flex flex-wrap items-start justify-between gap-4 mt-4 font-mono">
         {/* Color legend */}
         <div className="flex flex-wrap items-center gap-3">
           {colorMode === 'model' ? (
             MODELS.map(m => (
               <div key={m} className="flex items-center gap-1.5">
                 <span
-                  className="w-2.5 h-2.5 rounded-full shadow-2xs"
-                  style={{ background: MODEL_COLORS[m] }}
+                  className="w-2 h-2"
+                  style={{ background: MODEL_COLORS[m], borderRadius: 0 }}
                 />
-                <span className="text-xs text-slate-600">{m}</span>
+                <span className="text-xs text-[#575757]">{m}</span>
               </div>
             ))
           ) : (
             <>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs text-slate-600">High Skill ({'>'}70%)</span>
+                <span className="w-2 h-2 bg-[#1db961]" style={{ borderRadius: 0 }} />
+                <span className="text-xs text-[#575757]">High Skill ({'>'}70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span className="text-xs text-slate-600">Medium (40–70%)</span>
+                <span className="w-2 h-2 bg-[#d97706]" style={{ borderRadius: 0 }} />
+                <span className="text-xs text-[#575757]">Medium (40–70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                <span className="text-xs text-slate-600">Low ({'<'}40%)</span>
+                <span className="w-2 h-2 bg-[#b4544a]" style={{ borderRadius: 0 }} />
+                <span className="text-xs text-[#575757]">Low ({'<'}40%)</span>
               </div>
             </>
           )}
         </div>
 
         {/* Best model at each lead time */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Best at:</span>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] font-bold text-[#808080] uppercase tracking-wider">Lowest Error:</span>
           {LEAD_TIMES.map(lt => (
             <span
               key={lt}
-              className="px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+              className="px-1.5 py-0.2 text-[10px] font-bold border"
               style={{
-                background: `${MODEL_COLORS[bestModels[lt]]}12`,
-                borderColor: `${MODEL_COLORS[bestModels[lt]]}30`,
-                color: MODEL_COLORS[bestModels[lt]],
+                borderRadius: 0,
+                background: '#f7f7f7',
+                borderColor: '#dbdbdb',
+                color: '#212121',
               }}
             >
               {lt}: {bestModels[lt]}
@@ -506,18 +511,10 @@ export function PerformanceMatrix3D() {
 
       {/* Insight footer */}
       <div
-        className="mt-3 rounded-xl px-3.5 py-2.5"
-        style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}
+        className="mt-3 p-3 bg-[#e6faee] border border-[#c4f3d8] font-mono text-xs text-[#168a49] leading-relaxed"
+        style={{ borderRadius: 0 }}
       >
-        <p className="text-xs text-slate-600 leading-relaxed">
-          <span className="font-bold text-emerald-700">Blended AI-NWP</span> achieves lowest RMSE across all lead times for {matrix.variable.toLowerCase()}, with skill degradation of only{' '}
-          <span className="font-bold text-emerald-700">
-            {((matrix.cells.find(c => c.model === 'Blended' && c.leadTime === '72h')!.rmse /
-              matrix.cells.find(c => c.model === 'Blended' && c.leadTime === '6h')!.rmse) - 1).toFixed(1)}x
-          </span>{' '}
-          from 6h to 72h vs {((matrix.cells.find(c => c.model === 'GFS' && c.leadTime === '72h')!.rmse /
-            matrix.cells.find(c => c.model === 'GFS' && c.leadTime === '6h')!.rmse) - 1).toFixed(1)}x for GFS.
-        </p>
+        <span className="font-bold">Blended Hybrid AI–NWP</span> delivers lowest RMSE across all forecast horizons for {matrix.variable.toLowerCase()}, with superior error stability compared to raw individual physics models.
       </div>
     </GlassCard>
   );

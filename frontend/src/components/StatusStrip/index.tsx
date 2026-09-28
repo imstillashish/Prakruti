@@ -96,42 +96,33 @@ export function StatusStrip() {
 
   return (
     <div
-      className="mb-6 rounded-2xl px-5 py-3 transition-all duration-300"
+      className="mb-5 px-4 py-2.5 transition-all bg-white border border-[#dbdbdb] shadow-xs"
       style={{
-        background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.92) 0%, rgba(255, 255, 255, 0.92) 45%, rgba(239, 246, 255, 0.92) 100%)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        border: '1px solid rgba(167, 243, 208, 0.75)',
-        boxShadow: '0 8px 32px 0 rgba(16, 185, 129, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95)',
+        borderRadius: 0,
       }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
         {/* Item 1: Operational Status */}
         <div className="flex items-center gap-3">
           {isWakingUp ? (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-50/90 border border-amber-200/80 shadow-2xs">
-              <span className="w-3.5 h-3.5 rounded-full border-2 border-amber-500 border-t-transparent animate-spin inline-block" />
-              <span className="text-[11px] font-bold text-amber-700 tracking-wide uppercase">
+            <div className="flex items-center gap-2 px-2.5 py-0.5 bg-[#fbf5f4] border border-[#dfa8a5]" style={{ borderRadius: 0 }}>
+              <span className="w-2.5 h-2.5 border-2 border-[#f59e0b] border-t-transparent animate-spin inline-block" />
+              <span className="text-[10px] font-bold text-[#f59e0b] tracking-wider uppercase">
                 Connecting
               </span>
             </div>
           ) : isError ? (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-red-50/90 border border-red-200/80 shadow-2xs">
-              <span className="relative flex h-2 w-2">
-                <span className="inline-flex rounded-full h-2 w-2 bg-red-500" />
-              </span>
-              <span className="text-[11px] font-bold text-red-700 tracking-wide uppercase">
+            <div className="flex items-center gap-2 px-2.5 py-0.5 bg-[#fbf5f4] border border-[#cf746e]" style={{ borderRadius: 0 }}>
+              <span className="inline-block h-2 w-2 bg-[#b4544a]" style={{ borderRadius: 0 }} />
+              <span className="text-[10px] font-bold text-[#b4544a] tracking-wider uppercase">
                 Standby
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-50/80 border border-emerald-200/60 shadow-2xs">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-[11px] font-bold text-emerald-700 tracking-wide uppercase">
-                Operational Status
+            <div className="flex items-center gap-2 px-2.5 py-0.5 bg-[#f2fcf7] border border-[#95eebc]" style={{ borderRadius: 0 }}>
+              <span className="inline-block h-2 w-2 bg-[#23dc73] status-pulse" style={{ borderRadius: 0 }} />
+              <span className="text-[10px] font-bold text-[#12723c] tracking-wider uppercase">
+                Operational
               </span>
             </div>
           )}
@@ -149,7 +140,7 @@ export function StatusStrip() {
         <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs">
           {/* Item 2: Last Updated */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-200/50">
+            <div className="w-6 h-6 rounded-none bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-200/50">
               <Clock size={13} />
             </div>
             <div>
@@ -166,7 +157,7 @@ export function StatusStrip() {
 
           {/* Item 3: Data Source */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-200/50">
+            <div className="w-6 h-6 rounded-none bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-200/50">
               <Database size={13} />
             </div>
             <div>
@@ -186,7 +177,7 @@ export function StatusStrip() {
 
           {/* Item 4: Models Blended */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 border border-purple-200/50">
+            <div className="w-6 h-6 rounded-none bg-purple-50 flex items-center justify-center text-purple-600 border border-purple-200/50">
               <Layers size={13} />
             </div>
             <div>
@@ -203,7 +194,7 @@ export function StatusStrip() {
 
           {/* Item 5: Forecast Stations */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-200/50">
+            <div className="w-6 h-6 rounded-none bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-200/50">
               <MapPin size={13} />
             </div>
             <div>
@@ -221,7 +212,7 @@ export function StatusStrip() {
             type="button"
             onClick={handleManualRefresh}
             title="Refresh Status"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-none text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-colors"
           >
             <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-blue-600' : ''} />
           </button>

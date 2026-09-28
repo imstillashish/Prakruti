@@ -1,5 +1,5 @@
 /**
- * Map Configuration for नभदृष्टि
+ * Map Configuration for Prakruti (प्रकृति)
  * 
  * MAPBOX SATELLITE & TERRAIN TILES:
  * Configured securely via NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN environment variable.

@@ -79,59 +79,55 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 modal-backdrop" onClick={onClose} />
       <div
-        className="relative w-full max-w-md h-full flex flex-col"
+        className="relative w-full max-w-md h-full flex flex-col bg-white border-l border-[#dbdbdb] shadow-2xl"
         style={{
-          background: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderLeft: '1px solid rgba(148,163,184,0.22)',
-          boxShadow: '-12px 0 48px rgba(15,23,42,0.12)',
-          animation: 'slideIn 0.3s cubic-bezier(0.16,1,0.3,1)',
+          borderRadius: 0,
+          animation: 'slideIn 0.25s cubic-bezier(0.16,1,0.3,1)',
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white/70">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#dbdbdb] bg-[#f7f7f7]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-red-500/10 flex items-center justify-center text-red-600">
-              <ShieldAlert size={18} />
+            <div className="w-7 h-7 bg-[#faeae8] flex items-center justify-center text-[#b4544a] border border-[#f3d9d6]" style={{ borderRadius: 0 }}>
+              <ShieldAlert size={16} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold tracking-widest text-slate-800" style={{ letterSpacing: '0.12em' }}>
+                <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
                   ALERT CENTER
                 </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-white border border-[#dbdbdb] text-[#575757]">
                   {alerts.length} Total
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Extreme Hazard Warning Registry</p>
+              <p className="text-[11px] text-[#808080]">Extreme Hazard Warning Registry</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-1 hover:bg-[#ebebeb] text-[#808080] hover:text-[#212121] transition-colors border border-transparent hover:border-[#dbdbdb]"
+            style={{ borderRadius: 0 }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Filter Toolbar */}
-        <div className="px-5 py-3 border-b border-slate-100 bg-slate-50/70 space-y-2.5">
+        <div className="px-5 py-3 border-b border-[#dbdbdb] bg-white space-y-2.5">
           {/* Severity Filter Tabs (Red / Orange / All) */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/70">
+          <div className="flex items-center gap-1 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
             <button
               type="button"
               onClick={() => setSeverityFilter('all')}
-              className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1 px-2 text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                 severityFilter === 'all'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
+                  : 'text-[#575757] hover:text-[#212121]'
               }`}
+              style={{ borderRadius: 0 }}
             >
               <span>All</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                severityFilter === 'all' ? 'bg-slate-100 text-slate-700' : 'bg-slate-300/60 text-slate-600'
-              }`}>
+              <span className="text-[10px] px-1 bg-[#f0f0f0] font-mono">
                 {alerts.length}
               </span>
             </button>
@@ -139,17 +135,16 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             <button
               type="button"
               onClick={() => setSeverityFilter('danger')}
-              className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1 px-2 text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                 severityFilter === 'danger'
-                  ? 'bg-red-500 text-white shadow-xs'
-                  : 'text-red-700 hover:bg-red-100/60'
+                  ? 'bg-[#b4544a] text-white font-bold'
+                  : 'text-[#b4544a] hover:bg-[#faeae8]'
               }`}
+              style={{ borderRadius: 0 }}
             >
-              <span className={`w-2 h-2 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-red-500 animate-pulse'}`} />
+              <span className={`w-1.5 h-1.5 ${severityFilter === 'danger' ? 'bg-white' : 'bg-[#b4544a]'}`} />
               <span>Red</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                severityFilter === 'danger' ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
-              }`}>
+              <span className="text-[10px] px-1 font-mono">
                 {redCount}
               </span>
             </button>
@@ -157,17 +152,16 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             <button
               type="button"
               onClick={() => setSeverityFilter('warning')}
-              className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1 px-2 text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                 severityFilter === 'warning'
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-amber-800 hover:bg-amber-100/60'
+                  ? 'bg-[#d97706] text-white font-bold'
+                  : 'text-[#d97706] hover:bg-[#fffbeb]'
               }`}
+              style={{ borderRadius: 0 }}
             >
-              <span className={`w-2 h-2 rounded-full ${severityFilter === 'warning' ? 'bg-white' : 'bg-amber-500 animate-pulse'}`} />
+              <span className={`w-1.5 h-1.5 ${severityFilter === 'warning' ? 'bg-white' : 'bg-[#d97706]'}`} />
               <span>Orange</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                severityFilter === 'warning' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800'
-              }`}>
+              <span className="text-[10px] px-1 font-mono">
                 {orangeCount}
               </span>
             </button>
@@ -176,23 +170,24 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
           {/* Statewise Dropdown Filter */}
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
-                <MapPin size={13} />
+              <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-[#808080]">
+                <MapPin size={12} />
               </div>
               <select
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full text-xs font-semibold pl-7 pr-7 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 shadow-xs focus:outline-hidden focus:ring-1 focus:ring-blue-500 cursor-pointer appearance-none"
+                className="w-full text-xs font-mono pl-6 pr-6 py-1.5 bg-white border border-[#dbdbdb] text-[#212121] focus:outline-none focus:border-[#1db961] cursor-pointer appearance-none"
+                style={{ borderRadius: 0 }}
               >
-                <option value="all">All States ({alerts.length} total)</option>
+                <option value="all">All States ({alerts.length})</option>
                 {uniqueStates.map(([st, count]) => (
                   <option key={st} value={st}>
-                    {st} ({count} alerts)
+                    {st} ({count})
                   </option>
                 ))}
               </select>
-              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-slate-400">
-                <ChevronDown size={13} />
+              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#808080]">
+                <ChevronDown size={12} />
               </div>
             </div>
 
@@ -203,84 +198,69 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   setSeverityFilter('all');
                   setSelectedState('all');
                 }}
-                className="px-2.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-medium flex items-center gap-1 transition-colors"
+                className="px-2 py-1.5 border border-[#dbdbdb] bg-[#f7f7f7] hover:bg-[#ebebeb] text-[#575757] hover:text-[#212121] text-xs font-mono flex items-center gap-1 transition-colors"
+                style={{ borderRadius: 0 }}
                 title="Reset filters"
               >
-                <RotateCcw size={12} />
-                <span className="hidden sm:inline">Reset</span>
+                <RotateCcw size={11} />
+                <span>Reset</span>
               </button>
-            )}
-          </div>
-
-          {/* Filter Status readout */}
-          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-            <span>
-              Showing <strong className="text-slate-800">{filteredAlerts.length}</strong> of {alerts.length} alerts
-            </span>
-            {selectedState !== 'all' && (
-              <span className="text-blue-600 font-semibold truncate max-w-[170px]">
-                {selectedState}
-              </span>
             )}
           </div>
         </div>
 
         {/* Alerts List */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {filteredAlerts.length === 0 ? (
-            <div className="py-12 px-4 text-center rounded-2xl bg-slate-50/80 border border-slate-100">
-              <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 size={20} />
+            <div className="py-12 px-4 text-center bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+              <div className="w-8 h-8 mx-auto mb-2 bg-[#e6faee] text-[#168a49] flex items-center justify-center border border-[#c4f3d8]" style={{ borderRadius: 0 }}>
+                <CheckCircle2 size={16} />
               </div>
-              <h4 className="text-sm font-bold text-slate-800">No Alerts Found</h4>
-              <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                No {severityFilter === 'danger' ? 'Red' : severityFilter === 'warning' ? 'Orange' : ''} hazard advisories match the current state filter.
+              <h4 className="text-xs font-mono font-bold text-[#212121]">NO ALERTS FOUND</h4>
+              <p className="text-xs text-[#808080] mt-1 max-w-xs mx-auto">
+                No active hazard advisories match the current filter selection.
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSeverityFilter('all');
-                  setSelectedState('all');
-                }}
-                className="mt-4 px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition-colors"
-              >
-                Reset All Filters
-              </button>
             </div>
           ) : (
             filteredAlerts.map((alert) => {
-              const s = alertStyles[alert.type] || alertStyles.warning;
-              const Icon = s.icon;
               const isRed = alert.type === 'danger';
 
               return (
                 <div
                   key={alert.id}
-                  className="w-full text-left rounded-xl p-3.5 transition-all hover:scale-[1.01] hover:shadow-xs"
-                  style={{ background: s.bg, border: `1px solid ${s.border}` }}
+                  className="w-full text-left p-3 transition-colors"
+                  style={{
+                    borderRadius: 0,
+                    background: isRed ? '#fffafa' : '#fffdfa',
+                    border: isRed ? '1px solid #f3d9d6' : '1px solid #fed7aa',
+                  }}
                 >
-                  <div className="flex items-start gap-3">
-                    <Icon size={16} style={{ color: s.iconColor, flexShrink: 0, marginTop: 2 }} />
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      className="w-2 h-2 shrink-0 mt-1"
+                      style={{ background: isRed ? '#b4544a' : '#d97706' }}
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="text-sm font-bold text-slate-800 truncate">{alert.title}</div>
+                        <div className="text-xs font-bold text-[#212121] truncate">{alert.title}</div>
                         <span
-                          className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-md tracking-wider shrink-0 ${
+                          className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 border shrink-0 ${
                             isRed
-                              ? 'bg-red-100 text-red-700 border border-red-200'
-                              : 'bg-amber-100 text-amber-800 border border-amber-200'
+                              ? 'bg-[#faeae8] text-[#b4544a] border-[#f3d9d6]'
+                              : 'bg-[#fffbeb] text-[#d97706] border-[#fed7aa]'
                           }`}
+                          style={{ borderRadius: 0 }}
                         >
-                          {isRed ? 'Red Alert' : 'Orange Alert'}
+                          {isRed ? 'RED ALERT' : 'ORANGE ALERT'}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-600 mt-0.5 font-medium flex items-center gap-1">
-                        <MapPin size={11} className="text-slate-400 shrink-0" />
+                      <div className="text-xs text-[#575757] mt-0.5 flex items-center gap-1 font-mono">
+                        <MapPin size={10} className="text-[#808080] shrink-0" />
                         <span className="truncate">{alert.location}</span>
                       </div>
-                      <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-200/50">
-                        <span className="text-xs text-slate-400">{alert.window}</span>
-                        <span className="text-xs font-bold text-slate-700 bg-white/90 px-2 py-0.5 rounded-md border border-slate-200/60">
+                      <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-[#f0f0f0] font-mono text-[11px]">
+                        <span className="text-[#808080]">{alert.window}</span>
+                        <span className="font-bold text-[#212121] bg-white px-1.5 py-0.2 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
                           {alert.timestamp}
                         </span>
                       </div>
@@ -293,9 +273,9 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-slate-100 bg-white/60">
-          <p className="text-[11px] text-slate-400 text-center">
-            Alerts generated from multi-model blending engine. For operational disaster deployment, refer to IMD/NCMRWF bulletins.
+        <div className="px-5 py-3 border-t border-[#dbdbdb] bg-[#f7f7f7]">
+          <p className="text-[10px] font-mono text-[#808080] text-center">
+            Multi-model blending engine. Cross-referenced with IMD/NCMRWF bulletins.
           </p>
         </div>
       </div>

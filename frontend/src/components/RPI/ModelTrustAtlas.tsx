@@ -77,35 +77,35 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
   return (
     <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
       {/* Header bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-5 border-b border-slate-200/60">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-purple-600/10 flex items-center justify-center text-purple-600 border border-purple-500/20">
+          <div className="w-8 h-8 bg-[#f7f7f7] border border-[#dbdbdb] flex items-center justify-center text-[#212121]" style={{ borderRadius: 0 }}>
             <Layers className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold tracking-wider text-slate-800 uppercase">
+              <h3 className="text-xs font-mono font-bold tracking-wider text-[#212121] uppercase">
                 MODEL TRUST ATLAS (NATIONAL CARTOGRAPHY)
               </h3>
               <Badge variant="info">AI Adaptive NWP Blending</Badge>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-[#808080] mt-0.5">
               Station markers dynamically color-coded by the historically highest-performing NWP model in each synoptic zone
             </p>
           </div>
         </div>
 
         {/* Quick status pill */}
-        <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/80">
-          <MapPin size={13} className="text-blue-600" />
+        <div className="flex items-center gap-2 text-xs font-mono text-[#575757] bg-[#f7f7f7] px-2.5 py-1 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <MapPin size={12} className="text-[#1db961]" />
           <span>
-            Active Station: <strong className="text-slate-900">{rpiData.city}</strong> ({rpiData.state})
+            Active: <strong className="text-[#212121]">{rpiData.city}</strong> ({rpiData.state})
           </span>
         </div>
       </div>
 
       {/* Main Grid: Leaflet Map (Left 8 cols) + Adaptive Model Weights & Trust Telemetry (Right 4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-5 items-start">
         {/* Leaflet Trust Atlas Map (8 Cols) */}
         <div className="lg:col-span-8">
           <RealTrustAtlasMap
@@ -116,155 +116,141 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
         </div>
 
         {/* Model Trust & Adaptive Weights Telemetry (4 Cols) */}
-        <motion.div
-          key={rpiData.city}
-          initial={{ opacity: 0, x: 12 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-          className="lg:col-span-4 space-y-4"
-        >
+        <div className="lg:col-span-4 space-y-3.5">
           {/* Dominant Model Card */}
-          <div className="rounded-2xl p-5 bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-xs">
+          <div className="p-4 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
             <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-blue-600" />
-                <span className="text-xs font-bold text-slate-700 tracking-wider uppercase">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#1db961]" />
+                <span className="text-xs font-mono font-bold text-[#212121] tracking-wider uppercase">
                   DOMINANT MODEL
                 </span>
               </div>
               <span
-                className="px-2.5 py-0.5 rounded-full text-xs font-bold text-white shadow-xs"
-                style={{ backgroundColor: modelInfo.hex }}
+                className="px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase"
+                style={{ backgroundColor: modelInfo.hex, borderRadius: 0 }}
               >
                 {domModel} LEADS
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 mb-3">
+            <div className="p-3 bg-[#f7f7f7] border border-[#dbdbdb] mb-3" style={{ borderRadius: 0 }}>
               <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-sm text-slate-900">{modelInfo.label}</span>
+                <span className="font-bold text-xs text-[#212121]">{modelInfo.label}</span>
                 <span className="text-xs font-mono font-bold" style={{ color: modelInfo.hex }}>
                   {weights[domModel.toLowerCase() as keyof typeof weights] || 45}% Weight
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">{modelInfo.desc}</p>
+              <p className="text-[11px] text-[#575757] leading-relaxed">{modelInfo.desc}</p>
             </div>
 
-            <div className="flex items-center justify-between text-xs pt-1 text-slate-600">
+            <div className="flex items-center justify-between text-xs font-mono pt-1 text-[#575757]">
               <span>Station Confidence:</span>
-              <strong className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/70">
-                {rpiData.confidence}% Reliability
+              <strong className="text-[#168a49] font-bold bg-[#e6faee] px-1.5 py-0.2 border border-[#c4f3d8]" style={{ borderRadius: 0 }}>
+                {rpiData.confidence}% Score
               </strong>
             </div>
           </div>
 
           {/* Adaptive Weight Percentages (Live Blending Mix) */}
-          <div className="rounded-2xl p-5 bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-xs">
-            <div className="flex items-center justify-between gap-2 mb-4">
-              <div className="flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-purple-600" />
-                <span className="text-xs font-bold text-slate-700 tracking-wider uppercase">
+          <div className="p-4 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-1.5">
+                <Sliders className="w-4 h-4 text-[#212121]" />
+                <span className="text-xs font-mono font-bold text-[#212121] tracking-wider uppercase">
                   ADAPTIVE BLEND WEIGHTS
                 </span>
               </div>
-              <span className="text-[10px] text-slate-400 font-medium">Dynamic Kalman Tuning</span>
+              <span className="text-[10px] font-mono text-[#808080]">Kalman Filtered</span>
             </div>
 
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               {/* ECMWF Bar */}
               <div>
-                <div className="flex justify-between items-center text-xs mb-1">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                <div className="flex justify-between items-center text-xs mb-1 font-mono">
+                  <span className="font-semibold text-[#212121] flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-[#2563eb]" />
                     ECMWF IFS (Europe)
                   </span>
-                  <span className="font-mono font-bold text-blue-700">{weights.ecmwf}%</span>
+                  <span className="font-bold text-[#212121]">{weights.ecmwf}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${weights.ecmwf}%` }}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
-                    className="h-full rounded-full bg-blue-600"
+                <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+                  <div
+                    className="h-full bg-[#2563eb]"
+                    style={{ width: `${weights.ecmwf}%`, borderRadius: 0 }}
                   />
                 </div>
               </div>
 
               {/* ICON Bar */}
               <div>
-                <div className="flex justify-between items-center text-xs mb-1">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <div className="flex justify-between items-center text-xs mb-1 font-mono">
+                  <span className="font-semibold text-[#212121] flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-[#1db961]" />
                     ICON Seamless (Germany)
                   </span>
-                  <span className="font-mono font-bold text-emerald-700">{weights.icon}%</span>
+                  <span className="font-bold text-[#212121]">{weights.icon}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${weights.icon}%` }}
-                    transition={{ duration: 0.6, ease: 'easeOut', delay: 0.05 }}
-                    className="h-full rounded-full bg-emerald-500"
+                <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+                  <div
+                    className="h-full bg-[#1db961]"
+                    style={{ width: `${weights.icon}%`, borderRadius: 0 }}
                   />
                 </div>
               </div>
 
               {/* GFS Bar */}
               <div>
-                <div className="flex justify-between items-center text-xs mb-1">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                <div className="flex justify-between items-center text-xs mb-1 font-mono">
+                  <span className="font-semibold text-[#212121] flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-[#8b5cf6]" />
                     GFS Global (NOAA USA)
                   </span>
-                  <span className="font-mono font-bold text-purple-700">{weights.gfs}%</span>
+                  <span className="font-bold text-[#212121]">{weights.gfs}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${weights.gfs}%` }}
-                    transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                    className="h-full rounded-full bg-purple-500"
+                <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+                  <div
+                    className="h-full bg-[#8b5cf6]"
+                    style={{ width: `${weights.gfs}%`, borderRadius: 0 }}
                   />
                 </div>
               </div>
 
               {/* GEM Bar */}
               <div>
-                <div className="flex justify-between items-center text-xs mb-1">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                <div className="flex justify-between items-center text-xs mb-1 font-mono">
+                  <span className="font-semibold text-[#212121] flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-[#f97316]" />
                     GEM Seamless (Canada)
                   </span>
-                  <span className="font-mono font-bold text-orange-700">{weights.gem}%</span>
+                  <span className="font-bold text-[#212121]">{weights.gem}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${weights.gem}%` }}
-                    transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
-                    className="h-full rounded-full bg-orange-500"
+                <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+                  <div
+                    className="h-full bg-[#f97316]"
+                    style={{ width: `${weights.gem}%`, borderRadius: 0 }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <div className="mt-3 pt-2.5 border-t border-[#f0f0f0] flex items-center justify-between text-[11px] font-mono text-[#808080]">
               <span>Weights Total:</span>
-              <strong className="font-mono text-slate-800 font-bold">100% Normalized</strong>
+              <strong className="text-[#212121] font-bold">100% Normalized</strong>
             </div>
           </div>
 
           {/* Operational Verification Checklist */}
-          <div className="rounded-2xl p-4 bg-slate-50/90 border border-slate-200/80 text-xs text-slate-600 space-y-2">
-            <div className="flex items-center gap-2 font-bold text-slate-800 text-[11px] uppercase tracking-wider">
-              <CheckCircle className="w-3.5 h-3.5 text-blue-600" />
+          <div className="p-3 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757] space-y-1.5" style={{ borderRadius: 0 }}>
+            <div className="flex items-center gap-1.5 font-bold text-[#212121] text-[10px] uppercase tracking-wider">
+              <CheckCircle className="w-3.5 h-3.5 text-[#1db961]" />
               <span>Multi-Model Verification Status</span>
             </div>
-            <p className="text-[11px] leading-relaxed text-slate-500">
-              The AI blend dynamically reallocates weights each synoptic run (00Z, 06Z, 12Z, 18Z). Station weights update automatically when selecting any district marker on the map.
+            <p className="text-[10px] leading-relaxed text-[#808080]">
+              Weights dynamically reallocated each synoptic cycle. Station weights automatically sync with selected map markers.
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </GlassCard>
   );

@@ -1,6 +1,6 @@
-# Member 1: Data Pipeline & Preprocessing Documentation
+# Data Pipeline & Preprocessing Documentation
 
-This document describes the datasets produced by Member 1 for the
+This document describes the datasets produced for the
 **Hybrid AI–NWP Forecast Blending Framework**.
 
 ---
@@ -29,8 +29,8 @@ Open-Meteo Forecast API             ──►  forecast_current.csv       (72 ho
 NWP models used: `ecmwf_ifs025`, `gfs_seamless`, `icon_seamless`, `gem_seamless`
 
 **No forward-fill, interpolation, or imputation is applied.** Missing values
-are reported by the validation script and left as-is for the ML member to
-handle during model training.
+are reported by the validation script and left as-is for handling during
+model training.
 
 ---
 
@@ -229,8 +229,8 @@ Run `python api/validate_data.py` to execute all 12 checks:
 
 # Downstream Usage
 
-- **ML Member**: Join `forecast_history.csv` (or `forecast_history_lead.csv`) with
+- **ML Pipeline**: Join `forecast_history.csv` (or `forecast_history_lead.csv`) with
   `actual_history.csv` on `(city, datetime)` to compute per-model errors and train
   blending models. Use `forecast_current.csv` for live inference.
-- **Dashboard Member**: Query the final CSVs to display live and historical
+- **Dashboard**: Query the final CSVs to display live and historical
   forecast comparisons.
