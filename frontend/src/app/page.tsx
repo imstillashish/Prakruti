@@ -24,8 +24,6 @@ import { NavPage, CityForecast } from '@/types';
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<NavPage>('overview');
   const [selectedCity, setSelectedCity] = useState<string | null>('Kanpur');
-
-
   const handleCitySelect = (city: CityForecast | string) => {
     const cityName = typeof city === 'string' ? city : city.city;
     setSelectedCity(cityName);
@@ -84,7 +82,6 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-
       {/* Under-Lightning Electric Cursor */}
       <CursorEffect />
 
