@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info, Award, BarChart2 } from 'lucide-react';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
@@ -53,8 +53,13 @@ export function ModelSkillPanel() {
           <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
             MODEL SKILL SCORE
           </span>
-          <Tooltip content={<div className="p-1 font-mono text-[11px] text-[#212121] max-w-[210px]">Root Mean Square Error against ERA5 ground reanalysis. Lower values indicate superior accuracy.</div>}>
-            <Info size={13} className="text-[#808080] cursor-help" />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info size={13} className="text-[#808080] cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent className="font-mono text-[11px] max-w-52">
+              Root Mean Square Error against ERA5 ground reanalysis. Lower values indicate superior accuracy.
+            </TooltipContent>
           </Tooltip>
         </div>
 

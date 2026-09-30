@@ -15,7 +15,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { RpiData } from '@/types';
 
 // Dynamic import with SSR disabled for Leaflet
@@ -87,7 +87,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <h3 className="text-xs font-mono font-bold tracking-wider text-[#212121] uppercase">
                 MODEL TRUST ATLAS (NATIONAL CARTOGRAPHY)
               </h3>
-              <Badge variant="info">AI Adaptive NWP Blending</Badge>
+              <Badge variant="secondary">AI Adaptive NWP Blending</Badge>
             </div>
             <p className="text-xs text-[#808080] mt-0.5">
               Station markers dynamically color-coded by the historically highest-performing NWP model in each synoptic zone

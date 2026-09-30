@@ -4,7 +4,6 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
 import { getModelComparisonData, MOCK_MODEL_COMPARISON } from '@/lib/api';
 import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
 import { BarChart3 } from 'lucide-react';

@@ -3,8 +3,8 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Layers, ChevronDown, MapPin, Info } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { MapLayer, CityForecast } from '@/types';
 
 // Dynamically import Leaflet with SSR disabled
@@ -55,7 +55,7 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
               <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
                 SYNOPTIC GEOSPATIAL MAP
               </span>
-              <Badge variant="info">45 Stations</Badge>
+              <Badge variant="water">45 Stations</Badge>
             </div>
             <p className="text-[11px] text-[#808080] mt-0.5 font-sans">Real CartoDB Topographic Grid · Seamless Multi-Layer Navigation</p>
           </div>
@@ -121,19 +121,18 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
             )}
           </div>
 
-          <Tooltip
-            content={
-              <div className="p-1 max-w-[220px] text-xs font-mono">
-                <span className="font-bold text-[#212121]">Cartographic Standard</span>
-                <p className="text-[#575757] mt-1 font-sans">
-                  Georeferenced to Survey of India &amp; CartoDB synoptic grid.
-                </p>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="p-1.5 text-[#808080] hover:text-[#212121] cursor-help">
+                <Info size={14} />
               </div>
-            }
-          >
-            <div className="p-1.5 text-[#808080] hover:text-[#212121] cursor-help">
-              <Info size={14} />
-            </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-56 text-xs font-mono">
+              <span className="font-bold">Cartographic Standard</span>
+              <p className="text-muted-foreground mt-1 font-sans">
+                Georeferenced to Survey of India &amp; CartoDB synoptic grid.
+              </p>
+            </TooltipContent>
           </Tooltip>
         </div>
       </div>

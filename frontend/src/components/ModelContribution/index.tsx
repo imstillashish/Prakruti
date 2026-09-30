@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, Info } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { getModelWeightsData, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight } from '@/types';
 
@@ -42,19 +42,18 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
             <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
               MODEL CONTRIBUTION
             </span>
-            <Tooltip
-              content={
-                <div className="space-y-1 p-1 font-mono text-[11px]">
-                  <p className="font-bold text-[#212121]">Weights adapt according to:</p>
-                  {['Region', 'Season', 'Lead Time', 'Historical Skill', 'Weather Regime'].map(f => (
-                    <div key={f} className="text-[#575757] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-[#1db961]" />{f}
-                    </div>
-                  ))}
-                </div>
-              }
-            >
-              <Info size={13} className="text-[#808080] cursor-help" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info size={13} className="text-[#808080] cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="font-mono text-[11px] max-w-60">
+                <p className="font-bold">Weights adapt according to:</p>
+                {['Region', 'Season', 'Lead Time', 'Historical Skill', 'Weather Regime'].map(f => (
+                  <div key={f} className="text-muted-foreground flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-[#1db961]" />{f}
+                  </div>
+                ))}
+              </TooltipContent>
             </Tooltip>
           </div>
           <p className="text-[11px] text-[#808080] mt-0.5 font-sans">Inverse-RMSE adaptive blending weights</p>

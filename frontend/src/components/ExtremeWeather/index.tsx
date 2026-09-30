@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, CloudRain, Thermometer, Wind, ChevronRight, ShieldAlert, LucideIcon } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
 import type { ExtremeEvent } from '@/types';
 
@@ -14,10 +14,10 @@ const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
   cold_wave: Thermometer,
 };
 
-const SEVERITY_STYLES: Record<ExtremeEvent['severity'], { badge: 'danger' | 'warning' | 'info'; border: string; bg: string }> = {
-  alert: { badge: 'danger', border: '#cf746e', bg: '#fbf5f4' },
+const SEVERITY_STYLES: Record<ExtremeEvent['severity'], { badge: 'destructive' | 'warning' | 'success'; border: string; bg: string }> = {
+  alert: { badge: 'destructive', border: '#cf746e', bg: '#fbf5f4' },
   warning: { badge: 'warning', border: '#dfa8a5', bg: '#fbf5f4' },
-  watch: { badge: 'info', border: '#95eebc', bg: '#f2fcf7' },
+  watch: { badge: 'success', border: '#95eebc', bg: '#f2fcf7' },
 };
 
 function ProbabilityArc({ value, color }: { value: number; color: string }) {

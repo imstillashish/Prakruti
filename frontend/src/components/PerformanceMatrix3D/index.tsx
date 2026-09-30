@@ -13,7 +13,7 @@ import {
   PerformanceMatrixData,
 } from '@/data/performanceMatrixData';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info, Box, BarChart3 } from 'lucide-react';
 
 /* ──────────────────── Color helpers ──────────────────── */
@@ -370,12 +370,13 @@ export function PerformanceMatrix3D() {
             <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
               3D PERFORMANCE MATRIX
             </span>
-            <Tooltip content={
-              <div className="p-1 text-xs font-mono text-white max-w-[240px]">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info size={12} className="text-[#808080] cursor-help ml-1.5 inline" />
+              </TooltipTrigger>
+              <TooltipContent className="font-mono text-xs max-w-60">
                 Interactive 3D model comparison across lead times. Drag to rotate, scroll to zoom.
-              </div>
-            }>
-              <Info size={12} className="text-[#808080] cursor-help ml-1.5 inline" />
+              </TooltipContent>
             </Tooltip>
           </div>
         </div>

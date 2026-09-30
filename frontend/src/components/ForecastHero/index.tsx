@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, AlertTriangle, ChevronRight, Activity } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { WhyForecastModal } from '@/components/WhyForecast';
 import { getForecastMetrics, MOCK_FORECAST, getMetadata, formatLastUpdated } from '@/lib/api';
 import type { ForecastMetrics } from '@/types';
@@ -126,7 +126,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
             {/* Quick Scientific Evidence Trigger */}
             <Button
-              variant="secondary"
+              variant="outline"
               size="sm"
               onClick={() => setWhyOpen(true)}
               className="text-[#212121] hover:bg-[#f7f7f7] border-[#dbdbdb] text-xs font-mono"

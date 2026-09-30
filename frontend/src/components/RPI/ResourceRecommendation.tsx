@@ -18,7 +18,7 @@ import {
   Info,
 } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { ResourceAction, RpiData } from '@/types';
 
 interface ResourceRecommendationProps {
@@ -62,14 +62,14 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
     }
   };
 
-  const getPriorityBadgeVariant = (priority: string): 'danger' | 'warning' | 'info' | 'success' => {
+  const getPriorityBadgeVariant = (priority: string): 'destructive' | 'warning' | 'secondary' | 'success' => {
     switch (priority) {
       case 'critical':
-        return 'danger';
+        return 'destructive';
       case 'high':
         return 'warning';
       case 'medium':
-        return 'info';
+        return 'secondary';
       default:
         return 'success';
     }
