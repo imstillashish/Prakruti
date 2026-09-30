@@ -10,9 +10,17 @@ import { Suspense, useEffect, useState } from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 import { cn } from '@/lib/utils';
 
-export interface ShaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface ShaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  size?: 'sm' | 'md' | 'lg';
+}
 
-export function ShaderButton({ className, children, ...props }: ShaderButtonProps) {
+const SIZES = {
+  sm: 'h-8 px-3 text-xs',
+  md: 'h-10 px-4 text-sm',
+  lg: 'h-12 px-6 text-base',
+};
+
+export function ShaderButton({ className, children, size = 'md', ...props }: ShaderButtonProps) {
   const [shaderOn, setShaderOn] = useState(false);
 
   useEffect(() => {
@@ -25,16 +33,17 @@ export function ShaderButton({ className, children, ...props }: ShaderButtonProp
     <button
       {...props}
       className={cn(
-        'relative isolate inline-flex h-10 items-center justify-center gap-2 overflow-hidden rounded-md px-4',
-        'text-sm font-semibold text-white shadow-sm',
+        'relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md font-semibold text-white',
+        'shadow-[0_4px_12px_rgba(13,116,206,0.25)]',
         'transition-transform duration-100 active:translate-y-px',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d74ce]',
         'disabled:pointer-events-none disabled:opacity-50',
+        SIZES[size],
         className
       )}
     >
       {/* Fallback fill — pre-hydration, reduced-motion, and WebGL-failure state */}
-      <span aria-hidden className="absolute inset-0 z-0 bg-primary" />
+      <span aria-hidden className="absolute inset-0 z-0 bg-[#0d74ce]" />
       {shaderOn && (
         <span aria-hidden className="absolute inset-0 z-0">
           <Suspense fallback={null}>
@@ -46,19 +55,19 @@ export function ShaderButton({ className, children, ...props }: ShaderButtonProp
               <ShaderGradient
                 type="plane"
                 animate="on"
-                uSpeed={0.3}
+                uSpeed={0.4}
                 uFrequency={5.5}
-                uStrength={3.5}
-                uAmplitude={1.0}
-                color1="#0a0a0a"
-                color2="#171717"
-                color3="#262626"
+                uStrength={4}
+                uAmplitude={1.2}
+                color1="#0d74ce"
+                color2="#1e6fb8"
+                color3="#cfe7ff"
                 lightType="3d"
                 cDistance={3.6}
                 cPolarAngle={90}
                 cAzimuthAngle={135}
                 shader="defaults"
-                reflection={0.15}
+                reflection={0.2}
                 grain="off"
               />
             </ShaderGradientCanvas>
