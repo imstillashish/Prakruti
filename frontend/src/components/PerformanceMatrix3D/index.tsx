@@ -469,16 +469,17 @@ export function PerformanceMatrix3D() {
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10px] font-bold text-[#808080] uppercase tracking-wider">Lowest Error:</span>
           {LEAD_TIMES.map(lt => (
-        <span
-          className="px-1.5 py-0.2 text-[10px] font-bold border"
-          style={{
-            background: '#f7f7f7',
-            borderColor: '#dbdbdb',
-            color: '#212121',
-          }}
-        >
-          {lt}: {bestModels[lt]}
-        </span>
+            <span
+              key={lt}
+              className="px-1.5 py-0.2 text-[10px] font-bold border"
+              style={{
+                background: '#f7f7f7',
+                borderColor: '#dbdbdb',
+                color: '#212121',
+              }}
+            >
+              {lt}: {bestModels[lt]}
+            </span>
           ))}
         </div>
       </div>
