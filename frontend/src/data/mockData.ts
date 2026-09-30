@@ -29,10 +29,10 @@ export const MOCK_FORECAST: ForecastMetrics = {
 };
 
 export const MOCK_MODEL_WEIGHTS: ModelWeight[] = [
-  { name: 'AI Model', id: 'ai', weight: 45, color: '#3b82f6', rmse: 5.1, mae: 3.8 },
-  { name: 'ECMWF IFS', id: 'ecmwf', weight: 35, color: '#0ea5e9', rmse: 5.8, mae: 4.2 },
-  { name: 'GFS Seamless', id: 'gfs', weight: 12, color: '#6366f1', rmse: 6.3, mae: 4.9 },
-  { name: 'Ensemble', id: 'ensemble', weight: 8, color: '#8b5cf6', rmse: 5.5, mae: 4.1 },
+  { name: 'AI Model', id: 'ai', weight: 45, color: '#000000', rmse: 5.1, mae: 3.8 },
+  { name: 'ECMWF IFS', id: 'ecmwf', weight: 35, color: '#171717', rmse: 5.8, mae: 4.2 },
+  { name: 'GFS Seamless', id: 'gfs', weight: 12, color: '#1e6fb8', rmse: 6.3, mae: 4.9 },
+  { name: 'Ensemble', id: 'ensemble', weight: 8, color: '#9e9e9e', rmse: 5.5, mae: 4.1 },
 ];
 
 export const MOCK_TIMELINE: TimelinePoint[] = [

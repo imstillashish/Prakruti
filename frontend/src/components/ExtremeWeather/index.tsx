@@ -15,9 +15,9 @@ const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
 };
 
 const SEVERITY_STYLES: Record<ExtremeEvent['severity'], { badge: 'destructive' | 'warning' | 'success'; border: string; bg: string }> = {
-  alert: { badge: 'destructive', border: '#cf746e', bg: '#fbf5f4' },
-  warning: { badge: 'warning', border: '#dfa8a5', bg: '#fbf5f4' },
-  watch: { badge: 'success', border: '#95eebc', bg: '#f2fcf7' },
+  alert: { badge: 'destructive', border: '#b42318', bg: 'rgba(180,35,24,0.06)' },
+  warning: { badge: 'warning', border: '#ab6400', bg: 'rgba(171,100,0,0.06)' },
+  watch: { badge: 'success', border: '#16a34a', bg: 'rgba(22,163,74,0.06)' },
 };
 
 function ProbabilityArc({ value, color }: { value: number; color: string }) {

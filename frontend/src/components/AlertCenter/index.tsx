@@ -12,9 +12,9 @@ interface AlertDrawerProps {
 type SeverityFilter = 'all' | 'danger' | 'warning';
 
 const alertStyles: Record<Alert['type'], { bg: string; border: string; icon: LucideIcon; iconColor: string; dot: string }> = {
-  danger: { bg: 'rgba(239,68,68,0.06)', border: 'rgba(239,68,68,0.22)', icon: AlertCircle, iconColor: '#ef4444', dot: '#ef4444' },
-  warning: { bg: 'rgba(245,158,11,0.06)', border: 'rgba(245,158,11,0.22)', icon: AlertTriangle, iconColor: '#f59e0b', dot: '#f59e0b' },
-  info: { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.22)', icon: Info, iconColor: '#3b82f6', dot: '#3b82f6' },
+  danger: { bg: 'rgba(180,35,24,0.06)', border: 'rgba(180,35,24,0.22)', icon: AlertCircle, iconColor: '#b42318', dot: '#b42318' },
+  warning: { bg: 'rgba(171,100,0,0.06)', border: 'rgba(171,100,0,0.22)', icon: AlertTriangle, iconColor: '#ab6400', dot: '#ab6400' },
+  info: { bg: 'rgba(30,111,184,0.06)', border: 'rgba(30,111,184,0.22)', icon: Info, iconColor: '#1e6fb8', dot: '#1e6fb8' },
 };
 
 export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
@@ -88,7 +88,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-secondary">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-[#faeae8] flex items-center justify-center text-[#b4544a] border border-[#f3d9d6]">
+            <div className="w-7 h-7 bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/20">
               <ShieldAlert size={16} />
             </div>
             <div>
@@ -154,12 +154,12 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
               onClick={() => setSeverityFilter('warning')}
               className={`flex-1 py-1 px-2 text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                 severityFilter === 'warning'
-                  ? 'bg-[#d97706] text-white font-bold'
-                  : 'text-[#d97706] hover:bg-[#fffbeb]'
+                  ? 'bg-warning text-foreground font-bold'
+                  : 'text-warning hover:bg-warning/10'
               }`}
              
             >
-              <span className={`w-1.5 h-1.5 ${severityFilter === 'warning' ? 'bg-white' : 'bg-[#d97706]'}`} />
+              <span className={`w-1.5 h-1.5 ${severityFilter === 'warning' ? 'bg-card' : 'bg-warning'}`} />
               <span>Orange</span>
               <span className="text-[10px] px-1 font-mono">
                 {orangeCount}
@@ -213,10 +213,10 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {filteredAlerts.length === 0 ? (
             <div className="py-12 px-4 text-center bg-secondary border border-border">
-              <div className="w-8 h-8 mx-auto mb-2 bg-secondary text-success flex items-center justify-center border border-[#c4f3d8]">
+              <div className="w-8 h-8 mx-auto mb-2 bg-secondary text-success flex items-center justify-center border border-success/20">
                 <CheckCircle2 size={16} />
               </div>
-              <h4 className="text-xs font-mono font-bold text-foreground">NO ALERTS FOUND</h4>
+              <h4 className="text-sm font-semibold text-foreground">No alerts right now</h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
                 No active hazard advisories match the current filter selection.
               </p>
@@ -231,14 +231,14 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   className="w-full text-left p-3 transition-colors"
                   style={{
                     borderRadius: 0,
-                    background: isRed ? '#fffafa' : '#fffdfa',
-                    border: isRed ? '1px solid #f3d9d6' : '1px solid #fed7aa',
+                    background: isRed ? 'rgba(180,35,24,0.05)' : 'rgba(171,100,0,0.05)',
+                    border: isRed ? '1px solid rgba(180,35,24,0.2)' : '1px solid rgba(171,100,0,0.2)',
                   }}
                 >
                   <div className="flex items-start gap-2.5">
                     <span
                       className="w-2 h-2 shrink-0 mt-1"
-                      style={{ background: isRed ? '#b4544a' : '#d97706' }}
+                      style={{ background: isRed ? '#b42318' : '#ab6400' }}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
@@ -246,8 +246,8 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                         <span
                           className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 border shrink-0 ${
                             isRed
-                              ? 'bg-[#faeae8] text-[#b4544a] border-[#f3d9d6]'
-                              : 'bg-[#fffbeb] text-[#d97706] border-[#fed7aa]'
+                              ? 'bg-destructive/10 text-destructive border-destructive/20'
+                              : 'bg-warning/10 text-warning border-warning/20'
                           }`}
                          
                         >

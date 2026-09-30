@@ -11,8 +11,8 @@ const MODELS = [
   { key: 'blended', label: 'Hybrid AI-NWP Blend', color: '#171717' },
   { key: 'ai', label: 'AI Residual Model', color: '#1e6fb8' },
   { key: 'nwpA', label: 'ECMWF IFS (0.25°)', color: '#60646c' },
-  { key: 'nwpB', label: 'GFS Seamless', color: '#575757' },
-  { key: 'ensemble', label: 'Ensemble Mean', color: '#808080' },
+  { key: 'nwpB', label: 'GFS Seamless', color: '#60646c' },
+  { key: 'ensemble', label: 'Ensemble Mean', color: '#9e9e9e' },
 ] as const;
 
 export function ModelSkillPanel() {

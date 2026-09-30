@@ -31,7 +31,7 @@ function lerpColor(a: string, b: string, t: number): string {
 
 function getBarColor(skill: number): string {
   if (skill > 0.7) return '#16a34a'; // OK signal
-  if (skill > 0.4) return '#f59e0b'; // amber = watch
+  if (skill > 0.4) return '#ab6400'; // amber = watch
   return '#b42318'; // hazard = poor
 }
 
@@ -55,7 +55,7 @@ function PerformanceBar({ cell, maxRmse, spacing, onHover, isHovered, colorMode 
   targetHeight.current = normalizedHeight;
 
   const baseColor = colorMode === 'model'
-    ? MODEL_COLORS[cell.model] || '#6366f1'
+    ? MODEL_COLORS[cell.model] || '#1e6fb8'
     : getBarColor(cell.skillScore);
 
   useFrame((_state, delta) => {
@@ -119,7 +119,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
           key={`model-${i}`}
           position={[xStart + i * spacing, -0.3, ((LEAD_TIMES.length - 1) * spacing) / 2 + 1.2]}
           fontSize={0.22}
-          color="#475569"
+          color="#60646c"
           anchorX="center"
           anchorY="middle"
           rotation={[-Math.PI / 2, 0, -Math.PI / 6]}
@@ -135,7 +135,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
           key={`lead-${i}`}
           position={[-((MODELS.length - 1) * spacing) / 2 - 1.2, -0.3, zStart + i * spacing]}
           fontSize={0.24}
-          color="#475569"
+          color="#60646c"
           anchorX="center"
           anchorY="middle"
           rotation={[-Math.PI / 2, 0, 0]}
@@ -162,7 +162,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
             <mesh position={[0, tick, 0]}>
               <planeGeometry args={[(MODELS.length - 1) * spacing + 2, (LEAD_TIMES.length - 1) * spacing + 2]} />
               <meshBasicMaterial
-                color="#e2e8f0"
+                color="#f0f0f3"
                 transparent
                 opacity={0.12}
                 side={THREE.DoubleSide}
@@ -176,7 +176,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
       <Text
         position={[0, -0.3, ((LEAD_TIMES.length - 1) * spacing) / 2 + 2.2]}
         fontSize={0.28}
-        color="#1e293b"
+        color="#171717"
         anchorX="center"
         fontWeight="bold"
         rotation={[-Math.PI / 2, 0, 0]}
@@ -186,7 +186,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
       <Text
         position={[-((MODELS.length - 1) * spacing) / 2 - 2.5, -0.3, 0]}
         fontSize={0.28}
-        color="#1e293b"
+        color="#171717"
         anchorX="center"
         fontWeight="bold"
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
@@ -196,7 +196,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
       <Text
         position={[-((MODELS.length - 1) * spacing) / 2 - 2.5, 2, -((LEAD_TIMES.length - 1) * spacing) / 2 - 0.5]}
         fontSize={0.24}
-        color="#1e293b"
+        color="#171717"
         anchorX="center"
         rotation={[0, Math.PI / 4, Math.PI / 2]}
       >
@@ -208,8 +208,8 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
         args={[
           Math.max((MODELS.length - 1) * spacing, (LEAD_TIMES.length - 1) * spacing) + 2,
           10,
-          '#cbd5e1',
-          '#e2e8f0',
+          '#dcdee0',
+          '#f0f0f3',
         ]}
         position={[0, -0.01, 0]}
       />
@@ -454,7 +454,7 @@ export function PerformanceMatrix3D() {
                 <span className="text-xs text-muted-foreground">High Skill ({'>'}70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#d97706]" />
+                <span className="w-2 h-2 rounded-full bg-warning" />
                 <span className="text-xs text-muted-foreground">Medium (40–70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -473,9 +473,9 @@ export function PerformanceMatrix3D() {
               key={lt}
               className="px-1.5 py-0.2 text-[10px] font-bold border"
               style={{
-                background: '#f7f7f7',
+                background: '#fafafa',
                 borderColor: '#dcdee0',
-                color: '#212121',
+                color: '#171717',
               }}
             >
               {lt}: {bestModels[lt]}

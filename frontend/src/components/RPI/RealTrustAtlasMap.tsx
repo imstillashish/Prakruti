@@ -30,10 +30,10 @@ interface RealTrustAtlasMapProps {
 type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
 
 const MODEL_STYLE_MAP: Record<string, { hex: string; label: string }> = {
-  ECMWF: { hex: '#2563eb', label: 'ECMWF IFS (European Centre)' },
-  ICON: { hex: '#10b981', label: 'ICON Seamless (DWD Germany)' },
-  GFS: { hex: '#8b5cf6', label: 'GFS Global (NOAA / NCEP)' },
-  GEM: { hex: '#f97316', label: 'GEM Global (ECCC Canada)' },
+  ECMWF: { hex: '#171717', label: 'ECMWF IFS (European Centre)' },
+  ICON: { hex: '#60646c', label: 'ICON Seamless (DWD Germany)' },
+  GFS: { hex: '#1e6fb8', label: 'GFS Global (NOAA / NCEP)' },
+  GEM: { hex: '#9e9e9e', label: 'GEM Global (ECCC Canada)' },
 };
 
 export default function RealTrustAtlasMap({
@@ -210,21 +210,21 @@ export default function RealTrustAtlasMap({
       // Station Detail Popup
       const popupHtml = `
         <div style="font-family: inherit; min-width: 195px; padding: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">
-            <strong style="font-size: 13px; color: #0f172a; text-transform: uppercase;">${st.city}</strong>
-            <span style="font-size: 10px; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 2px 6px; border-radius: 9999px;">${st.state}</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f3; padding-bottom: 4px;">
+            <strong style="font-size: 13px; color: #171717; text-transform: uppercase;">${st.city}</strong>
+            <span style="font-size: 10px; font-weight: 700; color: #1e6fb8; background: rgba(30,111,184,0.08); padding: 2px 6px; border-radius: 9999px;">${st.state}</span>
           </div>
           <div style="margin-bottom: 6px;">
-            <span style="font-size: 10px; color: #64748b; display: block;">Dominant NWP Model:</span>
+            <span style="font-size: 10px; color: #60646c; display: block;">Dominant NWP Model:</span>
             <span style="font-size: 12px; font-weight: 800; color: ${color};">${dom} (${modelStyle.label.split(' ')[0]})</span>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px; background: #f8fafc; padding: 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div><span style="color: #64748b; font-size: 9.5px; display: block;">RPI Score</span><strong style="font-size: 12px; color: #0f172a;">${st.rpiScore}/100</strong></div>
-            <div><span style="color: #64748b; font-size: 9.5px; display: block;">Confidence</span><strong style="font-size: 12px; color: #059669;">${st.confidence}%</strong></div>
-            <div><span style="color: #64748b; font-size: 9.5px; display: block;">Rainfall</span><strong style="font-size: 11px; color: #0284c7;">${st.rainfall} mm</strong></div>
-            <div><span style="color: #64748b; font-size: 9.5px; display: block;">Temp</span><strong style="font-size: 11px; color: #ea580c;">${st.temperature}°C</strong></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px; background: #fafafa; padding: 6px; border-radius: 8px; border: 1px solid #f0f0f3;">
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">RPI Score</span><strong style="font-size: 12px; color: #171717;">${st.rpiScore}/100</strong></div>
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Confidence</span><strong style="font-size: 12px; color: #16a34a;">${st.confidence}%</strong></div>
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Rainfall</span><strong style="font-size: 11px; color: #1e6fb8;">${st.rainfall} mm</strong></div>
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Temp</span><strong style="font-size: 11px; color: #ab6400;">${st.temperature}°C</strong></div>
           </div>
-          <div style="margin-top: 6px; font-size: 9.5px; color: #64748b; text-align: center;">Click to update EOC Resource Protocols</div>
+          <div style="margin-top: 6px; font-size: 9.5px; color: #60646c; text-align: center;">Click to update EOC Resource Protocols</div>
         </div>
       `;
 
@@ -398,19 +398,19 @@ export default function RealTrustAtlasMap({
         </div>
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 bg-[#2563eb]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#171717]" />
             <span className="text-foreground text-[11px]">ECMWF</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 bg-foreground" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#60646c]" />
             <span className="text-foreground text-[11px]">ICON</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 bg-[#8b5cf6]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1e6fb8]" />
             <span className="text-foreground text-[11px]">GFS</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 bg-[#f97316]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e]" />
             <span className="text-foreground text-[11px]">GEM</span>
           </div>
         </div>

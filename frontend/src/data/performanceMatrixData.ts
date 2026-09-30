@@ -31,11 +31,11 @@ export const MODELS = ['AI Model', 'ECMWF IFS', 'GFS', 'Ensemble', 'Blended'] as
 export const LEAD_TIMES = ['6h', '12h', '24h', '48h', '72h'] as const;
 
 export const MODEL_COLORS: Record<string, string> = {
-  'AI Model': '#3b82f6',
-  'ECMWF IFS': '#0ea5e9',
-  'GFS': '#6366f1',
-  'Ensemble': '#8b5cf6',
-  'Blended': '#10b981',
+  'AI Model': '#000000',
+  'ECMWF IFS': '#171717',
+  'GFS': '#1e6fb8',
+  'Ensemble': '#9e9e9e',
+  'Blended': '#16a34a',
 };
 
 const buildMatrix = (

@@ -20,27 +20,27 @@ type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
 function getCityMetric(city: CityForecast, layer: MapLayer): { text: string; color: string } {
   switch (layer) {
     case 'rainfall': {
-      const color = city.rainfall > 80 ? '#0284c7' : city.rainfall > 50 ? '#0ea5e9' : city.rainfall > 20 ? '#38bdf8' : '#7dd3fc';
+      const color = city.rainfall > 80 ? '#155a92' : city.rainfall > 50 ? '#1e6fb8' : city.rainfall > 20 ? '#5b93c7' : '#a5c4e0';
       return { text: `${city.rainfall} mm`, color };
     }
     case 'temperature': {
-      const color = city.temperature > 35 ? '#ef4444' : city.temperature > 30 ? '#f97316' : city.temperature > 25 ? '#eab308' : '#10b981';
+      const color = city.temperature > 35 ? '#b42318' : city.temperature > 30 ? '#ab6400' : city.temperature > 25 ? '#60646c' : '#16a34a';
       return { text: `${city.temperature}°C`, color };
     }
     case 'wind': {
-      const color = city.wind > 25 ? '#7c3aed' : city.wind > 18 ? '#8b5cf6' : '#a855f7';
+      const color = city.wind > 25 ? '#424242' : city.wind > 18 ? '#60646c' : '#9e9e9e';
       return { text: `${city.wind} km/h`, color };
     }
     case 'extreme_risk':
       return { text: city.risk.toUpperCase(), color: getRiskColor(city.risk) };
     case 'model_dominance':
-      return { text: city.dominantModel, color: '#2563eb' };
+      return { text: city.dominantModel, color: '#1e6fb8' };
     case 'confidence': {
-      const color = city.confidence >= 85 ? '#10b981' : city.confidence >= 75 ? '#f59e0b' : '#ef4444';
+      const color = city.confidence >= 85 ? '#16a34a' : city.confidence >= 75 ? '#ab6400' : '#b42318';
       return { text: `${city.confidence}%`, color };
     }
     default:
-      return { text: `${city.rainfall} mm`, color: '#0ea5e9' };
+      return { text: `${city.rainfall} mm`, color: '#1e6fb8' };
   }
 }
 
@@ -182,22 +182,22 @@ export default function RealLeafletMap({
       // Station detail popup
       const popupContent = `
         <div style="font-family: inherit; min-width: 170px; padding: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">
-            <span style="font-weight: 800; font-size: 13px; color: #1e293b; text-transform: uppercase;">${city.city}</span>
-            <span style="font-size: 10px; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 2px 6px; border-radius: 9999px;">${city.state}</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f3; padding-bottom: 4px;">
+            <span style="font-weight: 800; font-size: 13px; color: #171717; text-transform: uppercase;">${city.city}</span>
+            <span style="font-size: 10px; font-weight: 700; color: #1e6fb8; background: rgba(30,111,184,0.08); padding: 2px 6px; border-radius: 9999px;">${city.state}</span>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px;">
-            <div><span style="color: #64748b; font-size: 10px; display: block;">Rainfall</span><strong style="color: #0284c7; font-size: 12px;">${city.rainfall} mm</strong></div>
-            <div><span style="color: #64748b; font-size: 10px; display: block;">Temp</span><strong style="color: #ea580c; font-size: 12px;">${city.temperature}°C</strong></div>
-            <div><span style="color: #64748b; font-size: 10px; display: block;">Wind</span><strong style="color: #7c3aed; font-size: 12px;">${city.wind} km/h</strong></div>
-            <div><span style="color: #64748b; font-size: 10px; display: block;">Reliability</span><strong style="color: #059669; font-size: 12px;">${city.confidence}% ${city.confidenceLabel ? '(' + city.confidenceLabel + ')' : ''}</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Rainfall</span><strong style="color: #1e6fb8; font-size: 12px;">${city.rainfall} mm</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Temp</span><strong style="color: #ab6400; font-size: 12px;">${city.temperature}°C</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Wind</span><strong style="color: #60646c; font-size: 12px;">${city.wind} km/h</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Reliability</span><strong style="color: #16a34a; font-size: 12px;">${city.confidence}% ${city.confidenceLabel ? '(' + city.confidenceLabel + ')' : ''}</strong></div>
           </div>
-          <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #f1f5f9; font-size: 10px; color: #64748b; display: flex; justify-content: space-between;">
+          <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #f0f0f3; font-size: 10px; color: #60646c; display: flex; justify-content: space-between;">
             <span>Dominant Model:</span>
-            <strong style="color: #1d4ed8;">${city.dominantModel}</strong>
+            <strong style="color: #1e6fb8;">${city.dominantModel}</strong>
           </div>
           ${city.explanation ? `
-          <div style="margin-top: 4px; font-size: 9.5px; color: #475569; font-style: italic; background: #f8fafc; padding: 4px 6px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.3;">
+          <div style="margin-top: 4px; font-size: 9.5px; color: #60646c; font-style: italic; background: #fafafa; padding: 4px 6px; border-radius: 6px; border: 1px solid #f0f0f3; line-height: 1.3;">
             &quot;${city.explanation}&quot;
           </div>` : ''}
         </div>
@@ -440,7 +440,7 @@ export default function RealLeafletMap({
         }
         .leaflet-container {
           font-family: inherit !important;
-          background: #0f172a !important;
+          background: #ffffff !important;
         }
         /* CRITICAL: Overrides Tailwind CSS default img rules for Leaflet tiles */
         .leaflet-container img,

@@ -10,8 +10,8 @@ import { BarChart3 } from 'lucide-react';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string }> = {
   rainfall: { label: 'Rainfall', unit: 'mm', color: '#1e6fb8' },
-  temperature: { label: 'Temperature', unit: '°C', color: '#ea580c' },
-  wind: { label: 'Wind', unit: 'km/h', color: '#575757' },
+  temperature: { label: 'Temperature', unit: '°C', color: '#ab6400' },
+  wind: { label: 'Wind', unit: 'km/h', color: '#60646c' },
 };
 
 interface ModelComparisonProps {

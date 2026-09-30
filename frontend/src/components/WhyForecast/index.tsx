@@ -92,7 +92,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
           <div className="flex items-center justify-between mb-1.5 font-mono">
             <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
             {conf && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-secondary text-foreground border border-[#95eebc]">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-secondary text-foreground border border-success/20">
                 {conf.confidence}% · {conf.confidence_label}
               </span>
             )}

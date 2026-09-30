@@ -8,7 +8,7 @@ import { DataSource } from '@/types';
 
 const STATUS_CONFIG: Record<DataSource['status'], { icon: LucideIcon; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
   healthy: { icon: CheckCircle, color: '#16a34a', label: 'Nominal', badge: 'default' },
-  delayed: { icon: AlertCircle, color: '#f59e0b', label: 'Delayed', badge: 'warning' },
+  delayed: { icon: AlertCircle, color: '#ab6400', label: 'Delayed', badge: 'warning' },
   unavailable: { icon: XCircle, color: '#b42318', label: 'Offline', badge: 'destructive' },
 };
 
