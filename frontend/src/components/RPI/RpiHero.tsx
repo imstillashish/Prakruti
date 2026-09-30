@@ -86,31 +86,31 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
       {/* Top Government EOC Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-secondary border border-border flex items-center justify-center text-foreground">
+          <span className="w-9 h-9 shrink-0 rounded-md bg-foreground text-white flex items-center justify-center">
             <Building2 className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
+          </span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
               <h2 className="text-base font-semibold text-foreground tracking-tight">
                 Emergency Operations Center
               </h2>
-              <span className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] bg-secondary text-muted-foreground border border-border">
-                MoES / NDMA
+              <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] bg-secondary text-muted-foreground border border-border">
+                MoES · NDMA
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+            <p className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
               <span>National Disaster Decision Framework</span>
-              <span>·</span>
+              <span className="text-border">·</span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-muted-foreground" />
                 Live 24h Synoptic Horizon
               </span>
-            </div>
+            </p>
           </div>
         </div>
 
         {/* EOC Readiness Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary border border-border text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/20 text-xs font-medium text-foreground">
           <span className="w-2 h-2 rounded-full bg-success status-pulse" />
           <span>Automated Risk Scoring Active</span>
         </div>
