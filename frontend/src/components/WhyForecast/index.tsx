@@ -85,7 +85,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
 
         {/* Reasoning */}
         <div
-          className="p-3 rounded-md border border-success/20 bg-success/5 text-foreground"
+          className="p-3 rounded-md border border-success/30 ambient-gradient-success text-foreground"
         >
           <div className="flex items-center justify-between mb-1.5 font-mono">
             <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>

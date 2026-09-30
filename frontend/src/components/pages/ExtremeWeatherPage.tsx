@@ -244,11 +244,17 @@ export function ExtremeWeatherPage() {
                     </button>
                     {open && (
                       <div className="px-3.5 pb-3.5 pl-[52px]">
-                        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-                          {isRed
-                            ? `Immediate action advised for ${alert.location}. Follow state EOC instructions and avoid hazard-prone areas during ${alert.window}.`
-                            : `Stay alert in ${alert.location} during ${alert.window}. Conditions may worsen; keep access to the latest bulletin.`}
-                        </p>
+                        <div className={`p-3 rounded-md border text-xs leading-relaxed max-w-2xl ${
+                          isRed
+                            ? 'border-destructive/20 ambient-gradient-destructive text-foreground'
+                            : 'border-warning/20 ambient-gradient-warning text-foreground'
+                        }`}>
+                          <p>
+                            {isRed
+                              ? `Immediate action advised for ${alert.location}. Follow state EOC instructions and avoid hazard-prone areas during ${alert.window}.`
+                              : `Stay alert in ${alert.location} during ${alert.window}. Conditions may worsen; keep access to the latest bulletin.`}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </li>
