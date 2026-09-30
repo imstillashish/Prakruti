@@ -66,6 +66,7 @@ outputs/*
 !outputs/hybrid_forecast.csv
 !outputs/confidence_scores.csv
 !outputs/extreme_alerts.csv
+!outputs/advisories.csv
 !outputs/metadata.json
 
 # ------------------------------ Python ---------------------------------------

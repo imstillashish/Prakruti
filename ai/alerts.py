@@ -9,16 +9,16 @@ Usage: python ai/alerts.py
 
 import pandas as pd
 
-# ---------------------------------------------------------------------------
-# Threshold configuration
-# ---------------------------------------------------------------------------
+# Runnable as a bare script (`python ai/alerts.py`): put the repo root on sys.path
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-# Prototype thresholds calibrated for operational hackathon demonstration.
-THRESHOLDS = {
-    'Heavy Rain':       {'column': 'rainfall',    'moderate': 4,  'high': 8},
-    'High Temperature': {'column': 'temperature',  'moderate': 35, 'high': 37},
-    'High Wind':        {'column': 'wind_speed',   'moderate': 25, 'high': 32},
-}
+from ai.thresholds import THRESHOLDS
+
+# ---------------------------------------------------------------------------
+# Threshold configuration — shared table lives in ai/thresholds.py
+# ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # File paths

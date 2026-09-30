@@ -360,6 +360,27 @@ def get_alerts():
     return jsonify(records)
 
 
+@app.route('/api/advisories', methods=['GET'])
+@app.route('/advisories', methods=['GET'])
+def get_advisories():
+    """
+    Returns records from outputs/advisories.csv (data-driven hero advice).
+    Optional query parameter:
+      - city: filter by city name
+    """
+    csv_path = os.path.join(OUTPUTS_DIR, "advisories.csv")
+    records = load_csv_records(csv_path)
+    if records is None:
+        return jsonify({"error": "advisories.csv not found"}), 404
+
+    city = request.args.get('city')
+    if city:
+        city_lower = city.strip().lower()
+        records = [r for r in records if str(r.get('city', '')).lower() == city_lower]
+
+    return jsonify(records)
+
+
 @app.route('/api/cities', methods=['GET'])
 @app.route('/cities', methods=['GET'])
 def get_cities():
