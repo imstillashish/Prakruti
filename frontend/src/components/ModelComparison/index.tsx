@@ -87,7 +87,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
                 contentStyle={{
                   background: '#ffffff',
                   border: '1px solid #dcdee0',
-                  borderRadius: 0,
+                  borderRadius: 8,
                   boxShadow: 'var(--shadow-md)',
                   fontSize: 12,
                   fontFamily: 'JetBrains Mono',

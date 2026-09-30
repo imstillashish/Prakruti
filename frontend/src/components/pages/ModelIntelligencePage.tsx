@@ -35,12 +35,12 @@ export function ModelIntelligencePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-secondary text-foreground border border-border">
+        <div className="w-9 h-9 rounded-md flex items-center justify-center bg-secondary text-foreground border border-border">
           <BrainCircuit size={18} />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-foreground">Model Intelligence</h1>
-          <p className="text-xs text-muted-foreground">Dynamic multi-model weighting logic, spatial dominance, and comparative skill metrics</p>
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">Model Intelligence</h1>
+          <p className="text-xs text-muted-foreground">Which forecast model is most accurate for your city, and by how much.</p>
         </div>
       </div>
 
@@ -57,13 +57,13 @@ export function ModelIntelligencePage() {
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {dominance.map((r) => (
-            <div key={r.region} className="p-3 bg-card border border-border">
+            <div key={r.region} className="p-3 rounded-md bg-card border border-border">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1 font-mono">
-                <MapPin size={11} className="text-primary" />
+                <MapPin size={11} className="text-water" />
                 {r.region}
               </div>
-              <div className="text-sm font-bold text-foreground">{r.dominantModel}</div>
-              <div className="text-xs font-mono text-primary mt-1 font-semibold">{r.confidence}% confidence</div>
+              <div className="text-sm font-semibold text-foreground">{r.dominantModel}</div>
+              <div className="text-xs font-mono text-foreground mt-1 font-semibold">{r.confidence}% confidence</div>
             </div>
           ))}
         </div>

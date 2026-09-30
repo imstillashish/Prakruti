@@ -72,17 +72,15 @@ export function ModelSkillPanel() {
       <div className="space-y-1.5 font-mono">
         {tableRows.map((m, i) => (
           <div
-            key={m.key}
-            className={`flex items-center gap-2.5 p-2.5 border transition-colors ${
+            key={m.key}            className={`flex items-center gap-2.5 p-2.5 rounded-md border transition-colors ${
               i === 0
                 ? 'bg-secondary border-border'
-                : 'bg-white border-border hover:bg-secondary'
-            }`}
-           
-          >
+                : 'bg-card border-border hover:bg-secondary'
+            }`
+          }>
             <span
-              className="w-2 h-2 shrink-0"
-              style={{ background: m.color, borderRadius: 0 }}
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ background: m.color }}
             />
             <span className={`text-xs flex-1 ${i === 0 ? 'font-bold text-foreground' : 'text-foreground'}`}>
               {m.label}
@@ -90,7 +88,7 @@ export function ModelSkillPanel() {
             {i === 0 && (
               <span
                
-                className="flex items-center gap-1 text-[10px] font-bold text-foreground bg-secondary px-1.5 py-0.2 border border-[#95eebc]"
+                className="flex items-center gap-1 rounded-full text-[10px] font-semibold text-success bg-success/10 px-2 py-0.5 border border-success/20"
               >
                 <Award size={10} /> Top Skill
               </span>
