@@ -1,0 +1,9 @@
+city,datetime,event,severity,forecast_value,threshold
+Jodhpur,2026-10-02 13:00:00,High Temperature,Moderate,35.18,35
+Vadodara,2026-10-02 13:00:00,High Temperature,Moderate,35.03,35
+Jodhpur,2026-10-02 14:00:00,High Temperature,Moderate,35.54,35
+Thane,2026-10-02 14:00:00,High Temperature,Moderate,35.05,35
+Vadodara,2026-10-02 14:00:00,High Temperature,Moderate,35.2,35
+Jodhpur,2026-10-02 15:00:00,High Temperature,Moderate,35.59,35
+Vadodara,2026-10-02 15:00:00,High Temperature,Moderate,35.04,35
+Jodhpur,2026-10-02 16:00:00,High Temperature,Moderate,35.23,35

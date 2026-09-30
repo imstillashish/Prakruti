@@ -11,6 +11,7 @@ import {
   Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Badge } from '@/components/ui/badge';
 import { SectionBanner } from '@/components/shell/SectionBanner';
 import { ResourceAction, RpiData } from '@/types';
@@ -168,12 +169,10 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                     {rec.description}
                   </p>
                   <div className="mt-2.5 flex flex-wrap items-center gap-3">
-                    <Button
+                    <ShaderButton
                       type="button"
-                      size="sm"
-                      variant={dispatched ? 'default' : 'secondary'}
                       onClick={() => handleDispatch(rec.id)}
-                      className="text-xs"
+                      className="h-8 px-3 text-xs"
                     >
                       {dispatched ? (
                         <>
@@ -186,7 +185,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                           <span>Dispatch Resource</span>
                         </>
                       )}
-                    </Button>
+                    </ShaderButton>
                     <span className="lg:hidden text-[11px] font-mono text-muted-foreground">
                       {rec.actionCode} · {rec.department}
                     </span>

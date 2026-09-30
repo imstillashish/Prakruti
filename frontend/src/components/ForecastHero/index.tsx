@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
 import { MOCK_FORECAST, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
@@ -338,10 +339,10 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                     <div className="text-xs text-muted-foreground leading-relaxed">{outdoorAdvice}</div>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => setWhyOpen(true)} className="text-foreground text-xs">
+                <ShaderButton onClick={() => setWhyOpen(true)} className="h-8 px-3 text-xs">
                   <Activity size={14} />
                   Inspect Model Evidence
-                </Button>
+                </ShaderButton>
               </div>
             </div>
 

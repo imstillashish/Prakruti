@@ -259,33 +259,32 @@ export default function RealLeafletMap({
 
       {/* Floating Map Controls Bar */}
       <div className="absolute top-4 right-4 z-[500] flex flex-col gap-2 font-mono">
-        {/* Zoom & Reset Controls */}
-        <div className="flex flex-col bg-card p-1 shadow-md border border-border rounded-md">
+        {/* Zoom & Reset Controls — self-start keeps it compact instead of
+            stretching to the layer switcher's width and leaving dead space */}
+        <div className="flex flex-col self-start bg-card p-1 shadow-md border border-border rounded-md">
           <button
             onClick={handleZoomIn}
-            className="p-1.5 hover:bg-secondary text-foreground transition-colors"
+            className="flex items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
             title="Zoom In"
             type="button"
-           
           >
             <ZoomIn size={15} />
           </button>
-          <div className="h-px bg-border my-0.5" />
+          <div className="h-px bg-border" />
           <button
             onClick={handleZoomOut}
-            className="p-1.5 hover:bg-secondary text-foreground transition-colors"
+            className="flex items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
             title="Zoom Out"
             type="button"
-           
           >
             <ZoomOut size={15} />
           </button>
-          <div className="h-px bg-border my-0.5" />
+          <div className="h-px bg-border" />
           <button
-            onClick={handleReset}              className="p-1.5 hover:bg-secondary text-muted-foreground hover:text-success transition-colors rounded-md"
+            onClick={handleReset}
+            className="flex items-center justify-center p-1.5 hover:bg-secondary text-muted-foreground hover:text-success transition-colors rounded-md"
             title="Reset to All-India View"
             type="button"
-           
           >
             <RotateCcw size={15} />
           </button>

@@ -1,9 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { BrandLockup, FooterSocials, type FooterSocial } from './footer-kit';
+import { MorMark } from '@/components/brand/MorMark';
+import { AvatarStack, type AvatarItem } from '@/components/spectrumui/avatar-stack';
+
+const GITHUB_REPO = 'imstillashish/Prakruti';
+
+/**
+ * Live GitHub contributors. SSR and error states show the repo owner's
+ * avatar (github.com/<user>.png is a CDN redirect, no API rate limit);
+ * the contributors API replaces it once the fetch lands.
+ */
+function useGithubContributors(): AvatarItem[] {
+  const [contributors, setContributors] = useState<AvatarItem[]>([
+    { name: 'imstillashish', src: 'https://github.com/imstillashish.png?size=72' },
+  ]);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${GITHUB_REPO}/contributors?per_page=6`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((list) => {
+        if (!Array.isArray(list) || list.length === 0) return;
+        setContributors(
+          list.map((c: { login: string; avatar_url: string }) => ({
+            name: c.login,
+            src: `${c.avatar_url}${c.avatar_url.includes('?') ? '&' : '?'}s=72`,
+          }))
+        );
+      })
+      .catch(() => {});
+  }, []);
+
+  return contributors;
+}
 
 export type MinimalFooterVariant = 'Bar' | 'Centered';
 
@@ -14,7 +45,6 @@ export interface MinimalFooterCluster {
 
 export interface MinimalFooterProps {
   brand: string;
-  socials?: FooterSocial[];
   clusters: MinimalFooterCluster[];
   status?: string;
   copyright?: string;
@@ -24,7 +54,6 @@ export interface MinimalFooterProps {
 
 export function MinimalFooter({
   brand,
-  socials,
   clusters,
   status = 'All systems normal',
   copyright,
@@ -32,6 +61,7 @@ export function MinimalFooter({
   className,
 }: MinimalFooterProps) {
   const [open, setOpen] = useState<string | null>(null);
+  const contributors = useGithubContributors();
   const centered = variant === 'Centered';
 
   return (
@@ -51,7 +81,12 @@ export function MinimalFooter({
   <div
   className={cn('flex items-center gap-3', centered && 'order-2 w-full justify-center')}
   >
-  <BrandLockup brand={brand} />
+  <a href="/" className="inline-flex items-center gap-2 rounded-md transition-opacity duration-150 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400">
+  <MorMark className="size-7 shrink-0 text-foreground" />
+  <span className="whitespace-nowrap text-[14.5px] font-semibold tracking-[-0.3px]">
+  {brand}
+  </span>
+  </a>
   <span className="text-[12px] tabular-nums text-muted-foreground ">
   {copyright ?? `© ${brand}`}
   </span>
@@ -130,7 +165,12 @@ export function MinimalFooter({
   {status}
   </span>
   )}
-  <FooterSocials socials={socials} className="-mr-2" />
+  <AvatarStack
+  items={contributors}
+  size="sm"
+  max={6}
+  onAvatarClick={(item) => window.open(`https://github.com/${item.name}`, '_blank', 'noopener')}
+  />
   </div>
   </div>
   </div>

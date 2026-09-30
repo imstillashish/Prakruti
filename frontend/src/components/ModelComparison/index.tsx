@@ -14,6 +14,18 @@ const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: st
   wind: { label: 'Wind', unit: 'km/h', color: '#60646c' },
 };
 
+/** Compact axis codes — five full model names collide in a half-width panel,
+ *  and recharts silently drops the overlapped ticks. Full names stay in the tooltip. */
+const SHORT_MODEL: Record<string, string> = {
+  'AI Hybrid': 'AI',
+  'ECMWF IFS': 'ECMWF',
+  'GFS Seamless': 'GFS',
+  'ICON Seamless': 'ICON',
+  'Ensemble': 'ENS',
+  'Blended': 'Blend',
+  'Optimized Blend': 'Blend',
+};
+
 interface ModelComparisonProps {
   selectedCity?: string | null;
 }
@@ -80,7 +92,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
-              <XAxis dataKey="model" tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="model" tickFormatter={(v: string) => SHORT_MODEL[v] ?? v} interval={0} tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
               <Tooltip
                 cursor={{ fill: 'rgba(219,219,219,0.3)' }}
