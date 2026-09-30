@@ -126,7 +126,7 @@ export function MinimalFooter({
   <div className={cn('flex items-center gap-4', centered && 'order-3')}>
   {status && (
   <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground ">
-  <span aria-hidden className="size-1.5 rounded-full bg-emerald-500" />
+  <span aria-hidden className="size-1.5 rounded-full bg-success" />
   {status}
   </span>
   )}

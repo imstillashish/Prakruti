@@ -20,6 +20,7 @@ import { ExtremeWeatherPage } from '@/components/pages/ExtremeWeatherPage';
 import { ModelPerformancePage } from '@/components/pages/ModelPerformancePage';
 import { DataHealthPage } from '@/components/pages/DataHealthPage';
 import { RpiPage } from '@/components/pages/RpiPage';
+import { MinimalFooter } from '@/components/spectrumui/blocks/footers/minimal-footer';
 import { NavPage, CityForecast } from '@/types';
 
 export default function Home() {
@@ -102,23 +103,21 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer
-        className="relative z-10 max-w-[1440px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3"
-        style={{ borderTop: '1px solid #dcdee0' }}
-      >
-        <div className="flex flex-wrap items-center gap-2" style={{ fontFamily: 'var(--font-family-mono)', fontSize: 11, color: '#575757' }}>
-          <span style={{ fontWeight: 700, color: '#212121' }}>Prakruti · प्रकृति</span>
-          <span style={{ color: '#dcdee0' }}>·</span>
-          <span>Hybrid AI–NWP Platform</span>
-          <span style={{ color: '#dcdee0' }}>·</span>
-          <span>MoES / NCMRWF</span>
-          <span style={{ color: '#dcdee0' }}>·</span>
-          <span>SIH 2026 · PS: 26081</span>
-        </div>
-        <div style={{ fontFamily: 'var(--font-family-mono)', fontSize: 10, color: '#808080' }}>
-          45 Indian Synoptic Stations · CartoDB Positron
-        </div>
-      </footer>
+      <MinimalFooter
+        brand="Prakruti"
+        copyright="Hybrid AI–NWP Platform · MoES / NCMRWF · SIH 2026 · PS 26081"
+        clusters={[
+          {
+            title: 'Project',
+            links: [
+              { label: 'GitHub', href: 'https://github.com/imstillashish/Prakruti' },
+              { label: 'API', href: 'https://prakruti-api.onrender.com' },
+            ],
+          },
+        ]}
+        status="45 stations · live"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 md:pl-20"
+      />
     </div>
   );
 }

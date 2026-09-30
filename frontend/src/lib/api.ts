@@ -671,11 +671,11 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
     }
 
     const modelDisplayNames: Record<string, { name: string; color: string }> = {
-      ecmwf: { name: 'ECMWF IFS', color: '#0ea5e9' },
-      gfs: { name: 'GFS Seamless', color: '#6366f1' },
-      icon: { name: 'ICON Seamless', color: '#10b981' },
-      gem: { name: 'GEM Seamless', color: '#8b5cf6' },
-      ai: { name: 'AI Hybrid Model', color: '#3b82f6' },
+      ecmwf: { name: 'ECMWF IFS', color: '#171717' },
+      gfs: { name: 'GFS Seamless', color: '#1e6fb8' },
+      icon: { name: 'ICON Seamless', color: '#60646c' },
+      gem: { name: 'GEM Seamless', color: '#9e9e9e' },
+      ai: { name: 'AI Hybrid Model', color: '#000000' },
     };
 
     const totalWeight = weights.reduce((sum, w) => sum + (w.weight || 0), 0) || 1;
@@ -683,7 +683,7 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
     return weights.map((w) => {
       const info = modelDisplayNames[w.model.toLowerCase()] || {
         name: w.model.toUpperCase(),
-        color: '#64748b',
+        color: '#9e9e9e',
       };
       const skill = skills?.find(s => s.model.toLowerCase() === w.model.toLowerCase());
 
