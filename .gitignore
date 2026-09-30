@@ -24,6 +24,11 @@ secrets/
 .freebuff/
 .claude/
 .continue/
+# Downloaded agent skill caches and tool state (per-machine)
+.agents/
+agent/
+data/skills/
+skills-lock.json
 # Internal engineering specs and design notes
 docs/superpowers/
 # Repository tooling (history-rewrite and audit scripts)
