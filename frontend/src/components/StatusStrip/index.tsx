@@ -115,8 +115,8 @@ export function StatusStrip() {
             </div>
           ) : isError ? (
             <div className="flex items-center gap-2 px-2.5 py-0.5 bg-[#fbf5f4] border border-[#cf746e]">
-              <span className="inline-block h-2 w-2 bg-[#b4544a]" />
-              <span className="text-[10px] font-bold text-[#b4544a] tracking-wider uppercase">
+              <span className="inline-block h-2 w-2 bg-[#b42318]" />
+              <span className="text-[10px] font-bold text-[#b42318] tracking-wider uppercase">
                 Standby
               </span>
             </div>

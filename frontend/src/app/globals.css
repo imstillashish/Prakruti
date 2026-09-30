@@ -185,6 +185,11 @@ body {
   text-decoration: underline;
 }
 
+/* Modal backdrop — dimmed scrim */
+.modal-backdrop {
+  background: rgba(23, 23, 23, 0.32);
+}
+
 /* Status Pulsing Ring — engine liveness only */
 .status-pulse {
   animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;

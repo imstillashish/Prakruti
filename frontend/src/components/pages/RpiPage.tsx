@@ -143,7 +143,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
             </div>
           ) : errorMessage && !rpiData ? (
             <div className="w-full h-72 bg-white flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border p-6 text-center">
-              <span className="text-xs font-mono text-[#b4544a]">
+              <span className="text-xs font-mono text-[#b42318]">
                 {errorMessage}
               </span>
               <button

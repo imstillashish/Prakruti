@@ -32,7 +32,7 @@ function lerpColor(a: string, b: string, t: number): string {
 function getBarColor(skill: number): string {
   if (skill > 0.7) return '#16a34a'; // OK signal
   if (skill > 0.4) return '#f59e0b'; // amber = watch
-  return '#b4544a'; // earth red = poor
+  return '#b42318'; // hazard = poor
 }
 
 /* ──────────────────── Individual 3D Bar ──────────────────── */
@@ -234,7 +234,7 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
       style={{ pointerEvents: 'none' }}
     >
       <div
-        className="px-3 py-2.5 shadow-sm border border-border bg-card text-xs whitespace-nowrap"
+        className="px-3 py-2.5 border border-border bg-popover text-popover-foreground text-xs whitespace-nowrap rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
         style={{ minWidth: 160 }}
       >
         <div className="font-bold text-foreground mb-1">{cell.model}</div>
@@ -458,7 +458,7 @@ export function PerformanceMatrix3D() {
                 <span className="text-xs text-muted-foreground">Medium (40–70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#b4544a]" />
+                <span className="w-2 h-2 rounded-full bg-destructive" />
                 <span className="text-xs text-muted-foreground">Low ({'<'}40%)</span>
               </div>
             </>

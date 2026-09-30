@@ -93,10 +93,10 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold tracking-widest text-foreground uppercase">
-                  ALERT CENTER
+                <span className="text-base font-semibold text-foreground">
+                  Alert Center
                 </span>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-white border border-border text-muted-foreground">
+                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full bg-secondary border border-border text-muted-foreground">
                   {alerts.length} Total
                 </span>
               </div>
@@ -105,7 +105,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-[#ebebeb] text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
+            className="rounded-md p-1 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
            
           >
             <X size={16} />
@@ -137,12 +137,12 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
               onClick={() => setSeverityFilter('danger')}
               className={`flex-1 py-1 px-2 text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                 severityFilter === 'danger'
-                  ? 'bg-[#b4544a] text-white font-bold'
-                  : 'text-[#b4544a] hover:bg-[#faeae8]'
+                  ? 'bg-destructive text-white font-semibold'
+                  : 'text-destructive hover:bg-destructive/10'
               }`}
              
             >
-              <span className={`w-1.5 h-1.5 ${severityFilter === 'danger' ? 'bg-white' : 'bg-[#b4544a]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
               <span>Red</span>
               <span className="text-[10px] px-1 font-mono">
                 {redCount}
@@ -198,7 +198,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   setSeverityFilter('all');
                   setSelectedState('all');
                 }}
-                className="px-2 py-1.5 border border-border bg-secondary hover:bg-[#ebebeb] text-muted-foreground hover:text-foreground text-xs font-mono flex items-center gap-1 transition-colors"
+                className="px-2 py-1.5 border border-border bg-secondary hover:bg-accent text-muted-foreground hover:text-foreground text-xs font-mono flex items-center gap-1 transition-colors"
                
                 title="Reset filters"
               >

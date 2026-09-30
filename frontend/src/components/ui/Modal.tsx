@@ -42,23 +42,18 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
     >
       <div
         className={cn(
-          'w-full bg-white border border-border shadow-xl',
+          'w-full rounded-lg border border-border bg-card shadow-[0_8px_24px_rgba(0,0,0,0.08)] animate-fade-in',
           sizes[size],
           'max-h-[85vh] overflow-y-auto',
           className
         )}
-        style={{
-          borderRadius: 0,
-          animation: 'modalIn 0.2s cubic-bezier(0.16,1,0.3,1)',
-        }}
       >
         {title && (
           <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-border">
-            <h2 className="text-xs font-mono font-bold tracking-widest text-foreground uppercase">{title}</h2>
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-secondary border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
-             
+              className="rounded-md p-1 hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
               aria-label="Close"
             >
               <X size={15} />
@@ -67,12 +62,6 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
         )}
         <div className="px-5 py-4">{children}</div>
       </div>
-      <style>{`
-        @keyframes modalIn {
-          from { opacity: 0; transform: scale(0.96) translateY(8px); }
-          to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

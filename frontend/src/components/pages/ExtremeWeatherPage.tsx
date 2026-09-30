@@ -228,7 +228,7 @@ export function ExtremeWeatherPage() {
                     <span
                       className="w-2 h-2 shrink-0"
                       style={{
-                        background: isRed ? '#b4544a' : '#d97706',
+                        background: isRed ? '#b42318' : '#ab6400',
                       }}
                     />
                     <div className="min-w-0">
