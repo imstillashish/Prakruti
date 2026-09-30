@@ -21,19 +21,18 @@ export function ProgressBar({ value, max = 100, color = '#16a34a', height = 6, a
         </div>
       )}
       <div
-        className="w-full overflow-hidden border border-border"
-        style={{ height, background: '#f0f0f0', borderRadius: 0 }}
+        className="w-full overflow-hidden rounded-full border border-border bg-secondary"
+        style={{ height }}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
       >
         <div
-          className="h-full"
+          className="h-full rounded-full"
           style={{
             width: `${pct}%`,
             background: color,
-            borderRadius: 0,
             transition: animated ? 'width 0.8s cubic-bezier(0.16,1,0.3,1)' : undefined,
           }}
         />

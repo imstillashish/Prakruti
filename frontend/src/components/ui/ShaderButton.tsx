@@ -26,15 +26,15 @@ export function ShaderButton({ className, children, ...props }: ShaderButtonProp
       {...props}
       className={cn(
         'relative isolate inline-flex h-10 items-center justify-center gap-2 overflow-hidden rounded-md px-4',
-        'text-sm font-semibold text-white shadow-[0_4px_12px_rgba(13,116,206,0.25)]',
+        'text-sm font-semibold text-white shadow-sm',
         'transition-transform duration-100 active:translate-y-px',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d74ce]',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
         'disabled:pointer-events-none disabled:opacity-50',
         className
       )}
     >
       {/* Fallback fill — pre-hydration, reduced-motion, and WebGL-failure state */}
-      <span aria-hidden className="absolute inset-0 z-0 bg-[#0d74ce]" />
+      <span aria-hidden className="absolute inset-0 z-0 bg-primary" />
       {shaderOn && (
         <span aria-hidden className="absolute inset-0 z-0">
           <Suspense fallback={null}>
@@ -46,19 +46,19 @@ export function ShaderButton({ className, children, ...props }: ShaderButtonProp
               <ShaderGradient
                 type="plane"
                 animate="on"
-                uSpeed={0.4}
+                uSpeed={0.3}
                 uFrequency={5.5}
-                uStrength={4}
-                uAmplitude={1.2}
-                color1="#0d74ce"
-                color2="#1e6fb8"
-                color3="#cfe7ff"
+                uStrength={3.5}
+                uAmplitude={1.0}
+                color1="#0a0a0a"
+                color2="#171717"
+                color3="#262626"
                 lightType="3d"
                 cDistance={3.6}
                 cPolarAngle={90}
                 cAzimuthAngle={135}
                 shader="defaults"
-                reflection={0.2}
+                reflection={0.15}
                 grain="off"
               />
             </ShaderGradientCanvas>
