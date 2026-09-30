@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { AlertTriangle, CloudRain, Thermometer, Wind, ChevronRight, ShieldAlert, LucideIcon } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
 import type { ExtremeEvent } from '@/types';
@@ -70,20 +70,14 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
   }, [selectedCity]);
 
   return (
-    <GlassCard padding="md" variant="default" className="flex flex-col justify-between h-full">
+    <Panel
+      title="Early warning advisory"
+      subtitle="IMD Probabilistic Risk Thresholds"
+      term="rpi"
+      className="flex flex-col justify-between h-full"
+      actions={<Badge variant="warning">Active Bulletins</Badge>}
+    >
       <div>
-        <div className="flex items-center justify-between mb-4 border-b border-[#dbdbdb] pb-3 font-mono">
-          <div className="flex items-center gap-2">
-            <ShieldAlert size={14} className="text-[#b4544a]" />
-            <div>
-              <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-                EARLY WARNING ADVISORY
-              </span>
-              <p className="text-[11px] text-[#808080] mt-0.5 font-sans">IMD Probabilistic Risk Thresholds</p>
-            </div>
-          </div>
-          <Badge variant="warning">Active Bulletins</Badge>
-        </div>
 
         <div className="space-y-2.5">
           {events.map((event, idx) => {
@@ -127,9 +121,9 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
         </div>
       </div>
 
-      <div className="border-t border-[#f0f0f0] mt-3 pt-2 text-[11px] font-mono text-[#808080] text-center">
+      <div className="border-t border-border mt-3 pt-2 text-[11px] font-mono text-muted-foreground text-center">
         Calibrated to IMD &amp; NDMA disaster threshold criteria
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

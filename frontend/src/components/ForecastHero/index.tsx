@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, AlertTriangle, ChevronRight, Activity } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/button';
+import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
 import { getForecastMetrics, MOCK_FORECAST, getMetadata, formatLastUpdated } from '@/lib/api';
 import type { ForecastMetrics } from '@/types';
@@ -146,30 +147,32 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               <Thermometer size={16} className="text-[#c0554d]" />
             </div>
             <div className="flex items-baseline gap-1 font-mono">
-              <span className="text-3xl sm:text-4xl font-bold text-[#212121] tracking-tight">
+              <span className="text-3xl font-bold text-[#212121] tracking-tight tabular-nums">
                 <AnimatedNumber value={forecast.temperature} decimals={1} />
               </span>
               <span className="text-sm font-semibold text-[#808080]">°C</span>
             </div>
-            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+            <div className="mt-2 flex items-center gap-1 text-[11px] font-mono text-[#808080]">
               Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.temperatureUncertainty} °C</span>
+              <Explain term="uncertainty" />
             </div>
           </div>
 
-          {/* Rainfall */}
+          {/* Rainfall — the page's one oversized readout */}
           <div className="p-4 sm:p-5 bg-white">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Precipitation</span>
-              <CloudRain size={16} className="text-[#1db961]" />
+              <CloudRain size={16} className="text-[#0369a1]" />
             </div>
             <div className="flex items-baseline gap-1 font-mono">
-              <span className="text-3xl sm:text-4xl font-bold text-[#212121] tracking-tight">
+              <span className="text-5xl sm:text-6xl font-bold text-[#212121] tracking-tight tabular-nums">
                 <AnimatedNumber value={forecast.rainfall} decimals={0} />
               </span>
               <span className="text-sm font-semibold text-[#808080]">mm</span>
             </div>
-            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+            <div className="mt-2 flex items-center gap-1 text-[11px] font-mono text-[#808080]">
               Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.rainfallUncertainty} mm</span>
+              <Explain term="uncertainty" />
             </div>
           </div>
 
@@ -185,15 +188,19 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               </span>
               <span className="text-sm font-semibold text-[#808080]">km/h</span>
             </div>
-            <div className="mt-2 text-[11px] font-mono text-[#808080]">
+            <div className="mt-2 flex items-center gap-1 text-[11px] font-mono text-[#808080]">
               Uncertainty: <span className="font-semibold text-[#333333]">±{forecast.windUncertainty} km/h</span>
+              <Explain term="uncertainty" />
             </div>
           </div>
 
           {/* Confidence Score */}
           <div className="p-4 sm:p-5 bg-[#f7f7f7]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#575757]">Blend Reliability</span>
+              <span className="flex items-center gap-1 text-xs font-mono uppercase tracking-wider text-[#575757]">
+                Blend Reliability
+                <Explain term="confidence" />
+              </span>
               <ShieldCheck size={16} className="text-[#168a49]" />
             </div>
             <div className="flex items-baseline gap-1 font-mono">
@@ -210,9 +217,12 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
         {/* Layperson Daily Guidance: 3 Practical Action Rungs */}
         <div className="p-4 sm:p-6 bg-[#fcfcfc]">
-          <h2 className="text-xs font-mono uppercase tracking-wider text-[#575757] mb-3">
-            Practical Daily Guidance for {city}
-          </h2>
+          <div className="mb-3">
+            <h2 className="text-xs font-mono uppercase tracking-wider text-[#575757]">
+              Practical Daily Guidance for {city}
+            </h2>
+            <p className="text-[11px] text-[#808080] mt-0.5">What to do about it</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
             {/* Gear */}
             <div

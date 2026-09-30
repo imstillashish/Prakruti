@@ -5,6 +5,10 @@ export const glossary: Record<string, GlossaryEntry> = {
     title: "Average miss (RMSE)",
     body: "How far off a forecast model is on average, in real units (°C, mm, km/h). Smaller is better.",
   },
+  uncertainty: {
+    title: "Uncertainty (±)",
+    body: "The range the real value is likely to fall in. Smaller means a sharper forecast.",
+  },
   weight: {
     title: "Model influence",
     body: "How much say each forecast model has in the final answer. Models that have been more accurate for this city recently get more say.",

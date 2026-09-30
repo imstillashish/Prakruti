@@ -1,7 +1,7 @@
 import { Explain } from '@/components/explain/Explain';
 
-export function Panel({ title, subtitle, term, children, className }: {
-  title: string; subtitle?: string; term?: string; children: React.ReactNode; className?: string;
+export function Panel({ title, subtitle, term, actions, children, className }: {
+  title: string; subtitle?: string; term?: string; actions?: React.ReactNode; children: React.ReactNode; className?: string;
 }) {
   return (
     <section className={`border border-border bg-card ${className ?? ''}`}>
@@ -12,6 +12,7 @@ export function Panel({ title, subtitle, term, children, className }: {
           </h2>
           {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
         </div>
+        {actions && <div className="flex-shrink-0 self-center">{actions}</div>}
       </header>
       <div className="p-4">{children}</div>
     </section>
