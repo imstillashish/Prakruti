@@ -1,15 +1,71 @@
 name: Keep Render Awake
 
+# Render's free tier spins the service down after ~15 min without inbound
+# traffic; a cold start then costs 30-60s per request. The schedule fires
+# every 5 min *in theory* — in practice GitHub's cron is best-effort (runs
+# queued during load are DROPPED, not delayed; observed here: 6 runs in 2
+# days) and high-frequency schedules get throttled hardest. So this workflow
+# treats the schedule as a hint, not a guarantee:
+#   - the overlap audit skips no-op runs and self-heals gaps: after any
+#     outage, the next run that does fire still warms the service;
+#   - the 3-attempt retry loop rides out 3-6 min of runner-queue jitter and
+#     buys ~20+ min of idleness per successful ping (one cold attempt of
+#     up to 2 min still fits a 10-min job);
+#   - /health is the cheapest warm route (explicitly no data work; note
+#     "/api/health" is NOT a route — the 404 JSON handler is the one that
+#     touches ensure_fresh_forecast, so pinging a wrong path would be both
+#     wrong and expensive).
+
 on:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
+    - cron: "*/5 * * * *"
   workflow_dispatch:
+
+concurrency:
+  group: keep-render-awake
+  cancel-in-progress: false
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Ping Render
+      - name: Skip if the last ping is still fresh
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          curl -L --max-time 120 \
-          https://prakruti-api.onrender.com/
+          pending=$(gh run list --workflow keep-render-awake.yml --repo "$GITHUB_REPOSITORY" \
+            --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress")] | length')
+          if [ "$pending" -gt 1 ]; then
+            echo "Another ping is already in flight — queue offset no longer needed, skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          last=$(gh run list --workflow keep-render-awake.yml --repo "$GITHUB_REPOSITORY" \
+            --status completed --limit 1 --json updatedAt --jq '.[0].updatedAt // empty')
+          if [ -z "$last" ]; then
+            echo "No completed ping yet — warming the service."
+          else
+            age=$(( $(date -u +%s) - $(date -u -d "$last" +%s) ))
+            if [ "$age" -lt 240 ]; then
+              echo "Last ping was ${age}s ago (< 4 min) — service already warm, skipping."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Last ping was ${age}s ago — warming the service."
+            fi
+          fi
+
+      - name: Ping Render /health (3 attempts)
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -u
+          ok=""
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 -L \
+              https://prakruti-api.onrender.com/health || true)
+            echo "attempt $i: /health -> ${code:-no response}"
+            if [ "$code" = "200" ]; then ok=yes; break; fi
+            [ "$i" = "3" ] || sleep 45
+          done
+          [ -n "$ok" ] || { echo "::error::Render /health failed all 3 attempts — service may be down"; exit 1; }
