@@ -5,6 +5,7 @@ import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { ShaderBlob } from '@/components/ui/ShaderBlob';
 import type { ExtremeEvent } from '@/types';
 
 const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
@@ -20,6 +21,7 @@ const SEVERITY_STYLES: Record<
   {
     badge: 'destructive' | 'warning' | 'success';
     color: string;
+    blobColor: string;
     borderClass: string;
     bgClass: string;
   }
@@ -27,18 +29,21 @@ const SEVERITY_STYLES: Record<
   alert: {
     badge: 'destructive',
     color: '#b42318',
+    blobColor: '#ef4444',
     borderClass: 'border-destructive/30',
     bgClass: 'ambient-gradient-destructive',
   },
   warning: {
     badge: 'warning',
     color: '#ab6400',
+    blobColor: '#f59e0b',
     borderClass: 'border-warning/30',
     bgClass: 'ambient-gradient-warning',
   },
   watch: {
     badge: 'success',
     color: '#16a34a',
+    blobColor: '#22c55e',
     borderClass: 'border-success/30',
     bgClass: 'ambient-gradient-success',
   },
@@ -113,12 +118,17 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
               <div
                 key={`${event.type}-${event.window}-${idx}`}
                 className={cn(
-                  'w-full text-left p-3 transition-colors border rounded-md',
+                  'relative overflow-hidden w-full text-left p-3 transition-colors border rounded-md group',
                   style.borderClass,
                   style.bgClass
                 )}
               >
-                <div className="flex items-center gap-3">
+                {/* Ambient 3D Noise Displacement Shader Mesh */}
+                <div className="absolute -right-6 -top-8 -bottom-8 w-44 pointer-events-none opacity-45 mix-blend-multiply">
+                  <ShaderBlob color={style.blobColor} scale={1.3} speed={0.4} opacity={0.85} />
+                </div>
+
+                <div className="relative z-10 flex items-center gap-3">
                   {/* Probability meter */}
                   <ProbabilityArc value={event.probability} color={color} />
 

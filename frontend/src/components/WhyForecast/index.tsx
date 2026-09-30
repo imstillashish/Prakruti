@@ -4,6 +4,7 @@ import { Modal } from '@/components/ui/Modal';
 import { getModelWeightsData, getConfidence, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight, ConfidenceRecord } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ShaderBlob } from '@/components/ui/ShaderBlob';
 
 interface WhyForecastModalProps {
   open: boolean;
@@ -85,20 +86,27 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
 
         {/* Reasoning */}
         <div
-          className="p-3 rounded-md border border-success/30 ambient-gradient-success text-foreground"
+          className="relative overflow-hidden p-3 rounded-md border border-success/30 ambient-gradient-success text-foreground"
         >
-          <div className="flex items-center justify-between mb-1.5 font-mono">
-            <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
-            {conf && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-success/20">
-                {conf.confidence}% · {conf.confidence_label}
-              </span>
-            )}
+          {/* Ambient 3D Noise Displacement Shader Mesh */}
+          <div className="absolute -right-6 -top-8 -bottom-8 w-44 pointer-events-none opacity-45 mix-blend-multiply">
+            <ShaderBlob color="#22c55e" scale={1.3} speed={0.4} opacity={0.85} />
           </div>
-          <p className="text-xs text-foreground leading-relaxed">
-            {conf?.explanation ||
-              "ECMWF IFS currently demonstrates the highest inverse-RMSE skill score for this geographic sector, with Random Forest residual adjustments compensating for local diurnal boundary layer effects."}
-          </p>
+
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-1.5 font-mono">
+              <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
+              {conf && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-success/20">
+                  {conf.confidence}% · {conf.confidence_label}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-foreground leading-relaxed">
+              {conf?.explanation ||
+                "ECMWF IFS currently demonstrates the highest inverse-RMSE skill score for this geographic sector, with Random Forest residual adjustments compensating for local diurnal boundary layer effects."}
+            </p>
+          </div>
         </div>
 
         {/* Note */}
