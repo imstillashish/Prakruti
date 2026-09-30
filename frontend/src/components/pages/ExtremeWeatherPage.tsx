@@ -87,7 +87,7 @@ export function ExtremeWeatherPage() {
         subtitle="Gridded hazard threshold breaches from multi-model blending — red is the most severe"
         term="rpi"
         actions={
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-secondary border border-border text-muted-foreground">
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-secondary border border-border text-muted-foreground rounded-full">
             {filteredAlerts.length} / {alerts.length} Active
           </span>
         }
@@ -95,18 +95,18 @@ export function ExtremeWeatherPage() {
         {/* Filters: Red/Orange pills + Statewise selector */}
         <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-border">
           {/* Severity Filter Tabs */}
-          <div className="flex items-center gap-1 p-0.5 bg-secondary border border-border">
+          <div className="flex items-center gap-1 p-0.5 bg-secondary border border-border rounded-md">
             <button
               type="button"
               onClick={() => setSeverityFilter('all')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 ${
+              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'all'
                   ? 'bg-card text-foreground font-bold border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`
             }>
               <span>All</span>
-              <span className="text-[10px] px-1 bg-secondary text-muted-foreground font-mono">
+              <span className="text-[10px] px-1 bg-secondary text-muted-foreground font-mono rounded-full">
                 {alerts.length}
               </span>
             </button>
@@ -114,15 +114,15 @@ export function ExtremeWeatherPage() {
             <button
               type="button"
               onClick={() => setSeverityFilter('danger')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 ${
+              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'danger'
                   ? 'bg-destructive text-white font-bold'
                   : 'text-destructive hover:bg-destructive/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
               <span>Red</span>
-              <span className={`text-[10px] px-1 font-mono ${
+              <span className={`text-[10px] px-1 font-mono rounded-full ${
                 severityFilter === 'danger' ? 'bg-white/20 text-white' : 'bg-destructive/10 text-destructive'
               }`}>
                 {redCount}
@@ -132,15 +132,15 @@ export function ExtremeWeatherPage() {
             <button
               type="button"
               onClick={() => setSeverityFilter('warning')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 ${
+              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'warning'
                   ? 'bg-warning text-foreground font-bold'
                   : 'text-warning hover:bg-warning/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 ${severityFilter === 'warning' ? 'bg-foreground' : 'bg-warning'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'warning' ? 'bg-foreground' : 'bg-warning'}`} />
               <span>Orange</span>
-              <span className={`text-[10px] px-1 font-mono ${
+              <span className={`text-[10px] px-1 font-mono rounded-full ${
                 severityFilter === 'warning' ? 'bg-foreground/10 text-foreground' : 'bg-warning/10 text-warning'
               }`}>
                 {orangeCount}
@@ -156,7 +156,7 @@ export function ExtremeWeatherPage() {
             <select
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
-              className="text-xs font-mono pl-6 pr-7 py-1.5 bg-card border border-border text-foreground focus:outline-none focus:border-primary cursor-pointer appearance-none"
+              className="text-xs font-mono pl-6 pr-7 py-1.5 bg-card border border-border text-foreground focus:outline-none focus:border-primary cursor-pointer appearance-none rounded-md"
             >
               <option value="all">All States ({alerts.length})</option>
               {uniqueStates.map(([st, count]) => (
@@ -178,7 +178,7 @@ export function ExtremeWeatherPage() {
                 setSeverityFilter('all');
                 setSelectedState('all');
               }}
-              className="px-2 py-1.5 border border-border bg-card hover:bg-accent text-muted-foreground hover:text-foreground text-xs font-mono flex items-center gap-1 transition-colors duration-100"
+              className="px-2 py-1.5 border border-border bg-card hover:bg-accent text-muted-foreground hover:text-foreground text-xs font-mono flex items-center gap-1 transition-colors duration-100 rounded-md"
               title="Reset filters"
             >
               <RotateCcw size={11} />

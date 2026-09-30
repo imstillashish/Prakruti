@@ -122,29 +122,28 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
         <div className="lg:col-span-12 space-y-6">
           {/* Section 1 — Risk Priority Index Hero Card */}
           {isLoading ? (
-            <div className="w-full h-72 bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
+            <div className="w-full h-72 bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border rounded-lg">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin rounded-full" />
               <span className="text-xs font-mono">
                 Starting AI weather engine… This may take up to 60 seconds.
               </span>
             </div>
           ) : errorMessage && !rpiData ? (
-            <div className="w-full h-72 bg-white flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border p-6 text-center">
-              <span className="text-xs font-mono text-[#b42318]">
+            <div className="w-full h-72 bg-card flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border p-6 text-center rounded-lg">
+              <span className="text-xs font-mono text-destructive">
                 {errorMessage}
               </span>
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="px-3 py-1 text-xs font-mono font-bold bg-white border border-border hover:bg-secondary text-foreground cursor-pointer"
-               
+                className="px-3 py-1 text-xs font-mono font-bold bg-card border border-border hover:bg-secondary text-foreground cursor-pointer rounded-md"
               >
                 Try Again
               </button>
             </div>
           ) : !rpiData ? (
-            <div className="w-full h-72 bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
+            <div className="w-full h-72 bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border rounded-lg">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin rounded-full" />
               <span className="text-xs font-mono">
                 Starting AI weather engine… This may take up to 60 seconds.
               </span>
