@@ -36,12 +36,12 @@ export function ModelPerformancePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-secondary text-foreground border border-border">
+        <div className="w-9 h-9 rounded-md flex items-center justify-center bg-secondary text-foreground border border-border">
           <BarChart3 size={18} />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-foreground">Model Performance &amp; Skill</h1>
-          <p className="text-xs text-muted-foreground">Historical validation against ERA5 reanalysis across lead times and stations</p>
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">Model Performance &amp; Skill</h1>
+          <p className="text-xs text-muted-foreground">How our blended forecast stacks up against the raw models, verified against past weather.</p>
         </div>
       </div>
 
@@ -60,19 +60,19 @@ export function ModelPerformancePage() {
           <table className="w-full text-xs font-mono border-collapse">
             <thead>
               <tr className="border-b border-border text-muted-foreground">
-                <th className="text-left pb-2 font-bold uppercase">Period</th>
-                <th className="text-right pb-2 font-bold text-success uppercase">Blended (Ours)</th>
-                <th className="text-right pb-2 font-bold uppercase">AI Model</th>
-                <th className="text-right pb-2 font-bold uppercase">ECMWF IFS</th>
-                <th className="text-right pb-2 font-bold uppercase">GFS</th>
-                <th className="text-right pb-2 font-bold uppercase">Ensemble</th>
+                <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Period</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] text-success">Blended (Ours)</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">AI Model</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">ECMWF IFS</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">GFS</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Ensemble</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#f0f0f0]">
+            <tbody className="divide-y divide-border">
               {metrics.map((row) => (
                 <tr key={row.period} className="text-foreground hover:bg-secondary">
-                  <td className="py-2.5 font-bold text-foreground">{row.period}</td>
-                  <td className="py-2.5 text-right font-bold text-success bg-secondary px-2">{row.blended}</td>
+                  <td className="py-2.5 font-semibold text-foreground">{row.period}</td>
+                  <td className="py-2.5 text-right font-bold text-success bg-success/10 px-2 rounded-sm">{row.blended}</td>
                   <td className="py-2.5 text-right text-muted-foreground px-2">{row.ai}</td>
                   <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpA}</td>
                   <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpB}</td>
