@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { Header } from '@/components/Header';
+import type { MouseEvent } from 'react';
+import { TopBar } from '@/components/shell/TopBar';
+import { NavRail } from '@/components/shell/NavRailView';
 import { BackendConnectingIndicator } from '@/components/BackendConnectingIndicator';
 import { StatusStrip } from '@/components/StatusStrip';
-import { CursorEffect } from '@/components/CursorEffect';
 import { ForecastHero } from '@/components/ForecastHero';
 import { ModelContribution } from '@/components/ModelContribution';
 import { ForecastTimeline } from '@/components/ForecastTimeline';
@@ -27,6 +28,12 @@ export default function Home() {
   const handleCitySelect = (city: CityForecast | string) => {
     const cityName = typeof city === 'string' ? city : city.city;
     setSelectedCity(cityName);
+  };
+
+  // The TopBar diagnostics button jumps to Data Health without owning nav state.
+  const handleTopBarNav = (e: MouseEvent<HTMLElement>) => {
+    const target = (e.target as HTMLElement).closest('[data-nav]');
+    if (target) setCurrentPage(target.getAttribute('data-nav') as NavPage);
   };
 
   const renderContent = () => {
@@ -81,18 +88,15 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      {/* Under-Lightning Electric Cursor */}
-      <CursorEffect />
-
-      {/* Floating Boxed Taskbar Panel */}
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+    <div className="relative min-h-screen overflow-x-hidden" onClick={handleTopBarNav}>
+      <TopBar selectedCity={selectedCity} />
+      <NavRail currentPage={currentPage} onNavigate={setCurrentPage} />
 
       {/* Global Backend Connecting / Cold Start Indicator */}
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-20 pb-20">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-20 pb-20 md:pl-20">
         <StatusStrip />
         {renderContent()}
       </main>
