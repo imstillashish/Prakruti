@@ -332,7 +332,7 @@ interface Surface {
 const SURFACE: Record<DataTableVariant, Surface> = {
   default: {
   frame:
-  'rounded-2xl border border-border bg-white  ',
+  'rounded-lg border border-border bg-white  ',
   head: 'bg-muted ',
   headRule: 'border-b border-border ',
   divider: 'border-t border-border ',
@@ -342,7 +342,7 @@ const SURFACE: Record<DataTableVariant, Surface> = {
   },
   bordered: {
   frame:
-  'rounded-2xl border border-border bg-white  ',
+  'rounded-lg border border-border bg-white  ',
   head: 'bg-muted ',
   headRule: 'border-b border-border ',
   divider: 'border-t border-border ',
@@ -352,7 +352,7 @@ const SURFACE: Record<DataTableVariant, Surface> = {
   },
   striped: {
   frame:
-  'rounded-2xl border border-border bg-white  ',
+  'rounded-lg border border-border bg-white  ',
   head: 'bg-white ',
   headRule: 'border-b border-border ',
   divider: '',
@@ -373,7 +373,7 @@ const SURFACE: Record<DataTableVariant, Surface> = {
   },
   panel: {
   frame:
-  'rounded-2xl bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_0_rgba(0,0,0,0.04)] ring-1 ring-neutral-950/8  ',
+  'rounded-lg bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_0_rgba(0,0,0,0.04)] ring-1 ring-neutral-950/8  ',
   head: 'bg-muted ',
   headRule: 'border-b border-border ',
   divider: 'border-t border-border ',
@@ -583,7 +583,7 @@ function EmptyHint({
   variants={EMPTY_ITEM}
   transition={motionOn ? SPRING_ICON : INSTANT}
   className={cn(
-  'mt-3 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted  ',
+  'mt-3 rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted  ',
   PRESS,
   FOCUS,
   )}
@@ -635,7 +635,7 @@ function SelectBox({
   onShiftPick();
   }}
   onChange={(event) => onChange(event.currentTarget.checked)}
-  className="peer absolute inset-0 size-full cursor-pointer appearance-none rounded-xl outline-hidden"
+  className="peer absolute inset-0 size-full cursor-pointer appearance-none rounded-md outline-hidden"
   />
   <span
   aria-hidden="true"
@@ -1241,7 +1241,7 @@ export function DataTable<T>({
   placeholder={searchPlaceholder}
   aria-label={searchPlaceholder}
   className={cn(
-  'h-9 w-full rounded-xl border border-border bg-white ps-8 pe-8 text-base text-foreground placeholder:text-muted-foreground sm:text-sm  ',
+  'h-9 w-full rounded-md border border-border bg-white ps-8 pe-8 text-base text-foreground placeholder:text-muted-foreground sm:text-sm  ',
   'transition-[border-color] duration-150 ease-out',
   'focus:border-neutral-400 ',
   '[&::-webkit-search-cancel-button]:hidden',
@@ -1265,7 +1265,7 @@ export function DataTable<T>({
   }
   transition={motionOn ? SPRING_ICON : INSTANT}
   className={cn(
-  'absolute inset-y-0 end-1 my-auto grid size-7 place-items-center rounded-lg text-muted-foreground hover:text-foreground ',
+  'absolute inset-y-0 end-1 my-auto grid size-7 place-items-center rounded-sm text-muted-foreground hover:text-foreground ',
   PRESS,
   FOCUS,
   )}
@@ -1444,7 +1444,7 @@ export function DataTable<T>({
   type="button"
   onClick={() => toggleSort(column)}
   className={cn(
-  'group/sort -mx-1.5 inline-flex max-w-full items-center gap-1 rounded-xl px-1.5 py-1 font-medium hover:text-foreground ',
+  'group/sort -mx-1.5 inline-flex max-w-full items-center gap-1 rounded-md px-1.5 py-1 font-medium hover:text-foreground ',
   PRESS,
   align === 'end' && 'flex-row-reverse',
   active && 'text-foreground ',
@@ -1639,7 +1639,7 @@ export function DataTable<T>({
   aria-controls={isExpanded ? `${id}-detail` : undefined}
   aria-label={isExpanded ? `Hide ${name}` : `Show ${name}`}
   className={cn(
-  'grid size-8 place-items-center rounded-xl text-muted-foreground hover:text-foreground ',
+  'grid size-8 place-items-center rounded-md text-muted-foreground hover:text-foreground ',
   PRESS,
   FOCUS,
   )}
@@ -1724,7 +1724,7 @@ export function DataTable<T>({
   type="button"
   onClick={() => onRowClick?.(row)}
   className={cn(
-  '-mx-1 flex max-w-[calc(100%+0.5rem)] items-center rounded-xl px-1 text-start',
+  '-mx-1 flex max-w-[calc(100%+0.5rem)] items-center rounded-md px-1 text-start',
   FOCUS,
   )}
   >
@@ -1956,7 +1956,7 @@ export function DataTable<T>({
   disabled={safePage === 0}
   aria-label="Previous page"
   className={cn(
-  'group/page grid size-8 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-40  ',
+  'group/page grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-40  ',
   PRESS,
   FOCUS,
   )}
@@ -1969,7 +1969,7 @@ export function DataTable<T>({
   disabled={safePage >= pageCount - 1}
   aria-label="Next page"
   className={cn(
-  'group/page grid size-8 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-40  ',
+  'group/page grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-40  ',
   PRESS,
   FOCUS,
   )}

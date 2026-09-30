@@ -1848,7 +1848,7 @@ export function EmptyPanel({
   <section
   className={cn(
   EMPTY_FONT,
-  'w-full overflow-hidden rounded-2xl border border-black/[0.08] bg-white',
+  'w-full overflow-hidden rounded-lg border border-border bg-card',
   'shadow-[0_1px_2px_rgba(0,0,0,0.04),0_18px_40px_-28px_rgba(0,0,0,0.35)]',
   '  ',
   className,
@@ -2014,7 +2014,7 @@ export function DropTarget({
   return (
   <div
   className={cn(
-  'rounded-2xl border border-dashed transition-colors duration-200',
+  'rounded-lg border border-dashed transition-colors duration-200',
   active
   ? 'border-neutral-400 bg-black/[0.03]  '
   : 'border-black/[0.14] ',

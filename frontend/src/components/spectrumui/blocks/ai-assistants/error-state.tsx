@@ -66,7 +66,7 @@ export function ErrorState({
   <div
   role="alert"
   className={cn(
-  'w-full max-w-[420px] rounded-2xl border border-black/[0.08] bg-white p-4 shadow-xs  ',
+  'w-full max-w-[420px] rounded-lg border border-border bg-card p-4 shadow-xs  ',
   className,
   )}
   >
@@ -89,7 +89,7 @@ export function ErrorState({
   type="button"
   onClick={retry}
   disabled={retrying}
-  className="flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-[12.5px] font-medium text-white transition-[transform,opacity] duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] disabled:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2  "
+  className="flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-[12.5px] font-medium text-white transition-[transform,opacity] duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] disabled:opacity-60 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2  "
   >
   {retrying ? (
   <Loader2 className="size-3.5 animate-spin [animation-duration:800ms]" />

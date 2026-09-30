@@ -60,7 +60,7 @@ export function TaskRows({ tasks, variant = 'Default', className }: TaskRowsProp
   return (
   <ul
   className={cn(
-  'w-full max-w-[480px] divide-y divide-black/[0.05] overflow-hidden rounded-2xl border border-black/[0.07] bg-white shadow-xs  ',
+  'w-full max-w-[480px] divide-y divide-border overflow-hidden rounded-lg border border-border bg-card shadow-xs  ',
   className,
   )}
   >

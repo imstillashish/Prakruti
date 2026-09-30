@@ -172,7 +172,7 @@ function StatCard({
 
   return (
   <div
-  className="flex items-stretch justify-between gap-5 rounded-2xl border border-black/8 bg-white/60 p-5  "
+  className="flex items-stretch justify-between gap-5 rounded-lg border border-border bg-card p-5  "
   role="img"
   aria-label={`${label}: ${format(headline)}${
   delta != null ? `, ${rising ? 'up' : 'down'} ${Math.abs(delta).toFixed(0)} percent ${deltaLabel}` : ''
