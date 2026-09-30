@@ -4,6 +4,7 @@
 [![Problem Statement](https://img.shields.io/badge/Problem%20Statement-26081-blue.svg)](https://sih.gov.in/)
 [![Ministry](https://img.shields.io/badge/Ministry-Earth%20Sciences%20(MoES)-green.svg)](https://moes.gov.in/)
 [![Team](https://img.shields.io/badge/Team-EXELION-purple.svg)]()
+[![Live](https://img.shields.io/badge/Live-prakruti--ten.vercel.app-success.svg)](https://prakruti-ten.vercel.app)
 
 > **One weather answer for your city — blended from four, with a confidence score you can check.**
 
