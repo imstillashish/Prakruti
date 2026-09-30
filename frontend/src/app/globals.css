@@ -85,6 +85,54 @@
   --text-primary: var(--color-neutral-950);
   --text-secondary: var(--color-neutral-700);
   --text-muted: var(--color-neutral-500);
+
+  /* ===== Field instrument theme (DESIGN.md v2) ===== */
+  --background: #f6f5f1;        /* warm paper */
+  --foreground: #212121;        /* ink */
+  --card: #fdfcfa;              /* raised paper */
+  --card-foreground: #212121;
+  --popover: #ffffff;
+  --popover-foreground: #212121;
+  --primary: #168a49;           /* signal green — OK/active/positive only */
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #212121;
+  --muted: #f0f0f0;
+  --muted-foreground: #575757;
+  --accent: #eaf3ee;            /* green-tinted hover wash */
+  --accent-foreground: #14522f;
+  --destructive: #b4544a;       /* earth red = hazard */
+  --warning: #f59e0b;           /* amber = watch */
+  --water: #0369a1;             /* blue = rainfall/water data */
+  --border: #2121211f;          /* 12% ink hairline */
+  --input: #dbdbdb;
+  --ring: #168a49;
+  --radius: 0.125rem;           /* 2px — instrument sharpness */
+}
+
+/* Tailwind v4 theme mapping — generates bg-card, text-muted-foreground, rounded-sm, etc. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --color-water: var(--water);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: var(--radius);
 }
 
 *,
@@ -99,8 +147,8 @@ html {
 
 body {
   font-family: var(--font-family-sans);
-  background: var(--color-neutral-50);
-  color: var(--color-neutral-950);
+  background: var(--background);
+  color: var(--foreground);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
