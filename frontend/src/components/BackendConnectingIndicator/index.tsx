@@ -122,7 +122,7 @@ export function BackendConnectingIndicator() {
     >
       {isConnecting && (
         <div
-          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card border border-border border-l-2 border-l-warning rounded-lg shadow-lg transition-all"
+          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card ambient-gradient-warning border border-border border-l-2 border-l-warning rounded-lg shadow-lg transition-all"
         >
           {/* Main Title Row */}
           <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export function BackendConnectingIndicator() {
 
       {isConnected && (
         <div
-          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card border border-border border-l-2 border-l-primary rounded-lg shadow-lg transition-all"
+          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card ambient-gradient-success border border-border border-l-2 border-l-success rounded-lg shadow-lg transition-all"
         >
           <span className="w-2 h-2 rounded-full bg-success" />
           <span className="text-xs font-mono font-bold text-primary">
