@@ -17,5 +17,8 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
+  },
+  "registries": {
+    "@spectrumui": "https://ui.spectrumhq.in/r/{name}.json"
   }
 }

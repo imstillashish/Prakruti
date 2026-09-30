@@ -104,15 +104,15 @@ export default function Home() {
       {/* Footer */}
       <footer
         className="relative z-10 max-w-[1440px] mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3"
-        style={{ borderTop: '1px solid #dbdbdb' }}
+        style={{ borderTop: '1px solid #dcdee0' }}
       >
         <div className="flex flex-wrap items-center gap-2" style={{ fontFamily: 'var(--font-family-mono)', fontSize: 11, color: '#575757' }}>
           <span style={{ fontWeight: 700, color: '#212121' }}>Prakruti · प्रकृति</span>
-          <span style={{ color: '#dbdbdb' }}>·</span>
+          <span style={{ color: '#dcdee0' }}>·</span>
           <span>Hybrid AI–NWP Platform</span>
-          <span style={{ color: '#dbdbdb' }}>·</span>
+          <span style={{ color: '#dcdee0' }}>·</span>
           <span>MoES / NCMRWF</span>
-          <span style={{ color: '#dbdbdb' }}>·</span>
+          <span style={{ color: '#dcdee0' }}>·</span>
           <span>SIH 2026 · PS: 26081</span>
         </div>
         <div style={{ fontFamily: 'var(--font-family-mono)', fontSize: 10, color: '#808080' }}>
