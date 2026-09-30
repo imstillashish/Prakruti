@@ -14,7 +14,6 @@ import {
   Sliders,
   ShieldCheck,
 } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
 import { Badge } from '@/components/ui/badge';
 import { RpiData } from '@/types';
 
@@ -22,8 +21,8 @@ import { RpiData } from '@/types';
 const RealTrustAtlasMap = dynamic(() => import('./RealTrustAtlasMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[540px] rounded-2xl bg-slate-100/60 animate-pulse flex flex-col items-center justify-center text-slate-400 gap-3 border border-slate-200/60">
-      <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+    <div className="w-full h-[540px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border">
+      <div className="w-10 h-10 border-2 border-primary border-t-transparent animate-spin" />
       <span className="text-xs font-medium tracking-wide">Starting AI weather engine… This may take up to 60 seconds.</span>
     </div>
   ),

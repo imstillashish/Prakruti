@@ -81,7 +81,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 border border-blue-500/20">
+            <div className="w-8 h-8 bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/30">
               <ShieldAlert className="w-4 h-4" />
             </div>
             <div>
@@ -89,7 +89,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 <h3 className="text-sm font-bold tracking-wider text-slate-800 uppercase">
                   RESOURCE RECOMMENDATION ENGINE
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 border border-amber-500/30">
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-warning/15 text-amber-700 border border-warning/30">
                   Govt EOC Active
                 </span>
               </div>
