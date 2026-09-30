@@ -38,14 +38,14 @@ export function StatusTracker({
     const overall = done ? 1 : (activeIndex + progress) / stages.length;
     return (
       <div className={cn('flex w-full max-w-[360px] items-center gap-2.5', className)}>
-        <span aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-black/[0.07] dark:bg-white/[0.09]">
+        <span aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-black/[0.07] ">
           <span
-            className="block h-full rounded-full bg-neutral-900 transition-[width] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-neutral-100"
+            className="block h-full rounded-full bg-foreground transition-[width] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] "
             style={{ width: `${overall * 100}%` }}
           />
         </span>
-        <span className="shrink-0 text-[12px] text-neutral-500 dark:text-neutral-400">{label}</span>
-        <span className="shrink-0 font-mono text-[10.5px] tabular-nums text-neutral-400 dark:text-neutral-600">
+        <span className="shrink-0 text-[12px] text-muted-foreground ">{label}</span>
+        <span className="shrink-0 font-mono text-[10.5px] tabular-nums text-muted-foreground ">
           {Math.round(overall * 100)}%
         </span>
       </div>
@@ -62,9 +62,9 @@ export function StatusTracker({
           return (
             <li key={stage.id} className={cn('flex items-center', index > 0 && 'flex-1')}>
               {index > 0 && (
-                <span aria-hidden className="mx-1.5 h-px flex-1 overflow-hidden bg-black/[0.08] dark:bg-white/[0.1]">
+                <span aria-hidden className="mx-1.5 h-px flex-1 overflow-hidden bg-black/[0.08] ">
                   <span
-                    className="block h-full bg-neutral-900 transition-[width] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-neutral-100"
+                    className="block h-full bg-foreground transition-[width] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] "
                     style={{ width: completed ? '100%' : active ? `${progress * 100}%` : '0%' }}
                   />
                 </span>
@@ -74,10 +74,10 @@ export function StatusTracker({
                   className={cn(
                     'grid size-5 place-items-center rounded-full border transition-colors duration-200',
                     completed
-                      ? 'border-neutral-900 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+                      ? 'border-foreground bg-foreground text-white   '
                       : active
-                        ? 'border-neutral-900 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100'
-                        : 'border-black/[0.12] text-transparent dark:border-white/[0.14]',
+                        ? 'border-foreground text-foreground  '
+                        : 'border-black/[0.12] text-transparent ',
                   )}
                 >
                   {completed ? (
@@ -95,8 +95,8 @@ export function StatusTracker({
                   className={cn(
                     'whitespace-nowrap font-mono text-[9.5px] uppercase tracking-wide',
                     active || completed
-                      ? 'text-neutral-700 dark:text-neutral-300'
-                      : 'text-neutral-300 dark:text-neutral-600',
+                      ? 'text-foreground '
+                      : 'text-muted-foreground ',
                   )}
                 >
                   {stage.label}
@@ -108,7 +108,7 @@ export function StatusTracker({
       </ol>
 
       {detail && (
-        <p className="mt-3 text-center text-[12px] text-neutral-400 dark:text-neutral-500" role="status">
+        <p className="mt-3 text-center text-[12px] text-muted-foreground " role="status">
           {detail}
         </p>
       )}
