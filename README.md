@@ -139,10 +139,19 @@ All timestamps are Asia/Kolkata (IST). Run `python api/validate_data.py` for the
   <img src="outputs/charts/chart4_3d_performance_matrix.png" width="48%" alt="3D performance matrix">
 </p>
 
+## Live
+
+- Dashboard: https://prakruti-ten.vercel.app
+- API: https://prakruti-api.onrender.com
+
+The free-tier API sleeps after ~15 min idle; the first request wakes it
+(keep-awake cron pings every 5 minutes, and the dashboard retries for 60 s).
+
 ## Deployment
 
-Backend runs on [Render](render.yaml), frontend on [Vercel](frontend). Local development
-uses the two commands above; both services read the committed configuration files.
+Backend runs on Render (`render.yaml` → https://prakruti-api.onrender.com), frontend
+on Vercel (https://prakruti-ten.vercel.app). Local development uses the two commands
+above; both services read the committed configuration files.
 
 ## Team EXELION
 
