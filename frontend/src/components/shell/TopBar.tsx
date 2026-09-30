@@ -53,7 +53,6 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
             className="flex items-center gap-2 px-2.5 h-9 text-xs font-mono font-medium text-foreground rounded-md hover:bg-secondary transition-colors duration-100"
             title="Blending engine status"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
             <span className="hidden sm:inline">Operational</span>
           </button>
 

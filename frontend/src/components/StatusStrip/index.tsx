@@ -37,14 +37,12 @@ function EngineChip({
   if (isError) {
     return (
       <span className="inline-flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full bg-destructive" />
         <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-destructive">Standby</span>
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="h-2 w-2 rounded-full bg-success status-pulse" />
       <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground">Operational</span>
     </span>
   );

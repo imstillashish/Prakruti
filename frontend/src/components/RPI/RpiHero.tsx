@@ -92,7 +92,6 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
         subline="National Disaster Decision Framework · Live 24h Synoptic Horizon"
         chip={
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/20 text-xs font-medium text-foreground">
-            <span className="w-2 h-2 rounded-full bg-success status-pulse" />
             <span>Automated Risk Scoring Active</span>
           </div>
         }

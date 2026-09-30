@@ -114,7 +114,6 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       </Select>
 
       <span className="ml-auto hidden md:flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-        <span className="h-2 w-2 rounded-full bg-success status-pulse" />
         {district === 'All Districts' ? state : district}
         <span className="text-border">·</span>
         {state}
