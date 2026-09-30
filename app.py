@@ -105,6 +105,32 @@ except Exception as _e:
     print(f"[Warning] Background startup notice: {_e}")
 
 
+# --- Free-tier keep-alive -----------------------------------------------------
+# Render spins a free instance down after ~15 idle minutes; a cold start then
+# costs 30-60 s per request. Pinging our own public /health every 10 min counts
+# as inbound traffic at Render's router, so the instance never sits idle long
+# enough to sleep. No-op outside Render (RENDER_EXTERNAL_URL unset), so local
+# dev never pings anything. KEEPALIVE_SECONDS exists so the loop can be
+# exercised end-to-end in tests.
+_keepalive_url = os.environ.get('RENDER_EXTERNAL_URL')
+if _keepalive_url:
+    import urllib.request
+
+    _keepalive_seconds = int(os.environ.get('KEEPALIVE_SECONDS', '600'))
+
+    def _keepalive_loop():
+        while True:
+            time.sleep(_keepalive_seconds)
+            try:
+                with urllib.request.urlopen(f"{_keepalive_url}/health", timeout=60) as _resp:
+                    pass
+            except Exception as _e:
+                print(f"[KeepAlive] ping failed: {_e}")
+
+    threading.Thread(target=_keepalive_loop, daemon=True, name="render-keepalive").start()
+    print(f"[KeepAlive] self-ping every {_keepalive_seconds}s -> {_keepalive_url}/health")
+
+
 @app.before_request
 def handle_options_preflight():
     """Explicitly handle OPTIONS preflight requests for cross-origin browser clients."""
