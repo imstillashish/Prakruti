@@ -4,6 +4,7 @@ import { AlertTriangle, CloudRain, Thermometer, Wind, ChevronRight, ShieldAlert,
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import type { ExtremeEvent } from '@/types';
 
 const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
@@ -14,10 +15,33 @@ const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
   cold_wave: Thermometer,
 };
 
-const SEVERITY_STYLES: Record<ExtremeEvent['severity'], { badge: 'destructive' | 'warning' | 'success'; border: string; bg: string }> = {
-  alert: { badge: 'destructive', border: '#b42318', bg: 'rgba(180,35,24,0.06)' },
-  warning: { badge: 'warning', border: '#ab6400', bg: 'rgba(171,100,0,0.06)' },
-  watch: { badge: 'success', border: '#16a34a', bg: 'rgba(22,163,74,0.06)' },
+const SEVERITY_STYLES: Record<
+  ExtremeEvent['severity'],
+  {
+    badge: 'destructive' | 'warning' | 'success';
+    color: string;
+    borderClass: string;
+    bgClass: string;
+  }
+> = {
+  alert: {
+    badge: 'destructive',
+    color: '#b42318',
+    borderClass: 'border-destructive/30',
+    bgClass: 'ambient-gradient-destructive',
+  },
+  warning: {
+    badge: 'warning',
+    color: '#ab6400',
+    borderClass: 'border-warning/30',
+    bgClass: 'ambient-gradient-warning',
+  },
+  watch: {
+    badge: 'success',
+    color: '#16a34a',
+    borderClass: 'border-success/30',
+    bgClass: 'ambient-gradient-success',
+  },
 };
 
 function ProbabilityArc({ value, color }: { value: number; color: string }) {
@@ -83,16 +107,16 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
           {events.map((event, idx) => {
             const Icon = EVENT_ICONS[event.type];
             const style = SEVERITY_STYLES[event.severity];
-            const color = event.severity === 'alert' ? '#b42318' : event.severity === 'warning' ? '#ab6400' : '#16a34a';
+            const color = style.color;
 
             return (
               <div
                 key={`${event.type}-${event.window}-${idx}`}
-                className="w-full text-left p-3 transition-colors border rounded-md"
-                style={{
-                  background: style.bg,
-                  borderColor: style.border,
-                }}
+                className={cn(
+                  'w-full text-left p-3 transition-colors border rounded-md',
+                  style.borderClass,
+                  style.bgClass
+                )}
               >
                 <div className="flex items-center gap-3">
                   {/* Probability meter */}
