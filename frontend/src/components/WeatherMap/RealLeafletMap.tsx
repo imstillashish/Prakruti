@@ -253,7 +253,7 @@ export default function RealLeafletMap({
   };
 
   return (
-    <div className="relative w-full h-[520px] overflow-hidden rounded-md border border-border">
+    <div className="relative w-full h-[540px] overflow-hidden rounded-b-lg border-t border-border">
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 

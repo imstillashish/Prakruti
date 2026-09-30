@@ -42,10 +42,8 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
     <section className="rounded-lg border border-border bg-card overflow-hidden">
       {/* Controls Bar */}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 px-4 sm:px-5 py-3 border-b border-border">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-8 h-8 shrink-0 rounded-md bg-secondary border border-border flex items-center justify-center text-foreground">
-            <MapPin size={15} />
-          </span>
+        <div className="flex items-center gap-2 min-w-0">
+          <MapPin size={16} className="shrink-0 text-foreground" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-foreground tracking-tight">
@@ -107,14 +105,12 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
       </div>
 
       {/* Map Body */}
-      <div className="p-2 sm:p-3 bg-secondary">
-        <RealLeafletMap
-          layer={layer}
-          leadTime={leadTime}
-          selectedCity={selectedCity}
-          onSelectCity={onSelectCity}
-        />
-      </div>
+      <RealLeafletMap
+        layer={layer}
+        leadTime={leadTime}
+        selectedCity={selectedCity}
+        onSelectCity={onSelectCity}
+      />
     </section>
   );
 }

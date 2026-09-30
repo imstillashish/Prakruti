@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — mayur feather mark</title>
+  <!-- Concept J v2: feather-eye with VERTICAL stem + barbs so it reads feather, not magnifier -->
+  <g stroke="#171717" fill="none">
+    <!-- eye of the feather -->
+    <circle cx="128" cy="104" r="62" stroke-width="20" />
+    <circle cx="128" cy="104" r="34" stroke-width="18" />
+    <!-- stem descends straight from the ring -->
+    <path d="M 128 176 V 238" stroke-width="20" stroke-linecap="round" />
+  </g>
+  <circle cx="128" cy="104" r="12" fill="#171717" />
+  <!-- barbs flanking the stem -->
+  <g fill="#171717">
+    <path d="M 120 214 C 102 210 92 196 92 180 C 108 184 118 198 120 214 Z" />
+    <path d="M 136 214 C 154 210 164 196 164 180 C 148 184 138 198 136 214 Z" />
+  </g>
+</svg>

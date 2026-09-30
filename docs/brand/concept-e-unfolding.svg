@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — unfolding pra mark</title>
+  <!-- Concept E: प with the bowl curling into an open spiral — nature unfolding inside the letter (fern curl / wind curl) -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 40 56 H 216" />
+    <!-- stem of प -->
+    <path d="M 80 66 V 200" />
+    <!-- bowl as an open inward curl -->
+    <path d="M 80 176 A 50 50 0 1 1 132 178 A 34 34 0 1 1 106 130 A 20 20 0 1 1 126 122" />
+  </g>
+</svg>

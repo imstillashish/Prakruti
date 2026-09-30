@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import { ExtremeWeatherPanel } from '@/components/ExtremeWeather';
+import { PageHeader } from '@/components/shell/PageHeader';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { WeatherMap } from '@/components/WeatherMap';
@@ -69,15 +70,11 @@ export function ExtremeWeatherPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-destructive/10 text-destructive border border-destructive/30">
-          <ShieldAlert size={18} />
-        </div>
-        <div>
-          <h1 className="text-lg font-bold text-foreground">Extreme Weather Guidance</h1>
-          <p className="text-xs text-muted-foreground">Real-time severe event risk, threshold breaches, and emergency advisories</p>
-        </div>
-      </div>
+      <PageHeader
+        icon={ShieldAlert}
+        title="Extreme Weather Guidance"
+        sub="Real-time severe event risk, threshold breaches, and emergency advisories"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ExtremeWeatherPanel />

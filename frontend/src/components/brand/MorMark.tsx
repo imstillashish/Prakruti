@@ -1,0 +1,25 @@
+/**
+ * Mor — the Prakruti brand mark. The peacock, India's rain-dancer,
+ * with raindrop crest tips in the water signal colour.
+ * Inline SVG so it inherits currentColor and stays crisp at any size.
+ */
+export function MorMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 256 256" fill="none" className={className} aria-hidden="true">
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M 96 128 C 96 94 121 72 152 72 C 183 72 208 94 208 128 C 208 150 196 166 178 174 C 186 192 186 212 180 232 L 124 232 C 118 212 118 192 126 174 C 108 166 96 150 96 128 Z M 167 121 a 11 11 0 1 0 0.01 0 Z"
+      />
+      <path fill="currentColor" d="M 204 118 L 242 134 L 204 152 Z" />
+      <g stroke="currentColor" strokeWidth="9" strokeLinecap="round" fill="none">
+        <path d="M 136 76 L 118 40" />
+        <path d="M 152 74 L 152 34" />
+        <path d="M 168 76 L 186 40" />
+      </g>
+      <path fill="#1e6fb8" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+      <path fill="#1e6fb8" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+      <path fill="#1e6fb8" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+    </svg>
+  );
+}

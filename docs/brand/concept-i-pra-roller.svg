@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — pra roller mark</title>
+  <!-- Concept I: Pra Roller — the bowl of प as a wheel character rolling along the shirorekha, with the sweep of र as its flag tail -->
+  <!-- shirorekha as the ground it rolls on -->
+  <path d="M 20 210 H 236" stroke="#171717" stroke-width="16" stroke-linecap="round" />
+  <!-- wheel body (the bowl) -->
+  <circle cx="112" cy="140" r="70" fill="#171717" />
+  <!-- knockout face -->
+  <circle cx="92" cy="132" r="10" fill="#ffffff" />
+  <circle cx="136" cy="132" r="10" fill="#ffffff" />
+  <path d="M 102 156 Q 114 166 126 156" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- the sweep of र as a pennant flying off the wheel -->
+  <path d="M 176 118 L 222 84" stroke="#171717" stroke-width="18" stroke-linecap="round" />
+</svg>

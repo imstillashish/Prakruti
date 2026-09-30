@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -33,7 +34,9 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
 
   if (!open) return null;
 
-  return (
+  // Portal to body so ancestors with backdrop-blur/transform can't become the
+  // containing block and clip the dialog (e.g. when mounted inside TopBar).
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -62,6 +65,7 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
         )}
         <div className="px-5 py-4">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

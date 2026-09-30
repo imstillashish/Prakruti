@@ -30,8 +30,7 @@ docs/superpowers/
 superpowers/
 # Internal design document
 DESIGN.md
-# AI-assistant instruction files
-AGENTS.md
+# Per-tool AI-assistant instruction files (shared rule lives in AGENTS.md)
 CLAUDE.md
 GEMINI.md
 .cursorrules

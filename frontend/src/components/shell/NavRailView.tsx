@@ -11,7 +11,7 @@ export function NavRail({ currentPage, onNavigate }: {
       {/* Desktop: fixed left rail */}
       <nav
         aria-label="Sections"
-        className="hidden md:flex fixed left-0 top-12 bottom-0 z-30 w-[88px] flex-col items-center gap-0.5 px-1.5 pt-3 border-r border-border bg-background"
+        className="hidden md:flex fixed left-0 top-16 bottom-0 z-30 w-[88px] flex-col items-center gap-0.5 px-1.5 pt-3 border-r border-border bg-background"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -39,7 +39,7 @@ export function NavRail({ currentPage, onNavigate }: {
       {/* Mobile: horizontally scrollable strip under the top bar */}
       <nav
         aria-label="Sections"
-        className="md:hidden sticky top-12 z-30 flex overflow-x-auto gap-1 border-b border-border bg-background px-2 py-1.5"
+        className="md:hidden sticky top-16 z-30 flex overflow-x-auto gap-1 border-b border-border bg-background px-2 py-1.5"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;

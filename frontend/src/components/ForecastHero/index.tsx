@@ -248,7 +248,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
   let directSummary = 'Clear and pleasant weather. Good conditions for outdoor plans and travel.';
   let badgeLabel = 'Mild & Clear';
-  let badgeColor = 'bg-secondary text-foreground border-border';
+  let badgeColor = 'text-muted-foreground';
   let gearAdvice = 'No rain protection needed today.';
   let commuteAdvice = 'Normal travel conditions on all major transit routes.';
   let outdoorAdvice = 'Ideal conditions for open-air tasks and transport.';
@@ -256,28 +256,28 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   if (isHeavyRain) {
     directSummary = `Heavy rain expected (~${forecast.rainfall} mm). Waterlogging and transport delays likely.`;
     badgeLabel = 'Heavy Downpour';
-    badgeColor = 'bg-destructive/10 text-destructive border-destructive/20';
+    badgeColor = 'text-destructive';
     gearAdvice = 'Carry an umbrella and waterproof footwear.';
     commuteAdvice = 'Expect delays and waterlogging on low-lying roads.';
     outdoorAdvice = 'Postpone non-essential field or outdoor activities.';
   } else if (isLightRain) {
     directSummary = `Scattered light showers expected (~${forecast.rainfall} mm). Roads may be damp.`;
     badgeLabel = 'Light Showers';
-    badgeColor = 'bg-water/10 text-[#155a92] border-water/20';
+    badgeColor = 'text-[#155a92]';
     gearAdvice = 'Keep a compact umbrella handy.';
     commuteAdvice = 'Minor traffic slowing due to wet road surfaces.';
     outdoorAdvice = 'Outdoor work possible with brief shower interruptions.';
   } else if (isHeatwave) {
     directSummary = `Extreme heat today (${forecast.temperature}°C). High heat index during midday.`;
     badgeLabel = 'Heat Alert';
-    badgeColor = 'bg-destructive/10 text-destructive border-destructive/20';
+    badgeColor = 'text-destructive';
     gearAdvice = 'Wear light cotton clothing and sun protection.';
     commuteAdvice = 'AC transit recommended between 12 PM and 4 PM.';
     outdoorAdvice = 'Avoid heavy outdoor exertion during peak afternoon heat.';
   } else if (isHighWind) {
     directSummary = `Gusty winds up to ${forecast.wind} km/h. Secure loose outdoor objects.`;
     badgeLabel = 'Squally Wind';
-    badgeColor = 'bg-destructive/10 text-destructive border-destructive/20';
+    badgeColor = 'text-destructive';
     gearAdvice = 'Wind-resistant outerwear advised.';
     commuteAdvice = 'Exercise extra caution when cycling or driving two-wheelers.';
     outdoorAdvice = 'Secure awnings, lightweight tarps, and loose rooftop items.';
@@ -302,7 +302,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                   Station: {city}
                 </span>
                 <span className="text-border">|</span>
-                <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide border ${badgeColor}`}>
+                <span className={`text-[11px] font-semibold uppercase tracking-wide ${badgeColor}`}>
                   {badgeLabel}
                 </span>
               </div>
@@ -318,27 +318,21 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                   What to do about it
                 </h2>
                 <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <span className="w-8 h-8 shrink-0 rounded-md bg-secondary flex items-center justify-center">
-                    <Umbrella size={15} className="text-water" />
-                  </span>
+                  <Umbrella size={17} className="shrink-0 mt-0.5 text-water" />
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-foreground">Personal Gear</div>
                     <div className="text-xs text-muted-foreground leading-relaxed">{gearAdvice}</div>
                   </div>
                 </div>
                 <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <span className="w-8 h-8 shrink-0 rounded-md bg-secondary flex items-center justify-center">
-                    <Car size={15} className="text-muted-foreground" />
-                  </span>
+                  <Car size={17} className="shrink-0 mt-0.5 text-foreground" />
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-foreground">Transit &amp; Travel</div>
                     <div className="text-xs text-muted-foreground leading-relaxed">{commuteAdvice}</div>
                   </div>
                 </div>
                 <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <span className="w-8 h-8 shrink-0 rounded-md bg-secondary flex items-center justify-center">
-                    <Sun size={15} className="text-warning" />
-                  </span>
+                  <Sun size={17} className="shrink-0 mt-0.5 text-warning" />
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-foreground">Work &amp; Outdoors</div>
                     <div className="text-xs text-muted-foreground leading-relaxed">{outdoorAdvice}</div>

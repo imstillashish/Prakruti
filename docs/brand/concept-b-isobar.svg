@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <!-- Concept B: Isobar Headline — the shirorekha (headline bar) with a station-plot circle hanging from it, one wind barb on the bar's end -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 34 58 H 222" />
+    <!-- 45° wind barb rising off the bar's right end -->
+    <path d="M 222 58 L 246 34" />
+    <!-- station circle hanging from the bar -->
+    <circle cx="128" cy="144" r="64" />
+  </g>
+  <!-- station datum: the observed value at the plot's centre -->
+  <circle cx="128" cy="144" r="18" fill="#171717" />
+</svg>

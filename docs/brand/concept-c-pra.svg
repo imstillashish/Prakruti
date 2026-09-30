@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <!-- Concept C: Pra Gesture — प्र abstracted to three strokes: headline bar, stem, rising diagonal (the ्ra sweep) -->
+  <g stroke="#171717" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 40 64 H 216" stroke-width="22" />
+    <!-- stem of प -->
+    <path d="M 84 64 V 200" stroke-width="24" />
+    <!-- rising sweep of ्र -->
+    <path d="M 84 200 L 188 86" stroke-width="24" />
+  </g>
+</svg>

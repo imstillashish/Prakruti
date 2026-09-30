@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — synoptic plot mark</title>
+  <!-- Concept B v2: shirorekha over a station-plot circle; wind barb moved onto the circle as a radial tick -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 44 56 H 212" />
+    <!-- station circle -->
+    <circle cx="128" cy="150" r="62" />
+    <!-- wind barb: radial tick at 45° on the circle's upper right -->
+    <path d="M 172 106 L 196 82" />
+  </g>
+  <!-- station datum -->
+  <circle cx="128" cy="150" r="17" fill="#171717" />
+</svg>

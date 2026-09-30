@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K: Mor — friendly peacock head; crest stems tipped with three raindrops -->
+  <g fill="#171717">
+    <!-- head + neck, single plump contour -->
+    <path d="
+      M 150 226
+      C 110 226 88 196 88 162
+      C 88 124 114 98 148 98
+      C 182 98 208 124 208 158
+      C 208 178 198 194 182 202
+      L 182 226
+      Z" />
+    <!-- beak -->
+    <path d="M 204 130 L 234 140 L 204 152 Z" />
+    <!-- knockout eye -->
+    <circle cx="164" cy="146" r="12" fill="#ffffff" />
+    <!-- crest: three stems -->
+    <g stroke="#171717" stroke-width="8" stroke-linecap="round" fill="none">
+      <path d="M 148 96 L 118 52" />
+      <path d="M 150 94 L 150 44" />
+      <path d="M 152 96 L 182 52" />
+    </g>
+    <!-- crest tips as raindrops -->
+    <path d="M 114 46 C 108 34 112 22 122 16 C 128 26 126 40 114 46 Z" />
+    <path d="M 150 40 C 144 28 148 14 158 8 C 164 20 162 34 150 40 Z" />
+    <path d="M 186 46 C 180 34 184 22 194 16 C 200 26 198 40 186 46 Z" />
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — cloud buddy mark</title>
+  <!-- Concept G: Cloud Buddy — a plump cloud creature with a leaf sprout; one-colour with knockout face -->
+  <!-- cloud body: three lobes over a flat-ish base -->
+  <path fill="#171717" fill-rule="evenodd" d="
+    M 84 196
+    C 56 196 38 178 38 152
+    C 38 128 55 110 78 108
+    C 84 78 110 56 142 56
+    C 176 56 204 82 206 114
+    C 226 120 238 136 238 154
+    C 238 178 219 196 196 196
+    Z" />
+  <!-- knockout eyes -->
+  <circle cx="108" cy="146" r="11" fill="#ffffff" />
+  <circle cx="164" cy="146" r="11" fill="#ffffff" />
+  <!-- knockout smile -->
+  <path d="M 122 168 Q 136 180 150 168" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none" />
+  <!-- leaf sprout on top -->
+  <g fill="#171717">
+    <path d="M 138 44 C 138 28 150 16 166 14 C 166 30 154 42 138 44 Z" />
+    <path d="M 138 44 C 138 30 128 20 114 18 C 115 32 125 42 138 44 Z" />
+  </g>
+  <path d="M 138 44 V 58" stroke="#171717" stroke-width="8" stroke-linecap="round" />
+</svg>

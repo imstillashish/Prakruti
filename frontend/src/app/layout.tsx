@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Agentation } from 'agentation';
 import './globals.css';
 
 const inter = Inter({
@@ -23,9 +24,13 @@ export const metadata: Metadata = {
     'Prakruti (प्रकृति): AI–NWP Multi-Model Forecast Blending System. Dynamically blended weather forecasts for India. Built for Smart India Hackathon 2026, Ministry of Earth Sciences.',
   keywords: 'Prakruti, प्रकृति, weather forecast, NWP, AI, blending, NCMRWF, MoES, India',
   icons: {
-    icon: '/icon.png',
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
     shortcut: '/favicon.ico',
-    apple: '/icon.png',
+    apple: '/apple-touch-icon.png',
   },
 };
 
@@ -36,6 +41,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased">
         <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+        {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
   );

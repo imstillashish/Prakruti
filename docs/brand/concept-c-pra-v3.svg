@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — pra gesture mark</title>
+  <!-- Concept C v3: प्र gesture — unified 22-unit stroke weight across all three strokes -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 40 64 H 216" />
+    <!-- stem of प -->
+    <path d="M 84 65 V 200" />
+    <!-- rising sweep of ्र at exactly 45° -->
+    <path d="M 84 200 L 188 96" />
+  </g>
+</svg>

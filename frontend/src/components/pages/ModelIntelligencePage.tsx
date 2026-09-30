@@ -4,6 +4,7 @@ import { ModelContribution } from '@/components/ModelContribution';
 import { ModelComparison } from '@/components/ModelComparison';
 import { ModelSkillPanel } from '@/components/ModelSkill';
 import { Panel } from '@/components/shell/Panel';
+import { PageHeader } from '@/components/shell/PageHeader';
 import { getWeights, MOCK_REGION_DOMINANCE } from '@/lib/api';
 import type { RegionModelDominance } from '@/types';
 import { MapPin, BrainCircuit } from 'lucide-react';
@@ -34,15 +35,11 @@ export function ModelIntelligencePage() {
   }, []);
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-md flex items-center justify-center bg-secondary text-foreground border border-border">
-          <BrainCircuit size={18} />
-        </div>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground tracking-tight">Model Intelligence</h1>
-          <p className="text-xs text-muted-foreground">Which forecast model is most accurate for your city, and by how much.</p>
-        </div>
-      </div>
+      <PageHeader
+        icon={BrainCircuit}
+        title="Model Intelligence"
+        sub="Which forecast model is most accurate for your city, and by how much."
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ModelContribution />

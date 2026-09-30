@@ -269,7 +269,7 @@ export default function RealTrustAtlasMap({
   };
 
   return (
-    <div className="relative w-full h-[560px] overflow-hidden border border-border">
+    <div className="relative w-full h-[560px] overflow-hidden rounded-lg border border-border">
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Top Floating Bar: Map API Status & Station Search */}
@@ -280,12 +280,12 @@ export default function RealTrustAtlasMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Station / District..."
-            className="w-48 sm:w-56 pl-7 pr-3 py-1 text-xs font-mono bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+            className="w-48 sm:w-56 pl-7 pr-3 py-1 rounded-md text-xs font-mono bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
           />
           <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
         </form>
 
-        <div className="px-2 py-1 bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
+        <div className="px-2 py-1 rounded-full bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
           <span
             className={`w-1.5 h-1.5 ${
               apiConnected ? 'bg-success' : 'bg-water'
@@ -298,7 +298,7 @@ export default function RealTrustAtlasMap({
       {/* Top Right Floating Controls: Tile Switcher & Zoom */}
       <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-1.5">
         {/* Tile Layer Selector Bar */}
-        <div className="p-0.5 bg-card border border-border flex items-center gap-0.5">
+        <div className="p-0.5 rounded-md bg-card border border-border flex items-center gap-0.5">
           <button
             onClick={() => setActiveTile('satellite')}
             className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
@@ -357,7 +357,7 @@ export default function RealTrustAtlasMap({
         </div>
 
         {/* Zoom & Reset Buttons */}
-        <div className="flex flex-col gap-0.5 border border-border bg-card">
+        <div className="flex flex-col gap-0.5 rounded-md border border-border bg-card overflow-hidden">
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomIn()}
@@ -391,7 +391,7 @@ export default function RealTrustAtlasMap({
       </div>
 
       {/* Bottom Floating Legend Bar */}
-      <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 bg-card border border-border flex flex-wrap items-center gap-3 text-xs font-mono">
+      <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-md bg-card border border-border flex flex-wrap items-center gap-3 text-xs font-mono">
         <div className="flex items-center gap-1.5 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
           <ShieldCheck className="w-3.5 h-3.5 text-success" />
           <span>Dominant Model:</span>

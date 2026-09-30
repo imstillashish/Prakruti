@@ -97,7 +97,7 @@ export default function Home() {
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-20 pb-20 md:pl-[112px]">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-24 pb-20 md:pl-[112px]">
         <StatusStrip />
         {renderContent()}
       </main>
@@ -116,7 +116,7 @@ export default function Home() {
           },
         ]}
         status="45 stations · live"
-        className="max-w-[1440px] mx-auto px-4 sm:px-6 md:pl-[112px]"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 md:pl-[112px]"
       />
     </div>
   );

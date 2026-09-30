@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1600" height="840" viewBox="0 0 1600 840"><rect width="1600" height="840" fill="#f7f7f4"/><text x="60" y="78" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="40" font-weight="700" fill="#161616">Logo concepts</text><text x="60" y="116" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="20" fill="#6b6b6b">Concepts for review — pick a direction (or tell me what you like in each).</text><rect x="60" y="150" width="1480" height="630" rx="18" fill="#fff" stroke="#161616" stroke-width="2"/><g><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 256 256" x="90" y="190" width="1420" height="300" preserveAspectRatio="xMidYMid meet">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K v4: eye as a true evenodd hole inside the head contour -->
+  <path fill="#171717" fill-rule="evenodd" d="
+    M 96 128
+    C 96 94 121 72 152 72
+    C 183 72 208 94 208 128
+    C 208 150 196 166 178 174
+    C 186 192 186 212 180 232
+    L 124 232
+    C 118 212 118 192 126 174
+    C 108 166 96 150 96 128
+    Z
+    M 167 121
+    a 11 11 0 1 0 0.01 0
+    Z" />
+  <!-- beak -->
+  <path fill="#171717" d="M 204 118 L 242 134 L 204 152 Z" />
+  <!-- crest stems -->
+  <g stroke="#171717" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M 136 76 L 118 40" />
+    <path d="M 152 74 L 152 34" />
+    <path d="M 168 76 L 186 40" />
+  </g>
+  <!-- crest tips: true raindrops, points up -->
+  <path fill="#171717" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+  <path fill="#171717" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+  <path fill="#171717" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+</svg>
+</g><g><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 256 256" x="90" y="516" width="64" height="64" preserveAspectRatio="xMidYMid meet">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K v4: eye as a true evenodd hole inside the head contour -->
+  <path fill="#171717" fill-rule="evenodd" d="
+    M 96 128
+    C 96 94 121 72 152 72
+    C 183 72 208 94 208 128
+    C 208 150 196 166 178 174
+    C 186 192 186 212 180 232
+    L 124 232
+    C 118 212 118 192 126 174
+    C 108 166 96 150 96 128
+    Z
+    M 167 121
+    a 11 11 0 1 0 0.01 0
+    Z" />
+  <!-- beak -->
+  <path fill="#171717" d="M 204 118 L 242 134 L 204 152 Z" />
+  <!-- crest stems -->
+  <g stroke="#171717" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M 136 76 L 118 40" />
+    <path d="M 152 74 L 152 34" />
+    <path d="M 168 76 L 186 40" />
+  </g>
+  <!-- crest tips: true raindrops, points up -->
+  <path fill="#171717" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+  <path fill="#171717" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+  <path fill="#171717" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+</svg>
+</g><text x="122" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">64px</text><g><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 256 256" x="180" y="548" width="32" height="32" preserveAspectRatio="xMidYMid meet">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K v4: eye as a true evenodd hole inside the head contour -->
+  <path fill="#171717" fill-rule="evenodd" d="
+    M 96 128
+    C 96 94 121 72 152 72
+    C 183 72 208 94 208 128
+    C 208 150 196 166 178 174
+    C 186 192 186 212 180 232
+    L 124 232
+    C 118 212 118 192 126 174
+    C 108 166 96 150 96 128
+    Z
+    M 167 121
+    a 11 11 0 1 0 0.01 0
+    Z" />
+  <!-- beak -->
+  <path fill="#171717" d="M 204 118 L 242 134 L 204 152 Z" />
+  <!-- crest stems -->
+  <g stroke="#171717" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M 136 76 L 118 40" />
+    <path d="M 152 74 L 152 34" />
+    <path d="M 168 76 L 186 40" />
+  </g>
+  <!-- crest tips: true raindrops, points up -->
+  <path fill="#171717" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+  <path fill="#171717" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+  <path fill="#171717" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+</svg>
+</g><text x="196" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">32px</text><g><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 256 256" x="238" y="564" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K v4: eye as a true evenodd hole inside the head contour -->
+  <path fill="#171717" fill-rule="evenodd" d="
+    M 96 128
+    C 96 94 121 72 152 72
+    C 183 72 208 94 208 128
+    C 208 150 196 166 178 174
+    C 186 192 186 212 180 232
+    L 124 232
+    C 118 212 118 192 126 174
+    C 108 166 96 150 96 128
+    Z
+    M 167 121
+    a 11 11 0 1 0 0.01 0
+    Z" />
+  <!-- beak -->
+  <path fill="#171717" d="M 204 118 L 242 134 L 204 152 Z" />
+  <!-- crest stems -->
+  <g stroke="#171717" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M 136 76 L 118 40" />
+    <path d="M 152 74 L 152 34" />
+    <path d="M 168 76 L 186 40" />
+  </g>
+  <!-- crest tips: true raindrops, points up -->
+  <path fill="#171717" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+  <path fill="#171717" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+  <path fill="#171717" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+</svg>
+</g><text x="246" y="600" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">16px</text><text x="90.0" y="636" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="26" font-weight="700" fill="#161616">A · Mor — final</text><text x="90.0" y="664" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#161616" letter-spacing="1.5">RECOMMENDED</text><text x="90.0" y="698" font-family="system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" fill="#555">The peacock, India&#x27;s rain-dancer: friendly character with raindrop crest. Ink body, water-blue crest drops.</text></svg>

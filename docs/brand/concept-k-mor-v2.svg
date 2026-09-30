@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — mor peacock mark</title>
+  <!-- Concept K v2: peacock head — plump crown, proper beak, crest tipped with true raindrops -->
+  <g fill="#171717">
+    <!-- head + flared neck, one contour -->
+    <path d="
+      M 96 126
+      C 96 92 121 70 152 70
+      C 183 70 208 92 208 126
+      C 208 148 196 164 178 172
+      C 190 192 192 214 186 232
+      L 118 232
+      C 112 214 114 192 126 172
+      C 108 164 96 148 96 126
+      Z" />
+    <!-- beak: strong triangle -->
+    <path d="M 204 116 L 242 132 L 204 150 Z" />
+    <!-- knockout eye, set forward -->
+    <circle cx="168" cy="130" r="11" fill="#ffffff" />
+    <!-- crest stems -->
+    <g stroke="#171717" stroke-width="9" stroke-linecap="round" fill="none">
+      <path d="M 136 74 L 118 34" />
+      <path d="M 152 72 L 152 30" />
+      <path d="M 168 74 L 186 34" />
+    </g>
+    <!-- crest tips: true raindrops, points up -->
+    <path d="M 114 34 C 106 26 106 14 114 6 C 122 14 122 26 114 34 Z" />
+    <path d="M 148 30 C 140 22 140 10 148 2 C 156 10 156 22 148 30 Z" />
+    <path d="M 182 34 C 174 26 174 14 182 6 C 190 14 190 26 182 34 Z" />
+  </g>
+</svg>

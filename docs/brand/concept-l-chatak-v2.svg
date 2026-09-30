@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — chatak rain-bird mark</title>
+  <!-- Concept L v2: chatak perched on a wire, watching its raindrop fall -->
+  <g fill="#171717">
+    <!-- the wire it perches on -->
+    <path d="M 20 206 H 236" stroke="#171717" stroke-width="14" stroke-linecap="round" fill="none" />
+    <!-- tail flick -->
+    <path d="M 84 150 L 44 112 L 76 172 Z" />
+    <!-- body -->
+    <circle cx="118" cy="162" r="46" />
+    <!-- head -->
+    <circle cx="172" cy="122" r="32" />
+    <!-- beak pointing up-right toward the drop -->
+    <path d="M 200 108 L 228 96 L 202 128 Z" />
+    <!-- knockout eye -->
+    <circle cx="178" cy="116" r="8" fill="#ffffff" />
+    <!-- the raindrop it waits for -->
+    <path d="M 224 66 C 214 56 214 42 224 32 C 234 42 234 56 224 66 Z" />
+  </g>
+</svg>

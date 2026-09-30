@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — mayur feather-eye mark</title>
+  <!-- Concept J: Mayur — the peacock feather's eye: concentric rings on a stem. Feather AND radar sweep. -->
+  <g stroke="#171717" fill="none">
+    <!-- stem -->
+    <path d="M 44 212 L 128 128" stroke-width="20" stroke-linecap="round" />
+    <!-- outer ring of the eye -->
+    <circle cx="152" cy="104" r="62" stroke-width="20" />
+    <!-- inner ring -->
+    <circle cx="152" cy="104" r="34" stroke-width="18" />
+    <!-- heart of the eye -->
+    <circle cx="152" cy="104" r="12" fill="#171717" stroke="none" />
+  </g>
+</svg>

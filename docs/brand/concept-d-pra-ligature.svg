@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — pra ligature mark</title>
+  <!-- Concept D: the true प्र ligature in instrument geometry — ring bowl of प, stem, and the 45° diagonal of र -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 40 56 H 216" />
+    <!-- stem of प -->
+    <path d="M 76 66 V 196" />
+    <!-- bowl of प as a perfect ring -->
+    <circle cx="124" cy="120" r="46" />
+    <!-- diagonal sweep of र, exactly 45° -->
+    <path d="M 88 208 L 196 100" />
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+name: Attribution Guard
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check commit messages for forbidden attribution
+        run: |
+          before="${{ github.event.before }}"
+          if [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            range="${{ github.sha }}"
+          else
+            range="$before..${{ github.sha }}"
+          fi
+          if git log --format='%B' "$range" \
+             | grep -iE 'co-authored-by.*(codebuff|freebuff)'; then
+            echo "::error::Commits must not carry Codebuff/Freebuff co-author attribution (see AGENTS.md)"
+            exit 1
+          fi

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — horizon mark</title>
+  <!-- Concept F: प्र beneath a full-bleed shirorekha — the headline bar as the horizon over nature -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- horizon: the shirorekha extended to the canvas edges -->
+    <path d="M 16 52 H 240" />
+    <!-- stem of प -->
+    <path d="M 72 64 V 188" />
+    <!-- bowl of प as a ring -->
+    <circle cx="118" cy="116" r="44" />
+    <!-- diagonal sweep of र, exactly 45° -->
+    <path d="M 84 200 L 186 98" />
+  </g>
+</svg>

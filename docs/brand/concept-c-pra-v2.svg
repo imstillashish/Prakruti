@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — pra gesture mark</title>
+  <!-- Concept C v2: प्र gesture — diagonal snapped to exactly 45°, stem cap flush with the bar's top edge -->
+  <g stroke="#171717" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 40 64 H 216" stroke-width="22" />
+    <!-- stem of प (cap top at y=53, flush with bar top edge) -->
+    <path d="M 84 65 V 200" stroke-width="24" />
+    <!-- rising sweep of ्र at exactly 45° -->
+    <path d="M 84 200 L 188 96" stroke-width="24" />
+  </g>
+</svg>

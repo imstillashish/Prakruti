@@ -4,6 +4,7 @@ import { ModelSkillPanel } from '@/components/ModelSkill';
 import { PerformanceMatrix3D } from '@/components/PerformanceMatrix3D';
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
+import { PageHeader } from '@/components/shell/PageHeader';
 import { BarChart3 } from 'lucide-react';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
@@ -35,15 +36,11 @@ export function ModelPerformancePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-md flex items-center justify-center bg-secondary text-foreground border border-border">
-          <BarChart3 size={18} />
-        </div>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground tracking-tight">Model Performance &amp; Skill</h1>
-          <p className="text-xs text-muted-foreground">How our blended forecast stacks up against the raw models, verified against past weather.</p>
-        </div>
-      </div>
+      <PageHeader
+        icon={BarChart3}
+        title="Model Performance & Skill"
+        sub="How our blended forecast stacks up against the raw models, verified against past weather."
+      />
 
       <ModelSkillPanel />
 

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — chatak rain-bird mark</title>
+  <!-- Concept L: Chatak — the folklore bird that drinks only rain; perched, watching for its drop -->
+  <g fill="#171717">
+    <!-- body + tail, one plump contour -->
+    <path d="
+      M 96 196
+      C 66 196 44 174 44 146
+      C 44 120 64 100 90 100
+      C 108 100 122 110 130 124
+      C 138 110 152 100 170 100
+      C 196 100 216 120 216 146
+      C 216 174 194 196 164 196
+      Z
+      M 216 130 L 244 118 L 244 146 Z" />
+    <!-- knockout eye -->
+    <circle cx="150" cy="138" r="10" fill="#ffffff" />
+    <!-- the drop it waits for -->
+    <path d="M 196 64 C 190 50 194 36 206 28 C 214 40 210 56 196 64 Z" />
+  </g>
+</svg>

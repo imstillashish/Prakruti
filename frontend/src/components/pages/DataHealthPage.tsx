@@ -1,21 +1,18 @@
 'use client';
 import { DataHealthPanel } from '@/components/DataHealth';
 import { Panel } from '@/components/shell/Panel';
+import { PageHeader } from '@/components/shell/PageHeader';
 import { Activity, Server } from 'lucide-react';
 import { ENGINE_STATUS } from '@/lib/api';
 
 export function DataHealthPage() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-md flex items-center justify-center bg-secondary text-foreground border border-border">
-          <Activity size={18} />
-        </div>
-        <div>
-          <h1 className="text-xl font-semibold text-foreground tracking-tight">Data &amp; Model Health</h1>
-          <p className="text-xs text-muted-foreground">Is the data flowing, and is the engine telling the truth about it.</p>
-        </div>
-      </div>
+      <PageHeader
+        icon={Activity}
+        title="Data & Model Health"
+        sub="Is the data flowing, and is the engine telling the truth about it."
+      />
 
       <DataHealthPanel />
 

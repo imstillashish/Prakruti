@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { SectionBanner } from '@/components/shell/SectionBanner';
 import { ResourceAction, RpiData } from '@/types';
 
 interface ResourceRecommendationProps {
@@ -86,38 +87,35 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
   return (
     <section className="rounded-lg border border-border bg-card overflow-hidden">
       {/* Header bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 pb-4 border-b border-border">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-semibold text-foreground tracking-tight">
-              Resource Recommendation Engine
-            </h3>
-            <Badge variant="warning">Govt EOC Active</Badge>
-          </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
+      <SectionBanner
+        icon={Building2}
+        title="Resource Recommendation Engine"
+        pill="Govt EOC Active"
+        subline={
+          <>
             Standing operating procedures triggered by live risk indicators for{' '}
             <span className="font-semibold text-foreground">{rpiData.city}</span>. Tap a row for details.
-          </p>
-        </div>
-
-        {/* Category filter tabs */}
-        <div className="flex flex-wrap items-center gap-1 p-0.5 rounded-md bg-secondary border border-border">
-          {CATEGORY_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-2.5 py-1 rounded-sm text-xs transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-card text-foreground font-semibold shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+          </>
+        }
+        chip={
+          <div className="flex flex-wrap items-center gap-1 p-0.5 rounded-md bg-secondary border border-border">
+            {CATEGORY_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-2.5 py-1 rounded-sm text-xs transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-card text-foreground font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {/* Trigger rule condition banner */}
       <div className="px-5 py-2.5 bg-secondary border-b border-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono">

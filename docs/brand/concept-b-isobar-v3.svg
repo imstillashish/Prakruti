@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — synoptic plot mark</title>
+  <!-- Concept B v3: shirorekha over a station plot — ring is the station, centre dot the observed datum. Tick removed (clock reading). -->
+  <g stroke="#171717" stroke-width="22" stroke-linecap="round" fill="none">
+    <!-- shirorekha -->
+    <path d="M 44 56 H 212" />
+    <!-- station ring -->
+    <circle cx="128" cy="150" r="62" />
+  </g>
+  <!-- station datum -->
+  <circle cx="128" cy="150" r="17" fill="#171717" />
+</svg>

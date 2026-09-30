@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Prakruti — drop sprite mark</title>
+  <!-- Concept H: Drop Sprite — a round water drop with a leaf tail and knockout face -->
+  <!-- drop body -->
+  <path fill="#171717" d="
+    M 128 30
+    C 168 78 200 116 200 158
+    C 200 200 168 228 128 228
+    C 88 228 56 200 56 158
+    C 56 116 88 78 128 30 Z" />
+  <!-- knockout eyes -->
+  <circle cx="108" cy="152" r="11" fill="#ffffff" />
+  <circle cx="152" cy="152" r="11" fill="#ffffff" />
+  <!-- knockout smile -->
+  <path d="M 118 174 Q 130 184 142 174" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none" />
+  <!-- leaf tail at the drop's tip -->
+  <g fill="#171717">
+    <path d="M 128 34 C 124 16 132 2 148 0 C 149 16 141 30 128 34 Z" transform="rotate(18 128 34)" />
+  </g>
+</svg>

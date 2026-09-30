@@ -7,6 +7,7 @@ import { RpiHero } from '@/components/RPI/RpiHero';
 import { ResourceRecommendation } from '@/components/RPI/ResourceRecommendation';
 import { ModelTrustAtlas } from '@/components/RPI/ModelTrustAtlas';
 import { RegionSelector } from '@/components/RegionSelector';
+import { PageHeader } from '@/components/shell/PageHeader';
 import { getRpiData, getAllRpiData, SERVER_WAKING_UP_MSG } from '@/lib/api';
 import { RpiData } from '@/types';
 
@@ -95,32 +96,22 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
   return (
     <div className="space-y-7">
       {/* Page header + station toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-foreground flex items-center justify-center text-background">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-foreground tracking-tight">
-              Risk Priority Index
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Which districts need attention first, and what to pre-position where.
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Station Navigation */}
-        <button
-          type="button"
-          onClick={handleRefresh}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
-          title="Refresh Synoptic RPI Run"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-foreground' : ''}`} />
-          <span>{isRefreshing ? 'Recalculating…' : 'Refresh Index'}</span>
-        </button>
-      </div>
+      <PageHeader
+        icon={ShieldCheck}
+        title="Risk Priority Index"
+        sub="Which districts need attention first, and what to pre-position where."
+        action={
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
+            title="Refresh Synoptic RPI Run"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-foreground' : ''}`} />
+            <span>{isRefreshing ? 'Recalculating…' : 'Refresh Index'}</span>
+          </button>
+        }
+      />
 
       {/* Station selector toolbar */}
       <RegionSelector selectedCity={currentCity} onSelectCity={handleCitySelect} />

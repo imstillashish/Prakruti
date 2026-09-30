@@ -15,6 +15,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData } from '@/types';
 
 // Dynamic import with SSR disabled for Leaflet
@@ -74,37 +75,25 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
   const weights = rpiData.modelWeights || { ecmwf: 45, icon: 25, gfs: 18, gem: 12 };
 
   return (
-    <section className="relative overflow-hidden border border-border bg-card">
+    <section className="relative overflow-hidden rounded-lg border border-border bg-card">
       {/* Header bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-border">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-md bg-secondary border border-border flex items-center justify-center text-foreground">
-            <Layers className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-foreground tracking-tight">
-                Model Trust Atlas
-              </h3>
-              <Badge variant="secondary">AI Adaptive NWP Blending</Badge>
-            </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Station markers dynamically color-coded by the historically highest-performing NWP model in each synoptic zone
-            </p>
-          </div>
-        </div>
-
-        {/* Quick status pill */}
-        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-secondary px-2.5 py-1 border border-border">
-          <MapPin size={12} className="text-success" />
-          <span>
-            Active: <strong className="text-foreground">{rpiData.city}</strong> ({rpiData.state})
+      <SectionBanner
+        icon={Layers}
+        title="Model Trust Atlas"
+        pill="AI Adaptive NWP Blending"
+        subline="Station markers color-coded by the historically best-performing model in each zone"
+        chip={
+          <span className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-secondary px-2.5 py-1 rounded-full border border-border">
+            <MapPin size={12} className="text-success" />
+            <span>
+              Active: <strong className="text-foreground">{rpiData.city}</strong> ({rpiData.state})
+            </span>
           </span>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Grid: Leaflet Map (Left 8 cols) + Adaptive Model Weights & Trust Telemetry (Right 4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 px-5 pt-5 pb-5 items-start">
         {/* Leaflet Trust Atlas Map (8 Cols) */}
         <div className="lg:col-span-8">
           <RealTrustAtlasMap
@@ -240,7 +229,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
           </div>
 
           {/* Operational Verification Checklist */}
-          <div className="p-3 bg-secondary border border-border text-xs font-mono text-muted-foreground space-y-1.5">
+          <div className="p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-foreground text-[10px] uppercase tracking-wider">
               <CheckCircle className="w-3.5 h-3.5 text-success" />
               <span>Multi-Model Verification Status</span>

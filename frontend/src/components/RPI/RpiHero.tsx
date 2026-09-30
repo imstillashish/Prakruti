@@ -16,6 +16,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { Explain } from '@/components/explain/Explain';
+import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData, RpiPriority } from '@/types';
 
 interface RpiHeroProps {
@@ -82,42 +83,23 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
   const strokeDashoffset = circumference - (Math.min(100, Math.max(0, rpiData.rpiScore)) / 100) * circumference;
 
   return (
-    <section className="relative overflow-hidden border border-border bg-card">
+    <section className="relative overflow-hidden rounded-lg border border-border bg-card">
       {/* Top Government EOC Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
-        <div className="flex items-center gap-3">
-          <span className="w-9 h-9 shrink-0 rounded-md bg-foreground text-white flex items-center justify-center">
-            <Building2 className="w-4 h-4" />
-          </span>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-              <h2 className="text-base font-semibold text-foreground tracking-tight">
-                Emergency Operations Center
-              </h2>
-              <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] bg-secondary text-muted-foreground border border-border">
-                MoES · NDMA
-              </span>
-            </div>
-            <p className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-              <span>National Disaster Decision Framework</span>
-              <span className="text-border">·</span>
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-muted-foreground" />
-                Live 24h Synoptic Horizon
-              </span>
-            </p>
+      <SectionBanner
+        icon={Building2}
+        title="Emergency Operations Center"
+        pill="MoES · NDMA"
+        subline="National Disaster Decision Framework · Live 24h Synoptic Horizon"
+        chip={
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/20 text-xs font-medium text-foreground">
+            <span className="w-2 h-2 rounded-full bg-success status-pulse" />
+            <span>Automated Risk Scoring Active</span>
           </div>
-        </div>
-
-        {/* EOC Readiness Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/20 text-xs font-medium text-foreground">
-          <span className="w-2 h-2 rounded-full bg-success status-pulse" />
-          <span>Automated Risk Scoring Active</span>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Hero Body */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center px-5 pt-5 pb-5">
         {/* Left Side: Station Identity & RPI Summary (5 Cols) */}
         <div className="lg:col-span-5 space-y-3.5">
           <div>
