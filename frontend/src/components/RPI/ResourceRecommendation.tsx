@@ -17,7 +17,7 @@ import {
   Sparkles,
   Info,
 } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ResourceAction, RpiData } from '@/types';
 
@@ -76,7 +76,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
   };
 
   return (
-    <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
+    <section className="relative overflow-hidden border border-border bg-card">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
         <div>
@@ -211,15 +211,11 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                     </span>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant={isDispatched ? 'default' : 'secondary'}
                     onClick={() => handleDispatch(rec.id)}
-                    className={`w-full py-1.5 px-3 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                      isDispatched
-                        ? 'bg-[#168a49] text-white hover:bg-[#126e3a]'
-                        : 'bg-[#212121] text-white hover:bg-[#333333]'
-                    }`}
-                    style={{ borderRadius: 0 }}
+                    className="w-full text-xs font-mono font-bold"
                   >
                     {isDispatched ? (
                       <>
@@ -232,14 +228,14 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                         <span>Dispatch Resource</span>
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </motion.div>
             );
           })}
         </AnimatePresence>
       </div>
-    </GlassCard>
+    </section>
   );
 }
 export default ResourceRecommendation;

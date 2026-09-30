@@ -75,7 +75,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
   const weights = rpiData.modelWeights || { ecmwf: 45, icon: 25, gfs: 18, gem: 12 };
 
   return (
-    <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
+    <section className="relative overflow-hidden border border-border bg-card">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
         <div className="flex items-center gap-3">
@@ -252,7 +252,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
           </div>
         </div>
       </div>
-    </GlassCard>
+    </section>
   );
 }
 export default ModelTrustAtlas;

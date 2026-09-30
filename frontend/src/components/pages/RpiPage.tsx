@@ -95,12 +95,9 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
   return (
     <div className="space-y-7">
       {/* Top Emergency Operations Center Control Bar with Region Selector */}
-      <div
-        className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 bg-white border border-[#dbdbdb]"
-        style={{ borderRadius: 0 }}
-      >
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 bg-card border border-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#212121] flex items-center justify-center text-white" style={{ borderRadius: 0 }}>
+          <div className="w-9 h-9 bg-foreground flex items-center justify-center text-background">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -123,8 +120,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
           <button
             type="button"
             onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold bg-[#f7f7f7] hover:bg-[#ebebeb] text-[#212121] border border-[#dbdbdb] transition-colors cursor-pointer"
-            style={{ borderRadius: 0 }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
             title="Refresh Synoptic RPI Run"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#1db961]' : ''}`} />
