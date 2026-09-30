@@ -291,14 +291,14 @@ export default function RealLeafletMap({
         </div>
 
         {/* Mapbox & Cartographic Tile Mode Switcher */}
-        <div className="bg-card p-1.5 shadow-md border border-border rounded-md flex flex-col gap-1 min-w-[125px]">
+        <div className="bg-card p-1.5 shadow-md border border-border rounded-lg flex flex-col gap-1 min-w-[125px]">
           <span className="text-[10px] font-semibold text-muted-foreground px-1.5 py-0.5 uppercase tracking-[0.08em]">
             Layer
           </span>
           <button
             onClick={() => setActiveTile('satellite')}
            
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-mono transition-colors text-left ${
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
               activeTile === 'satellite'
                 ? 'bg-foreground text-white font-semibold'
                 : 'text-muted-foreground hover:bg-secondary'
@@ -312,7 +312,7 @@ export default function RealLeafletMap({
           <button
             onClick={() => setActiveTile('terrain')}
            
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-mono transition-colors text-left ${
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
               activeTile === 'terrain'
                 ? 'bg-foreground text-white font-semibold'
                 : 'text-muted-foreground hover:bg-secondary'
@@ -326,7 +326,7 @@ export default function RealLeafletMap({
           <button
             onClick={() => setActiveTile('positron')}
            
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-mono transition-colors text-left ${
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
               activeTile === 'positron'
                 ? 'bg-foreground text-white font-semibold'
                 : 'text-muted-foreground hover:bg-secondary'
@@ -340,7 +340,7 @@ export default function RealLeafletMap({
           <button
             onClick={() => setActiveTile('osm')}
            
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-mono transition-colors text-left ${
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
               activeTile === 'osm'
                 ? 'bg-foreground text-white font-semibold'
                 : 'text-muted-foreground hover:bg-secondary'
@@ -406,8 +406,7 @@ export default function RealLeafletMap({
       {/* Model Dominance Overlay */}
       {layer === 'model_dominance' && (
         <div
-          className="absolute top-4 left-4 z-10 p-3 shadow-md border border-border max-w-[220px] bg-white font-mono"
-         
+          className="absolute top-4 left-4 z-10 p-3 shadow-md border border-border max-w-[220px] bg-card font-mono rounded-lg"
         >
           <div className="text-[11px] font-bold text-foreground mb-1.5 flex items-center gap-1.5">
             <Sparkles size={12} className="text-success" />

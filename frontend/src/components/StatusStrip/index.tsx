@@ -168,7 +168,7 @@ export function StatusStrip() {
             type="button"
             onClick={handleManualRefresh}
             title="Refresh status"
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
           >
             <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-water' : ''} />
           </button>

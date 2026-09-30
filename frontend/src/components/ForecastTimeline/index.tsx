@@ -88,15 +88,15 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
       title="Hourly prediction horizon"
       subtitle="72-Hour Continuous Outlook with Adaptive AI Uncertainty Bands"
       actions={
-        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
+        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary rounded-md">
           {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
             <button
               key={v}
               onClick={() => setVariable(v)}
-              className={`px-3 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
+              className={`px-3 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
                 variable === v
-                  ? 'bg-secondary text-secondary-foreground font-semibold'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
+                  ? 'bg-card text-foreground font-semibold shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               type="button"
             >
@@ -121,9 +121,9 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
                 <stop offset="95%" stopColor={config.color} stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-            <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} unit={config.unit === 'mm' ? ' mm' : config.unit} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
+            <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} unit={config.unit === 'mm' ? ' mm' : config.unit} />
             <ReTooltip content={<CustomTooltip />} />
             <ReferenceLine x="NOW" stroke={config.color} strokeDasharray="3 3" opacity={0.6} />
             {config.uncertaintyHigh && (

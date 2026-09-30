@@ -50,15 +50,15 @@ export function ModelSkillPanel() {
       subtitle="Average miss against ground truth, per model — lower is better"
       term="skillScore"
       actions={
-        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
+        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary rounded-md">
           {(['Today', '7 Days', '30 Days', 'Season'] as Period[]).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2 py-0.5 text-xs font-mono transition-colors duration-100 ${
+              className={`px-2 py-0.5 text-xs font-mono rounded-sm transition-colors duration-100 ${
                 period === p
-                  ? 'bg-secondary text-secondary-foreground font-semibold'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
+                  ? 'bg-card text-foreground font-semibold shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               type="button"
             >
@@ -72,12 +72,13 @@ export function ModelSkillPanel() {
       <div className="space-y-1.5 font-mono">
         {tableRows.map((m, i) => (
           <div
-            key={m.key}            className={`flex items-center gap-2.5 p-2.5 rounded-md border transition-colors ${
+            key={m.key}
+            className={`flex items-center gap-2.5 p-2.5 rounded-md border transition-colors ${
               i === 0
                 ? 'bg-secondary border-border'
                 : 'bg-card border-border hover:bg-secondary'
-            }`
-          }>
+            }`}
+          >
             <span
               className="w-2 h-2 rounded-full shrink-0"
               style={{ background: m.color }}
@@ -87,7 +88,6 @@ export function ModelSkillPanel() {
             </span>
             {i === 0 && (
               <span
-               
                 className="flex items-center gap-1 rounded-full text-[10px] font-semibold text-success bg-success/10 px-2 py-0.5 border border-success/20"
               >
                 <Award size={10} /> Top Skill
@@ -100,8 +100,7 @@ export function ModelSkillPanel() {
       </div>
 
       <div
-        className="mt-3.5 p-3 bg-secondary border border-border text-xs font-mono text-muted-foreground"
-       
+        className="mt-3.5 p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground"
       >
         Hybrid AI blend reduces error by <span className="font-bold text-success">~18.2%</span> relative to any isolated NWP model run.
       </div>

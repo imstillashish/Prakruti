@@ -362,14 +362,14 @@ export function PerformanceMatrix3D() {
       actions={
         <div className="flex flex-wrap items-center gap-2">
           {/* Variable selector */}
-          <div className="flex items-center gap-0.5 p-0.5 bg-secondary border border-border">
+          <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
             {(Object.keys(VARIABLE_CONFIG) as VariableKey[]).map((v) => (
               <button
                 key={v}
                 onClick={() => setVariable(v)}
-                className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
+                className={`px-2 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
                   variable === v
-                    ? 'bg-card text-foreground font-bold border border-border'
+                    ? 'bg-card text-foreground font-bold border border-border shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 type="button"
@@ -380,12 +380,12 @@ export function PerformanceMatrix3D() {
           </div>
 
           {/* Color mode toggle */}
-          <div className="flex items-center gap-0.5 p-0.5 bg-secondary border border-border">
+          <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
             <button
               onClick={() => setColorMode('model')}
-              className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
+              className={`px-2 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
                 colorMode === 'model'
-                  ? 'bg-card text-foreground font-bold border border-border'
+                  ? 'bg-card text-foreground font-bold border border-border shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               type="button"
@@ -394,9 +394,9 @@ export function PerformanceMatrix3D() {
             </button>
             <button
               onClick={() => setColorMode('skill')}
-              className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
+              className={`px-2 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
                 colorMode === 'skill'
-                  ? 'bg-card text-foreground font-bold border border-border'
+                  ? 'bg-card text-foreground font-bold border border-border shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               type="button"
@@ -408,7 +408,7 @@ export function PerformanceMatrix3D() {
           {/* Auto-rotate toggle */}
           <button
             onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-2.5 py-1 text-xs font-mono border transition-colors duration-100 ${
+            className={`px-2.5 py-1 text-xs font-mono border rounded-md transition-colors duration-100 ${
               autoRotate
                 ? 'bg-accent text-accent-foreground border-primary/30'
                 : 'bg-card text-muted-foreground border-border hover:text-foreground'
@@ -422,7 +422,7 @@ export function PerformanceMatrix3D() {
     >
 
       {/* 3D Canvas */}
-      <div className="w-full overflow-hidden border border-border" style={{ height: 480, background: '#f1f5f9' }}>
+      <div className="w-full overflow-hidden border border-border rounded-lg bg-secondary" style={{ height: 480 }}>
         <Canvas
           camera={{ position: [8, 6, 8], fov: 45 }}
           shadows
@@ -441,8 +441,8 @@ export function PerformanceMatrix3D() {
             MODELS.map(m => (
               <div key={m} className="flex items-center gap-1.5">
                 <span
-                  className="w-2 h-2"
-                  style={{ background: MODEL_COLORS[m], borderRadius: 0 }}
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ background: MODEL_COLORS[m] }}
                 />
                 <span className="text-xs text-muted-foreground">{m}</span>
               </div>
@@ -450,7 +450,7 @@ export function PerformanceMatrix3D() {
           ) : (
             <>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-foreground" />
+                <span className="w-2 h-2 rounded-full bg-foreground" />
                 <span className="text-xs text-muted-foreground">High Skill ({'>'}70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -471,12 +471,7 @@ export function PerformanceMatrix3D() {
           {LEAD_TIMES.map(lt => (
             <span
               key={lt}
-              className="px-1.5 py-0.2 text-[10px] font-bold border"
-              style={{
-                background: '#fafafa',
-                borderColor: '#dcdee0',
-                color: '#171717',
-              }}
+              className="px-1.5 py-0.5 text-[10px] font-bold border border-border rounded-sm bg-secondary text-foreground"
             >
               {lt}: {bestModels[lt]}
             </span>

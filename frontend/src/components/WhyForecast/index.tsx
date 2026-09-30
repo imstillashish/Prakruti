@@ -55,8 +55,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
           ].map(item => (
             <div
               key={item.label}
-              className="p-3 bg-secondary border border-border"
-             
+              className="p-3 rounded-md bg-secondary border border-border"
             >
               <div className="text-[11px] text-muted-foreground mb-0.5">{item.label}</div>
               <div className={`text-sm font-semibold ${item.highlight ? 'text-success' : 'text-foreground'}`}>
@@ -67,7 +66,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
         </div>
 
         {/* Adaptive weighting */}
-        <div className="p-3 border border-border bg-white">
+        <div className="p-3 rounded-md border border-border bg-card">
           <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase font-mono mb-2">
             Dynamic Model Weight Allocation
           </h3>
@@ -86,13 +85,12 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
 
         {/* Reasoning */}
         <div
-          className="p-3 border border-border bg-[#f2fcf7]"
-         
+          className="p-3 rounded-md border border-success/20 bg-success/5 text-foreground"
         >
           <div className="flex items-center justify-between mb-1.5 font-mono">
             <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
             {conf && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-secondary text-foreground border border-success/20">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-success/20">
                 {conf.confidence}% · {conf.confidence_label}
               </span>
             )}

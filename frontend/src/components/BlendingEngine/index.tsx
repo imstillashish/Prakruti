@@ -90,7 +90,7 @@ export function BlendingEngineModal({ open, onClose }: BlendingEngineModalProps)
         </div>
 
         {/* Timing */}
-        <div className="grid grid-cols-3 gap-2 text-xs font-mono p-2.5 bg-secondary border border-border">
+        <div className="grid grid-cols-3 gap-2 text-xs font-mono p-2.5 rounded-md bg-secondary border border-border">
           {[
             { label: 'Last Recalculation', value: status.lastRecalculation },
             { label: 'Data Ingest', value: status.lastDataRefresh },

@@ -48,10 +48,10 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
       }
     >
 
-      {/* Stacked bar with sharp edges */}
+      {/* Stacked bar with pill edges */}
       <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="bars">
         <div
-          className="h-2.5 overflow-hidden flex mb-4 border border-border"
+          className="h-2.5 overflow-hidden flex mb-4 border border-border rounded-full bg-secondary"
           role="img"
           aria-label="Model weight distribution"
         >
@@ -61,7 +61,6 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
               style={{
                 width: `${(w.weight / total) * 100}%`,
                 background: w.color,
-                borderRadius: 0,
                 opacity: hoveredModel && hoveredModel !== w.id ? 0.35 : 1,
               }}
             />
@@ -80,8 +79,8 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
               <div className="flex items-center justify-between mb-1 text-xs">
                 <div className="flex items-center gap-2">
                   <span
-                    className="w-2 h-2 flex-shrink-0"
-                    style={{ background: w.color, borderRadius: 0 }}
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: w.color }}
                   />
                   <span className="text-foreground font-medium">{w.name}</span>
                 </div>
@@ -94,14 +93,13 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
                 </div>
               </div>
               <div
-                className="h-1.5 overflow-hidden bg-secondary border border-border"
+                className="h-1.5 overflow-hidden rounded-full bg-secondary border border-border"
               >
                 <div
-                  className="h-full"
+                  className="h-full rounded-full"
                   style={{
                     width: `${w.weight}%`,
                     background: w.color,
-                    borderRadius: 0,
                     opacity: hoveredModel && hoveredModel !== w.id ? 0.35 : 1,
                   }}
                 />

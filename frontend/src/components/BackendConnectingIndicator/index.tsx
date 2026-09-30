@@ -122,11 +122,11 @@ export function BackendConnectingIndicator() {
     >
       {isConnecting && (
         <div
-          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card border border-border border-l-2 border-l-warning shadow-lg transition-all"
+          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card border border-border border-l-2 border-l-warning rounded-lg shadow-lg transition-all"
         >
           {/* Main Title Row */}
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-warning animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
             <span className="text-xs font-mono font-bold text-foreground">
               Connecting to Live Forecast Backend...
             </span>
@@ -135,7 +135,7 @@ export function BackendConnectingIndicator() {
           {/* Subtitle with Animated Spinner */}
           <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground">
             <span
-              className="w-2.5 h-2.5 border border-warning border-t-transparent animate-spin inline-block flex-shrink-0"
+              className="w-2.5 h-2.5 rounded-full border border-warning border-t-transparent animate-spin inline-block flex-shrink-0"
               aria-label="Loading spinner"
             />
             <span>Render server is waking up (may take up to 60s)</span>
@@ -145,7 +145,7 @@ export function BackendConnectingIndicator() {
 
       {isConnected && (
         <div
-          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card border border-border border-l-2 border-l-primary shadow-lg transition-all"
+          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card border border-border border-l-2 border-l-primary rounded-lg shadow-lg transition-all"
         >
           <span className="w-2 h-2 rounded-full bg-success" />
           <span className="text-xs font-mono font-bold text-primary">
