@@ -12,19 +12,35 @@ export function ForecastPage() {
   return (
     <div className="space-y-6">
       <ForecastHero selectedCity={selectedCity} />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 space-y-6">
-          <WeatherMap
-            selectedCity={selectedCity}
-            onSelectCity={(c) => setSelectedCity(typeof c === 'string' ? c : c.city)}
-          />
-          <ForecastTimeline selectedCity={selectedCity} />
-          <ModelComparison selectedCity={selectedCity} />
+
+      <RegionSelector
+        selectedCity={selectedCity}
+        onSelectCity={(c) => setSelectedCity(c)}
+      />
+
+      <section>
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">
+            The forecast, mapped and charted
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Pick a station above — the map and the 72-hour horizon update together.
+          </p>
         </div>
-        <div className="lg:col-span-5 space-y-6">
-          <RegionSelector selectedCity={selectedCity} onSelectCity={setSelectedCity} />
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+          <div className="xl:col-span-7">
+            <WeatherMap
+              selectedCity={selectedCity}
+              onSelectCity={(c) => setSelectedCity(typeof c === 'string' ? c : c.city)}
+            />
+          </div>
+          <div className="xl:col-span-5">
+            <ForecastTimeline selectedCity={selectedCity} />
+          </div>
         </div>
-      </div>
+      </section>
+
+      <ModelComparison selectedCity={selectedCity} />
     </div>
   );
 }

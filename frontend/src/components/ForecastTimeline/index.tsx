@@ -6,14 +6,15 @@ import {
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
+import { ChartState } from '@/components/spectrumui/charts/chart-engine';
 import { getTimelineData, MOCK_TIMELINE } from '@/lib/api';
 import type { TimelinePoint, Variable } from '@/types';
 import { Calendar } from 'lucide-react';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; uncertaintyHigh?: string; uncertaintyLow?: string }> = {
   rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', uncertaintyHigh: 'rainfallUncertaintyHigh', uncertaintyLow: 'rainfallUncertaintyLow' },
-  temperature: { label: 'Temperature', unit: '°C', color: '#212121', key: 'temperature' },
-  wind: { label: 'Wind Speed', unit: 'km/h', color: '#94613a', key: 'wind' },
+  temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature' },
+  wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind' },
 };
 
 const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string; dataList?: TimelinePoint[] }) => {
@@ -22,15 +23,14 @@ const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean;
   const data = list.find(t => t.time === label);
   return (
     <div
-      className="p-3 bg-white border border-border shadow-md font-mono text-xs"
+      className="p-3 bg-card border border-border shadow-xs rounded-md font-mono text-xs"
       style={{
-        borderRadius: 0,
         minWidth: 150,
       }}
     >
       <div className="text-[11px] font-semibold text-muted-foreground mb-1 flex items-center justify-between">
         <span>{label}</span>
-        {data?.label && <span className="text-[#9e9e9e] font-normal">({data.label} IST)</span>}
+        {data?.label && <span className="text-muted-foreground font-normal">({data.label} IST)</span>}
       </div>
       {payload.map((p, i) => (
         <div key={i} className="text-base font-bold text-foreground">
@@ -108,6 +108,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
     >
 
       <div className="w-full h-[220px]">
+        <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="line">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 16, bottom: 0, left: -10 }}>
             <defs>
@@ -146,6 +147,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
             />
           </AreaChart>
         </ResponsiveContainer>
+        </ChartState>
       </div>
 
       <div className="flex items-center justify-between mt-3 pt-2 border-t border-border text-[11px] font-mono text-muted-foreground">
