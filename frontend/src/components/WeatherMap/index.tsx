@@ -11,8 +11,8 @@ import { MapLayer, CityForecast } from '@/types';
 const RealLeafletMap = dynamic(() => import('./RealLeafletMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[520px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 font-mono">
-      <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
+    <div className="w-full h-[520px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 font-mono rounded-md">
+      <div className="w-8 h-8 border-2 border-foreground border-t-transparent animate-spin" />
       <span className="text-xs">Initializing GIS Synoptic Cartography Grid…</span>
     </div>
   ),
@@ -39,32 +39,34 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
   const [leadTime, setLeadTime] = useState('24h');
 
   return (
-    <section className="border border-border bg-card overflow-hidden">
+    <section className="rounded-lg border border-border bg-card overflow-hidden">
       {/* Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border font-mono">
-        <div className="flex items-center gap-2.5">
-          <MapPin size={15} className="text-primary" />
-          <div>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 px-4 sm:px-5 py-3 border-b border-border">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-8 h-8 shrink-0 rounded-md bg-secondary border border-border flex items-center justify-center text-foreground">
+            <MapPin size={15} />
+          </span>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold tracking-wider text-foreground uppercase">
+              <span className="text-sm font-semibold text-foreground tracking-tight">
                 Synoptic Geospatial Map
               </span>
               <Badge variant="water">45 Stations</Badge>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5 font-sans">Real CartoDB Topographic Grid · Seamless Multi-Layer Navigation</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Real CartoDB Topographic Grid · Seamless Multi-Layer Navigation</p>
           </div>
         </div>
 
         <div className="flex items-center flex-wrap gap-2">
           {/* Lead time selector */}
-          <div className="flex items-center p-0.5 bg-secondary border border-border">
+          <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
             {LEAD_TIMES.map((t) => (
               <button
                 key={t}
                 onClick={() => setLeadTime(t)}
-                className={`px-2.5 py-1 text-xs font-mono transition-colors duration-100 ${
+                className={`px-2.5 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
                   leadTime === t
-                    ? 'bg-secondary text-secondary-foreground font-semibold'
+                    ? 'bg-card text-foreground font-semibold shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 type="button"

@@ -11,7 +11,7 @@ export function NavRail({ currentPage, onNavigate }: {
       {/* Desktop: fixed left rail */}
       <nav
         aria-label="Sections"
-        className="hidden md:flex fixed left-0 top-12 bottom-0 z-30 w-14 flex-col items-center gap-1 pt-3 border-r border-border bg-background"
+        className="hidden md:flex fixed left-0 top-12 bottom-0 z-30 w-[88px] flex-col items-center gap-0.5 px-1.5 pt-3 border-r border-border bg-background"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -23,14 +23,14 @@ export function NavRail({ currentPage, onNavigate }: {
               onClick={() => onNavigate(item.page)}
               title={`${item.label} — ${item.subtitle}`}
               aria-current={active ? 'page' : undefined}
-              className={`flex w-full flex-col items-center gap-1 py-2.5 text-[10px] leading-none transition-colors duration-100 border-l-2 ${
+              className={`flex w-full flex-col items-center gap-1.5 rounded-md py-2.5 px-1 text-center transition-colors duration-100 ${
                 active
-                  ? 'border-primary bg-accent text-accent-foreground font-semibold'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
               <Icon size={16} strokeWidth={active ? 2 : 1.75} />
-              <span className="max-w-[52px] truncate">{item.label}</span>
+              <span className="w-full text-[10px] leading-tight">{item.label}</span>
             </button>
           );
         })}
@@ -52,7 +52,7 @@ export function NavRail({ currentPage, onNavigate }: {
               aria-current={active ? 'page' : undefined}
               className={`flex flex-shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-colors duration-100 ${
                 active
-                  ? 'bg-accent text-accent-foreground font-semibold'
+                  ? 'bg-secondary text-foreground font-semibold'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >

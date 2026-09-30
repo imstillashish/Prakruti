@@ -2,17 +2,17 @@
 
 :root {
   /* Colors from DESIGN.md v3 — white editorial system */
-  --color-primary-50: #f2fcf7;
+  --color-primary-50: #fafafa;
   --color-primary-100: #f0f0f3;
   --color-primary-200: #dcdee0;
   --color-primary-300: #9e9e9e;
   --color-primary-400: #60646c;
   --color-primary-500: #171717;
-  --color-primary-600: #1db961;
-  --color-primary-700: #168a49;
-  --color-primary-800: #12723c;
-  --color-primary-900: #14522f;
-  --color-primary-950: #0d361e;
+  --color-primary-600: #171717;
+  --color-primary-700: #171717;
+  --color-primary-800: #121212;
+  --color-primary-900: #0d0d0d;
+  --color-primary-950: #080808;
 
   --color-neutral-50: #f7f7f7;
   --color-neutral-100: #f0f0f3;
@@ -183,6 +183,17 @@ body {
 
 .text-link:hover {
   text-decoration: underline;
+}
+
+/* Leaflet chrome — popups join the v3 floating layer (12px, popover shadow) */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-popover);
+}
+
+.leaflet-popup-content {
+  font-family: var(--font-family-sans);
+  margin: 12px 14px;
 }
 
 /* Modal backdrop — dimmed scrim */

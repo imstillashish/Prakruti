@@ -40,7 +40,7 @@ export function DataHealthPanel() {
       title="Data ingest telemetry"
       subtitle={`${healthyCount}/${sources.length} feeds operational`}
       actions={
-        <span className="flex items-center gap-1.5 px-2 py-0.5 text-xs font-semibold border bg-accent text-accent-foreground border-primary/30">
+        <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold border bg-secondary text-foreground border-border">
           <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
           Nominal
         </span>
@@ -55,8 +55,7 @@ export function DataHealthPanel() {
           return (
             <div
               key={s.id}
-              className="flex items-center justify-between p-2.5 bg-white border border-border hover:bg-secondary transition-colors"
-             
+              className="flex items-center justify-between p-2.5 rounded-md bg-card border border-border hover:bg-secondary transition-colors"
             >
               <div className="flex items-center gap-2">
                 <Icon size={14} style={{ color: cfg.color, flexShrink: 0 }} />
@@ -77,8 +76,7 @@ export function DataHealthPanel() {
       </div>
 
       <div
-        className="mt-3.5 p-3 bg-secondary border border-border text-xs font-mono text-muted-foreground"
-       
+        className="mt-3.5 p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground"
       >
         <div className="flex items-center justify-between text-[11px]">
           <span>Cache Invalidation: 60m TTL</span>

@@ -55,15 +55,15 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
       term="models"
       className="flex flex-col justify-between h-full"
       actions={
-        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
+        <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
           {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
             <button
               key={v}
               onClick={() => setVariable(v)}
-              className={`px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
+              className={`px-2.5 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
                 variable === v
-                  ? 'bg-secondary text-secondary-foreground font-semibold'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
+                  ? 'bg-card text-foreground font-semibold shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               type="button"
             >
@@ -79,7 +79,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
         <div className="w-full h-[180px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 8, bottom: 0, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
               <XAxis dataKey="model" tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
               <Tooltip
@@ -94,7 +94,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
                 }}
                 formatter={(v: unknown) => [`${v} ${config.unit}`, config.label]}
               />
-              <Bar dataKey="value" radius={[0, 0, 0, 0]}>
+              <Bar dataKey="value" radius={[2, 2, 0, 0]}>
                 {chartData.map((d, i) => (
                   <Cell
                     key={i}
@@ -109,12 +109,12 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
         {/* Legend */}
         <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-border text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 bg-foreground" />
+            <span className="w-2.5 h-2.5 rounded-full bg-foreground" />
             <span className="text-foreground font-semibold">Hybrid AI Blend</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 bg-[#9e9e9e]" />
-            <span className="text-[#6f6f6f]">Raw NWP Forecasts</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e]" />
+            <span className="text-muted-foreground">Raw NWP Forecasts</span>
           </div>
         </div>
       </div>

@@ -13,8 +13,8 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
       <div className="h-full flex items-center justify-between gap-3 pl-4 pr-3 sm:pl-6">
         {/* Wordmark */}
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="font-display text-sm font-bold tracking-tight text-foreground whitespace-nowrap">
-            Prakruti <span className="text-[13px] font-semibold text-muted-foreground">· प्रकृति</span>
+          <span className="text-sm font-semibold tracking-tight text-foreground whitespace-nowrap">
+            Prakruti <span className="text-[13px] font-medium text-muted-foreground">· प्रकृति</span>
           </span>
           <span className="hidden sm:inline text-[10px] font-mono text-muted-foreground border border-border px-1.5 py-0.5">
             MoES · NCMRWF
@@ -26,7 +26,7 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
           <button
             type="button"
             onClick={() => setEngineOpen(true)}
-            className="flex items-center gap-2 px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 bg-accent text-accent-foreground border border-border hover:border-foreground/40 rounded-md"
+            className="flex items-center gap-2 px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 bg-secondary text-foreground border border-border hover:border-foreground/40 rounded-md"
             title="Blending engine status"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
@@ -40,7 +40,7 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
             title="Active weather alerts"
           >
             <Bell size={15} />
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-destructive" />
+            <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-destructive" />
           </button>
 
           <button

@@ -88,11 +88,10 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
             return (
               <div
                 key={`${event.type}-${event.window}-${idx}`}
-                className="w-full text-left p-3 transition-colors border"
+                className="w-full text-left p-3 transition-colors border rounded-md"
                 style={{
                   background: style.bg,
                   borderColor: style.border,
-                  borderRadius: 0,
                 }}
               >
                 <div className="flex items-center gap-3">
@@ -113,7 +112,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
                     </div>
                   </div>
 
-                  <ChevronRight size={14} className="text-[#c2c2c2] shrink-0" />
+                  <ChevronRight size={14} className="text-border shrink-0" />
                 </div>
               </div>
             );
