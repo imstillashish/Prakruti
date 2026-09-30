@@ -12,9 +12,7 @@ import {
   PerformanceCell,
   PerformanceMatrixData,
 } from '@/data/performanceMatrixData';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info, Box, BarChart3 } from 'lucide-react';
+import { Panel } from '@/components/shell/Panel';
 
 /* ──────────────────── Color helpers ──────────────────── */
 
@@ -32,9 +30,9 @@ function lerpColor(a: string, b: string, t: number): string {
 }
 
 function getBarColor(skill: number): string {
-  if (skill > 0.7) return '#10b981'; // emerald
-  if (skill > 0.4) return '#f59e0b'; // amber
-  return '#ef4444'; // red
+  if (skill > 0.7) return '#168a49'; // signal green
+  if (skill > 0.4) return '#f59e0b'; // amber = watch
+  return '#b4544a'; // earth red = poor
 }
 
 /* ──────────────────── Individual 3D Bar ──────────────────── */
@@ -193,7 +191,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
         fontWeight="bold"
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
       >
-        Lead Time →
+        Lead Time (hours ahead) →
       </Text>
       <Text
         position={[-((MODELS.length - 1) * spacing) / 2 - 2.5, 2, -((LEAD_TIMES.length - 1) * spacing) / 2 - 0.5]}
@@ -202,7 +200,7 @@ function AxisLabels({ spacing, matrix, maxRmse }: GridProps) {
         anchorX="center"
         rotation={[0, Math.PI / 4, Math.PI / 2]}
       >
-        {`RMSE (${matrix.unit}) ↑`}
+        {`Average miss — RMSE (${matrix.unit}) ↑`}
       </Text>
 
       {/* Base grid */}
@@ -236,16 +234,11 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
       style={{ pointerEvents: 'none' }}
     >
       <div
-        className="px-3 py-2.5 rounded-xl shadow-xl border text-xs whitespace-nowrap"
-        style={{
-          background: 'rgba(255,255,255,0.96)',
-          backdropFilter: 'blur(12px)',
-          borderColor: 'rgba(148,163,184,0.25)',
-          minWidth: 160,
-        }}
+        className="px-3 py-2.5 shadow-sm border border-border bg-card text-xs whitespace-nowrap"
+        style={{ minWidth: 160 }}
       >
-        <div className="font-bold text-slate-800 mb-1">{cell.model}</div>
-        <div className="text-slate-500 mb-1.5">Lead: {cell.leadTime} · {matrix.variable}</div>
+        <div className="font-bold text-foreground mb-1">{cell.model}</div>
+        <div className="text-muted-foreground mb-1.5">Lead: {cell.leadTime} · {matrix.variable}</div>
         <div className="space-y-0.5">
           <div className="flex justify-between gap-4">
             <span className="text-slate-500">RMSE</span>
@@ -262,9 +255,12 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
             </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-slate-500">Skill</span>
-            <span className="font-bold text-emerald-600">{(cell.skillScore * 100).toFixed(0)}%</span>
+            <span className="text-muted-foreground">Skill</span>
+            <span className="font-bold text-primary">{(cell.skillScore * 100).toFixed(0)}%</span>
           </div>
+        </div>
+        <div className="mt-1.5 pt-1.5 border-t border-border text-[10px] text-muted-foreground leading-snug max-w-[170px] whitespace-normal">
+          How far off this model is on average at this lead time — shorter bar is better.
         </div>
       </div>
     </Html>
@@ -359,42 +355,23 @@ export function PerformanceMatrix3D() {
   }, [matrix]);
 
   return (
-    <GlassCard padding="md">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[#f7f7f7] border border-[#dbdbdb] flex items-center justify-center text-[#212121]" style={{ borderRadius: 0 }}>
-            <Box size={14} />
-          </div>
-          <div>
-            <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
-              3D PERFORMANCE MATRIX
-            </span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info size={12} className="text-[#808080] cursor-help ml-1.5 inline" />
-              </TooltipTrigger>
-              <TooltipContent className="font-mono text-xs max-w-60">
-                Interactive 3D model comparison across lead times. Drag to rotate, scroll to zoom.
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-
-        {/* Controls row */}
-        <div className="flex items-center gap-2">
+    <Panel
+      title="3D performance matrix"
+      subtitle="How accurate each model is at each lead time — drag to rotate, scroll to zoom"
+      term="rmse"
+      actions={
+        <div className="flex flex-wrap items-center gap-2">
           {/* Variable selector */}
-          <div className="flex items-center gap-0.5 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="flex items-center gap-0.5 p-0.5 bg-secondary border border-border">
             {(Object.keys(VARIABLE_CONFIG) as VariableKey[]).map((v) => (
               <button
                 key={v}
                 onClick={() => setVariable(v)}
-                className={`px-2 py-1 text-xs font-mono transition-colors ${
+                className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
                   variable === v
-                    ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
-                    : 'text-[#575757] hover:text-[#212121]'
+                    ? 'bg-card text-foreground font-bold border border-border'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
-                style={{ borderRadius: 0 }}
                 type="button"
               >
                 {VARIABLE_CONFIG[v].icon} {VARIABLE_CONFIG[v].label}
@@ -403,27 +380,25 @@ export function PerformanceMatrix3D() {
           </div>
 
           {/* Color mode toggle */}
-          <div className="flex items-center gap-0.5 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="flex items-center gap-0.5 p-0.5 bg-secondary border border-border">
             <button
               onClick={() => setColorMode('model')}
-              className={`px-2 py-1 text-xs font-mono transition-colors ${
+              className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
                 colorMode === 'model'
-                  ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
-                  : 'text-[#575757] hover:text-[#212121]'
+                  ? 'bg-card text-foreground font-bold border border-border'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
-              style={{ borderRadius: 0 }}
               type="button"
             >
               By Model
             </button>
             <button
               onClick={() => setColorMode('skill')}
-              className={`px-2 py-1 text-xs font-mono transition-colors ${
+              className={`px-2 py-1 text-xs font-mono transition-colors duration-100 ${
                 colorMode === 'skill'
-                  ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
-                  : 'text-[#575757] hover:text-[#212121]'
+                  ? 'bg-card text-foreground font-bold border border-border'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
-              style={{ borderRadius: 0 }}
               type="button"
             >
               By Skill
@@ -433,21 +408,21 @@ export function PerformanceMatrix3D() {
           {/* Auto-rotate toggle */}
           <button
             onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-2.5 py-1 text-xs font-mono border transition-colors ${
+            className={`px-2.5 py-1 text-xs font-mono border transition-colors duration-100 ${
               autoRotate
-                ? 'bg-[#e6faee] text-[#168a49] border-[#1db961]'
-                : 'bg-white text-[#575757] border-[#dbdbdb] hover:text-[#212121]'
+                ? 'bg-accent text-accent-foreground border-primary/30'
+                : 'bg-card text-muted-foreground border-border hover:text-foreground'
             }`}
-            style={{ borderRadius: 0 }}
             type="button"
           >
             {autoRotate ? '⟳ Rotating' : '⟳ Paused'}
           </button>
         </div>
-      </div>
+      }
+    >
 
       {/* 3D Canvas */}
-      <div className="w-full rounded-2xl overflow-hidden border border-slate-200/60" style={{ height: 480, background: 'linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%)' }}>
+      <div className="w-full overflow-hidden border border-border" style={{ height: 480, background: '#f1f5f9' }}>
         <Canvas
           camera={{ position: [8, 6, 8], fov: 45 }}
           shadows
@@ -494,29 +469,24 @@ export function PerformanceMatrix3D() {
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10px] font-bold text-[#808080] uppercase tracking-wider">Lowest Error:</span>
           {LEAD_TIMES.map(lt => (
-            <span
-              key={lt}
-              className="px-1.5 py-0.2 text-[10px] font-bold border"
-              style={{
-                borderRadius: 0,
-                background: '#f7f7f7',
-                borderColor: '#dbdbdb',
-                color: '#212121',
-              }}
-            >
-              {lt}: {bestModels[lt]}
-            </span>
+        <span
+          className="px-1.5 py-0.2 text-[10px] font-bold border"
+          style={{
+            background: '#f7f7f7',
+            borderColor: '#dbdbdb',
+            color: '#212121',
+          }}
+        >
+          {lt}: {bestModels[lt]}
+        </span>
           ))}
         </div>
       </div>
 
       {/* Insight footer */}
-      <div
-        className="mt-3 p-3 bg-[#e6faee] border border-[#c4f3d8] font-mono text-xs text-[#168a49] leading-relaxed"
-        style={{ borderRadius: 0 }}
-      >
+      <div className="mt-3 p-3 bg-accent border border-primary/30 font-mono text-xs text-accent-foreground leading-relaxed">
         <span className="font-bold">Blended Hybrid AI–NWP</span> delivers lowest RMSE across all forecast horizons for {matrix.variable.toLowerCase()}, with superior error stability compared to raw individual physics models.
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

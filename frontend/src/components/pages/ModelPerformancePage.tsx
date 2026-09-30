@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import { ModelSkillPanel } from '@/components/ModelSkill';
 import { PerformanceMatrix3D } from '@/components/PerformanceMatrix3D';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { BarChart3, TrendingDown } from 'lucide-react';
+import { Panel } from '@/components/shell/Panel';
+import { Explain } from '@/components/explain/Explain';
+import { BarChart3 } from 'lucide-react';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
 
@@ -35,12 +36,12 @@ export function ModelPerformancePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-[#f7f7f7] text-[#212121] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+        <div className="w-8 h-8 flex items-center justify-center bg-secondary text-foreground border border-border">
           <BarChart3 size={18} />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-[#212121]">Model Performance &amp; Skill</h1>
-          <p className="text-xs text-[#808080]">Historical validation against ERA5 reanalysis across lead times and stations</p>
+          <h1 className="text-lg font-bold text-foreground">Model Performance &amp; Skill</h1>
+          <p className="text-xs text-muted-foreground">Historical validation against ERA5 reanalysis across lead times and stations</p>
         </div>
       </div>
 
@@ -50,10 +51,11 @@ export function ModelPerformancePage() {
       <PerformanceMatrix3D />
 
       {/* Historical skill summary */}
-      <GlassCard padding="md">
-        <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase mb-4">
-          HISTORICAL SKILL SCORES (RMSE mm)
-        </h2>
+      <Panel
+        title="Historical skill scores (RMSE mm)"
+        subtitle="Validation results by period — the blend column is ours"
+        term="skillScore"
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono border-collapse">
             <thead>
@@ -83,7 +85,7 @@ export function ModelPerformancePage() {
         <p className="text-[11px] font-mono text-[#808080] mt-3">
           Evaluated against 61-day ERA5 reanalysis dataset. Lower RMSE indicates superior accuracy.
         </p>
-      </GlassCard>
+      </Panel>
     </div>
   );
 }
