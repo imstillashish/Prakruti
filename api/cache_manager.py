@@ -411,6 +411,11 @@ def run_downstream_updates():
         if alerts_script.exists():
             subprocess.run([py_exec, str(alerts_script)], cwd=str(BASE_DIR), capture_output=True)
 
+        # Run advisories.py (hero advice, threshold-coupled to alerts)
+        adv_script = BASE_DIR / "ai" / "advisories.py"
+        if adv_script.exists():
+            subprocess.run([py_exec, str(adv_script)], cwd=str(BASE_DIR), capture_output=True)
+
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():

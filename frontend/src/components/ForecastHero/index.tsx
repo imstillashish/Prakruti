@@ -1,11 +1,12 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, Activity } from 'lucide-react';
+import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, Activity, Droplet, HeartPulse } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
-import { MOCK_FORECAST, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
+import { MOCK_FORECAST, getAdvisories, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
+import type { AdvisoryRecord } from '@/lib/api';
 import { monotonePath, EASE, usePrefersReducedMotion } from '@/components/spectrumui/charts/chart-engine';
 import type { ForecastMetrics, TimelinePoint } from '@/types';
 
@@ -212,6 +213,36 @@ function MetricCell({
   );
 }
 
+/* Data-driven advice comes from the pipeline (outputs/advisories.csv via
+   /api/advisories) — thresholds shared with ai/alerts.py, so the hero and
+   the Alert Center can never disagree about what counts as hazardous. */
+const BADGE_TONE_CLASS: Record<AdvisoryRecord['tone'], string> = {
+  destructive: 'text-destructive',
+  info: 'text-[#155a92]',
+  muted: 'text-muted-foreground',
+};
+
+function categoryIcon(category: string) {
+  switch (category) {
+    case 'Personal Gear':
+    case 'Rain Outlook':
+      return <Umbrella size={17} className="shrink-0 mt-0.5 text-water" />;
+    case 'Transit & Travel':
+    case 'Two-Wheelers & Driving':
+      return <Car size={17} className="shrink-0 mt-0.5 text-foreground" />;
+    case 'Hydration':
+      return <Droplet size={17} className="shrink-0 mt-0.5 text-water" />;
+    case 'Vulnerable Groups':
+      return <HeartPulse size={17} className="shrink-0 mt-0.5 text-destructive" />;
+    case 'Secure Loose Objects':
+      return <Wind size={17} className="shrink-0 mt-0.5 text-foreground" />;
+    case 'Temperature':
+      return <Thermometer size={17} className="shrink-0 mt-0.5 text-warning" />;
+    default:
+      return <Sun size={17} className="shrink-0 mt-0.5 text-warning" />;
+  }
+}
+
 interface ForecastHeroProps {
   selectedCity?: string | null;
 }
@@ -223,6 +254,8 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string>('2026-09-26T23:45:12');
   const [isLoading, setIsLoading] = useState(true);
+  const [advisories, setAdvisories] = useState<AdvisoryRecord[]>([]);
+  const [advisoriesLoaded, setAdvisoriesLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -231,6 +264,14 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
         if (mounted) setForecast(metrics);
       })
       .catch(() => {});
+    getAdvisories(city)
+      .then((rows) => {
+        if (mounted) setAdvisories([...rows].sort((a, b) => a.rank - b.rank));
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (mounted) setAdvisoriesLoaded(true);
+      });
     getMetadata()
       .then((data) => {
         if (mounted && data && data.last_updated) setLastUpdated(data.last_updated);
@@ -248,48 +289,14 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
   const lastUpdatedDisplay = formatLastUpdated(lastUpdated);
 
-  // Layperson-Friendly Synthesis
-  const isHeavyRain = forecast.rainfall >= 15;
-  const isLightRain = forecast.rainfall > 0 && forecast.rainfall < 15;
-  const isHeatwave = forecast.temperature >= 38;
-  const isHighWind = forecast.wind >= 30;
-
-  let directSummary = 'Clear and pleasant weather. Good conditions for outdoor plans and travel.';
-  let badgeLabel = 'Mild & Clear';
-  let badgeColor = 'text-muted-foreground';
-  let gearAdvice = 'No rain protection needed today.';
-  let commuteAdvice = 'Normal travel conditions on all major transit routes.';
-  let outdoorAdvice = 'Ideal conditions for open-air tasks and transport.';
-
-  if (isHeavyRain) {
-    directSummary = `Heavy rain expected (~${forecast.rainfall} mm). Waterlogging and transport delays likely.`;
-    badgeLabel = 'Heavy Downpour';
-    badgeColor = 'text-destructive';
-    gearAdvice = 'Carry an umbrella and waterproof footwear.';
-    commuteAdvice = 'Expect delays and waterlogging on low-lying roads.';
-    outdoorAdvice = 'Postpone non-essential field or outdoor activities.';
-  } else if (isLightRain) {
-    directSummary = `Scattered light showers expected (~${forecast.rainfall} mm). Roads may be damp.`;
-    badgeLabel = 'Light Showers';
-    badgeColor = 'text-[#155a92]';
-    gearAdvice = 'Keep a compact umbrella handy.';
-    commuteAdvice = 'Minor traffic slowing due to wet road surfaces.';
-    outdoorAdvice = 'Outdoor work possible with brief shower interruptions.';
-  } else if (isHeatwave) {
-    directSummary = `Extreme heat today (${forecast.temperature}°C). High heat index during midday.`;
-    badgeLabel = 'Heat Alert';
-    badgeColor = 'text-destructive';
-    gearAdvice = 'Wear light cotton clothing and sun protection.';
-    commuteAdvice = 'AC transit recommended between 12 PM and 4 PM.';
-    outdoorAdvice = 'Avoid heavy outdoor exertion during peak afternoon heat.';
-  } else if (isHighWind) {
-    directSummary = `Gusty winds up to ${forecast.wind} km/h. Secure loose outdoor objects.`;
-    badgeLabel = 'Squally Wind';
-    badgeColor = 'text-destructive';
-    gearAdvice = 'Wind-resistant outerwear advised.';
-    commuteAdvice = 'Exercise extra caution when cycling or driving two-wheelers.';
-    outdoorAdvice = 'Secure awnings, lightweight tarps, and loose rooftop items.';
-  }
+  // Advice content — from the advisories pipeline; falls back to a calm
+  // placeholder while loading or if the feed is unavailable.
+  const headline = advisories[0]?.headline ?? 'Reading the latest blend…';
+  const badgeLabel = advisories[0]?.badge ?? 'Standby';
+  const badgeColor = advisories[0] ? BADGE_TONE_CLASS[advisories[0].tone] : 'text-muted-foreground';
+  const cards = advisories.length >= 3
+    ? advisories.slice(0, 3).map((a) => ({ category: a.category, action: a.action, evidence: a.evidence }))
+    : [];
 
   const timeLabels = timeline.length >= 2 ? timeline.map((p) => p.time) : ['NOW', '+6h', '+12h', '+24h', '+48h', '+72h'];
   const rainSeries = timeline.length >= 2 ? timeline.map((p) => p.rainfall) : [forecast.rainfall, forecast.rainfall];
@@ -315,7 +322,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 </span>
               </div>
               <h1 className="text-2xl sm:text-4xl font-semibold text-foreground tracking-tight leading-[1.15]">
-                {directSummary}
+                {headline}
               </h1>
               <p className="text-sm text-muted-foreground mt-2">
                 Real-time consensus synthesized from ECMWF, GFS, ICON, and GEM numerical models.
@@ -325,27 +332,30 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   What to do about it
                 </h2>
-                <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <Umbrella size={17} className="shrink-0 mt-0.5 text-water" />
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-foreground">Personal Gear</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{gearAdvice}</div>
-                  </div>
-                </div>
-                <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <Car size={17} className="shrink-0 mt-0.5 text-foreground" />
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-foreground">Transit &amp; Travel</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{commuteAdvice}</div>
-                  </div>
-                </div>
-                <div className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                  <Sun size={17} className="shrink-0 mt-0.5 text-warning" />
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-foreground">Work &amp; Outdoors</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{outdoorAdvice}</div>
-                  </div>
-                </div>
+                {cards.length > 0
+                  ? cards.map((card) => (
+                      <div key={card.category} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
+                        {categoryIcon(card.category)}
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-foreground">{card.category}</div>
+                          <div className="text-xs text-muted-foreground leading-relaxed">{card.action}</div>
+                          <div className="mt-1.5 text-[11px] font-mono text-muted-foreground/80">{card.evidence}</div>
+                        </div>
+                      </div>
+                    ))
+                  : [0, 1, 2].map((i) => (
+                      <div key={i} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
+                        <div className="h-4 w-4 rounded-full bg-muted shrink-0 mt-0.5" />
+                        <div className="min-w-0 flex-1 space-y-1.5">
+                          <div className="h-3 w-24 rounded bg-muted" />
+                          <div className="h-3 w-full rounded bg-muted" />
+                          <div className="h-3 w-3/4 rounded bg-muted" />
+                        </div>
+                      </div>
+                    ))}
+                {advisoriesLoaded && cards.length === 0 ? (
+                  <p className="text-[11px] font-mono text-muted-foreground">Advisory feed unavailable — see Data Health.</p>
+                ) : null}
                 <ShaderButton onClick={() => setWhyOpen(true)} className="h-8 px-3 text-xs">
                   <Activity size={14} />
                   Inspect Model Evidence

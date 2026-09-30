@@ -390,6 +390,19 @@ export interface AlertRecord {
   threshold: number;
 }
 
+export interface AdvisoryRecord {
+  city: string;
+  scenario: 'heavy_rain' | 'light_rain' | 'heat' | 'wind' | 'calm';
+  severity: 'high' | 'moderate' | 'none';
+  badge: string;
+  tone: 'destructive' | 'info' | 'muted';
+  headline: string;
+  category: string;
+  action: string;
+  evidence: string;
+  rank: number;
+}
+
 export interface CityRecord {
   city: string;
   latitude?: number;
@@ -461,6 +474,13 @@ export async function getConfidence(city?: string, lead_day?: number): Promise<C
   if (lead_day) params.append('lead_day', String(lead_day));
   const query = params.toString() ? `?${params.toString()}` : '';
   return fetchFromApi<ConfidenceRecord[]>(`/confidence${query}`, []);
+}
+
+export async function getAdvisories(city?: string): Promise<AdvisoryRecord[]> {
+  const params = new URLSearchParams();
+  if (city) params.append('city', city);
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return fetchFromApi<AdvisoryRecord[]>(`/advisories${query}`, []);
 }
 
 // Active in-flight singleton and memory cache for forecast records
