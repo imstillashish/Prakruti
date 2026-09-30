@@ -94,40 +94,36 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
 
   return (
     <div className="space-y-7">
-      {/* Top Emergency Operations Center Control Bar with Region Selector */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 bg-card border border-border">
+      {/* Page header + station toolbar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-foreground flex items-center justify-center text-background">
+          <div className="w-9 h-9 rounded-md bg-foreground flex items-center justify-center text-background">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xs font-mono font-bold text-foreground tracking-wider uppercase">
-                RISK PRIORITY INDEX (RPI) MODULE
-              </h2>
-              <span className="px-1.5 py-0.2 text-[9px] font-mono font-bold bg-secondary text-muted-foreground border border-border">
-                EOC DECISION SUPPORT
-              </span>
-            </div>
+            <h2 className="text-base font-semibold text-foreground tracking-tight">
+              Risk Priority Index
+            </h2>
             <p className="text-xs text-muted-foreground">
-              Disaster Risk Mitigation &amp; Resource Pre-Positioning Dashboard for National &amp; State EOCs
+              Which districts need attention first, and what to pre-position where.
             </p>
           </div>
         </div>
 
         {/* Quick Station Navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
-            title="Refresh Synoptic RPI Run"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-primary' : ''}`} />
-            <span>{isRefreshing ? 'Recalculating...' : 'Refresh Index'}</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleRefresh}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
+          title="Refresh Synoptic RPI Run"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-foreground' : ''}`} />
+          <span>{isRefreshing ? 'Recalculating…' : 'Refresh Index'}</span>
+        </button>
       </div>
+
+      {/* Station selector toolbar */}
+      <RegionSelector selectedCity={currentCity} onSelectCity={handleCitySelect} />
 
       {/* Main Layout Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -172,11 +168,6 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               <RpiHero rpiData={rpiData} />
             </motion.div>
           )}
-
-          {/* Region Selector Bar for Smooth Country -> State -> District Exploration */}
-          <div className="max-w-2xl">
-            <RegionSelector selectedCity={currentCity} onSelectCity={handleCitySelect} />
-          </div>
 
           {/* Section 2 — Resource Recommendation Engine */}
           {rpiData && (

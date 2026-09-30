@@ -78,13 +78,13 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-secondary border border-border flex items-center justify-center text-foreground">
+          <div className="w-8 h-8 rounded-md bg-secondary border border-border flex items-center justify-center text-foreground">
             <Layers className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-mono font-bold tracking-wider text-foreground uppercase">
-                MODEL TRUST ATLAS (NATIONAL CARTOGRAPHY)
+              <h3 className="text-base font-semibold text-foreground tracking-tight">
+                Model Trust Atlas
               </h3>
               <Badge variant="secondary">AI Adaptive NWP Blending</Badge>
             </div>
@@ -117,23 +117,23 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
         {/* Model Trust & Adaptive Weights Telemetry (4 Cols) */}
         <div className="lg:col-span-4 space-y-3.5">
           {/* Dominant Model Card */}
-          <div className="p-4 bg-white border border-border">
+          <div className="p-4 rounded-lg bg-card border border-border">
             <div className="flex items-center justify-between gap-2 mb-3">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-success" />
-                <span className="text-xs font-mono font-bold text-foreground tracking-wider uppercase">
-                  DOMINANT MODEL
+                <span className="text-sm font-semibold text-foreground">
+                  Dominant model
                 </span>
               </div>
               <span
-                className="px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase"
-                style={{ backgroundColor: modelInfo.hex, borderRadius: 0 }}
+                className="rounded-sm px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase"
+                style={{ backgroundColor: modelInfo.hex }}
               >
                 {domModel} LEADS
               </span>
             </div>
 
-            <div className="p-3 bg-secondary border border-border mb-3">
+            <div className="p-3 rounded-md bg-secondary border border-border mb-3">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-xs text-foreground">{modelInfo.label}</span>
                 <span className="text-xs font-mono font-bold" style={{ color: modelInfo.hex }}>
@@ -145,19 +145,19 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
 
             <div className="flex items-center justify-between text-xs font-mono pt-1 text-muted-foreground">
               <span>Station Confidence:</span>
-              <strong className="text-success font-bold bg-secondary px-1.5 py-0.2 border border-[#c4f3d8]">
+              <strong className="text-success font-bold bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20">
                 {rpiData.confidence}% Score
               </strong>
             </div>
           </div>
 
           {/* Adaptive Weight Percentages (Live Blending Mix) */}
-          <div className="p-4 bg-white border border-border">
+          <div className="p-4 rounded-lg bg-card border border-border">
             <div className="flex items-center justify-between gap-2 mb-3">
               <div className="flex items-center gap-1.5">
                 <Sliders className="w-4 h-4 text-foreground" />
-                <span className="text-xs font-mono font-bold text-foreground tracking-wider uppercase">
-                  ADAPTIVE BLEND WEIGHTS
+                <span className="text-sm font-semibold text-foreground">
+                  Adaptive blend weights
                 </span>
               </div>
               <span className="text-[10px] font-mono text-muted-foreground">Kalman Filtered</span>
@@ -168,15 +168,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-[#2563eb]" />
+                    <span className="w-2 h-2 rounded-full bg-[#171717]" />
                     ECMWF IFS (Europe)
                   </span>
                   <span className="font-bold text-foreground">{weights.ecmwf}%</span>
                 </div>
-                <div className="w-full h-1 bg-secondary">
+                <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full bg-[#2563eb]"
-                    style={{ width: `${weights.ecmwf}%`, borderRadius: 0 }}
+                    className="h-full rounded-full bg-[#171717]"
+                    style={{ width: `${weights.ecmwf}%` }}
                   />
                 </div>
               </div>
@@ -185,15 +185,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-foreground" />
+                    <span className="w-2 h-2 rounded-full bg-[#60646c]" />
                     ICON Seamless (Germany)
                   </span>
                   <span className="font-bold text-foreground">{weights.icon}%</span>
                 </div>
-                <div className="w-full h-1 bg-secondary">
+                <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full bg-foreground"
-                    style={{ width: `${weights.icon}%`, borderRadius: 0 }}
+                    className="h-full rounded-full bg-[#60646c]"
+                    style={{ width: `${weights.icon}%` }}
                   />
                 </div>
               </div>
@@ -202,15 +202,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-[#8b5cf6]" />
+                    <span className="w-2 h-2 rounded-full bg-[#1e6fb8]" />
                     GFS Global (NOAA USA)
                   </span>
                   <span className="font-bold text-foreground">{weights.gfs}%</span>
                 </div>
-                <div className="w-full h-1 bg-secondary">
+                <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full bg-[#8b5cf6]"
-                    style={{ width: `${weights.gfs}%`, borderRadius: 0 }}
+                    className="h-full rounded-full bg-[#1e6fb8]"
+                    style={{ width: `${weights.gfs}%` }}
                   />
                 </div>
               </div>
@@ -219,15 +219,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-[#f97316]" />
+                    <span className="w-2 h-2 rounded-full bg-[#9e9e9e]" />
                     GEM Seamless (Canada)
                   </span>
                   <span className="font-bold text-foreground">{weights.gem}%</span>
                 </div>
-                <div className="w-full h-1 bg-secondary">
+                <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full bg-[#f97316]"
-                    style={{ width: `${weights.gem}%`, borderRadius: 0 }}
+                    className="h-full rounded-full bg-[#9e9e9e]"
+                    style={{ width: `${weights.gem}%` }}
                   />
                 </div>
               </div>
