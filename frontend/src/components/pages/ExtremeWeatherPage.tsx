@@ -16,6 +16,7 @@ export function ExtremeWeatherPage() {
   const [isError, setIsError] = useState(false);
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -192,13 +193,13 @@ export function ExtremeWeatherPage() {
         {/* Alerts list */}
         <div className="space-y-2 max-h-[580px] overflow-y-auto pr-1">
           {filteredAlerts.length === 0 ? (
-            <div className="py-12 px-4 text-center bg-secondary border border-border">
-              <div className="w-9 h-9 mx-auto mb-2 bg-accent text-accent-foreground flex items-center justify-center border border-primary/30">
+            <div className="py-12 px-4 text-center rounded-md bg-secondary border border-border">
+              <div className="w-9 h-9 mx-auto mb-2 rounded-full bg-card text-success flex items-center justify-center border border-border">
                 <CheckCircle2 size={18} />
               </div>
-              <h4 className="text-xs font-mono font-bold text-foreground">NO ACTIVE ALERTS MATCHING CRITERIA</h4>
+              <h4 className="text-sm font-semibold text-foreground">No active bulletins for this station</h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                No active hazard advisories match the current filter selection.
+                Model data lands every 6 hours — new advisories appear after the next synoptic cycle.
               </p>
               <button
                 type="button"
@@ -206,53 +207,57 @@ export function ExtremeWeatherPage() {
                   setSeverityFilter('all');
                   setSelectedState('all');
                 }}
-                className="mt-3 px-3 py-1 bg-secondary text-foreground text-xs font-mono hover:bg-accent border border-border transition-colors duration-100"
+                className="mt-3 px-3 py-1 rounded-md bg-card text-foreground text-xs font-medium hover:bg-accent border border-border transition-colors duration-100"
               >
                 Reset Filters
               </button>
             </div>
           ) : (
-            filteredAlerts.map((alert) => {
-              const isRed = alert.type === 'danger';
-              return (
-                <div
-                  key={alert.id}
-                  className="flex items-center justify-between p-3 transition-colors"
-                  style={{
-                    borderRadius: 0,
-                    background: isRed ? '#fffafa' : '#fffdfa',
-                    border: isRed ? '1px solid #f3d9d6' : '1px solid #fed7aa',
-                  }}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span
-                      className="w-2 h-2 shrink-0"
-                      style={{
-                        background: isRed ? '#b42318' : '#ab6400',
-                      }}
-                    />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-foreground truncate">{alert.title}</span>
-                        <Badge variant={isRed ? 'destructive' : 'warning'} className="text-[9px] shrink-0">
-                          {isRed ? 'RED ALERT' : 'ORANGE ALERT'}
-                        </Badge>
+            <ul className="divide-y divide-border border border-border rounded-lg bg-card overflow-hidden">
+              {filteredAlerts.map((alert) => {
+                const isRed = alert.type === 'danger';
+                const open = openId === alert.id;
+                return (
+                  <li key={alert.id}>
+                    <button
+                      type="button"
+                      aria-expanded={open}
+                      onClick={() => setOpenId(open ? null : alert.id)}
+                      className="flex w-full items-center justify-between gap-3 p-3.5 text-left transition-colors hover:bg-secondary/50"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`w-2 h-2 shrink-0 rounded-full ${isRed ? 'bg-destructive' : 'bg-warning'}`} />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[13px] font-medium text-foreground truncate">{alert.title}</span>
+                            <Badge variant={isRed ? 'destructive' : 'warning'} className="text-[9px] shrink-0">
+                              {isRed ? 'RED ALERT' : 'ORANGE ALERT'}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                            <MapPin size={10} className="shrink-0" />
+                            <span className="truncate">{alert.location}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                        <MapPin size={10} className="shrink-0" />
-                        <span className="truncate">{alert.location}</span>
+                      <div className="text-right shrink-0 font-mono">
+                        <div className="text-xs text-muted-foreground font-semibold">{alert.window}</div>
+                        <div className="text-[10px] text-foreground mt-0.5">{alert.timestamp}</div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0 ml-3 font-mono">
-                    <div className="text-xs text-muted-foreground font-semibold">{alert.window}</div>
-                    <div className="text-[10px] text-foreground mt-0.5 bg-secondary px-1.5 py-0.5 border border-border inline-block">
-                      {alert.timestamp}
-                    </div>
-                  </div>
-                </div>
-              );
-            })
+                    </button>
+                    {open && (
+                      <div className="px-3.5 pb-3.5 pl-[52px]">
+                        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+                          {isRed
+                            ? `Immediate action advised for ${alert.location}. Follow state EOC instructions and avoid hazard-prone areas during ${alert.window}.`
+                            : `Stay alert in ${alert.location} during ${alert.window}. Conditions may worsen; keep access to the latest bulletin.`}
+                        </p>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </div>
       </Panel>
