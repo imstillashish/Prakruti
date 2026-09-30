@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { TrendingUp, Info } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip } from '@/components/ui/Tooltip';
+import { TrendingUp } from 'lucide-react';
+import { Panel } from '@/components/shell/Panel';
+import { Explain } from '@/components/explain/Explain';
 import { getModelWeightsData, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight } from '@/types';
 
@@ -35,35 +35,17 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
   const total = weights.reduce((s, w) => s + w.weight, 0);
 
   return (
-    <GlassCard padding="md" variant="default">
-      <div className="flex items-center justify-between mb-4 border-b border-[#dbdbdb] pb-3 font-mono">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-              MODEL CONTRIBUTION
-            </span>
-            <Tooltip
-              content={
-                <div className="space-y-1 p-1 font-mono text-[11px]">
-                  <p className="font-bold text-[#212121]">Weights adapt according to:</p>
-                  {['Region', 'Season', 'Lead Time', 'Historical Skill', 'Weather Regime'].map(f => (
-                    <div key={f} className="text-[#575757] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-[#1db961]" />{f}
-                    </div>
-                  ))}
-                </div>
-              }
-            >
-              <Info size={13} className="text-[#808080] cursor-help" />
-            </Tooltip>
-          </div>
-          <p className="text-[11px] text-[#808080] mt-0.5 font-sans">Inverse-RMSE adaptive blending weights</p>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs text-[#168a49] font-mono font-semibold">
+    <Panel
+      title="Model contribution"
+      subtitle="How much say each model has in your city's answer"
+      term="weight"
+      actions={
+        <span className="flex items-center gap-1.5 text-xs text-primary font-mono font-semibold">
           <TrendingUp size={13} />
           Dynamic
-        </div>
-      </div>
+        </span>
+      }
+    >
 
       {/* Stacked bar with sharp edges */}
       <div
@@ -103,7 +85,10 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
                 <span className="text-[#333333] font-medium">{w.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[11px] text-[#808080]">RMSE {w.rmse}</span>
+                <span className="flex items-center gap-1 text-[11px] text-[#808080]">
+                  RMSE {w.rmse}
+                  <Explain term="rmse" />
+                </span>
                 <span className="font-bold text-[#212121]">{w.weight}%</span>
               </div>
             </div>
@@ -132,6 +117,6 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
       >
         <span className="font-bold">Inverse-RMSE Layer 1:</span> Weights dynamically favor models with the lowest localized prediction error over historical 61-day verification windows.
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

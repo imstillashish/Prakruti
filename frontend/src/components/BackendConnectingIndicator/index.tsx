@@ -122,24 +122,20 @@ export function BackendConnectingIndicator() {
     >
       {isConnecting && (
         <div
-          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-white border border-[#fed7aa] shadow-lg transition-all"
-          style={{
-            borderRadius: 0,
-            borderLeft: '3px solid #d97706',
-          }}
+          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card border border-border border-l-2 border-l-warning shadow-lg transition-all"
         >
           {/* Main Title Row */}
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#d97706] animate-pulse" />
-            <span className="text-xs font-mono font-bold text-[#212121]">
+            <span className="w-2 h-2 bg-warning animate-pulse" />
+            <span className="text-xs font-mono font-bold text-foreground">
               Connecting to Live Forecast Backend...
             </span>
           </div>
 
           {/* Subtitle with Animated Spinner */}
-          <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#808080]">
+          <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground">
             <span
-              className="w-2.5 h-2.5 border border-[#d97706] border-t-transparent animate-spin inline-block flex-shrink-0"
+              className="w-2.5 h-2.5 border border-warning border-t-transparent animate-spin inline-block flex-shrink-0"
               aria-label="Loading spinner"
             />
             <span>Render server is waking up (may take up to 60s)</span>
@@ -149,14 +145,10 @@ export function BackendConnectingIndicator() {
 
       {isConnected && (
         <div
-          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#c4f3d8] shadow-lg transition-all"
-          style={{
-            borderRadius: 0,
-            borderLeft: '3px solid #1db961',
-          }}
+          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card border border-border border-l-2 border-l-primary shadow-lg transition-all"
         >
-          <span className="w-2 h-2 bg-[#1db961]" />
-          <span className="text-xs font-mono font-bold text-[#168a49]">
+          <span className="w-2 h-2 bg-primary" />
+          <span className="text-xs font-mono font-bold text-primary">
             Live Backend Connected
           </span>
         </div>

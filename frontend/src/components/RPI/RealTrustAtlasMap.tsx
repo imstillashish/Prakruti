@@ -269,7 +269,7 @@ export default function RealTrustAtlasMap({
   };
 
   return (
-    <div className="relative w-full h-[560px] overflow-hidden border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+    <div className="relative w-full h-[560px] overflow-hidden border border-border">
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Top Floating Bar: Map API Status & Station Search */}
@@ -280,16 +280,15 @@ export default function RealTrustAtlasMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Station / District..."
-            className="w-48 sm:w-56 pl-7 pr-3 py-1 text-xs font-mono bg-white border border-[#dbdbdb] text-[#212121] placeholder-[#808080] focus:outline-none focus:border-[#1db961]"
-            style={{ borderRadius: 0 }}
+            className="w-48 sm:w-56 pl-7 pr-3 py-1 text-xs font-mono bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
           />
           <Search className="w-3.5 h-3.5 text-[#808080] absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
         </form>
 
-        <div className="px-2 py-1 bg-white border border-[#dbdbdb] flex items-center gap-1.5 text-[10px] font-mono font-semibold text-[#575757]" style={{ borderRadius: 0 }}>
+        <div className="px-2 py-1 bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
           <span
             className={`w-1.5 h-1.5 ${
-              apiConnected ? 'bg-[#1db961]' : 'bg-[#2563eb]'
+              apiConnected ? 'bg-primary' : 'bg-water'
             }`}
           />
           <span>{MAPBOX_ACCESS_TOKEN ? 'Mapbox API (HD GL)' : 'Leaflet CartoDB'}</span>
@@ -299,15 +298,14 @@ export default function RealTrustAtlasMap({
       {/* Top Right Floating Controls: Tile Switcher & Zoom */}
       <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-1.5">
         {/* Tile Layer Selector Bar */}
-        <div className="p-0.5 bg-white border border-[#dbdbdb] flex items-center gap-0.5" style={{ borderRadius: 0 }}>
+        <div className="p-0.5 bg-card border border-border flex items-center gap-0.5">
           <button
             onClick={() => setActiveTile('satellite')}
             className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'satellite'
-                ? 'bg-[#212121] text-white font-bold'
-                : 'text-[#575757] hover:text-[#212121]'
+                ? 'bg-foreground text-background font-bold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={{ borderRadius: 0 }}
             type="button"
             title="Satellite Streets"
           >
@@ -319,10 +317,9 @@ export default function RealTrustAtlasMap({
             onClick={() => setActiveTile('terrain')}
             className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'terrain'
-                ? 'bg-[#212121] text-white font-bold'
-                : 'text-[#575757] hover:text-[#212121]'
+                ? 'bg-foreground text-background font-bold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={{ borderRadius: 0 }}
             type="button"
             title="Topographic Terrain"
           >
@@ -334,10 +331,9 @@ export default function RealTrustAtlasMap({
             onClick={() => setActiveTile('positron')}
             className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'positron'
-                ? 'bg-[#212121] text-white font-bold'
-                : 'text-[#575757] hover:text-[#212121]'
+                ? 'bg-foreground text-background font-bold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={{ borderRadius: 0 }}
             type="button"
             title="Scientific Light Map"
           >
@@ -349,10 +345,9 @@ export default function RealTrustAtlasMap({
             onClick={() => setActiveTile('osm')}
             className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
               activeTile === 'osm'
-                ? 'bg-[#212121] text-white font-bold'
-                : 'text-[#575757] hover:text-[#212121]'
+                ? 'bg-foreground text-background font-bold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={{ borderRadius: 0 }}
             type="button"
             title="OpenStreetMap"
           >
@@ -362,7 +357,7 @@ export default function RealTrustAtlasMap({
         </div>
 
         {/* Zoom & Reset Buttons */}
-        <div className="flex flex-col gap-0.5 border border-[#dbdbdb] bg-white" style={{ borderRadius: 0 }}>
+        <div className="flex flex-col gap-0.5 border border-border bg-card">
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomIn()}
@@ -396,7 +391,7 @@ export default function RealTrustAtlasMap({
       </div>
 
       {/* Bottom Floating Legend Bar */}
-      <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 bg-white border border-[#dbdbdb] flex flex-wrap items-center gap-3 text-xs font-mono" style={{ borderRadius: 0 }}>
+      <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 bg-card border border-border flex flex-wrap items-center gap-3 text-xs font-mono">
         <div className="flex items-center gap-1.5 text-[#575757] font-bold uppercase tracking-wider text-[10px]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#1db961]" />
           <span>Dominant Model:</span>
@@ -419,6 +414,9 @@ export default function RealTrustAtlasMap({
             <span className="text-[#212121] text-[11px]">GEM</span>
           </div>
         </div>
+        <span className="text-[10px] text-muted-foreground normal-case">
+          Each dot is a station, tinted by the model that forecasts it best
+        </span>
       </div>
     </div>
   );

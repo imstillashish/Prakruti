@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import { MapPin, Navigation } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { CustomDropdown } from '@/components/ui/CustomDropdown';
+import { Panel } from '@/components/shell/Panel';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
 import type { CityForecast } from '@/types';
 
@@ -90,58 +90,63 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
   };
 
   return (
-    <GlassCard padding="md" variant="default">
-      <div className="flex items-center justify-between mb-3 border-b border-[#dbdbdb] pb-2 font-mono">
-        <div className="flex items-center gap-2">
-          <MapPin size={14} className="text-[#1db961]" />
-          <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-            STATION SELECTOR
-          </span>
-        </div>
-        <span
-          style={{ borderRadius: 0 }}
-          className="text-[10px] text-[#12723c] font-semibold px-2 py-0.5 bg-[#f2fcf7] border border-[#95eebc] flex items-center gap-1"
-        >
+    <Panel
+      title="Station selector"
+      subtitle="Pick where you want the forecast for"
+      term="station"
+      actions={
+        <span className="text-[10px] text-accent-foreground font-semibold px-2 py-0.5 bg-accent border border-primary/30 flex items-center gap-1">
           <Navigation size={10} /> Auto-Sync
         </span>
-      </div>
-
+      }
+    >
       <div className="space-y-3">
-        <CustomDropdown
-          label="Country"
-          options={['India']}
-          value="India"
-          onChange={() => {}}
-        />
+        <div>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Country</span>
+          <div className="flex items-center h-10 w-full px-3 text-sm bg-secondary border border-input">
+            India
+          </div>
+        </div>
 
-        <CustomDropdown
-          label="State / Union Territory"
-          options={states}
-          value={state}
-          onChange={handleStateChange}
-        />
+        <div>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1 block">State / Union Territory</span>
+          <Select value={state} onValueChange={handleStateChange}>
+            <SelectTrigger className="h-10">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {states.map((s) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <CustomDropdown
-          label="District / Forecast Station"
-          options={districts}
-          value={district}
-          onChange={handleDistrictChange}
-        />
+        <div>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-1 block">District / Forecast Station</span>
+          <Select value={district} onValueChange={handleDistrictChange}>
+            <SelectTrigger className="h-10">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {districts.map((d) => (
+                <SelectItem key={d} value={d}>{d}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div
-        className="mt-3.5 p-3 flex items-center justify-between font-mono bg-[#f7f7f7] border border-[#dbdbdb]"
-        style={{ borderRadius: 0 }}
-      >
+      <div className="mt-3.5 p-3 flex items-center justify-between font-mono bg-secondary border border-border">
         <div className="flex items-center gap-2">
-          <MapPin size={13} className="text-[#1db961]" />
-          <span className="text-xs text-[#212121]">
-            <span className="font-bold text-[#14522f]">{district === 'All Districts' ? state : district}</span>
-            <span className="text-[#808080]"> · {state}</span>
+          <MapPin size={13} className="text-primary" />
+          <span className="text-xs text-foreground">
+            <span className="font-bold text-accent-foreground">{district === 'All Districts' ? state : district}</span>
+            <span className="text-muted-foreground"> · {state}</span>
           </span>
         </div>
-        <span className="text-[10px] text-[#808080]">Active Synoptic Station</span>
+        <span className="text-[10px] text-muted-foreground">Active Synoptic Station</span>
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

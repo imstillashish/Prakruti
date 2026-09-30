@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ModelContribution } from '@/components/ModelContribution';
 import { ModelComparison } from '@/components/ModelComparison';
 import { ModelSkillPanel } from '@/components/ModelSkill';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { Panel } from '@/components/shell/Panel';
 import { getWeights, MOCK_REGION_DOMINANCE } from '@/lib/api';
 import type { RegionModelDominance } from '@/types';
 import { MapPin, BrainCircuit } from 'lucide-react';
@@ -35,12 +35,12 @@ export function ModelIntelligencePage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 flex items-center justify-center bg-[#f7f7f7] text-[#212121] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+        <div className="w-8 h-8 flex items-center justify-center bg-secondary text-foreground border border-border">
           <BrainCircuit size={18} />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-[#212121]">Model Intelligence</h1>
-          <p className="text-xs text-[#808080]">Dynamic multi-model weighting logic, spatial dominance, and comparative skill metrics</p>
+          <h1 className="text-lg font-bold text-foreground">Model Intelligence</h1>
+          <p className="text-xs text-muted-foreground">Dynamic multi-model weighting logic, spatial dominance, and comparative skill metrics</p>
         </div>
       </div>
 
@@ -50,27 +50,24 @@ export function ModelIntelligencePage() {
       </div>
 
       {/* Regional dominance */}
-      <GlassCard padding="md">
-        <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase mb-4">
-          REGIONAL MODEL DOMINANCE
-        </h2>
+      <Panel
+        title="Regional model dominance"
+        subtitle="Which model leads where across India"
+        term="weight"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {dominance.map((r) => (
-            <div
-              key={r.region}
-              className="p-3 bg-white border border-[#dbdbdb]"
-              style={{ borderRadius: 0 }}
-            >
-              <div className="flex items-center gap-1.5 text-xs text-[#808080] mb-1 font-mono">
-                <MapPin size={11} className="text-[#1db961]" />
+            <div key={r.region} className="p-3 bg-card border border-border">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1 font-mono">
+                <MapPin size={11} className="text-primary" />
                 {r.region}
               </div>
-              <div className="text-sm font-bold text-[#212121]">{r.dominantModel}</div>
-              <div className="text-xs font-mono text-[#168a49] mt-1 font-semibold">{r.confidence}% confidence</div>
+              <div className="text-sm font-bold text-foreground">{r.dominantModel}</div>
+              <div className="text-xs font-mono text-primary mt-1 font-semibold">{r.confidence}% confidence</div>
             </div>
           ))}
         </div>
-      </GlassCard>
+      </Panel>
 
       <ModelSkillPanel />
     </div>

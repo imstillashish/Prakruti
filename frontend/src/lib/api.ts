@@ -60,9 +60,9 @@ export {
 
 /**
  * Centralized API Base Configuration
- * Backend Render URL: https://sih-mvp202681.onrender.com
+ * Backend Render URL: https://prakruti-api.onrender.com
  */
-export const API = "https://sih-mvp202681.onrender.com";
+export const API = "https://prakruti-api.onrender.com";
 
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??

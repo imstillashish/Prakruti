@@ -4,15 +4,16 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as ReTooltip,
   ResponsiveContainer, ReferenceLine
 } from 'recharts';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { Panel } from '@/components/shell/Panel';
+import { Explain } from '@/components/explain/Explain';
 import { getTimelineData, MOCK_TIMELINE } from '@/lib/api';
 import type { TimelinePoint, Variable } from '@/types';
 import { Calendar } from 'lucide-react';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; uncertaintyHigh?: string; uncertaintyLow?: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: '#1db961', key: 'rainfall', uncertaintyHigh: 'rainfallUncertaintyHigh', uncertaintyLow: 'rainfallUncertaintyLow' },
-  temperature: { label: 'Temperature', unit: '°C', color: '#ea580c', key: 'temperature' },
-  wind: { label: 'Wind Speed', unit: 'km/h', color: '#575757', key: 'wind' },
+  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', uncertaintyHigh: 'rainfallUncertaintyHigh', uncertaintyLow: 'rainfallUncertaintyLow' },
+  temperature: { label: 'Temperature', unit: '°C', color: '#212121', key: 'temperature' },
+  wind: { label: 'Wind Speed', unit: 'km/h', color: '#94613a', key: 'wind' },
 };
 
 const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string; dataList?: TimelinePoint[] }) => {
@@ -83,29 +84,19 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
   }));
 
   return (
-    <GlassCard padding="md" variant="default">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-[#dbdbdb] pb-3">
-        <div>
-          <div className="flex items-center gap-2 font-mono">
-            <Calendar size={14} className="text-[#1db961]" />
-            <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-              HOURLY PREDICTION HORIZON
-            </span>
-          </div>
-          <p className="text-xs text-[#808080] mt-0.5">72-Hour Continuous Outlook with Adaptive AI Uncertainty Bands</p>
-        </div>
-
-        {/* Sharp Selector Buttons */}
-        <div className="flex items-center gap-1 border border-[#dbdbdb] p-0.5 bg-[#f7f7f7]" style={{ borderRadius: 0 }}>
+    <Panel
+      title="Hourly prediction horizon"
+      subtitle="72-Hour Continuous Outlook with Adaptive AI Uncertainty Bands"
+      actions={
+        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
           {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
             <button
               key={v}
               onClick={() => setVariable(v)}
-              style={{ borderRadius: 0 }}
-              className={`px-3 py-1 text-xs font-mono font-medium transition-colors ${
+              className={`px-3 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
                 variable === v
-                  ? 'bg-[#1db961] text-white font-semibold'
-                  : 'text-[#575757] hover:text-[#212121] hover:bg-white'
+                  ? 'bg-primary text-primary-foreground font-semibold'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
               }`}
               type="button"
             >
@@ -113,7 +104,8 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
             </button>
           ))}
         </div>
-      </div>
+      }
+    >
 
       <div className="w-full h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -156,10 +148,13 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#f0f0f0] text-[11px] font-mono text-[#808080]">
+      <div className="flex items-center justify-between mt-3 pt-2 border-t border-border text-[11px] font-mono text-muted-foreground">
         <span>Range: Next 72 Hours</span>
-        <span className="text-[#168a49]">Uncertainty Envelope: 95% Gaussian Confidence Interval</span>
+        <span className="flex items-center gap-1 text-primary">
+          Uncertainty Envelope: 95% Gaussian Confidence Interval
+          <Explain term="confidence" />
+        </span>
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

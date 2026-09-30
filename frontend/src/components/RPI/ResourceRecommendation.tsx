@@ -17,8 +17,8 @@ import {
   Sparkles,
   Info,
 } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ResourceAction, RpiData } from '@/types';
 
 interface ResourceRecommendationProps {
@@ -62,26 +62,26 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
     }
   };
 
-  const getPriorityBadgeVariant = (priority: string): 'danger' | 'warning' | 'info' | 'success' => {
+  const getPriorityBadgeVariant = (priority: string): 'destructive' | 'warning' | 'secondary' | 'success' => {
     switch (priority) {
       case 'critical':
-        return 'danger';
+        return 'destructive';
       case 'high':
         return 'warning';
       case 'medium':
-        return 'info';
+        return 'secondary';
       default:
         return 'success';
     }
   };
 
   return (
-    <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
+    <section className="relative overflow-hidden border border-border bg-card">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 border border-blue-500/20">
+            <div className="w-8 h-8 bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/30">
               <ShieldAlert className="w-4 h-4" />
             </div>
             <div>
@@ -89,7 +89,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 <h3 className="text-sm font-bold tracking-wider text-slate-800 uppercase">
                   RESOURCE RECOMMENDATION ENGINE
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 border border-amber-500/30">
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-warning/15 text-amber-700 border border-warning/30">
                   Govt EOC Active
                 </span>
               </div>
@@ -211,15 +211,11 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                     </span>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant={isDispatched ? 'default' : 'secondary'}
                     onClick={() => handleDispatch(rec.id)}
-                    className={`w-full py-1.5 px-3 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                      isDispatched
-                        ? 'bg-[#168a49] text-white hover:bg-[#126e3a]'
-                        : 'bg-[#212121] text-white hover:bg-[#333333]'
-                    }`}
-                    style={{ borderRadius: 0 }}
+                    className="w-full text-xs font-mono font-bold"
                   >
                     {isDispatched ? (
                       <>
@@ -232,14 +228,14 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                         <span>Dispatch Resource</span>
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </motion.div>
             );
           })}
         </AnimatePresence>
       </div>
-    </GlassCard>
+    </section>
   );
 }
 export default ResourceRecommendation;

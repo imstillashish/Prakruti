@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Panel } from '@/components/shell/Panel';
 import { getModelComparisonData, MOCK_MODEL_COMPARISON } from '@/lib/api';
 import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
 import { BarChart3 } from 'lucide-react';
@@ -50,38 +49,31 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
   }));
 
   return (
-    <GlassCard padding="md" variant="default" className="flex flex-col justify-between h-full">
-      <div>
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-[#dbdbdb] pb-3">
-          <div>
-            <div className="flex items-center gap-2 font-mono">
-              <BarChart3 size={14} className="text-[#1db961]" />
-              <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-                MODEL CONSENSUS
-              </span>
-            </div>
-            <p className="text-xs text-[#808080] mt-0.5">24h {config.label} ({config.unit}) Model Variance</p>
-          </div>
-
-          {/* Sharp Selector Buttons */}
-          <div className="flex items-center gap-1 border border-[#dbdbdb] p-0.5 bg-[#f7f7f7]" style={{ borderRadius: 0 }}>
-            {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
-              <button
-                key={v}
-                onClick={() => setVariable(v)}
-                style={{ borderRadius: 0 }}
-                className={`px-2.5 py-1 text-xs font-mono font-medium transition-colors ${
-                  variable === v
-                    ? 'bg-[#1db961] text-white font-semibold'
-                    : 'text-[#575757] hover:text-[#212121] hover:bg-white'
-                }`}
-                type="button"
-              >
-                {VARIABLE_CONFIG[v].label}
-              </button>
-            ))}
-          </div>
+    <Panel
+      title="Model consensus"
+      subtitle="24h spread between models — closer bars mean better agreement"
+      term="models"
+      className="flex flex-col justify-between h-full"
+      actions={
+        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
+          {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
+            <button
+              key={v}
+              onClick={() => setVariable(v)}
+              className={`px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
+                variable === v
+                  ? 'bg-primary text-primary-foreground font-semibold'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
+              }`}
+              type="button"
+            >
+              {VARIABLE_CONFIG[v].label}
+            </button>
+          ))}
         </div>
+      }
+    >
+      <div>
 
         {/* Bar Chart with Sharp Columns */}
         <div className="w-full h-[180px]">
@@ -126,6 +118,6 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
           </div>
         </div>
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

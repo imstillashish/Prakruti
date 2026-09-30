@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Activity, Clock, Database, Layers, MapPin, RefreshCw } from 'lucide-react';
 import { getMetadata, MetadataRecord } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
+import { Explain } from '@/components/explain/Explain';
 
 function formatStatusStripDate(isoString?: string): string {
   if (!isoString) return '26 Sep 2026 • 23:45 IST';
@@ -147,9 +149,7 @@ export function StatusStrip() {
               <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 Last Updated
               </div>
-              <div className="font-bold text-slate-700">
-                {formattedDate}
-              </div>
+              <Badge variant="secondary" className="font-mono">{formattedDate}</Badge>
             </div>
           </div>
 
@@ -181,8 +181,9 @@ export function StatusStrip() {
               <Layers size={13} />
             </div>
             <div>
-              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 Models Blended
+                <Explain term="models" />
               </div>
               <div className="font-bold text-slate-700">
                 {modelCount} <span className="font-medium text-slate-500">(ECMWF, GFS, ICON, GEM)</span>

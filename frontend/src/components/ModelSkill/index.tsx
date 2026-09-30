@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Tooltip } from '@/components/ui/Tooltip';
-import { Info, Award, BarChart2 } from 'lucide-react';
+import { Panel } from '@/components/shell/Panel';
+import { Award } from 'lucide-react';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
 
@@ -46,29 +45,20 @@ export function ModelSkillPanel() {
   })).sort((a, b) => a.rmse - b.rmse);
 
   return (
-    <GlassCard padding="md" variant="default">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-[#dbdbdb] pb-3 font-mono">
-        <div className="flex items-center gap-2">
-          <BarChart2 size={14} className="text-[#1db961]" />
-          <span className="text-xs font-bold tracking-wider text-[#212121] uppercase">
-            MODEL SKILL SCORE
-          </span>
-          <Tooltip content={<div className="p-1 font-mono text-[11px] text-[#212121] max-w-[210px]">Root Mean Square Error against ERA5 ground reanalysis. Lower values indicate superior accuracy.</div>}>
-            <Info size={13} className="text-[#808080] cursor-help" />
-          </Tooltip>
-        </div>
-
-        {/* Sharp Time Range Selector */}
-        <div className="flex items-center gap-1 border border-[#dbdbdb] p-0.5 bg-[#f7f7f7]" style={{ borderRadius: 0 }}>
+    <Panel
+      title="Model skill score"
+      subtitle="Average miss against ground truth, per model — lower is better"
+      term="skillScore"
+      actions={
+        <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary">
           {(['Today', '7 Days', '30 Days', 'Season'] as Period[]).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              style={{ borderRadius: 0 }}
-              className={`px-2 py-0.5 text-xs font-mono transition-colors ${
+              className={`px-2 py-0.5 text-xs font-mono transition-colors duration-100 ${
                 period === p
-                  ? 'bg-[#1db961] text-white font-semibold'
-                  : 'text-[#575757] hover:text-[#212121] hover:bg-white'
+                  ? 'bg-primary text-primary-foreground font-semibold'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-card'
               }`}
               type="button"
             >
@@ -76,7 +66,8 @@ export function ModelSkillPanel() {
             </button>
           ))}
         </div>
-      </div>
+      }
+    >
 
       <div className="space-y-1.5 font-mono">
         {tableRows.map((m, i) => (
@@ -116,6 +107,6 @@ export function ModelSkillPanel() {
       >
         Hybrid AI blend reduces error by <span className="font-bold text-[#168a49]">~18.2%</span> relative to any isolated NWP model run.
       </div>
-    </GlassCard>
+    </Panel>
   );
 }

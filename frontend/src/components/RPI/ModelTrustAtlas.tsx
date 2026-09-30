@@ -14,16 +14,15 @@ import {
   Sliders,
   ShieldCheck,
 } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { RpiData } from '@/types';
 
 // Dynamic import with SSR disabled for Leaflet
 const RealTrustAtlasMap = dynamic(() => import('./RealTrustAtlasMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[540px] rounded-2xl bg-slate-100/60 animate-pulse flex flex-col items-center justify-center text-slate-400 gap-3 border border-slate-200/60">
-      <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+    <div className="w-full h-[540px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border">
+      <div className="w-10 h-10 border-2 border-primary border-t-transparent animate-spin" />
       <span className="text-xs font-medium tracking-wide">Starting AI weather engine… This may take up to 60 seconds.</span>
     </div>
   ),
@@ -75,7 +74,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
   const weights = rpiData.modelWeights || { ecmwf: 45, icon: 25, gfs: 18, gem: 12 };
 
   return (
-    <GlassCard padding="lg" variant="default" className="relative overflow-hidden">
+    <section className="relative overflow-hidden border border-border bg-card">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
         <div className="flex items-center gap-3">
@@ -87,7 +86,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <h3 className="text-xs font-mono font-bold tracking-wider text-[#212121] uppercase">
                 MODEL TRUST ATLAS (NATIONAL CARTOGRAPHY)
               </h3>
-              <Badge variant="info">AI Adaptive NWP Blending</Badge>
+              <Badge variant="secondary">AI Adaptive NWP Blending</Badge>
             </div>
             <p className="text-xs text-[#808080] mt-0.5">
               Station markers dynamically color-coded by the historically highest-performing NWP model in each synoptic zone
@@ -252,7 +251,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
           </div>
         </div>
       </div>
-    </GlassCard>
+    </section>
   );
 }
 export default ModelTrustAtlas;

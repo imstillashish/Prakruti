@@ -15,7 +15,7 @@ import {
   Building2,
   Calendar,
 } from 'lucide-react';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { Explain } from '@/components/explain/Explain';
 import { RpiData, RpiPriority } from '@/types';
 
 interface RpiHeroProps {
@@ -82,7 +82,7 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
   const strokeDashoffset = circumference - (Math.min(100, Math.max(0, rpiData.rpiScore)) / 100) * circumference;
 
   return (
-    <GlassCard padding="lg" variant="blue" className="relative overflow-hidden" style={{ borderRadius: 0 }}>
+    <section className="relative overflow-hidden border border-border bg-card">
       {/* Top Government EOC Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
         <div className="flex items-center gap-3">
@@ -189,15 +189,16 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
 
             {/* Inner Center Score Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <span className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                 RPI INDEX
+                <Explain term="rpi" />
               </span>
               <motion.span
                 key={rpiData.rpiScore}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                className="text-4xl font-black text-slate-900 leading-none my-0.5"
+                className="text-4xl font-black text-foreground font-mono tabular-nums leading-none my-0.5"
               >
                 {rpiData.rpiScore}
               </motion.span>
@@ -294,7 +295,7 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
           </div>
         </div>
       </div>
-    </GlassCard>
+    </section>
   );
 }
 export default RpiHero;
