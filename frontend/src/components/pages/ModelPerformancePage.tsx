@@ -59,9 +59,9 @@ export function ModelPerformancePage() {
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono border-collapse">
             <thead>
-              <tr className="border-b border-[#dbdbdb] text-[#808080]">
+              <tr className="border-b border-border text-muted-foreground">
                 <th className="text-left pb-2 font-bold uppercase">Period</th>
-                <th className="text-right pb-2 font-bold text-[#168a49] uppercase">Blended (Ours)</th>
+                <th className="text-right pb-2 font-bold text-success uppercase">Blended (Ours)</th>
                 <th className="text-right pb-2 font-bold uppercase">AI Model</th>
                 <th className="text-right pb-2 font-bold uppercase">ECMWF IFS</th>
                 <th className="text-right pb-2 font-bold uppercase">GFS</th>
@@ -70,19 +70,19 @@ export function ModelPerformancePage() {
             </thead>
             <tbody className="divide-y divide-[#f0f0f0]">
               {metrics.map((row) => (
-                <tr key={row.period} className="text-[#333333] hover:bg-[#f7f7f7]">
-                  <td className="py-2.5 font-bold text-[#212121]">{row.period}</td>
-                  <td className="py-2.5 text-right font-bold text-[#168a49] bg-[#e6faee] px-2">{row.blended}</td>
-                  <td className="py-2.5 text-right text-[#575757] px-2">{row.ai}</td>
-                  <td className="py-2.5 text-right text-[#575757] px-2">{row.nwpA}</td>
-                  <td className="py-2.5 text-right text-[#575757] px-2">{row.nwpB}</td>
-                  <td className="py-2.5 text-right text-[#575757] px-2">{row.ensemble}</td>
+                <tr key={row.period} className="text-foreground hover:bg-secondary">
+                  <td className="py-2.5 font-bold text-foreground">{row.period}</td>
+                  <td className="py-2.5 text-right font-bold text-success bg-secondary px-2">{row.blended}</td>
+                  <td className="py-2.5 text-right text-muted-foreground px-2">{row.ai}</td>
+                  <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpA}</td>
+                  <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpB}</td>
+                  <td className="py-2.5 text-right text-muted-foreground px-2">{row.ensemble}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-[11px] font-mono text-[#808080] mt-3">
+        <p className="text-[11px] font-mono text-muted-foreground mt-3">
           Evaluated against 61-day ERA5 reanalysis dataset. Lower RMSE indicates superior accuracy.
         </p>
       </Panel>

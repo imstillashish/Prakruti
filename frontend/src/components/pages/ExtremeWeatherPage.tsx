@@ -152,7 +152,7 @@ export function ExtremeWeatherPage() {
 
           {/* Statewise Dropdown Filter */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-[#808080]">
+            <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-muted-foreground">
               <MapPin size={12} />
             </div>
             <select
@@ -167,7 +167,7 @@ export function ExtremeWeatherPage() {
                 </option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#808080]">
+            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-muted-foreground">
               <ChevronDown size={12} />
             </div>
           </div>

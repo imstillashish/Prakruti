@@ -7,7 +7,7 @@ import { MOCK_DATA_SOURCES, ENGINE_STATUS, getForecast } from '@/lib/api';
 import { DataSource } from '@/types';
 
 const STATUS_CONFIG: Record<DataSource['status'], { icon: LucideIcon; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
-  healthy: { icon: CheckCircle, color: '#168a49', label: 'Nominal', badge: 'default' },
+  healthy: { icon: CheckCircle, color: '#16a34a', label: 'Nominal', badge: 'default' },
   delayed: { icon: AlertCircle, color: '#f59e0b', label: 'Delayed', badge: 'warning' },
   unavailable: { icon: XCircle, color: '#b4544a', label: 'Offline', badge: 'destructive' },
 };
@@ -41,7 +41,7 @@ export function DataHealthPanel() {
       subtitle={`${healthyCount}/${sources.length} feeds operational`}
       actions={
         <span className="flex items-center gap-1.5 px-2 py-0.5 text-xs font-semibold border bg-accent text-accent-foreground border-primary/30">
-          <span className="w-1.5 h-1.5 bg-primary status-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
           Nominal
         </span>
       }
@@ -55,18 +55,18 @@ export function DataHealthPanel() {
           return (
             <div
               key={s.id}
-              className="flex items-center justify-between p-2.5 bg-white border border-[#dbdbdb] hover:bg-[#f7f7f7] transition-colors"
-              style={{ borderRadius: 0 }}
+              className="flex items-center justify-between p-2.5 bg-white border border-border hover:bg-secondary transition-colors"
+             
             >
               <div className="flex items-center gap-2">
                 <Icon size={14} style={{ color: cfg.color, flexShrink: 0 }} />
-                <span className="text-xs font-bold text-[#212121]">{s.name}</span>
+                <span className="text-xs font-bold text-foreground">{s.name}</span>
                 <Badge variant={cfg.badge}>{cfg.label}</Badge>
               </div>
 
               <div className="text-right">
-                <div className="text-xs font-semibold text-[#333333]">{s.latencyMs}ms latency</div>
-                <div className="text-[10px] text-[#808080] flex items-center gap-1 justify-end">
+                <div className="text-xs font-semibold text-foreground">{s.latencyMs}ms latency</div>
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1 justify-end">
                   <Clock size={10} />
                   <span>{s.lastUpdated}</span>
                 </div>
@@ -77,12 +77,12 @@ export function DataHealthPanel() {
       </div>
 
       <div
-        className="mt-3.5 p-3 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]"
-        style={{ borderRadius: 0 }}
+        className="mt-3.5 p-3 bg-secondary border border-border text-xs font-mono text-muted-foreground"
+       
       >
         <div className="flex items-center justify-between text-[11px]">
           <span>Cache Invalidation: 60m TTL</span>
-          <span className="text-[#168a49] font-bold">100% Data Integrity</span>
+          <span className="text-success font-bold">100% Data Integrity</span>
         </div>
       </div>
     </Panel>

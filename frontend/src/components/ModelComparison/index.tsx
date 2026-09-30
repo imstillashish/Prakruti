@@ -9,7 +9,7 @@ import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
 import { BarChart3 } from 'lucide-react';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: '#1db961' },
+  rainfall: { label: 'Rainfall', unit: 'mm', color: '#1e6fb8' },
   temperature: { label: 'Temperature', unit: '°C', color: '#ea580c' },
   wind: { label: 'Wind', unit: 'km/h', color: '#575757' },
 };
@@ -62,7 +62,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
               onClick={() => setVariable(v)}
               className={`px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
                 variable === v
-                  ? 'bg-primary text-primary-foreground font-semibold'
+                  ? 'bg-secondary text-secondary-foreground font-semibold'
                   : 'text-muted-foreground hover:text-foreground hover:bg-card'
               }`}
               type="button"
@@ -86,7 +86,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
                 cursor={{ fill: 'rgba(219,219,219,0.3)' }}
                 contentStyle={{
                   background: '#ffffff',
-                  border: '1px solid #dbdbdb',
+                  border: '1px solid #dcdee0',
                   borderRadius: 0,
                   boxShadow: 'var(--shadow-md)',
                   fontSize: 12,
@@ -98,7 +98,7 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
                 {chartData.map((d, i) => (
                   <Cell
                     key={i}
-                    fill={d.isBlended ? '#1db961' : '#9e9e9e'}
+                    fill={d.isBlended ? '#171717' : '#9e9e9e'}
                   />
                 ))}
               </Bar>
@@ -107,13 +107,13 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-[#f0f0f0] text-xs font-mono">
+        <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-border text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 bg-[#1db961]" style={{ borderRadius: 0 }} />
-            <span className="text-[#212121] font-semibold">Hybrid AI Blend</span>
+            <span className="w-2.5 h-2.5 bg-foreground" />
+            <span className="text-foreground font-semibold">Hybrid AI Blend</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 bg-[#9e9e9e]" style={{ borderRadius: 0 }} />
+            <span className="w-2.5 h-2.5 bg-[#9e9e9e]" />
             <span className="text-[#6f6f6f]">Raw NWP Forecasts</span>
           </div>
         </div>

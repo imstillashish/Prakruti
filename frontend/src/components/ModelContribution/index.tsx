@@ -49,8 +49,8 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
 
       {/* Stacked bar with sharp edges */}
       <div
-        className="h-2.5 overflow-hidden flex mb-4 border border-[#dbdbdb]"
-        style={{ borderRadius: 0 }}
+        className="h-2.5 overflow-hidden flex mb-4 border border-border"
+       
         role="img"
         aria-label="Model weight distribution"
       >
@@ -82,19 +82,19 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
                   className="w-2 h-2 flex-shrink-0"
                   style={{ background: w.color, borderRadius: 0 }}
                 />
-                <span className="text-[#333333] font-medium">{w.name}</span>
+                <span className="text-foreground font-medium">{w.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1 text-[11px] text-[#808080]">
+                <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                   RMSE {w.rmse}
                   <Explain term="rmse" />
                 </span>
-                <span className="font-bold text-[#212121]">{w.weight}%</span>
+                <span className="font-bold text-foreground">{w.weight}%</span>
               </div>
             </div>
             <div
-              className="h-1.5 overflow-hidden bg-[#f0f0f0] border border-[#dbdbdb]"
-              style={{ borderRadius: 0 }}
+              className="h-1.5 overflow-hidden bg-secondary border border-border"
+             
             >
               <div
                 className="h-full"
@@ -112,8 +112,8 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
 
       {/* NCMRWF note */}
       <div
-        className="mt-4 p-3 bg-[#f2fcf7] border border-[#95eebc] text-xs font-sans text-[#14522f]"
-        style={{ borderRadius: 0 }}
+        className="mt-4 p-3 bg-secondary border-border text-xs font-sans text-foreground"
+       
       >
         <span className="font-bold">Inverse-RMSE Layer 1:</span> Weights dynamically favor models with the lowest localized prediction error over historical 61-day verification windows.
       </div>

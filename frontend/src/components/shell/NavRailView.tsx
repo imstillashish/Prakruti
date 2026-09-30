@@ -50,7 +50,7 @@ export function NavRail({ currentPage, onNavigate }: {
               type="button"
               onClick={() => onNavigate(item.page)}
               aria-current={active ? 'page' : undefined}
-              className={`flex flex-shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-xs transition-colors duration-100 ${
+              className={`flex flex-shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-colors duration-100 ${
                 active
                   ? 'bg-accent text-accent-foreground font-semibold'
                   : 'text-muted-foreground hover:text-foreground'

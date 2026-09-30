@@ -3,19 +3,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Signal colors: green = OK/active, amber = watch, earth red = hazard, water = rainfall data
+// DESIGN.md v3 signal badges: pill geometry, tinted backgrounds, dark AA text.
+// success = OK/active, warning = watch, destructive = hazard, water = rainfall data.
 const badgeVariants = cva(
-  "inline-flex items-center gap-1 rounded-[var(--radius)] border px-2 py-0.5 font-mono text-xs font-medium",
+  "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        destructive: "border-transparent bg-destructive text-white",
-        warning: "border-transparent bg-warning text-foreground",
-        success: "border-transparent bg-accent text-accent-foreground",
-        water: "border-transparent bg-water text-white",
-        outline: "text-foreground",
+        default: "border-border bg-secondary text-foreground",
+        secondary: "border-border bg-secondary text-foreground",
+        destructive: "border-destructive/20 bg-destructive/10 text-destructive",
+        warning: "border-warning/20 bg-warning/10 text-warning",
+        success: "border-success/20 bg-success/10 text-success",
+        water: "border-water/20 bg-water/10 text-[#155a92]",
+        outline: "border-border text-foreground",
       },
     },
     defaultVariants: {

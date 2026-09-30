@@ -26,17 +26,17 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
           <button
             type="button"
             onClick={() => setEngineOpen(true)}
-            className="flex items-center gap-2 px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 bg-accent text-accent-foreground border border-primary/30 hover:border-primary/60"
+            className="flex items-center gap-2 px-2.5 py-1 text-xs font-mono font-medium transition-colors duration-100 bg-accent text-accent-foreground border border-border hover:border-foreground/40 rounded-md"
             title="Blending engine status"
           >
-            <span className="w-1.5 h-1.5 bg-primary status-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-success status-pulse" />
             <span className="hidden sm:inline">Operational</span>
           </button>
 
           <button
             type="button"
             onClick={() => setAlertOpen(true)}
-            className="relative p-1.5 bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border transition-colors duration-100"
+            className="relative p-1.5 bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border rounded-md transition-colors duration-100"
             title="Active weather alerts"
           >
             <Bell size={15} />
@@ -46,14 +46,14 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
           <button
             type="button"
             data-nav="data-health"
-            className="p-1.5 bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border transition-colors duration-100"
+            className="p-1.5 bg-card text-muted-foreground hover:text-foreground hover:bg-accent border border-border rounded-md transition-colors duration-100"
             title="Data & model health"
           >
             <Cpu size={15} />
           </button>
 
           {selectedCity && (
-            <span className="hidden md:inline text-xs font-mono font-semibold text-foreground border border-border bg-secondary px-2 py-1">
+            <span className="hidden md:inline text-xs font-mono font-semibold text-foreground border border-border bg-secondary rounded-md px-2 py-1">
               {selectedCity.toUpperCase()}
             </span>
           )}

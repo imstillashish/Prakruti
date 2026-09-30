@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { StatusTracker } from '@/components/spectrumui/blocks/ai-assistants/status-tracker';
 import { getCities, getMetadata, formatLastUpdated, ENGINE_STATUS } from '@/lib/api';
 
 interface BlendingEngineModalProps {
@@ -8,12 +9,7 @@ interface BlendingEngineModalProps {
   onClose: () => void;
 }
 
-const PIPELINE = [
-  { label: 'AI Model', color: '#3b82f6' },
-  { label: 'ECMWF IFS', color: '#0ea5e9' },
-  { label: 'GFS Seamless', color: '#6366f1' },
-  { label: 'Observations', color: '#10b981' },
-];
+const PIPELINE = ['AI Model', 'ECMWF IFS', 'GFS Seamless', 'Observations', 'Final Forecast'];
 
 export function BlendingEngineModal({ open, onClose }: BlendingEngineModalProps) {
   const [animStep, setAnimStep] = useState(0);
@@ -74,68 +70,35 @@ export function BlendingEngineModal({ open, onClose }: BlendingEngineModalProps)
             { label: 'Adaptive Weighting', value: 'Enabled' },
             { label: 'Engine Confidence', value: `${status.confidence}%` },
           ].map(s => (
-            <div key={s.label}
-              className="p-3 bg-[#f7f7f7] border border-[#dbdbdb]"
-              style={{ borderRadius: 0 }}
-            >
-              <div className="text-[10px] font-mono text-[#808080] mb-0.5">{s.label}</div>
-              <div className="text-xs font-bold text-[#212121]">{s.value}</div>
+            <div key={s.label} className="p-3 rounded-md bg-secondary border border-border">
+              <div className="text-[10px] font-mono text-muted-foreground mb-0.5">{s.label}</div>
+              <div className="text-xs font-bold text-foreground">{s.value}</div>
             </div>
           ))}
         </div>
 
-        {/* Animated pipeline */}
-        <div
-          className="p-4 bg-white border border-[#dbdbdb]"
-          style={{ borderRadius: 0 }}
-        >
-          <h3 className="text-xs font-mono font-bold tracking-wider text-[#212121] mb-3">
+        {/* Animated pipeline — spectrum-ui StatusTracker */}
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h3 className="text-xs font-mono font-bold tracking-wider text-foreground mb-4">
             BLENDING PIPELINE
           </h3>
-          <div className="flex items-center gap-2 flex-wrap">
-            {PIPELINE.map((p, i) => (
-              <div key={p.label} className="flex items-center gap-2">
-                <div
-                  className="px-2.5 py-1 text-xs font-mono font-medium transition-colors"
-                  style={{
-                    borderRadius: 0,
-                    background: animStep >= i ? '#e6faee' : '#f7f7f7',
-                    border: `1px solid ${animStep >= i ? '#1db961' : '#dbdbdb'}`,
-                    color: animStep >= i ? '#168a49' : '#808080',
-                  }}
-                >
-                  {p.label}
-                </div>
-                {i < PIPELINE.length - 1 && (
-                  <span className="text-xs font-mono text-[#dbdbdb]">+</span>
-                )}
-              </div>
-            ))}
-            <span className="text-xs font-mono text-[#808080] mx-1">→</span>
-            <div
-              className="px-3 py-1 text-xs font-mono font-bold transition-colors"
-              style={{
-                borderRadius: 0,
-                background: animStep >= PIPELINE.length ? '#1db961' : '#f7f7f7',
-                border: `1px solid ${animStep >= PIPELINE.length ? '#168a49' : '#dbdbdb'}`,
-                color: animStep >= PIPELINE.length ? '#ffffff' : '#808080',
-              }}
-            >
-              FINAL FORECAST
-            </div>
-          </div>
+          <StatusTracker
+            stages={PIPELINE.map((label) => ({ id: label.toLowerCase().replace(/\s+/g, '-'), label }))}
+            activeIndex={animStep}
+            detail="Weighted per station by verified skill — w ∝ 1/RMSE²"
+          />
         </div>
 
         {/* Timing */}
-        <div className="grid grid-cols-3 gap-2 text-xs font-mono p-2.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+        <div className="grid grid-cols-3 gap-2 text-xs font-mono p-2.5 bg-secondary border border-border">
           {[
             { label: 'Last Recalculation', value: status.lastRecalculation },
             { label: 'Data Ingest', value: status.lastDataRefresh },
             { label: 'Next Cycle', value: status.nextUpdate },
           ].map(t => (
             <div key={t.label} className="text-center">
-              <div className="text-[10px] text-[#808080] mb-0.5">{t.label}</div>
-              <div className="font-bold text-[#212121] text-[11px]">{t.value}</div>
+              <div className="text-[10px] text-muted-foreground mb-0.5">{t.label}</div>
+              <div className="font-bold text-foreground text-[11px]">{t.value}</div>
             </div>
           ))}
         </div>

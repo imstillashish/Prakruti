@@ -64,7 +64,7 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
                 onClick={() => setLeadTime(t)}
                 className={`px-2.5 py-1 text-xs font-mono transition-colors duration-100 ${
                   leadTime === t
-                    ? 'bg-primary text-primary-foreground font-semibold'
+                    ? 'bg-secondary text-secondary-foreground font-semibold'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 type="button"
@@ -90,7 +90,7 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="p-1.5 text-[#808080] hover:text-[#212121] cursor-help">
+              <div className="p-1.5 text-muted-foreground hover:text-foreground cursor-help">
                 <Info size={14} />
               </div>
             </TooltipTrigger>

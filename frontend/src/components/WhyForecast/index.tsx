@@ -55,11 +55,11 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
           ].map(item => (
             <div
               key={item.label}
-              className="p-3 bg-[#f7f7f7] border border-[#dbdbdb]"
-              style={{ borderRadius: 0 }}
+              className="p-3 bg-secondary border border-border"
+             
             >
-              <div className="text-[11px] text-[#808080] mb-0.5">{item.label}</div>
-              <div className={`text-sm font-semibold ${item.highlight ? 'text-[#168a49]' : 'text-[#212121]'}`}>
+              <div className="text-[11px] text-muted-foreground mb-0.5">{item.label}</div>
+              <div className={`text-sm font-semibold ${item.highlight ? 'text-success' : 'text-foreground'}`}>
                 {item.value}
               </div>
             </div>
@@ -67,8 +67,8 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
         </div>
 
         {/* Adaptive weighting */}
-        <div className="p-3 border border-[#dbdbdb] bg-white" style={{ borderRadius: 0 }}>
-          <h3 className="text-xs font-semibold tracking-wider text-[#575757] uppercase font-mono mb-2">
+        <div className="p-3 border border-border bg-white">
+          <h3 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase font-mono mb-2">
             Dynamic Model Weight Allocation
           </h3>
           <div className="space-y-2">
@@ -76,7 +76,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
               <ProgressBar
                 key={w.id}
                 value={w.weight}
-                color={w.id === 'ecmwf' ? '#1db961' : w.id === 'gfs' ? '#23dc73' : w.id === 'icon' ? '#54e894' : '#95eebc'}
+                color={w.id === 'ecmwf' ? '#171717' : w.id === 'gfs' ? '#1e6fb8' : w.id === 'icon' ? '#60646c' : '#9e9e9e'}
                 label={w.name}
                 height={6}
               />
@@ -86,25 +86,25 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
 
         {/* Reasoning */}
         <div
-          className="p-3 border border-[#dbdbdb] bg-[#f2fcf7]"
-          style={{ borderRadius: 0 }}
+          className="p-3 border border-border bg-[#f2fcf7]"
+         
         >
           <div className="flex items-center justify-between mb-1.5 font-mono">
-            <h3 className="text-xs font-semibold text-[#14522f]">Explainable AI Confidence (ECE)</h3>
+            <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
             {conf && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#e6faee] text-[#14522f] border border-[#95eebc]" style={{ borderRadius: 0 }}>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-secondary text-foreground border border-[#95eebc]">
                 {conf.confidence}% · {conf.confidence_label}
               </span>
             )}
           </div>
-          <p className="text-xs text-[#333333] leading-relaxed">
+          <p className="text-xs text-foreground leading-relaxed">
             {conf?.explanation ||
               "ECMWF IFS currently demonstrates the highest inverse-RMSE skill score for this geographic sector, with Random Forest residual adjustments compensating for local diurnal boundary layer effects."}
           </p>
         </div>
 
         {/* Note */}
-        <p className="text-[11px] text-[#808080] leading-normal font-mono">
+        <p className="text-[11px] text-muted-foreground leading-normal font-mono">
           Data synchronized with MoES/NCMRWF synoptic observational ground stations.
         </p>
       </div>

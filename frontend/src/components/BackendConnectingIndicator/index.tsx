@@ -147,7 +147,7 @@ export function BackendConnectingIndicator() {
         <div
           className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card border border-border border-l-2 border-l-primary shadow-lg transition-all"
         >
-          <span className="w-2 h-2 bg-primary" />
+          <span className="w-2 h-2 rounded-full bg-success" />
           <span className="text-xs font-mono font-bold text-primary">
             Live Backend Connected
           </span>

@@ -30,7 +30,7 @@ function lerpColor(a: string, b: string, t: number): string {
 }
 
 function getBarColor(skill: number): string {
-  if (skill > 0.7) return '#168a49'; // signal green
+  if (skill > 0.7) return '#16a34a'; // OK signal
   if (skill > 0.4) return '#f59e0b'; // amber = watch
   return '#b4544a'; // earth red = poor
 }
@@ -241,16 +241,16 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
         <div className="text-muted-foreground mb-1.5">Lead: {cell.leadTime} · {matrix.variable}</div>
         <div className="space-y-0.5">
           <div className="flex justify-between gap-4">
-            <span className="text-slate-500">RMSE</span>
-            <span className="font-bold text-slate-800">{cell.rmse} {matrix.unit}</span>
+            <span className="text-muted-foreground">RMSE</span>
+            <span className="font-bold text-foreground">{cell.rmse} {matrix.unit}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-slate-500">MAE</span>
-            <span className="font-semibold text-slate-700">{cell.mae} {matrix.unit}</span>
+            <span className="text-muted-foreground">MAE</span>
+            <span className="font-semibold text-foreground">{cell.mae} {matrix.unit}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-slate-500">Bias</span>
-            <span className={`font-semibold ${cell.bias >= 0 ? 'text-amber-600' : 'text-blue-600'}`}>
+            <span className="text-muted-foreground">Bias</span>
+            <span className={`font-semibold ${cell.bias >= 0 ? 'text-warning' : 'text-water'}`}>
               {cell.bias > 0 ? '+' : ''}{cell.bias} {matrix.unit}
             </span>
           </div>
@@ -444,22 +444,22 @@ export function PerformanceMatrix3D() {
                   className="w-2 h-2"
                   style={{ background: MODEL_COLORS[m], borderRadius: 0 }}
                 />
-                <span className="text-xs text-[#575757]">{m}</span>
+                <span className="text-xs text-muted-foreground">{m}</span>
               </div>
             ))
           ) : (
             <>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#1db961]" style={{ borderRadius: 0 }} />
-                <span className="text-xs text-[#575757]">High Skill ({'>'}70%)</span>
+                <span className="w-2 h-2 bg-foreground" />
+                <span className="text-xs text-muted-foreground">High Skill ({'>'}70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#d97706]" style={{ borderRadius: 0 }} />
-                <span className="text-xs text-[#575757]">Medium (40–70%)</span>
+                <span className="w-2 h-2 bg-[#d97706]" />
+                <span className="text-xs text-muted-foreground">Medium (40–70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#b4544a]" style={{ borderRadius: 0 }} />
-                <span className="text-xs text-[#575757]">Low ({'<'}40%)</span>
+                <span className="w-2 h-2 bg-[#b4544a]" />
+                <span className="text-xs text-muted-foreground">Low ({'<'}40%)</span>
               </div>
             </>
           )}
@@ -467,14 +467,14 @@ export function PerformanceMatrix3D() {
 
         {/* Best model at each lead time */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-bold text-[#808080] uppercase tracking-wider">Lowest Error:</span>
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Lowest Error:</span>
           {LEAD_TIMES.map(lt => (
             <span
               key={lt}
               className="px-1.5 py-0.2 text-[10px] font-bold border"
               style={{
                 background: '#f7f7f7',
-                borderColor: '#dbdbdb',
+                borderColor: '#dcdee0',
                 color: '#212121',
               }}
             >

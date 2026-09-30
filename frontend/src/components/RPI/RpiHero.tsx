@@ -37,38 +37,38 @@ const PRIORITY_CONFIG: Record<
   Low: {
     label: 'LOW RISK',
     sublabel: 'Routine Surveillance · All Parameters Normal',
-    strokeColor: '#10b981',
-    bgBadge: 'bg-emerald-500/15',
-    textBadge: 'text-emerald-700',
-    borderBadge: 'border-emerald-500/30',
-    glow: 'rgba(16, 185, 129, 0.25)',
+    strokeColor: '#16a34a',
+    bgBadge: 'bg-success/10',
+    textBadge: 'text-success',
+    borderBadge: 'border-success/20',
+    glow: 'rgba(22, 163, 74, 0.25)',
   },
   Moderate: {
     label: 'MODERATE RISK',
     sublabel: 'Heightened Watch · Localized Mitigation Standby',
-    strokeColor: '#f59e0b',
-    bgBadge: 'bg-amber-500/15',
-    textBadge: 'text-amber-700',
-    borderBadge: 'border-amber-500/30',
-    glow: 'rgba(245, 158, 11, 0.25)',
+    strokeColor: '#60646c',
+    bgBadge: 'bg-secondary',
+    textBadge: 'text-foreground',
+    borderBadge: 'border-border',
+    glow: 'rgba(96, 100, 108, 0.2)',
   },
   High: {
     label: 'HIGH RISK',
     sublabel: 'Urgent Action Mandated · Field Units Mobilized',
-    strokeColor: '#f97316',
-    bgBadge: 'bg-orange-500/15',
-    textBadge: 'text-orange-700',
-    borderBadge: 'border-orange-500/30',
-    glow: 'rgba(249, 115, 22, 0.3)',
+    strokeColor: '#ab6400',
+    bgBadge: 'bg-warning/10',
+    textBadge: 'text-warning',
+    borderBadge: 'border-warning/20',
+    glow: 'rgba(171, 100, 0, 0.25)',
   },
   Critical: {
     label: 'CRITICAL EMERGENCY',
     sublabel: 'Tier-1 Emergency · SDRF Pre-Positioning Active',
-    strokeColor: '#ef4444',
-    bgBadge: 'bg-red-500/20',
-    textBadge: 'text-red-700',
-    borderBadge: 'border-red-500/40',
-    glow: 'rgba(239, 68, 68, 0.35)',
+    strokeColor: '#b42318',
+    bgBadge: 'bg-destructive/10',
+    textBadge: 'text-destructive',
+    borderBadge: 'border-destructive/20',
+    glow: 'rgba(180, 35, 24, 0.3)',
   },
 };
 
@@ -84,25 +84,25 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
   return (
     <section className="relative overflow-hidden border border-border bg-card">
       {/* Top Government EOC Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#dbdbdb]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#f7f7f7] border border-[#dbdbdb] flex items-center justify-center text-[#212121]" style={{ borderRadius: 0 }}>
+          <div className="w-9 h-9 bg-secondary border border-border flex items-center justify-center text-foreground">
             <Building2 className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">
+              <span className="text-xs font-mono font-bold tracking-widest text-foreground uppercase">
                 EMERGENCY OPERATIONS CENTER (EOC)
               </span>
-              <span className="px-1.5 py-0.2 text-[10px] font-mono font-bold bg-[#f7f7f7] text-[#575757] border border-[#dbdbdb]">
+              <span className="px-1.5 py-0.2 text-[10px] font-mono font-bold bg-secondary text-muted-foreground border border-border">
                 MoES / NDMA
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#808080] mt-0.5">
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mt-0.5">
               <span>National Disaster Decision Framework</span>
               <span>·</span>
               <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-[#808080]" />
+                <Calendar className="w-3 h-3 text-muted-foreground" />
                 Live 24h Synoptic Horizon
               </span>
             </div>
@@ -110,8 +110,8 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
         </div>
 
         {/* EOC Readiness Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]" style={{ borderRadius: 0 }}>
-          <span className="w-2 h-2 bg-[#1db961]" />
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-secondary border border-border text-xs font-mono text-muted-foreground">
+          <span className="w-2 h-2 bg-foreground" />
           <span>Automated Risk Scoring Active</span>
         </div>
       </div>
@@ -121,37 +121,37 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
         {/* Left Side: Station Identity & RPI Summary (5 Cols) */}
         <div className="lg:col-span-5 space-y-3.5">
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#808080] block mb-0.5">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
               TARGET SYNOPTIC OBSERVATION STATION
             </span>
             <div className="flex items-baseline gap-2">
-              <h1 className="text-3xl font-extrabold text-[#212121] tracking-tight">
+              <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
                 {rpiData.city}
               </h1>
-              <span className="text-sm font-mono text-[#808080]">· {rpiData.state}</span>
+              <span className="text-sm font-mono text-muted-foreground">· {rpiData.state}</span>
             </div>
           </div>
 
           {/* Priority Badge */}
           <div
             className={`inline-flex items-center gap-1.5 px-3 py-1 border text-xs font-mono font-bold ${priorityInfo.bgBadge} ${priorityInfo.textBadge} ${priorityInfo.borderBadge}`}
-            style={{ borderRadius: 0 }}
+           
           >
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>{priorityInfo.label}</span>
           </div>
 
-          <p className="text-xs text-[#575757] leading-relaxed">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             {priorityInfo.sublabel}. Synthesis of multi-hazard rainfall, heat, wind, and forecast confidence.
           </p>
 
           {/* RPI Formula Reference Banner */}
-          <div className="p-2.5 bg-[#f7f7f7] border border-[#dbdbdb] text-xs font-mono text-[#575757]" style={{ borderRadius: 0 }}>
-            <div className="font-bold text-[#212121] text-[10px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
-              <Activity className="w-3 h-3 text-[#1db961]" />
+          <div className="p-2.5 bg-secondary border border-border text-xs font-mono text-muted-foreground">
+            <div className="font-bold text-foreground text-[10px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <Activity className="w-3 h-3 text-success" />
               <span>Operational Formula:</span>
             </div>
-            <code className="text-[#212121] text-[10px] block bg-white px-2 py-0.5 border border-[#dbdbdb] font-semibold" style={{ borderRadius: 0 }}>
+            <code className="text-foreground text-[10px] block bg-white px-2 py-0.5 border border-border font-semibold">
               RPI = 35% Rain + 25% Heat + 20% Wind + 20% Confidence
             </code>
           </div>
@@ -202,53 +202,53 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
               >
                 {rpiData.rpiScore}
               </motion.span>
-              <span className="text-[11px] font-bold text-slate-500">
+              <span className="text-[11px] font-bold text-muted-foreground">
                 / 100
               </span>
             </div>
           </div>
-          <span className="text-xs font-semibold text-slate-600 mt-2">
+          <span className="text-xs font-semibold text-muted-foreground mt-2">
             Priority Index: <strong style={{ color: priorityInfo.strokeColor }}>{rpiData.priority}</strong>
           </span>
         </div>
 
         {/* Right Side: Key Synoptic Risk Factors & Decomposition (4 Cols) */}
         <div className="lg:col-span-4 space-y-3">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
             HAZARD RISK DECOMPOSITION
           </span>
 
           {/* 1. Rainfall Metric */}
-          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="p-2.5 bg-white border border-border">
             <div className="flex justify-between items-center text-xs mb-1">
-              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
-                <CloudRain className="w-3.5 h-3.5 text-[#1db961]" />
+              <span className="font-semibold text-foreground flex items-center gap-1.5 font-mono text-[11px]">
+                <CloudRain className="w-3.5 h-3.5 text-success" />
                 Rainfall (35% wt)
               </span>
-              <span className="font-bold text-[#212121] font-mono text-xs">
-                {rpiData.rainfall} mm <span className="text-[#808080] font-normal">({rpiData.rainRisk}%)</span>
+              <span className="font-bold text-foreground font-mono text-xs">
+                {rpiData.rainfall} mm <span className="text-muted-foreground font-normal">({rpiData.rainRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+            <div className="w-full h-1 bg-secondary">
               <div
-                className="h-full bg-[#1db961]"
+                className="h-full bg-foreground"
                 style={{ width: `${rpiData.rainRisk}%`, borderRadius: 0 }}
               />
             </div>
           </div>
 
           {/* 2. Temperature Metric */}
-          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="p-2.5 bg-white border border-border">
             <div className="flex justify-between items-center text-xs mb-1">
-              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
+              <span className="font-semibold text-foreground flex items-center gap-1.5 font-mono text-[11px]">
                 <Thermometer className="w-3.5 h-3.5 text-[#d97706]" />
                 Temperature (25% wt)
               </span>
-              <span className="font-bold text-[#212121] font-mono text-xs">
-                {rpiData.temperature}°C <span className="text-[#808080] font-normal">({rpiData.heatRisk}%)</span>
+              <span className="font-bold text-foreground font-mono text-xs">
+                {rpiData.temperature}°C <span className="text-muted-foreground font-normal">({rpiData.heatRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+            <div className="w-full h-1 bg-secondary">
               <div
                 className="h-full bg-[#d97706]"
                 style={{ width: `${rpiData.heatRisk}%`, borderRadius: 0 }}
@@ -257,17 +257,17 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
           </div>
 
           {/* 3. Wind Metric */}
-          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="p-2.5 bg-white border border-border">
             <div className="flex justify-between items-center text-xs mb-1">
-              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
-                <Wind className="w-3.5 h-3.5 text-[#575757]" />
+              <span className="font-semibold text-foreground flex items-center gap-1.5 font-mono text-[11px]">
+                <Wind className="w-3.5 h-3.5 text-muted-foreground" />
                 Wind Velocity (20% wt)
               </span>
-              <span className="font-bold text-[#212121] font-mono text-xs">
-                {rpiData.wind} km/h <span className="text-[#808080] font-normal">({rpiData.windRisk}%)</span>
+              <span className="font-bold text-foreground font-mono text-xs">
+                {rpiData.wind} km/h <span className="text-muted-foreground font-normal">({rpiData.windRisk}%)</span>
               </span>
             </div>
-            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+            <div className="w-full h-1 bg-secondary">
               <div
                 className="h-full bg-[#575757]"
                 style={{ width: `${rpiData.windRisk}%`, borderRadius: 0 }}
@@ -276,19 +276,19 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
           </div>
 
           {/* 4. Confidence Metric */}
-          <div className="p-2.5 bg-white border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+          <div className="p-2.5 bg-white border border-border">
             <div className="flex justify-between items-center text-xs mb-1">
-              <span className="font-semibold text-[#212121] flex items-center gap-1.5 font-mono text-[11px]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#168a49]" />
+              <span className="font-semibold text-foreground flex items-center gap-1.5 font-mono text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-success" />
                 Confidence (20% wt)
               </span>
-              <span className="font-bold text-[#212121] font-mono text-xs">
-                {rpiData.confidence}% <span className="text-[#808080] font-normal">Score</span>
+              <span className="font-bold text-foreground font-mono text-xs">
+                {rpiData.confidence}% <span className="text-muted-foreground font-normal">Score</span>
               </span>
             </div>
-            <div className="w-full h-1 bg-[#f0f0f0]" style={{ borderRadius: 0 }}>
+            <div className="w-full h-1 bg-secondary">
               <div
-                className="h-full bg-[#168a49]"
+                className="h-full bg-foreground"
                 style={{ width: `${rpiData.confidence}%`, borderRadius: 0 }}
               />
             </div>

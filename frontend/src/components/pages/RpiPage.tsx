@@ -102,14 +102,14 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xs font-mono font-bold text-[#212121] tracking-wider uppercase">
+              <h2 className="text-xs font-mono font-bold text-foreground tracking-wider uppercase">
                 RISK PRIORITY INDEX (RPI) MODULE
               </h2>
-              <span className="px-1.5 py-0.2 text-[9px] font-mono font-bold bg-[#f7f7f7] text-[#575757] border border-[#dbdbdb]">
+              <span className="px-1.5 py-0.2 text-[9px] font-mono font-bold bg-secondary text-muted-foreground border border-border">
                 EOC DECISION SUPPORT
               </span>
             </div>
-            <p className="text-xs text-[#808080]">
+            <p className="text-xs text-muted-foreground">
               Disaster Risk Mitigation &amp; Resource Pre-Positioning Dashboard for National &amp; State EOCs
             </p>
           </div>
@@ -142,15 +142,15 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               </span>
             </div>
           ) : errorMessage && !rpiData ? (
-            <div className="w-full h-72 bg-white flex flex-col items-center justify-center text-[#575757] gap-3 border border-[#dbdbdb] p-6 text-center" style={{ borderRadius: 0 }}>
+            <div className="w-full h-72 bg-white flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border p-6 text-center">
               <span className="text-xs font-mono text-[#b4544a]">
                 {errorMessage}
               </span>
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="px-3 py-1 text-xs font-mono font-bold bg-white border border-[#dbdbdb] hover:bg-[#f7f7f7] text-[#212121] cursor-pointer"
-                style={{ borderRadius: 0 }}
+                className="px-3 py-1 text-xs font-mono font-bold bg-white border border-border hover:bg-secondary text-foreground cursor-pointer"
+               
               >
                 Try Again
               </button>

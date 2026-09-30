@@ -52,13 +52,13 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'rain':
-        return <Waves className="w-4 h-4 text-sky-500" />;
+        return <Waves className="w-4 h-4 text-water" />;
       case 'heat':
-        return <Flame className="w-4 h-4 text-orange-500" />;
+        return <Flame className="w-4 h-4 text-destructive" />;
       case 'wind':
-        return <Wind className="w-4 h-4 text-purple-500" />;
+        return <Wind className="w-4 h-4 text-foreground" />;
       default:
-        return <Building2 className="w-4 h-4 text-blue-500" />;
+        return <Building2 className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
@@ -78,7 +78,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
   return (
     <section className="relative overflow-hidden border border-border bg-card">
       {/* Header bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-border">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/30">
@@ -86,23 +86,23 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold tracking-wider text-slate-800 uppercase">
+                <h3 className="text-sm font-bold tracking-wider text-foreground uppercase">
                   RESOURCE RECOMMENDATION ENGINE
                 </h3>
-                <span className="px-2 py-0.5 text-[10px] font-bold bg-warning/15 text-amber-700 border border-warning/30">
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-warning/15 text-warning border border-warning/30">
                   Govt EOC Active
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Dynamic SOP Action Cards triggered by live synoptic risk indicators for{' '}
-                <span className="font-semibold text-slate-700">{rpiData.city}</span>
+                <span className="font-semibold text-foreground">{rpiData.city}</span>
               </p>
             </div>
           </div>
         </div>
 
         {/* Category filter tabs */}
-        <div className="flex flex-wrap items-center gap-1 p-0.5 bg-[#f7f7f7] border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+        <div className="flex flex-wrap items-center gap-1 p-0.5 bg-secondary border border-border">
           {CATEGORY_TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -113,10 +113,10 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-white text-[#212121] font-bold border border-[#dbdbdb]'
-                    : 'text-[#575757] hover:text-[#212121]'
+                    ? 'bg-white text-foreground font-bold border border-border'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
-                style={{ borderRadius: 0 }}
+               
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
@@ -127,19 +127,19 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
       </div>
 
       {/* Trigger rule condition banner */}
-      <div className="mt-3 mb-4 px-3 py-2 bg-[#f7f7f7] border border-[#dbdbdb] flex flex-wrap items-center justify-between gap-3 text-xs font-mono" style={{ borderRadius: 0 }}>
-        <div className="flex items-center gap-2 text-[#575757]">
-          <Info className="w-3.5 h-3.5 text-[#1db961] shrink-0" />
+      <div className="mt-3 mb-4 px-3 py-2 bg-secondary border border-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Info className="w-3.5 h-3.5 text-success shrink-0" />
           <span>
-            <strong className="text-[#212121] font-bold">Active Risk Drivers:</strong>{' '}
-            Rain <strong className="text-[#212121]">{rpiData.rainfall} mm</strong> ({rpiData.rainRisk}%) · Temp{' '}
-            <strong className="text-[#212121]">{rpiData.temperature}°C</strong> ({rpiData.heatRisk}%) · Wind{' '}
-            <strong className="text-[#212121]">{rpiData.wind} km/h</strong> ({rpiData.windRisk}%)
+            <strong className="text-foreground font-bold">Active Risk Drivers:</strong>{' '}
+            Rain <strong className="text-foreground">{rpiData.rainfall} mm</strong> ({rpiData.rainRisk}%) · Temp{' '}
+            <strong className="text-foreground">{rpiData.temperature}°C</strong> ({rpiData.heatRisk}%) · Wind{' '}
+            <strong className="text-foreground">{rpiData.wind} km/h</strong> ({rpiData.windRisk}%)
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] text-[#808080]">Mobilized:</span>
-          <span className="font-bold text-[#168a49] bg-white px-1.5 py-0.2 border border-[#dbdbdb] text-[11px]">
+          <span className="text-[11px] text-muted-foreground">Mobilized:</span>
+          <span className="font-bold text-success bg-white px-1.5 py-0.2 border border-border text-[11px]">
             {dispatchedIds.size} / {rpiData.recommendations.length} Orders
           </span>
         </div>
@@ -160,19 +160,19 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 transition={{ duration: 0.2, delay: index * 0.03 }}
                 className={`relative p-3.5 border flex flex-col justify-between transition-colors ${
                   isDispatched
-                    ? 'bg-[#e6faee] border-[#1db961]'
-                    : 'bg-white border-[#dbdbdb] hover:border-[#1db961]'
+                    ? 'bg-secondary border-border'
+                    : 'bg-white border-border hover:border-foreground/40'
                 }`}
-                style={{ borderRadius: 0 }}
+               
               >
                 <div>
                   {/* Top Bar: Action Code & Priority Badge */}
                   <div className="flex items-center justify-between gap-2 mb-2.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="p-1 bg-[#f7f7f7] border border-[#dbdbdb] text-[#575757]" style={{ borderRadius: 0 }}>
+                      <span className="p-1 bg-secondary border border-border text-muted-foreground">
                         {getCategoryIcon(rec.category)}
                       </span>
-                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#575757] bg-[#f7f7f7] px-1.5 py-0.5 border border-[#dbdbdb]" style={{ borderRadius: 0 }}>
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground bg-secondary px-1.5 py-0.5 border border-border">
                         {rec.actionCode}
                       </span>
                     </div>
@@ -183,29 +183,29 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                   </div>
 
                   {/* Title */}
-                  <h4 className="text-xs font-bold text-[#212121] leading-snug mb-1.5">
+                  <h4 className="text-xs font-bold text-foreground leading-snug mb-1.5">
                     {rec.title}
                   </h4>
 
                   {/* Description */}
-                  <p className="text-xs text-[#575757] leading-relaxed mb-3">
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-3">
                     {rec.description}
                   </p>
                 </div>
 
                 {/* Footer Bar: Department & Operational Dispatch Button */}
-                <div className="pt-2.5 border-t border-[#f0f0f0] flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-[#808080]">
+                <div className="pt-2.5 border-t border-border flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
                     <span className="truncate max-w-[190px]" title={rec.department}>
                       {rec.department}
                     </span>
                     <span
                       className={`text-[9px] font-bold px-1.5 py-0.2 border ${
                         isDispatched
-                          ? 'bg-[#c4f3d8] text-[#168a49] border-[#1db961]'
-                          : 'bg-[#f7f7f7] text-[#575757] border-[#dbdbdb]'
+                          ? 'bg-secondary text-foreground border-border'
+                          : 'bg-secondary text-muted-foreground border-border'
                       }`}
-                      style={{ borderRadius: 0 }}
+                     
                     >
                       {isDispatched ? 'DISPATCHED' : rec.status}
                     </span>

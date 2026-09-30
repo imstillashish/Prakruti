@@ -187,10 +187,10 @@ export default function RealTrustAtlasMap({
           <!-- Station Tag -->
           <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded text-[9.5px] font-bold shadow-xs border pointer-events-none transition-all ${
             isSelected
-              ? 'bg-slate-900 text-white border-slate-700 z-30 scale-105'
+              ? 'bg-foreground text-white border-foreground z-30 scale-105'
               : isDarkBg
-              ? 'bg-slate-900/90 text-white border-slate-700'
-              : 'bg-white/95 text-slate-800 border-slate-200'
+              ? 'bg-foreground/90 text-white border-foreground'
+              : 'bg-popover text-popover-foreground border-border'
           }">
             <span>${st.city}</span>
             <span class="ml-1 text-[8.5px] font-semibold" style="color: ${color};">${dom}</span>
@@ -282,13 +282,13 @@ export default function RealTrustAtlasMap({
             placeholder="Search Station / District..."
             className="w-48 sm:w-56 pl-7 pr-3 py-1 text-xs font-mono bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
           />
-          <Search className="w-3.5 h-3.5 text-[#808080] absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
         </form>
 
         <div className="px-2 py-1 bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
           <span
             className={`w-1.5 h-1.5 ${
-              apiConnected ? 'bg-primary' : 'bg-water'
+              apiConnected ? 'bg-success' : 'bg-water'
             }`}
           />
           <span>{MAPBOX_ACCESS_TOKEN ? 'Mapbox API (HD GL)' : 'Leaflet CartoDB'}</span>
@@ -361,8 +361,8 @@ export default function RealTrustAtlasMap({
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomIn()}
-            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-[#f0f0f0]"
-            style={{ borderRadius: 0 }}
+            className="w-7 h-7 text-foreground hover:bg-secondary flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-border"
+           
             title="Zoom In"
           >
             <ZoomIn size={13} />
@@ -370,8 +370,8 @@ export default function RealTrustAtlasMap({
           <button
             type="button"
             onClick={() => mapInstanceRef.current?.zoomOut()}
-            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-[#f0f0f0]"
-            style={{ borderRadius: 0 }}
+            className="w-7 h-7 text-foreground hover:bg-secondary flex items-center justify-center font-bold text-xs transition-colors cursor-pointer border-b border-border"
+           
             title="Zoom Out"
           >
             <ZoomOut size={13} />
@@ -381,8 +381,8 @@ export default function RealTrustAtlasMap({
             onClick={() => {
               mapInstanceRef.current?.flyTo(MAP_CONFIG.defaultCenter, MAP_CONFIG.defaultZoom, { duration: 1.2 });
             }}
-            className="w-7 h-7 text-[#212121] hover:bg-[#f7f7f7] flex items-center justify-center text-xs transition-colors cursor-pointer"
-            style={{ borderRadius: 0 }}
+            className="w-7 h-7 text-foreground hover:bg-secondary flex items-center justify-center text-xs transition-colors cursor-pointer"
+           
             title="Reset View"
           >
             <RotateCcw size={12} />
@@ -392,26 +392,26 @@ export default function RealTrustAtlasMap({
 
       {/* Bottom Floating Legend Bar */}
       <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 bg-card border border-border flex flex-wrap items-center gap-3 text-xs font-mono">
-        <div className="flex items-center gap-1.5 text-[#575757] font-bold uppercase tracking-wider text-[10px]">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#1db961]" />
+        <div className="flex items-center gap-1.5 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
+          <ShieldCheck className="w-3.5 h-3.5 text-success" />
           <span>Dominant Model:</span>
         </div>
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 bg-[#2563eb]" />
-            <span className="text-[#212121] text-[11px]">ECMWF</span>
+            <span className="text-foreground text-[11px]">ECMWF</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 bg-[#1db961]" />
-            <span className="text-[#212121] text-[11px]">ICON</span>
+            <span className="w-2.5 h-2.5 bg-foreground" />
+            <span className="text-foreground text-[11px]">ICON</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 bg-[#8b5cf6]" />
-            <span className="text-[#212121] text-[11px]">GFS</span>
+            <span className="text-foreground text-[11px]">GFS</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 bg-[#f97316]" />
-            <span className="text-[#212121] text-[11px]">GEM</span>
+            <span className="text-foreground text-[11px]">GEM</span>
           </div>
         </div>
         <span className="text-[10px] text-muted-foreground normal-case">

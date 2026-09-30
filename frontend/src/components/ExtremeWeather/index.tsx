@@ -27,7 +27,7 @@ function ProbabilityArc({ value, color }: { value: number; color: string }) {
   return (
     <div className="relative flex items-center justify-center shrink-0 font-mono">
       <svg width="60" height="60" viewBox="0 0 60 60">
-        <circle cx="30" cy="30" r={r} fill="none" strokeWidth="4" stroke="#dbdbdb" />
+        <circle cx="30" cy="30" r={r} fill="none" strokeWidth="4" stroke="#dcdee0" />
         <circle
           cx="30" cy="30" r={r} fill="none" strokeWidth="4"
           stroke={color} strokeLinecap="square"
@@ -83,7 +83,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
           {events.map((event, idx) => {
             const Icon = EVENT_ICONS[event.type];
             const style = SEVERITY_STYLES[event.severity];
-            const color = event.severity === 'alert' ? '#b4544a' : event.severity === 'warning' ? '#f59e0b' : '#1db961';
+            const color = event.severity === 'alert' ? '#b42318' : event.severity === 'warning' ? '#ab6400' : '#16a34a';
 
             return (
               <div
@@ -103,13 +103,13 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Icon size={14} style={{ color, flexShrink: 0 }} />
-                      <span className="text-xs font-bold text-[#212121]">{event.label}</span>
+                      <span className="text-xs font-bold text-foreground">{event.label}</span>
                       <Badge variant={style.badge}>{event.severity.toUpperCase()}</Badge>
                     </div>
-                    <div className="text-[11px] font-mono font-semibold text-[#575757] mb-0.5">{event.window}</div>
-                    <div className="text-[11px] text-[#575757] leading-snug line-clamp-2">{event.description}</div>
-                    <div className="text-[10px] font-mono text-[#808080] mt-1">
-                      Ensemble Agreement: <span className="font-bold text-[#212121]">{event.confidence}%</span>
+                    <div className="text-[11px] font-mono font-semibold text-muted-foreground mb-0.5">{event.window}</div>
+                    <div className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{event.description}</div>
+                    <div className="text-[10px] font-mono text-muted-foreground mt-1">
+                      Ensemble Agreement: <span className="font-bold text-foreground">{event.confidence}%</span>
                     </div>
                   </div>
 

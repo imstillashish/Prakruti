@@ -42,7 +42,7 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
     >
       <div
         className={cn(
-          'w-full bg-white border border-[#dbdbdb] shadow-xl',
+          'w-full bg-white border border-border shadow-xl',
           sizes[size],
           'max-h-[85vh] overflow-y-auto',
           className
@@ -53,12 +53,12 @@ export function Modal({ open, onClose, title, children, size = 'md', className }
         }}
       >
         {title && (
-          <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#dbdbdb]">
-            <h2 className="text-xs font-mono font-bold tracking-widest text-[#212121] uppercase">{title}</h2>
+          <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-border">
+            <h2 className="text-xs font-mono font-bold tracking-widest text-foreground uppercase">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-[#f7f7f7] border border-transparent hover:border-[#dbdbdb] transition-colors text-[#808080] hover:text-[#212121]"
-              style={{ borderRadius: 0 }}
+              className="p-1 hover:bg-secondary border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
+             
               aria-label="Close"
             >
               <X size={15} />

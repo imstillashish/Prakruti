@@ -22,23 +22,23 @@ const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean;
   const data = list.find(t => t.time === label);
   return (
     <div
-      className="p-3 bg-white border border-[#dbdbdb] shadow-md font-mono text-xs"
+      className="p-3 bg-white border border-border shadow-md font-mono text-xs"
       style={{
         borderRadius: 0,
         minWidth: 150,
       }}
     >
-      <div className="text-[11px] font-semibold text-[#808080] mb-1 flex items-center justify-between">
+      <div className="text-[11px] font-semibold text-muted-foreground mb-1 flex items-center justify-between">
         <span>{label}</span>
         {data?.label && <span className="text-[#9e9e9e] font-normal">({data.label} IST)</span>}
       </div>
       {payload.map((p, i) => (
-        <div key={i} className="text-base font-bold text-[#212121]">
+        <div key={i} className="text-base font-bold text-foreground">
           {typeof p.value === 'number' ? p.value.toFixed(1) : p.value}
         </div>
       ))}
       {data && (
-        <div className="text-[11px] text-[#168a49] font-medium mt-1">
+        <div className="text-[11px] text-success font-medium mt-1">
           Confidence: {data.confidence}%
         </div>
       )}
@@ -95,7 +95,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
               onClick={() => setVariable(v)}
               className={`px-3 py-1 text-xs font-mono font-medium transition-colors duration-100 ${
                 variable === v
-                  ? 'bg-primary text-primary-foreground font-semibold'
+                  ? 'bg-secondary text-secondary-foreground font-semibold'
                   : 'text-muted-foreground hover:text-foreground hover:bg-card'
               }`}
               type="button"
