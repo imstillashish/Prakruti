@@ -5,30 +5,32 @@ import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
-import { MOCK_FORECAST, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
+import { MOCK_FORECAST, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
 import { monotonePath, EASE, usePrefersReducedMotion } from '@/components/spectrumui/charts/chart-engine';
 import type { ForecastMetrics, TimelinePoint } from '@/types';
 
 function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: number }) {
-  const [display, setDisplay] = useState(0);
-  const ref = useRef(0);
+  // rAF is throttled to zero in background tabs/webviews — setTimeout still
+  // fires there, so the count-up can't stall at 0.
+  const [display, setDisplay] = useState(value);
+  const ref = useRef(value);
 
   useEffect(() => {
     const start = ref.current;
     const end = value;
+    if (start === end) return;
     const duration = 600;
-    const startTime = performance.now();
+    const startTime = Date.now();
 
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
       const t = Math.min(elapsed / duration, 1);
       const ease = 1 - Math.pow(1 - t, 3);
-      const current = start + (end - start) * ease;
-      setDisplay(parseFloat(current.toFixed(decimals)));
-      if (t < 1) requestAnimationFrame(tick);
+      setDisplay(parseFloat((start + (end - start) * ease).toFixed(decimals)));
+      if (t < 1) setTimeout(tick, 16);
       else ref.current = end;
     };
-    requestAnimationFrame(tick);
+    tick();
   }, [value, decimals]);
 
   return <span>{display.toFixed(decimals)}</span>;
@@ -224,6 +226,11 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
   useEffect(() => {
     let mounted = true;
+    getForecastMetrics(city)
+      .then((metrics) => {
+        if (mounted) setForecast(metrics);
+      })
+      .catch(() => {});
     getMetadata()
       .then((data) => {
         if (mounted && data && data.last_updated) setLastUpdated(data.last_updated);
