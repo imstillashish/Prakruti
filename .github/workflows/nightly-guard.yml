@@ -1,0 +1,47 @@
+name: Nightly Production Guard
+
+# One check per failure mode we have actually hit:
+#   1. Render API answers /health          (free tier + throttled cron history)
+#   2. Vercel serves the real Prakruti app — prakruti.vercel.app belongs to an
+#      unrelated "Ayurveda" project, so a 200 alone proves nothing; we grep for
+#      our title marker ("Forecast Intelligence").
+#   3. /api/metadata last_updated is fresh — catches a failed Daily Forecast
+#      Refresh run before anyone demos stale data (allow 30h for one miss).
+
+on:
+  schedule:
+    - cron: "30 21 * * *" # 03:00 IST
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-guard
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Render API is up
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 \
+            https://prakruti-api.onrender.com/health)
+          echo "GET /health -> $code"
+          [ "$code" = "200" ] || { echo "::error::Render API unhealthy (/health -> $code)"; exit 1; }
+
+      - name: Vercel serves the real app (not the impostor domain)
+        run: |
+          body=$(curl -sL --max-time 60 https://prakruti-ten.vercel.app/)
+          echo "$body" | grep -q "Forecast Intelligence" \
+            || { echo "::error::prakruti-ten.vercel.app is not serving the Prakruti app (title marker missing)"; exit 1; }
+          echo "Title marker found — real app is live."
+
+      - name: Forecast data is fresh (< 30h)
+        run: |
+          updated=$(curl -s --max-time 60 https://prakruti-api.onrender.com/api/metadata \
+            | python3 -c "import sys,json;print(json.load(sys.stdin)['last_updated'])")
+          echo "last_updated: $updated"
+          age=$(( $(date -u +%s) - $(date -u -d "$updated" +%s) ))
+          echo "age: ${age}s ($(( age / 3600 ))h)"
+          [ "$age" -lt 108000 ] \
+            || { echo "::error::Forecast data is $(( age / 3600 ))h old — Daily Forecast Refresh likely failed"; exit 1; }
