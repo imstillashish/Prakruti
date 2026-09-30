@@ -1,0 +1,87 @@
+name: Daily Forecast Refresh
+
+# Regenerates the blended/hybrid forecast from live Open-Meteo data and
+# commits the snapshot. The push triggers Render's autodeploy, so the API
+# always starts a cold boot with data no older than a day — the service's
+# own background cache manager then takes over for same-day freshness.
+#
+# Runs just after Open-Meteo rolls its new model run (~00:00 IST), and
+# can be triggered manually from the Actions tab.
+
+on:
+  schedule:
+    - cron: "30 19 * * *" # 01:00 IST
+  workflow_dispatch:
+
+concurrent:
+  group: daily-forecast
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Regenerate forecast pipeline
+        id: pipeline
+        run: |
+          set -o pipefail
+          python -c "
+          from api.cache_manager import ensure_fresh_forecast
+          meta = ensure_fresh_forecast(force=True)
+          print('META=' + meta['last_updated'])
+          " 2>&1 | tee pipeline.log
+          # Surface the run timestamp to the commit step
+          echo "timestamp=$(grep -o 'META=.*' pipeline.log | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Validate outputs
+        run: |
+          python - <<'EOF'
+          import pandas as pd
+          df = pd.read_csv('outputs/hybrid_forecast.csv')
+          assert len(df) == 3240, f"expected 3240 rows, got {len(df)}"
+          assert df['city'].nunique() == 45, f"expected 45 cities, got {df['city'].nunique()}"
+          assert not df.isna().any().any(), "NaN values in hybrid forecast"
+          # RF correction must have actually applied
+          diff = (df['temperature'] - df['blend_temperature']).abs().mean()
+          assert diff > 0, "hybrid equals blend — RF correction did not run"
+          print(f"OK: {len(df)} rows, {df['city'].nunique()} cities, mean |hybrid-blend| temp = {diff:.4f}")
+          EOF
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "prakruti-bot"
+          git config user.email "bot@prakruti.local"
+          git add outputs/hybrid_forecast.csv outputs/blended_forecast.csv \
+                  outputs/confidence_scores.csv outputs/extreme_alerts.csv \
+                  outputs/metadata.json data/forecast_current.csv
+          if git diff --cached --quiet; then
+            echo "No changes in forecast data — skipping commit"
+          else
+            git commit -m "chore(data): daily forecast refresh ${{ steps.pipeline.outputs.timestamp }}"
+            git push
+          fi
+
+      # A GITHUB_TOKEN push does not re-trigger Render's deploy webhook, so
+      # nudge the fresh snapshot into the service directly.
+      - name: Trigger Render redeploy
+        if: env.RENDER_DEPLOY_HOOK != ''
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$RENDER_DEPLOY_HOOK")
+          echo "Render deploy hook responded: $code"
+          [ "$code" = "200" ]
