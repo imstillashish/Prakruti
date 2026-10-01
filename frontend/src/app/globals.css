@@ -270,13 +270,71 @@ body {
   animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
+/* Animated gradient interactive controls (buttons, multiswitches, tabs, toggles) */
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-animated-ocean {
+  background: linear-gradient(135deg, #0d74ce, #1e6fb8, #38bdf8, #0d74ce);
+  background-size: 250% 250%;
+  animation: gradient-flow 6s ease infinite;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(13, 116, 206, 0.28);
+}
+
+.gradient-animated-emerald {
+  background: linear-gradient(135deg, #16a34a, #059669, #34d399, #16a34a);
+  background-size: 250% 250%;
+  animation: gradient-flow 6s ease infinite;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.28);
+}
+
+.gradient-animated-amber {
+  background: linear-gradient(135deg, #ab6400, #d97706, #f59e0b, #ab6400);
+  background-size: 250% 250%;
+  animation: gradient-flow 6s ease infinite;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(171, 100, 0, 0.28);
+}
+
+.gradient-animated-indigo {
+  background: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8, #4f46e5);
+  background-size: 250% 250%;
+  animation: gradient-flow 6s ease infinite;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.28);
+}
+
+.gradient-animated-ink {
+  background: linear-gradient(135deg, #171717, #33373e, #4b5563, #171717);
+  background-size: 250% 250%;
+  animation: gradient-flow 6s ease infinite;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(23, 23, 23, 0.25);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-accordion-down,
   .animate-accordion-up,
   .ambient-gradient-success,
   .ambient-gradient-warning,
-  .ambient-gradient-destructive {
+  .ambient-gradient-destructive,
+  .gradient-animated-ocean,
+  .gradient-animated-emerald,
+  .gradient-animated-amber,
+  .gradient-animated-indigo,
+  .gradient-animated-ink {
     animation: none;
     background-size: 100% 100%;
   }

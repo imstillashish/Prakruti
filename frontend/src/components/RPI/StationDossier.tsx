@@ -163,7 +163,7 @@ export function StationDossier({
             onClick={() => setActiveTab('risk')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'risk'
-                ? 'bg-foreground text-background font-semibold shadow-xs'
+                ? 'gradient-animated-ink font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -174,7 +174,7 @@ export function StationDossier({
             onClick={() => setActiveTab('ndma')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'ndma'
-                ? 'bg-foreground text-background font-semibold shadow-xs'
+                ? 'gradient-animated-ink font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -185,7 +185,7 @@ export function StationDossier({
             onClick={() => setActiveTab('hotspots')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'hotspots'
-                ? 'bg-foreground text-background font-semibold shadow-xs'
+                ? 'gradient-animated-ink font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -335,7 +335,7 @@ export function StationDossier({
                   onClick={() => setNdmaCategory(cat)}
                   className={`px-2 py-0.5 rounded text-[11px] font-mono capitalize transition-colors cursor-pointer ${
                     ndmaCategory === cat
-                      ? 'bg-foreground text-background font-bold'
+                      ? 'gradient-animated-ink font-bold'
                       : 'bg-secondary text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -385,13 +385,13 @@ export function StationDossier({
                       <button
                         type="button"
                         onClick={() => toggleAcknowledge(rec.id)}
-                        className={`shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-colors cursor-pointer border ${
+                        className={`shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-transform duration-100 active:translate-y-px cursor-pointer border ${
                           ack
-                            ? 'bg-success/10 text-success border-success/30 font-bold'
+                            ? 'gradient-animated-amber font-bold border-transparent'
                             : 'bg-card hover:bg-secondary text-muted-foreground border-border'
                         }`}
                       >
-                        {ack ? '✓ Standby' : 'Standby'}
+                        {ack ? '✓ Standby Active' : 'Standby'}
                       </button>
                     </div>
 
