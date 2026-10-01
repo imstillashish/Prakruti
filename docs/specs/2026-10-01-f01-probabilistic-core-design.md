@@ -48,25 +48,27 @@ by regressing historical |actual − blend| on historical spread s. σ_min captu
 ### 3.3 Variable physics
 
 - **Temperature** → Normal(μ, σ).
-- **Wind** → Lognormal(μ_log, σ_log): positivity + right skew. Parameters via method of moments so the lognormal median equals μ and σ_log matches calibrated σ.
-- **Rainfall** → two-part per PRD §9.7:
-  1. Dry probability: historical dry-rate conditioned on blend-magnitude bin (bin edges fixed in code, documented in diagnostics).
-  2. Positive amount: Gamma fitted by method of moments on historical amounts in the bin, shifted so the conditional median aligns with μ.
+- **Wind** → Lognormal with exact moment matching: μ_log = ln(μ), σ_log = √(ln(1 + σ²/μ²)). This pins the lognormal median at μ and matches the calibrated standard deviation exactly — no free parameters.
+- **Rainfall** → two-part per PRD §9.7. Dry = < 0.1 mm/h (matches data granularity). Blend-magnitude bins, edges fixed in code: [0, 0.1), [0.1, 1), [1, 4), [4, 8), [8, ∞) mm/h.
+  1. Dry probability: historical dry-rate within the blend's bin, Laplace-smoothed: (dry + 1) / (N_bin + 2).
+  2. Positive amount: two-parameter Gamma on bin positives (method of moments), plus a location shift so the conditional median equals μ.
 
 ### 3.4 Exceedance probabilities
 
-For each threshold in `ai/thresholds.py`: P(X ≥ t) = 1 − CDF(t), computed from the §3.3 distribution. `max_class` per variable from the highest class with P ≥ 0.5. Flow into hazard logic unchanged: alerts stay deterministic threshold crossings; exceedance probabilities add the probabilistic layer (AC-11) without touching alert semantics.
+For each threshold in `ai/thresholds.py`: P(X ≥ t) = 1 − CDF(t), computed from the §3.3 distribution. `max_class` per variable from the highest class with P ≥ 0.5. Note: thresholds.py operates on hourly values (4/8 mm/h), a conscious deviation from the PRD's illustrative 24h IMD classes (64.5–115.5 mm/24h) because the pipeline is hourly and thresholds.py is this system's authorized operational table; upgrading to 24h classes is a policy-table change, not an engine change. Flow into hazard logic unchanged: alerts stay deterministic threshold crossings; exceedance probabilities add the probabilistic layer (AC-11) without touching alert semantics.
 
 ### 3.5 Agreement classification (PRD Stage 9.11)
 
 Per (city, hour, lead), from spread percentile (within-pool ranking across all cities/leads for that variable) and tail probability:
 
+Complete, non-overlapping partition (agreement is a statement about the models; tail probability only separates what high spread *means*):
+
 | Class | Condition |
 |---|---|
-| STRONG_AGREEMENT | spread percentile < 40 and max tail prob < 0.5 |
-| HIGH_TAIL_RISK_TIMING_UNCERTAIN | tail prob ≥ 0.5 and spread percentile ≥ 60 |
-| MIXED_SPLIT | spread percentile 40–60 |
-| HIGH_DISAGREEMENT_LOW_SIGNAL | spread percentile ≥ 60 and tail prob < 0.5 |
+| STRONG_AGREEMENT | spread percentile < 40 (models agree — including on a hazard, which is a confident event) |
+| MIXED_SPLIT | 40 ≤ spread percentile < 60 |
+| HIGH_TAIL_RISK_TIMING_UNCERTAIN | spread percentile ≥ 60 and max tail prob ≥ 0.5 |
+| HIGH_DISAGREEMENT_LOW_SIGNAL | spread percentile ≥ 60 and max tail prob < 0.5 |
 
 `agreement_score` (0–100, higher = tighter) derived from spread percentile; published for the confidence engine's third signal.
 
