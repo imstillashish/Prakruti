@@ -41,7 +41,7 @@ export function ModelIntelligencePage() {
         sub="Which forecast model is most accurate for your city, and by how much."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ModelContribution />
         <ModelComparison />
       </div>

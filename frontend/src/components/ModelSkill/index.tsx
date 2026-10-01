@@ -55,7 +55,7 @@ export function ModelSkillPanel() {
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2 py-0.5 text-xs font-mono rounded-sm transition-colors duration-100 ${
+              className={`px-2.5 py-1.5 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation ${
                 period === p
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'

@@ -64,7 +64,7 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
               <button
                 key={t}
                 onClick={() => setLeadTime(t)}
-                className={`px-2.5 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
+                className={`px-2.5 py-2 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation ${
                   leadTime === t
                     ? 'bg-card text-foreground font-semibold shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'

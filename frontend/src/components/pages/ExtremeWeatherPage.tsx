@@ -76,7 +76,7 @@ export function ExtremeWeatherPage() {
         sub="Real-time severe event risk, threshold breaches, and emergency advisories"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ExtremeWeatherPanel />
         <WeatherMap />
       </div>
@@ -99,12 +99,12 @@ export function ExtremeWeatherPage() {
             <button
               type="button"
               onClick={() => setSeverityFilter('all')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
+              className={`min-h-[44px] sm:min-h-[36px] py-2 px-3 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'all'
                   ? 'bg-card text-foreground font-bold border border-border'
                   : 'text-muted-foreground hover:text-foreground'
-              }`
-            }>
+              }`}
+            >
               <span>All</span>
               <span className="text-[10px] px-1 bg-secondary text-muted-foreground font-mono rounded-full">
                 {alerts.length}
@@ -114,7 +114,7 @@ export function ExtremeWeatherPage() {
             <button
               type="button"
               onClick={() => setSeverityFilter('danger')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
+              className={`min-h-[44px] sm:min-h-[36px] py-2 px-3 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'danger'
                   ? 'bg-destructive text-white font-bold'
                   : 'text-destructive hover:bg-destructive/10'
@@ -132,7 +132,7 @@ export function ExtremeWeatherPage() {
             <button
               type="button"
               onClick={() => setSeverityFilter('warning')}
-              className={`py-1 px-2.5 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
+              className={`min-h-[44px] sm:min-h-[36px] py-2 px-3 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'warning'
                   ? 'bg-warning text-foreground font-bold'
                   : 'text-warning hover:bg-warning/10'
@@ -156,7 +156,7 @@ export function ExtremeWeatherPage() {
             <select
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
-              className="text-xs font-mono pl-6 pr-7 py-1.5 bg-card border border-border text-foreground focus:outline-none focus:border-primary cursor-pointer appearance-none rounded-md"
+              className="min-h-[44px] sm:min-h-[36px] text-xs font-mono pl-6 pr-7 py-2 bg-card border border-border text-foreground focus:outline-none focus:border-primary cursor-pointer appearance-none rounded-md"
             >
               <option value="all">All States ({alerts.length})</option>
               {uniqueStates.map(([st, count]) => (
