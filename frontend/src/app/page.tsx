@@ -20,6 +20,7 @@ import { ExtremeWeatherPage } from '@/components/pages/ExtremeWeatherPage';
 import { ModelPerformancePage } from '@/components/pages/ModelPerformancePage';
 import { DataHealthPage } from '@/components/pages/DataHealthPage';
 import { RpiPage } from '@/components/pages/RpiPage';
+import { ApiPage } from '@/components/pages/ApiPage';
 import { MinimalFooter } from '@/components/spectrumui/blocks/footers/minimal-footer';
 import { NavPage, CityForecast } from '@/types';
 
@@ -51,6 +52,8 @@ export default function Home() {
         return <ModelPerformancePage />;
       case 'data-health':
         return <DataHealthPage />;
+      case 'api':
+        return <ApiPage />;
       case 'overview':
       default:
         return (

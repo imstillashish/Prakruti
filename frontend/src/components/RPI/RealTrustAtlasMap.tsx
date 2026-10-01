@@ -25,6 +25,8 @@ interface RealTrustAtlasMapProps {
   stations: RpiData[];
   selectedCity?: string | null;
   onSelectCity?: (city: string) => void;
+  className?: string;
+  activeModelFilter?: string | null;
 }
 
 type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
@@ -40,6 +42,8 @@ export default function RealTrustAtlasMap({
   stations,
   selectedCity,
   onSelectCity,
+  className,
+  activeModelFilter,
 }: RealTrustAtlasMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -121,8 +125,9 @@ export default function RealTrustAtlasMap({
 
   // Combined Station Data from GeoJSON API or Props
   const displayStations: RpiData[] = useMemo(() => {
+    let list: RpiData[] = stations;
     if (geoJsonData && geoJsonData.features && geoJsonData.features.length > 0) {
-      return geoJsonData.features.map((f) => ({
+      list = geoJsonData.features.map((f) => ({
         city: f.properties.city,
         state: f.properties.state,
         lat: f.geometry.coordinates[1],
@@ -142,8 +147,13 @@ export default function RealTrustAtlasMap({
         updatedAt: '2026-09-26T18:30:00Z',
       }));
     }
-    return stations;
-  }, [geoJsonData, stations]);
+    if (activeModelFilter && activeModelFilter !== 'ALL') {
+      return list.filter(
+        (s: RpiData) => (s.dominantModel || 'ECMWF').toUpperCase() === activeModelFilter.toUpperCase()
+      );
+    }
+    return list;
+  }, [geoJsonData, stations, activeModelFilter]);
 
   // 4. Render Markers with Dominant-Model Color-Coding
   useEffect(() => {
@@ -269,7 +279,7 @@ export default function RealTrustAtlasMap({
   };
 
   return (
-    <div className="relative w-full h-[560px] overflow-hidden rounded-lg border border-border">
+    <div className={`relative w-full overflow-hidden rounded-lg border border-border ${className || 'h-[560px]'}`}>
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Top Floating Bar: Map API Status & Station Search */}

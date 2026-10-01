@@ -2,7 +2,7 @@ export type Variable = 'rainfall' | 'temperature' | 'wind';
 export type LeadTime = '6h' | '12h' | '24h' | '48h' | '72h';
 export type MapLayer = 'rainfall' | 'temperature' | 'wind' | 'extreme_risk' | 'model_dominance' | 'confidence' | 'anomaly';
 export type ModelMode = 'blended' | 'ai' | 'nwp' | 'ensemble';
-export type NavPage = 'overview' | 'forecast' | 'model-intelligence' | 'extreme-weather' | 'model-performance' | 'data-health' | 'rpi';
+export type NavPage = 'overview' | 'forecast' | 'model-intelligence' | 'extreme-weather' | 'model-performance' | 'data-health' | 'rpi' | 'api';
 
 export interface ForecastMetrics {
   rainfall: number;
