@@ -11,6 +11,14 @@ ACTUAL_COLS = {
     'wind_speed': 'actual_wind'
 }
 
+# Published weighted-blend test RMSE per variable/lead — serves
+# /api/models/calibration as the blend baseline the hybrid is compared against.
+EXPECTED_BLEND_RMSE = {
+    'temperature': {1: 1.0607, 2: 1.1501, 3: 1.2194},
+    'rainfall': {1: 0.7475, 2: 0.7915, 3: 0.8012},
+    'wind_speed': {1: 2.9883, 2: 3.2254, 3: 3.3334},
+}
+
 
 def main():
     # 1. Load ml_table.csv and parse datetime
@@ -32,11 +40,7 @@ def main():
         raise ValueError(f"Max TRAIN datetime ({max_train_dt}) is not earlier than 2026-08-29")
 
     # Expected weighted_blend RMSE on TEST for cross-checking
-    expected_blend_rmse = {
-        'temperature': {1: 1.0607, 2: 1.1501, 3: 1.2194},
-        'rainfall': {1: 0.7475, 2: 0.7915, 3: 0.8012},
-        'wind_speed': {1: 2.9883, 2: 3.2254, 3: 3.3334},
-    }
+    expected_blend_rmse = EXPECTED_BLEND_RMSE
 
     print("=== CROSS-CHECK WEIGHTED_BLEND TEST RMSE ===")
     for var in ['temperature', 'rainfall', 'wind_speed']:

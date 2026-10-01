@@ -90,7 +90,7 @@ Returns `cycle_state.json` content + `generated_at` from metadata. 404 with a cl
 
 ## 4. Capability C — Inter-cycle delta (`ai/cycle_delta.py`)
 
-Runs in `run_downstream_updates` **after** `uncertainty.py` (it consumes its output), before `confidence_engine.py` so it can diff the fresh confidence frame too — ordering: alerts → advisories → uncertainty → **delta(prev captured first)** → confidence. To diff confidence correctly, the previous confidence snapshot is copied to `outputs/interim/prev_confidence_scores.csv` *before* confidence_engine overwrites `confidence_scores.csv`; likewise `prev_uncertainty.csv` before uncertainty.py overwrites. Hook order in `run_downstream_updates`: snapshot-prev → alerts → advisories → uncertainty → confidence → compute-delta.
+Runs in `regenerate_forecast` **after** `uncertainty.py` and `confidence_engine.py` (it consumes their output) and strictly **after** `cycle_state.detect()` — so availability changes (newly missing / recovered models) are same-cycle, never lagged. To diff confidence correctly, the previous confidence snapshot is copied to `outputs/interim/prev_confidence_scores.csv` *before* confidence_engine overwrites `confidence_scores.csv`; likewise `prev_uncertainty.csv` before uncertainty.py overwrites. Hook order in `regenerate_forecast`: `run_adaptive_weighting` → `run_downstream_updates` (snapshot-prev → alerts → advisories → uncertainty → confidence) → `save_metadata` → `detect()` → `compute_delta()`.
 
 ### 4.1 Delta computation (no fake fields)
 
@@ -205,7 +205,7 @@ CI: `outputs/cycle_state.json`, `outputs/cycle_delta.json`, `outputs/interim/pre
 | `ai/cycle_state.py` | NEW — detection, checksum, completeness artifact, `--verify` |
 | `ai/cycle_delta.py` | NEW — snapshot copy + delta computation, `--verify` |
 | `ai/blend_current.py` | present-model subset instead of constant MODELS |
-| `api/cache_manager.py` | subset blend in `run_adaptive_weighting`; hooks: `cycle_state.detect()` after preprocess, snapshot+delta in `run_downstream_updates` |
+| `api/cache_manager.py` | subset blend in `run_adaptive_weighting`; degraded-cycle gate (blend published as hybrid); hooks: `snapshot_prev()` at downstream start, `detect()` + `compute_delta()` in `regenerate_forecast` after `save_metadata` |
 | `ai/uncertainty.py` | per-model matrix from present models |
 | `app.py` | routes: `/api/cycle`, `/api/cycle/delta`, `POST /api/decision/override`, `GET /api/decision/overrides`; decision payload `cycle` block + `override` field + `MISSING_<MODEL>` reason codes |
 | `database/supabase_schema.sql` | mirror `decision_overrides` table for the Supabase push path |

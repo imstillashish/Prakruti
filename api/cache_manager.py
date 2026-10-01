@@ -292,8 +292,12 @@ def run_adaptive_weighting():
     df_wide = df_wide.reset_index()
 
     # 3. Pivot weights and compute weighted blend
+    # Graceful degradation (PRD F-01.A): blend over the models that actually
+    # arrived in the cleaned frame, not the full expected set.
+    models_short = sorted(df_fc["model"].unique())
+    if not models_short:
+        raise ValueError("No model rows in forecast frame — cannot blend an empty cycle.")
     df_blended = df_wide.copy()
-    models_short = ["ecmwf", "gfs", "icon", "gem"]
 
     for var in VARIABLES:
         w_pivot = df_weights[df_weights["variable"] == var].pivot(
@@ -302,11 +306,18 @@ def run_adaptive_weighting():
             values="weight"
         ).reset_index()
 
-        w_cols = [f"w_{m}" for m in models_short]
-        w_pivot.columns = ["city", "lead_days"] + w_cols
+        w_pivot = w_pivot.rename(columns={m: f"w_{m}" for m in models_short if m in w_pivot.columns})
 
         merged = pd.merge(df_wide, w_pivot, on=["city", "lead_days"], how="left")
+        # Weight pivot columns come from the weights file, which may cover more
+        # models than arrived — restrict to present models before normalizing.
+        w_cols = [f"w_{m}" for m in models_short]
+        for m in models_short:
+            if f"w_{m}" not in merged.columns:
+                merged[f"w_{m}"] = 0.0
         w_sum = merged[w_cols].sum(axis=1)
+        if (w_sum <= 0).any():
+            raise RuntimeError("Zero total weight after restricting to present models — cannot blend.")
         for m in models_short:
             merged[f"w_{m}"] = merged[f"w_{m}"] / w_sum
 
@@ -327,63 +338,77 @@ def run_adaptive_weighting():
     print(f"[CacheManager] Successfully generated {BLENDED_CSV} ({len(df_out)} rows)")
 
     # Generate hybrid_forecast.csv using trained Random Forest models from ai/predict.py
-    print("[CacheManager] Generating hybrid_forecast.csv with Random Forest residual corrections...")
-    from ai.predict import build_current_features, predict_hybrid, FEATURE_COLS
+    # RF hybrid requires the full training feature space (all 12 model columns).
+    # On a degraded cycle, publish the blend as the hybrid instead of feeding
+    # the model a feature matrix it never saw (PRD F-01.A).
+    expected_models = set(MODEL_MAP.values())
+    if set(models_short) == expected_models:
+        print("[CacheManager] Generating hybrid_forecast.csv with Random Forest residual corrections...")
+        from ai.predict import build_current_features, predict_hybrid, FEATURE_COLS
 
-    orig_cwd = os.getcwd()
-    try:
-        os.chdir(str(BASE_DIR))
-        curr_df, _ = build_current_features()
-        hybrids, _ = predict_hybrid(curr_df)
-    finally:
-        os.chdir(orig_cwd)
+        orig_cwd = os.getcwd()
+        try:
+            os.chdir(str(BASE_DIR))
+            curr_df, _ = build_current_features()
+            hybrids, _ = predict_hybrid(curr_df)
+        finally:
+            os.chdir(orig_cwd)
 
-    curr_df["temperature"] = hybrids["temperature"]
-    curr_df["rainfall"] = hybrids["rainfall"]
-    curr_df["wind_speed"] = hybrids["wind_speed"]
+        curr_df["temperature"] = hybrids["temperature"]
+        curr_df["rainfall"] = hybrids["rainfall"]
+        curr_df["wind_speed"] = hybrids["wind_speed"]
 
-    hybrid_cols = [
-        "city", "datetime", "lead_days",
-        "blend_temperature", "blend_rainfall", "blend_wind_speed",
-        "temperature", "rainfall", "wind_speed"
-    ]
-    df_hybrid = curr_df[hybrid_cols].sort_values(by=["city", "datetime"]).copy()
-    df_hybrid["datetime"] = pd.to_datetime(df_hybrid["datetime"]).dt.strftime("%Y-%m-%d %H:%M:%S")
+        hybrid_cols = [
+            "city", "datetime", "lead_days",
+            "blend_temperature", "blend_rainfall", "blend_wind_speed",
+            "temperature", "rainfall", "wind_speed"
+        ]
+        df_hybrid = curr_df[hybrid_cols].sort_values(by=["city", "datetime"]).copy()
+        df_hybrid["datetime"] = pd.to_datetime(df_hybrid["datetime"]).dt.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Save hybrid_forecast.csv
-    df_hybrid.to_csv(HYBRID_CSV, index=False)
-    print(f"[CacheManager] Successfully generated {HYBRID_CSV} ({len(df_hybrid)} rows)")
+        # Save hybrid_forecast.csv
+        df_hybrid.to_csv(HYBRID_CSV, index=False)
+        print(f"[CacheManager] Successfully generated {HYBRID_CSV} ({len(df_hybrid)} rows)")
 
-    # Assertion: for a random sample of 5 rows, hybrid value must NOT exactly equal blend value
-    sample_rows = df_hybrid.sample(n=min(5, len(df_hybrid)), random_state=42)
-    all_equal = True
-    for _, s_row in sample_rows.iterrows():
-        is_row_equal = (
-            np.isclose(s_row["temperature"], s_row["blend_temperature"], atol=1e-6) and
-            np.isclose(s_row["rainfall"], s_row["blend_rainfall"], atol=1e-6) and
-            np.isclose(s_row["wind_speed"], s_row["blend_wind_speed"], atol=1e-6)
-        )
-        if not is_row_equal:
-            all_equal = False
-            break
-    if all_equal:
-        raise RuntimeError("Assertion failed: Random sample of 5 rows showed hybrid exactly equals blend for all 5. RF correction was skipped!")
+        # Assertion: for a random sample of 5 rows, hybrid value must NOT exactly equal blend value
+        sample_rows = df_hybrid.sample(n=min(5, len(df_hybrid)), random_state=42)
+        all_equal = True
+        for _, s_row in sample_rows.iterrows():
+            is_row_equal = (
+                np.isclose(s_row["temperature"], s_row["blend_temperature"], atol=1e-6) and
+                np.isclose(s_row["rainfall"], s_row["blend_rainfall"], atol=1e-6) and
+                np.isclose(s_row["wind_speed"], s_row["blend_wind_speed"], atol=1e-6)
+            )
+            if not is_row_equal:
+                all_equal = False
+                break
+        if all_equal:
+            raise RuntimeError("Assertion failed: Random sample of 5 rows showed hybrid exactly equals blend for all 5. RF correction was skipped!")
 
-    # Summary and difference printout
-    row_count = len(df_hybrid)
-    date_min = df_hybrid["datetime"].min()
-    date_max = df_hybrid["datetime"].max()
-    print("\n" + "=" * 60)
-    print("=== HYBRID FORECAST (AI-NWP RF CORRECTION) SUMMARY ===")
-    print(f"Total row count : {row_count}")
-    print(f"Date range      : {date_min} to {date_max}")
-    print("Mean absolute difference (|hybrid - blend|):")
-    for var in ["temperature", "rainfall", "wind_speed"]:
-        mae_diff = float(np.mean(np.abs(df_hybrid[var].values - df_hybrid[f"blend_{var}"].values)))
-        print(f"  {var:<12}: {mae_diff:.4f}")
-        if mae_diff <= 0:
-            raise RuntimeError(f"RF correction verification failed: mean absolute difference for '{var}' is {mae_diff:.4f} (must be > 0)")
-    print("=" * 60 + "\n")
+        # Summary and difference printout
+        row_count = len(df_hybrid)
+        date_min = df_hybrid["datetime"].min()
+        date_max = df_hybrid["datetime"].max()
+        print("\n" + "=" * 60)
+        print("=== HYBRID FORECAST (AI-NWP RF CORRECTION) SUMMARY ===")
+        print(f"Total row count : {row_count}")
+        print(f"Date range      : {date_min} to {date_max}")
+        print("Mean absolute difference (|hybrid - blend|):")
+        for var in ["temperature", "rainfall", "wind_speed"]:
+            mae_diff = float(np.mean(np.abs(df_hybrid[var].values - df_hybrid[f"blend_{var}"].values)))
+            print(f"  {var:<12}: {mae_diff:.4f}")
+            if mae_diff <= 0:
+                raise RuntimeError(f"RF correction verification failed: mean absolute difference for '{var}' is {mae_diff:.4f} (must be > 0)")
+        print("=" * 60 + "\n")
+    else:
+        missing = sorted(expected_models - set(models_short))
+        print(f"[CacheManager] Degraded cycle (missing: {', '.join(missing)}) — "
+              f"publishing blend as hybrid_forecast (RF feature space unavailable)")
+        df_hybrid = df_out.copy()
+        for var in VARIABLES:
+            df_hybrid[f"blend_{var}"] = df_hybrid[var]
+        df_hybrid.to_csv(HYBRID_CSV, index=False)
+        print(f"[CacheManager] Saved fallback {HYBRID_CSV} ({len(df_hybrid)} rows)")
 
     # Run downstream alerts and confidence updates if modules available
     try:
@@ -406,6 +431,14 @@ def run_downstream_updates():
         venv_py = BASE_DIR / "venv" / "bin" / "python"
         py_exec = str(venv_py) if venv_py.exists() else sys.executable
 
+        # Snapshot previous cycle artifacts for inter-cycle delta (F-01.C) —
+        # must happen BEFORE downstream scripts overwrite outputs/*.csv
+        try:
+            from ai.cycle_delta import snapshot_prev
+            snapshot_prev()
+        except Exception as snap_err:
+            print(f"[CacheManager] Cycle snapshot warning: {snap_err}")
+
         # Run alerts.py
         alerts_script = BASE_DIR / "ai" / "alerts.py"
         if alerts_script.exists():
@@ -421,10 +454,17 @@ def run_downstream_updates():
         if unc_script.exists():
             subprocess.run([py_exec, str(unc_script)], cwd=str(BASE_DIR), capture_output=True)
 
+        # Run verify.py (F-02: model-vs-truth verification metrics)
+        ver_script = BASE_DIR / "ai" / "verify.py"
+        if ver_script.exists():
+            subprocess.run([py_exec, str(ver_script)], cwd=str(BASE_DIR), capture_output=True)
+
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():
             subprocess.run([py_exec, str(conf_script)], cwd=str(BASE_DIR), capture_output=True)
+        # NOTE: cycle delta is computed in regenerate_forecast AFTER detect(),
+        # so it sees this cycle's state, not the previous one.
     except Exception as e:
         print(f"[CacheManager] Downstream sync warning: {e}")
 
@@ -473,6 +513,23 @@ def regenerate_forecast():
             "model_count": model_count
         }
         save_metadata(metadata)
+
+        # F-01.A: record per-model ingestion state for this cycle (cycle_id =
+        # the timestamp just saved, so cycle state, delta and overrides share one id)
+        try:
+            from ai.cycle_state import detect as detect_cycle_state
+            detect_cycle_state()
+        except Exception as state_err:
+            print(f"[CacheManager] Cycle state warning: {state_err}")
+
+        # F-01.C: inter-cycle delta — strictly after detect(), so availability
+        # changes (newly missing / recovered models) are same-cycle, not lagged
+        try:
+            from ai.cycle_delta import compute_delta
+            compute_delta()
+        except Exception as delta_err:
+            print(f"[CacheManager] Cycle delta warning: {delta_err}")
+
         print(f"[CacheManager] Auto-refresh complete at {timestamp}!")
         return metadata
 

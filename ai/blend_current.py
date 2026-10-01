@@ -7,7 +7,7 @@ from pathlib import Path
 # hours_ahead = (datetime - start) in whole hours
 # lead_days = hours_ahead // 24 + 1 (values in {1, 2, 3})
 
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+MODELS = ["ecmwf", "gfs", "icon", "gem"]  # nominal set; blending uses present-model subset
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Resolve project directories
@@ -31,6 +31,13 @@ if set(df_fc["lead_days"].unique()) != {1, 2, 3}:
     raise ValueError(f"Unexpected lead_days values: {set(df_fc['lead_days'].unique())}")
 
 # 3. Pivot forecast to wide format: one row per (city, datetime, lead_days)
+# Graceful degradation (PRD F-01.A): blend over the models that actually arrived.
+# Weights renormalize via the existing w_sum division below.
+present_models = sorted(df_fc["model"].unique())
+if not present_models:
+    raise ValueError("No model rows in forecast frame — cannot blend an empty cycle.")
+
+
 df_pivot = df_fc.pivot(
     index=["city", "datetime", "lead_days"],
     columns="model",
@@ -53,19 +60,21 @@ for var in VARIABLES:
         values="weight"
     ).reset_index()
     
-    w_cols = [f"w_{m}" for m in MODELS]
-    w_pivot.columns = ["city", "lead_days"] + w_cols
-    
+    w_pivot = w_pivot.rename(columns={m: f"w_{m}" for m in present_models if m in w_pivot.columns})
+
     # Merge weights onto wide forecast on (city, lead_days)
     merged = pd.merge(df_wide, w_pivot, on=["city", "lead_days"], how="left")
     
     # Normalize merged weights so they sum to 1.0 per row
+    w_cols = [f"w_{m}" for m in present_models]
     w_sum = merged[w_cols].sum(axis=1)
-    for m in MODELS:
+    if (w_sum <= 0).any():
+        raise ValueError(f"Zero total weight for {len((w_sum <= 0)[lambda s: s].index)} rows — weights file lacks all present models.")
+    for m in present_models:
         merged[f"w_{m}"] = merged[f"w_{m}"] / w_sum
 
     # Compute blend = sum(weight * forecast)
-    df_blended[var] = sum(merged[f"w_{m}"] * merged[f"{var}_{m}"] for m in MODELS)
+    df_blended[var] = sum(merged[f"w_{m}"] * merged[f"{var}_{m}"] for m in present_models)
 
 # 5. Format output columns and sort by city, datetime
 output_cols = ["city", "datetime", "lead_days", "temperature", "rainfall", "wind_speed"]
@@ -90,9 +99,9 @@ if set(df_out["lead_days"].unique()) != {1, 2, 3}:
 if df_out["city"].nunique() != 45:
     raise ValueError(f"City count mismatch: expected 45, got {df_out['city'].nunique()}")
 
-# Assertion 5: For every row and variable, blend lies between min and max of 4 model forecasts
+# Assertion 5: For every row and variable, blend lies between min and max of present model forecasts
 for var in VARIABLES:
-    fc_cols = [f"{var}_{m}" for m in MODELS]
+    fc_cols = [f"{var}_{m}" for m in present_models]
     min_fc = df_wide[fc_cols].min(axis=1)
     max_fc = df_wide[fc_cols].max(axis=1)
     blend_val = df_out[var]

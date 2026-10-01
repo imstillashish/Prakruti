@@ -667,6 +667,135 @@ export async function getDecision(city: string): Promise<DecisionPayload | null>
 }
 
 /**
+ * F-02 comparative analytics (PRD §7.2): trajectory comparison, historical
+ * truth verification, and the honest calibration inventory.
+ */
+export interface ModelCompareSeries {
+  lead_days: number;
+  datetimes: string[];
+  models: Record<string, (number | null)[]>;
+  blend_p50: (number | null)[];
+  p10: (number | null)[];
+  p90: (number | null)[];
+  outliers: Record<string, boolean[]>;
+  cluster_states: string[];
+  cluster_summary: string;
+}
+
+export interface ModelComparePayload {
+  city: string;
+  generated_at: string;
+  models_present: string[];
+  variables: Record<string, { spread_growth_per_lead: number | null; series: ModelCompareSeries[] }>
+}
+
+export async function getModelCompare(city: string, opts?: { variable?: string; lead_days?: number }): Promise<ModelComparePayload | null> {
+  const params = new URLSearchParams({ city });
+  if (opts?.variable) params.set('variable', opts.variable);
+  if (opts?.lead_days) params.set('lead_days', String(opts.lead_days));
+  return fetchFromApi<ModelComparePayload | null>(
+    `/api/models/compare?${params.toString()}`,
+    null,
+  );
+}
+
+export interface VerificationMeta {
+  engine_version: string;
+  window_start: string;
+  window_end: string;
+  n_pairs: number;
+  truth_source: string;
+  methods: string[];
+  thresholds: Record<string, number[]>;
+  crps_note: string;
+}
+
+export interface ContinuousVerificationRow {
+  city: string;
+  model: string;
+  variable: string;
+  n: number;
+  bias: number;
+  mae: number;
+  rmse: number;
+  crps: number;
+}
+
+export interface CategoricalVerificationRow {
+  city: string;
+  model: string;
+  variable: string;
+  threshold: number;
+  lead_days: number | null;
+  hits: number;
+  misses: number;
+  false_alarms: number;
+  correct_negatives: number;
+  pod: number;
+  far: number;
+  csi: number;
+  ets: number;
+  bss: number;
+}
+
+export interface VerificationPayload {
+  meta: VerificationMeta;
+  continuous: ContinuousVerificationRow[];
+  categorical: CategoricalVerificationRow[];
+}
+
+export async function getModelVerification(opts?: {
+  city?: string;
+  variable?: string;
+  model?: string;
+}): Promise<VerificationPayload | null> {
+  const params = new URLSearchParams();
+  if (opts?.city) params.set('city', opts.city);
+  if (opts?.variable) params.set('variable', opts.variable);
+  if (opts?.model) params.set('model', opts.model);
+  return fetchFromApi<VerificationPayload | null>(
+    `/api/models/verification?${params.toString()}`,
+    null,
+  );
+}
+
+export interface BiasCorrectionRow {
+  city: string;
+  model: string;
+  variable: string;
+  n_test: number;
+  train_bias: number;
+  bias_raw: number;
+  mae_raw: number;
+  rmse_raw: number;
+  bias_corrected: number;
+  mae_corrected: number;
+  rmse_corrected: number;
+  bias_reduction_pct: number | null;
+}
+
+export interface CalibrationPayload {
+  calibration_layers: Array<{ name: string; description: string }>;
+  bias_correction_diagnostic: BiasCorrectionRow[];
+  hybrid_vs_blend: Array<{ variable: string; lead_days: number; blend_test_rmse: number; hybrid_test_rmse: number; rmse_reduction_pct: number }>;
+}
+
+export async function getModelCalibration(opts?: {
+  city?: string;
+  variable?: string;
+  model?: string;
+}): Promise<CalibrationPayload | null> {
+  const params = new URLSearchParams();
+  if (opts?.city) params.set('city', opts.city);
+  if (opts?.variable) params.set('variable', opts.variable);
+  if (opts?.model) params.set('model', opts.model);
+  return fetchFromApi<CalibrationPayload | null>(
+    `/api/models/calibration?${params.toString()}`, 
+    null,
+  );
+}
+
+/**
  * Helper to get TimelinePoint[] for ForecastTimeline component.
  */
 export async function getTimelineData(city: string = 'Kanpur'): Promise<TimelinePoint[]> {

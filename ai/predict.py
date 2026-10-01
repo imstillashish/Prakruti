@@ -19,6 +19,14 @@ VARIABLES = {
     'wind_speed': 'actual_wind'
 }
 
+# Published hybrid-RF test RMSE per variable/lead (training-time cross-check
+# anchors) — serves /api/models/calibration as the measured correction delta.
+EXPECTED_HYBRID_RMSE = {
+    'temperature': {1: 0.8802, 2: 0.9609, 3: 1.0250},
+    'rainfall':    {1: 0.6760, 2: 0.6859, 3: 0.6942},
+    'wind_speed':  {1: 2.3376, 2: 2.4766, 3: 2.5819}
+}
+
 
 def predict_hybrid(df):
     """
@@ -54,11 +62,7 @@ def cross_check_test(ml_table_path):
     df = pd.read_csv(ml_table_path)
     test_df = df[df['split'] == 'test'].copy()
 
-    expected_rmse = {
-        'temperature': {1: 0.8802, 2: 0.9609, 3: 1.0250},
-        'rainfall':    {1: 0.6760, 2: 0.6859, 3: 0.6942},
-        'wind_speed':  {1: 2.3376, 2: 2.4766, 3: 2.5819}
-    }
+    expected_rmse = EXPECTED_HYBRID_RMSE
 
     hybrids, _ = predict_hybrid(test_df)
 

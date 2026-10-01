@@ -1,0 +1,43 @@
+{
+  "cycle_id": "2026-10-01T11:15:45",
+  "previous_cycle_id": "2026-10-01T11:15:45",
+  "available": true,
+  "quantile_shift": {
+    "temperature": {
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
+    },
+    "rainfall": {
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
+    },
+    "wind_speed": {
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
+    }
+  },
+  "biggest_p50_mover": {
+    "temperature": {
+      "city": "Agartala",
+      "delta": 0.0
+    },
+    "rainfall": {
+      "city": "Agartala",
+      "delta": 0.0
+    },
+    "wind_speed": {
+      "city": "Agartala",
+      "delta": 0.0
+    }
+  },
+  "confidence_shifts": {
+    "upgraded": 0,
+    "downgraded": 0,
+    "transitions": {}
+  },
+  "models_recovered": [],
+  "models_newly_missing": []
+}

@@ -269,6 +269,10 @@ def generate() -> dict:
         missing = int(df[list(wide.columns)].isna().any(axis=1).sum())
         raise ValueError(f"{missing} hybrid rows missing per-model values in forecast_current_clean.csv")
 
+    # Degradation (PRD F-01.A): per-model spread over the models that actually
+    # arrived; weighted_std handles the reduced stack directly.
+    present_models = [m for m in MODELS if f"{VARIABLES[0]}__{m}" in df.columns]
+
     widx = weights.set_index(["variable", "model"])["weight"].to_dict()
     hist_dry = actual["actual_rainfall"] < DRY_MM
     hist_bins = pd.cut(actual["actual_rainfall"], RAIN_BINS, right=False)
@@ -287,8 +291,8 @@ def generate() -> dict:
     # --- pass 1: spreads (needed for the percentile pool) -----------------
     spread_cols = {}
     for var in VARIABLES:
-        model_vals = np.column_stack([df[f"{var}__{m}"].to_numpy(float) for m in MODELS])
-        w_vec = np.array([float(widx.get((var, m), 0.25)) for m in MODELS])
+        model_vals = np.column_stack([df[f"{var}__{m}"].to_numpy(float) for m in present_models])
+        w_vec = np.array([float(widx.get((var, m), 0.25)) for m in present_models])
         spread_cols[var] = np.array([weighted_std(row, w_vec) for row in model_vals])
 
     # within-cycle percentile pool per variable (all cities x leads)

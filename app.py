@@ -5,6 +5,10 @@ Smart India Hackathon 2026 (PS: 26081)
 
 import os
 import csv
+import json
+import math
+import sqlite3
+from datetime import datetime, timezone
 from flask import Flask, jsonify, request
 
 # Graceful pandas import to support both venv and environments with C-extension conflicts
@@ -49,7 +53,9 @@ def load_csv_records(csv_path):
     if USE_PANDAS and pd is not None:
         try:
             df = pd.read_csv(csv_path)
-            df = df.where(pd.notnull(df), None)
+            # astype(object) first: in float columns pandas coerces None back to NaN,
+            # which Flask then serializes as bare `NaN` — invalid JSON for the frontend.
+            df = df.astype(object).where(pd.notnull(df), None)
             return df.to_dict(orient='records')
         except Exception:
             pass
@@ -403,6 +409,12 @@ def get_decision():
         return jsonify({"error": "uncertainty artifacts not found — run ai/uncertainty.py"}), 404
 
     meta = load_metadata() or {}
+
+    # F-01.A: cycle readiness rides on every decision payload (PRD §8.3)
+    from ai.cycle_state import load_state as load_cycle_state
+    cycle_state = load_cycle_state() or {}
+    missing_models = cycle_state.get("missing_models", [])
+
     diag = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty_diagnostics.csv")) or []
     engine_version = diag[0].get("engine_version", "unknown") if diag else "unknown"
 
@@ -411,6 +423,7 @@ def get_decision():
                   for r in (load_csv_records(os.path.join(OUTPUTS_DIR, "confidence_scores.csv")) or [])}
 
     city_lower = city.strip().lower()
+    overrides = _latest_overrides_for_city(city_lower)
     exc_by_key = {(str(r.get('city')), str(r.get('datetime')), str(r.get('lead_days'))): r for r in exc}
 
     var_thresholds = {
@@ -451,6 +464,8 @@ def get_decision():
             codes.append("TAIL_RISK_SIGNAL")
         if (num(u.get("lead_days")) or 0) >= 3:
             codes.append("LEAD_DEGRADES_SKILL")
+        for m in missing_models:
+            codes.append(f"MISSING_{m.upper()}")
         if not codes:
             codes.append("NOMINAL_CONTEXT")
 
@@ -468,6 +483,9 @@ def get_decision():
                 key=lambda c: c["weight"] or 0.0, reverse=True)
             contributions[var] = per_var
 
+        ovr = {ovar: o for (odt, olead, ovar), o in overrides.items()
+               if odt == dt and str(olead) == lead}
+
         records.append({
             "datetime": u.get("datetime"),
             "lead_days": num(u.get("lead_days")),
@@ -479,6 +497,7 @@ def get_decision():
             "confidence": {"label": conf.get("confidence_label"), "score": num(conf.get("confidence")),
                            "reason_codes": codes},
             "model_contributions": contributions,
+            "override": ovr or None,
         })
 
     if not records:
@@ -488,9 +507,468 @@ def get_decision():
         "city": records[0]["datetime"] and city,
         "generated_at": meta.get("last_updated"),
         "engine_version": engine_version,
+        "cycle": {
+            "cycle_id": cycle_state.get("cycle_id", meta.get("last_updated")),
+            "source_completeness": cycle_state.get(
+                "source_completeness",
+                {"expected": meta.get("model_count", 4), "available": None, "fallback": False}),
+        },
         "record_count": len(records),
         "coverage": {d.get("variable"): num(d.get("holdout_coverage")) for d in diag},
         "records": records,
+    })
+
+
+# ---------------------------------------------------------------------------
+# F-01.D.7 Override & audit (AC-19) — insert-only SQLite store
+# ---------------------------------------------------------------------------
+DB_PATH = os.path.join(BASE_DIR, "database", "weather.db")
+OVERRIDE_VARS = {"temperature", "rainfall", "wind_speed"}
+OVERRIDE_DDL = """
+CREATE TABLE IF NOT EXISTS decision_overrides (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL,
+  cycle_id TEXT NOT NULL,
+  city TEXT NOT NULL,
+  datetime TEXT NOT NULL,
+  lead_days INTEGER NOT NULL,
+  variable TEXT NOT NULL,
+  original_value REAL,
+  override_value REAL NOT NULL,
+  reason TEXT NOT NULL,
+  user_id TEXT NOT NULL
+)
+"""
+
+
+def _override_conn():
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute(OVERRIDE_DDL)
+    return conn
+
+
+def _lookup_original_value(city, dt_str, lead, variable):
+    """Engine-published p50 for the key, or None when the engine never published it."""
+    rows = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty.csv")) or []
+    want = dt_str.strip().replace("T", " ").rstrip("Z")
+    for r in rows:
+        if str(r.get("city", "")).lower() == city.lower() \
+                and str(r.get("datetime")).replace("T", " ").startswith(want[:16]) \
+                and str(r.get("lead_days")) == str(lead):
+            try:
+                return float(r.get(f"p50_{variable}"))
+            except (TypeError, ValueError):
+                return None
+    return None
+
+
+def _latest_overrides_for_city(city_lower):
+    """(datetime, lead, variable) -> most recent override, for /api/decision surfacing."""
+    if not os.path.exists(DB_PATH):
+        return {}
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        rows = conn.execute(
+            "SELECT city, datetime, lead_days, variable, override_value, reason, user_id, created_at"
+            " FROM decision_overrides ORDER BY id DESC").fetchall()
+        conn.close()
+    except sqlite3.Error as e:
+        print(f"[Overrides] audit read failed: {e}")
+        return {}
+    out = {}
+    for r_city, dt, lead, var, val, reason, user, created in rows:
+        if str(r_city).lower() != city_lower:
+            continue
+        key = (str(dt), str(lead), str(var))
+        if key not in out:
+            out[key] = {"value": val, "reason": reason, "user_id": user, "created_at": created}
+    return out
+
+
+@app.route('/api/decision/override', methods=['POST'])
+def create_decision_override():
+    """
+    AC-19: record a forecaster override of a published decision value.
+    Insert-only audit; the engine value is never altered.
+    """
+    body = request.get_json(silent=True) or {}
+    city = str(body.get('city') or '').strip()
+    dt_str = str(body.get('datetime') or '').strip()
+    variable = str(body.get('variable') or '').strip().lower()
+    value = body.get('override_value')
+    reason = str(body.get('reason') or '').strip()
+    user_id = str(body.get('user_id') or '').strip()
+    original = body.get('original_value')
+
+    try:
+        lead = int(body.get('lead_days'))
+    except (TypeError, ValueError):
+        lead = None
+
+    errors = []
+    if not city:
+        errors.append("city is required")
+    if not dt_str:
+        errors.append("datetime is required")
+    if lead not in (1, 2, 3):
+        errors.append("lead_days must be 1, 2 or 3")
+    if variable not in OVERRIDE_VARS:
+        errors.append("variable must be one of temperature|rainfall|wind_speed")
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+        errors.append("override_value must be a finite number")
+    if not reason:
+        errors.append("reason is required")
+    if not user_id:
+        errors.append("user_id is required")
+    if errors:
+        return jsonify({"error": "; ".join(errors)}), 400
+
+    if original is None:
+        original = _lookup_original_value(city, dt_str, lead, variable)
+    try:
+        original = float(original) if original is not None else None
+    except (TypeError, ValueError):
+        original = None
+
+    cycle_id = body.get('cycle_id') or (load_metadata() or {}).get("last_updated") or "unknown"
+    created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    conn = _override_conn()
+    try:
+        cur = conn.execute(
+            "INSERT INTO decision_overrides (created_at, cycle_id, city, datetime, lead_days,"
+            " variable, original_value, override_value, reason, user_id)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (created_at, str(cycle_id), city, dt_str, lead, variable,
+             original, float(value), reason, user_id))
+        conn.commit()
+        row_id = cur.lastrowid
+    finally:
+        conn.close()
+
+    return jsonify({
+        "id": row_id, "created_at": created_at, "cycle_id": str(cycle_id),
+        "city": city, "datetime": dt_str, "lead_days": lead, "variable": variable,
+        "original_value": original, "override_value": float(value),
+        "reason": reason, "user_id": user_id,
+    }), 201
+
+
+@app.route('/api/decision/overrides', methods=['GET'])
+@app.route('/decision/overrides', methods=['GET'])
+def list_decision_overrides():
+    """Newest-first audit trail. Filters: city, cycle_id; limit (default 100, cap 500)."""
+    if not os.path.exists(DB_PATH):
+        return jsonify({"overrides": [], "count": 0})
+
+    city = request.args.get('city')
+    cycle_id = request.args.get('cycle_id')
+    try:
+        limit = min(max(int(request.args.get('limit', 100)), 1), 500)
+    except (TypeError, ValueError):
+        limit = 100
+
+    where, params = [], []
+    if city:
+        where.append("city = ?")
+        params.append(city)
+    if cycle_id:
+        where.append("cycle_id = ?")
+        params.append(cycle_id)
+    sql = "SELECT id, created_at, cycle_id, city, datetime, lead_days, variable,"
+    sql += " original_value, override_value, reason, user_id FROM decision_overrides"
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += " ORDER BY id DESC LIMIT ?"
+    params.append(limit)
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
+        conn.close()
+    except sqlite3.Error as e:
+        return jsonify({"error": f"audit read failed: {e}"}), 500
+
+    return jsonify({"overrides": rows, "count": len(rows)})
+
+
+@app.route('/api/cycle', methods=['GET'])
+@app.route('/cycle', methods=['GET'])
+def get_cycle():
+    """F-01.A: per-model ingestion state for the current cycle."""
+    from ai.cycle_state import load_state
+    state = load_state()
+    if state is None:
+        return jsonify({"error": "cycle state not generated yet — run the forecast pipeline"}), 404
+    meta = load_metadata() or {}
+    return jsonify({**state, "generated_at": meta.get("last_updated")})
+
+
+@app.route('/api/cycle/delta', methods=['GET'])
+@app.route('/cycle/delta', methods=['GET'])
+def get_cycle_delta():
+    """F-01.C: what changed vs the previous cycle."""
+    path = os.path.join(OUTPUTS_DIR, "cycle_delta.json")
+    if not os.path.exists(path):
+        return jsonify({"error": "cycle delta not generated yet — run the forecast pipeline"}), 404
+    with open(path, encoding="utf-8") as f:
+        return jsonify(json.load(f))
+
+
+# ---------------------------------------------------------------------------
+# F-02: Multi-model comparative analytics (PRD §7.2)
+# ---------------------------------------------------------------------------
+VARIABLE_UNITS = {"temperature": "°C", "rainfall": "mm/h", "wind_speed": "km/h"}
+
+
+def _num(v):
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return None if math.isnan(f) else f
+
+
+@app.route('/api/models/compare', methods=['GET'])
+@app.route('/models/compare', methods=['GET'])
+def get_models_compare():
+    """
+    F-02.A: current-cycle forecast trajectories — every model vs the blended
+    P50 and its P10–P90 envelope, with outlier flags, cluster state and
+    lead-dependent spread growth. Composed from published artifacts.
+    Query: city (required), variable, lead_days.
+    """
+    import numpy as np
+    from ai.cycle_state import load_state as load_cycle_state
+
+    city = request.args.get('city')
+    if not city:
+        return jsonify({"error": "city query parameter is required"}), 400
+    city_lower = city.strip().lower()
+
+    var_filter = request.args.get('variable')
+    if var_filter and var_filter not in VARIABLE_UNITS:
+        return jsonify({"error": "variable must be one of temperature|rainfall|wind_speed"}), 400
+    lead_filter = request.args.get('lead_days', type=int)
+
+    clean = load_csv_records(os.path.join(OUTPUTS_DIR, "interim", "forecast_current_clean.csv"))
+    if not clean:
+        return jsonify({"error": "forecast_current_clean.csv not found — run the forecast pipeline"}), 404
+    unc = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty.csv"))
+    if not unc:
+        return jsonify({"error": "uncertainty.csv not found — run ai/uncertainty.py"}), 404
+
+    # lead days follow the blend rule: hours since the grid start // 24 + 1
+    city_rows = [r for r in clean if str(r.get("city", "")).lower() == city_lower]
+    if not city_rows:
+        return jsonify({"error": f"no forecast rows for city '{city}'"}), 404
+    start_ts = pd.Timestamp(min(str(r.get("datetime")) for r in city_rows)) if USE_PANDAS else None
+
+    def lead_of(dt_str):
+        if start_ts is None:
+            return None
+        return int((pd.Timestamp(dt_str) - start_ts).total_seconds() // 3600 // 24 + 1)
+
+    env_by_key = {}
+    for u in unc:
+        if str(u.get("city", "")).lower() != city_lower:
+            continue
+        env_by_key[(str(u.get("datetime")), str(u.get("lead_days")))] = u
+
+    # one series per (variable, lead): 24 hourly steps per lead, models vs
+    # envelope. Rows arrive grouped by model (cache_manager sorts
+    # city->model->datetime), so sort by datetime first to keep the grid
+    # aligned across models.
+    series_acc = {}
+    for r in sorted(city_rows, key=lambda x: str(x.get("datetime"))):
+        dt_str = str(r.get("datetime"))
+        lead = lead_of(dt_str)
+        if lead is None:
+            continue
+        if lead_filter and lead != lead_filter:
+            continue
+        e = env_by_key.get((dt_str, str(lead)))
+        for var in VARIABLE_UNITS:
+            if var_filter and var != var_filter:
+                continue
+            key = (var, lead)
+            s = series_acc.setdefault(key, {"datetimes": [], "models": {}, "p50": [],
+                                            "p10": [], "p90": [], "spread": []})
+            s["models"].setdefault(str(r.get("model")), []).append(r.get(var))
+            # envelope appends once per unique datetime, not per model row
+            if e is not None and (not s["datetimes"] or s["datetimes"][-1] != dt_str):
+                s["datetimes"].append(dt_str)
+                s["p50"].append(e.get(f"p50_{var}"))
+                s["p10"].append(e.get(f"p10_{var}"))
+                s["p90"].append(e.get(f"p90_{var}"))
+                s["spread"].append(e.get(f"spread_{var}"))
+
+    def cluster_state(vals):
+        """max adjacent gap / std of the 4 model values at one timestep."""
+        vals = sorted(_num(v) for v in vals if v is not None)
+        if len(vals) < 2:
+            return "TIGHT"
+        max_gap = max(b - a for a, b in zip(vals, vals[1:]))
+        std = float(np.std(vals))
+        if std < 1e-9:
+            return "TIGHT"
+        ratio = max_gap / std
+        return "SPLIT" if ratio >= 1.0 else ("TIGHT" if ratio < 0.5 else "MIXED")
+
+    variables_out = {}
+    for (var, lead), s in sorted(series_acc.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        p50 = [_num(v) for v in s["p50"]]
+        spread = [_num(v) for v in s["spread"]]
+        outliers = {}
+        for model_id, vals in s["models"].items():
+            flags = []
+            for v, mid, sp in zip(vals, p50, spread):
+                if v is None or mid is None:
+                    flags.append(False)
+                    continue
+                denom = sp if (sp is not None and sp > 0) else abs(v - mid) or 1.0
+                flags.append(abs(v - mid) / denom >= 1.5)
+            outliers[model_id] = flags
+        # cluster state per timestep across the 4 models; dominant state as summary
+        rank = {"TIGHT": 0, "MIXED": 1, "SPLIT": 2}
+        n_steps = len(s["datetimes"])
+        step_clusters = []
+        for i in range(n_steps):
+            step_vals = [s["models"][m][i] for m in s["models"] if i < len(s["models"][m])]
+            step_clusters.append(cluster_state(step_vals))
+        summary = max(step_clusters, key=lambda c: rank[c]) if step_clusters else "TIGHT"
+
+        variables_out.setdefault(var, []).append({
+            "lead_days": lead,
+            "datetimes": s["datetimes"],
+            "models": s["models"],
+            "blend_p50": p50,
+            "p10": [_num(v) for v in s["p10"]],
+            "p90": [_num(v) for v in s["p90"]],
+            "outliers": outliers,
+            "cluster_states": step_clusters,
+            "cluster_summary": summary,
+        })
+
+    # lead-dependent spread growth: least-squares slope of mean spread vs lead
+    for var, series in variables_out.items():
+        by_lead = {}
+        for (v, lead), s in series_acc.items():
+            if v != var:
+                continue
+            sp = [_num(x) for x in s["spread"] if x is not None]
+            if sp:
+                by_lead[lead] = float(np.mean(sp))
+        if len(by_lead) >= 2:
+            xs = np.array(sorted(by_lead))
+            ys = np.array([by_lead[x] for x in xs])
+            growth = round(float(np.polyfit(xs, ys, 1)[0]), 4)
+        else:
+            growth = None
+        variables_out[var] = {"spread_growth_per_lead": growth, "series": series}
+
+    return jsonify({
+        "city": city,
+        "generated_at": (load_metadata() or {}).get("last_updated"),
+        "models_present": sorted({str(r.get("model")) for r in city_rows if r.get("model")}),
+        "variables": variables_out,
+    })
+
+
+@app.route('/api/models/verification', methods=['GET'])
+@app.route('/models/verification', methods=['GET'])
+def get_models_verification():
+    """F-02.C: historical truth verification — continuous metrics per
+    (city, model, variable) plus categorical POD/FAR/CSI/ETS/BSS per threshold."""
+    meta_path = os.path.join(OUTPUTS_DIR, "verification_meta.json")
+    rows = load_csv_records(os.path.join(OUTPUTS_DIR, "verification.csv"))
+    if rows is None:
+        return jsonify({"error": "verification.csv not found — run ai/verify.py"}), 404
+    cat = load_csv_records(os.path.join(OUTPUTS_DIR, "verification_categorical.csv")) or []
+
+    city = request.args.get('city')
+    model = request.args.get('model')
+    variable = request.args.get('variable')
+    if variable and variable not in VARIABLE_UNITS:
+        return jsonify({"error": "variable must be one of temperature|rainfall|wind_speed"}), 400
+
+    def keep(r):
+        if city and str(r.get("city", "")).lower() != city.strip().lower():
+            return False
+        if model and str(r.get("model", "")).lower() != model.strip().lower():
+            return False
+        if variable and r.get("variable") != variable:
+            return False
+        return True
+
+    meta = {}
+    if os.path.exists(meta_path):
+        with open(meta_path, encoding="utf-8") as f:
+            meta = json.load(f)
+
+    return jsonify({
+        "meta": meta,
+        "continuous": [r for r in rows if keep(r)],
+        "categorical": [r for r in cat if keep(r)],
+    })
+
+
+@app.route('/api/models/calibration', methods=['GET'])
+@app.route('/models/calibration', methods=['GET'])
+def get_models_calibration():
+    """F-02.B: raw vs calibrated — out-of-sample bias-correction diagnostic and
+    the operational RF correction (blend vs hybrid test RMSE), from published
+    artifacts and training cross-check anchors."""
+    from ai.predict import EXPECTED_HYBRID_RMSE
+    from ai.baseline import EXPECTED_BLEND_RMSE
+
+    calib = load_csv_records(os.path.join(OUTPUTS_DIR, "verification_calibration.csv"))
+    if calib is None:
+        return jsonify({"error": "verification_calibration.csv not found — run ai/verify.py"}), 404
+
+    city = request.args.get('city')
+    model = request.args.get('model')
+    variable = request.args.get('variable')
+    if variable and variable not in VARIABLE_UNITS:
+        return jsonify({"error": "variable must be one of temperature|rainfall|wind_speed"}), 400
+
+    # NaN in float CSV columns would serialize as invalid JSON — scrub to None
+    _numeric_keys = {"n_test", "train_bias", "bias_raw", "mae_raw", "rmse_raw",
+                     "bias_corrected", "mae_corrected", "rmse_corrected", "bias_reduction_pct"}
+    bias_rows = []
+    for r in calib:
+        if city and str(r.get("city", "")).lower() != city.strip().lower():
+            continue
+        if model and str(r.get("model", "")).lower() != model.strip().lower():
+            continue
+        if variable and r.get("variable") != variable:
+            continue
+        bias_rows.append({k: (_num(v) if k in _numeric_keys else v) for k, v in r.items()})
+
+    hybrid_vs_blend = []
+    for var in VARIABLE_UNITS:
+        if variable and var != variable:
+            continue
+        for lead in (1, 2, 3):
+            blend_r = EXPECTED_BLEND_RMSE[var][lead]
+            hyb_r = EXPECTED_HYBRID_RMSE[var][lead]
+            hybrid_vs_blend.append({
+                "variable": var, "lead_days": lead,
+                "blend_test_rmse": blend_r, "hybrid_test_rmse": hyb_r,
+                "rmse_reduction_pct": round(100.0 * (blend_r - hyb_r) / blend_r, 2),
+            })
+
+    return jsonify({
+        "calibration_layers": [
+            {"name": "weighted_blend", "description":
+             "inverse-MAE lead weights blended per variable (operational blend)"},
+            {"name": "rf_residual_correction", "description":
+             "Random Forest residual correction on the blend (operational hybrid)"},
+        ],
+        "bias_correction_diagnostic": bias_rows,
+        "hybrid_vs_blend": hybrid_vs_blend,
     })
 
 
