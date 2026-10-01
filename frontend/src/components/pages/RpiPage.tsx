@@ -165,7 +165,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
                 key={mf.id}
                 type="button"
                 onClick={() => setActiveModelFilter(mf.id)}
-                className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors cursor-pointer shrink-0 border ${
+                className={`px-3 py-2 min-h-[40px] flex items-center rounded-md text-xs font-mono transition-colors cursor-pointer shrink-0 border touch-manipulation ${
                   activeModelFilter === mf.id
                     ? 'gradient-animated-ink font-bold border-transparent'
                     : 'bg-card hover:bg-secondary text-muted-foreground border-border'
