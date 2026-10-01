@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { WeatherMap } from '@/components/WeatherMap';
 import { ShieldAlert, MapPin, RotateCcw, CheckCircle2, ChevronDown } from 'lucide-react';
 import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
-import { ShaderBlob } from '@/components/ui/ShaderBlob';
 import type { Alert } from '@/types';
 
 type SeverityFilter = 'all' | 'danger' | 'warning';
@@ -245,15 +244,12 @@ export function ExtremeWeatherPage() {
                     </button>
                     {open && (
                       <div className="px-3.5 pb-3.5 pl-[52px]">
-                        <div className={`relative overflow-hidden p-3 rounded-md border text-xs leading-relaxed max-w-2xl ${
+                        <div className={`p-3 rounded-md border text-xs leading-relaxed max-w-2xl ${
                           isRed
                             ? 'border-destructive/20 ambient-gradient-destructive text-foreground'
                             : 'border-warning/20 ambient-gradient-warning text-foreground'
                         }`}>
-                          <div className="absolute -right-6 -top-8 -bottom-8 w-44 pointer-events-none opacity-45 mix-blend-multiply">
-                            <ShaderBlob color={isRed ? '#ef4444' : '#f59e0b'} scale={1.3} speed={0.4} opacity={0.85} />
-                          </div>
-                          <p className="relative z-10">
+                          <p>
                             {isRed
                               ? `Immediate action advised for ${alert.location}. Follow state EOC instructions and avoid hazard-prone areas during ${alert.window}.`
                               : `Stay alert in ${alert.location} during ${alert.window}. Conditions may worsen; keep access to the latest bulletin.`}
