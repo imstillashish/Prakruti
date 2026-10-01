@@ -13,6 +13,7 @@ interface RealLeafletMapProps {
   leadTime: string;
   selectedCity?: string | null;
   onSelectCity?: (city: CityForecast) => void;
+  isMapActive?: boolean;
 }
 
 type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
@@ -49,6 +50,7 @@ export default function RealLeafletMap({
   leadTime,
   selectedCity,
   onSelectCity,
+  isMapActive = false,
 }: RealLeafletMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -107,11 +109,25 @@ export default function RealLeafletMap({
     tileLayerRef.current = tileLayer;
     mapInstanceRef.current = map;
 
+    // Gesture isolation: On mobile/touch (<1024px), disable dragging unless explicitly unlocked
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+    if (!isDesktop && !isMapActive) {
+      map.dragging.disable();
+    }
+
     // Critical fix: force Leaflet to recalculate container viewport dimensions
     const timer1 = setTimeout(() => map.invalidateSize(), 100);
     const timer2 = setTimeout(() => map.invalidateSize(), 400);
 
-    const onResize = () => map.invalidateSize();
+    const onResize = () => {
+      map.invalidateSize();
+      const desktop = window.innerWidth >= 1024;
+      if (desktop || isMapActive) {
+        map.dragging.enable();
+      } else {
+        map.dragging.disable();
+      }
+    };
     window.addEventListener('resize', onResize);
 
     return () => {
@@ -122,6 +138,19 @@ export default function RealLeafletMap({
       mapInstanceRef.current = null;
     };
   }, []);
+
+  // Sync dragging state when isMapActive prop changes
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+    if (isDesktop || isMapActive) {
+      map.dragging.enable();
+    } else {
+      map.dragging.disable();
+    }
+  }, [isMapActive]);
 
   // 2. Handle Tile Layer Switching
   useEffect(() => {
@@ -253,12 +282,12 @@ export default function RealLeafletMap({
   };
 
   return (
-    <div className="relative w-full h-[540px] overflow-hidden rounded-b-lg border-t border-border">
+    <div className="relative w-full h-[280px] sm:h-[360px] lg:h-[480px] overflow-hidden rounded-b-lg border-t border-border">
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Map Controls Bar */}
-      <div className="absolute top-4 right-4 z-[500] flex flex-col gap-2 font-mono">
+      <div className={`absolute ${isMapActive ? 'top-16 lg:top-4' : 'top-4'} right-3 lg:right-4 z-[500] flex flex-col gap-2 font-mono transition-all`}>
         {/* Zoom & Reset Controls — self-start keeps it compact instead of
             stretching to the layer switcher's width and leaving dead space */}
         <div className="flex flex-col self-start bg-card p-1 shadow-md border border-border rounded-md">
@@ -360,8 +389,9 @@ export default function RealLeafletMap({
 
         return (
           <div
-            className="absolute bottom-4 left-4 z-[500] p-3.5 shadow-md border border-border max-w-[260px] bg-card font-mono rounded-lg"
-          >            <div className="flex items-center justify-between mb-2">
+            className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[500] p-2.5 sm:p-3.5 shadow-md border border-border max-w-[220px] sm:max-w-[260px] bg-card font-mono rounded-lg"
+          >
+            <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-semibold tracking-tight text-foreground">
                 {activeCardCity.city}
               </span>
@@ -381,21 +411,21 @@ export default function RealLeafletMap({
                 <span className="text-muted-foreground block text-[10px]">Temperature</span>
                 <span className="font-semibold text-foreground text-sm">{activeCardCity.temperature}°C</span>
               </div>
-              <div className="bg-secondary p-1.5 rounded-md">
+              <div className="hidden sm:block bg-secondary p-1.5 rounded-md">
                 <span className="text-muted-foreground block text-[10px]">Wind</span>
                 <span className="font-semibold text-foreground text-sm">{activeCardCity.wind} km/h</span>
               </div>
-              <div className="bg-secondary p-1.5 rounded-md">
+              <div className="hidden sm:block bg-secondary p-1.5 rounded-md">
                 <span className="text-muted-foreground block text-[10px]">Confidence</span>
                 <span className="font-semibold text-success text-sm">{activeCardCity.confidence}%</span>
               </div>
             </div>
-            <div className="mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground flex items-center justify-between">
+            <div className="hidden sm:flex mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground items-center justify-between">
               <span>Dominant:</span>
               <span className="font-semibold text-foreground">{activeCardCity.dominantModel}</span>
             </div>
             {activeCardCity.explanation && (
-              <div className="mt-1 pt-1 border-t border-border text-[10px] text-muted-foreground leading-snug">
+              <div className="hidden sm:block mt-1 pt-1 border-t border-border text-[10px] text-muted-foreground leading-snug">
                 {activeCardCity.explanation}
               </div>
             )}
@@ -406,7 +436,7 @@ export default function RealLeafletMap({
       {/* Model Dominance Overlay */}
       {layer === 'model_dominance' && (
         <div
-          className="absolute top-4 left-4 z-10 p-3 shadow-md border border-border max-w-[220px] bg-card font-mono rounded-lg"
+          className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 p-2.5 sm:p-3 shadow-md border border-border max-w-[190px] sm:max-w-[220px] bg-card font-mono rounded-lg"
         >
           <div className="text-[11px] font-bold text-foreground mb-1.5 flex items-center gap-1.5">
             <Sparkles size={12} className="text-success" />
