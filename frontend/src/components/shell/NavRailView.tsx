@@ -8,10 +8,10 @@ export function NavRail({ currentPage, onNavigate }: {
 }) {
   return (
     <>
-      {/* Desktop: fixed left rail */}
+      {/* Desktop: fixed 88px left rail (>1024px) */}
       <nav
-        aria-label="Sections"
-        className="hidden md:flex fixed left-0 top-16 bottom-0 z-30 w-[88px] flex-col items-center gap-0.5 px-1.5 pt-3 border-r border-border bg-background"
+        aria-label="Desktop Sections"
+        className="hidden lg:flex fixed left-0 top-16 bottom-0 z-30 w-[88px] flex-col items-center gap-0.5 px-1.5 pt-3 border-r border-border bg-background overflow-y-auto overflow-x-hidden select-none"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -25,7 +25,7 @@ export function NavRail({ currentPage, onNavigate }: {
               aria-current={active ? 'page' : undefined}
               className={`flex w-full flex-col items-center gap-1.5 rounded-md py-2.5 px-1 text-center transition-colors duration-100 ${
                 active
-                  ? 'bg-secondary text-foreground'
+                  ? 'bg-secondary text-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
@@ -36,10 +36,38 @@ export function NavRail({ currentPage, onNavigate }: {
         })}
       </nav>
 
-      {/* Mobile: horizontally scrollable strip under the top bar */}
+      {/* Tablet: compact 64px icon-only rail with 48px touch targets (640px-1024px) */}
       <nav
-        aria-label="Sections"
-        className="md:hidden sticky top-16 z-30 flex overflow-x-auto gap-1 border-b border-border bg-background px-2 py-1.5"
+        aria-label="Tablet Sections"
+        className="hidden md:flex lg:hidden fixed left-0 top-16 bottom-0 z-30 w-16 flex-col items-center gap-1.5 px-2 pt-3 border-r border-border bg-background overflow-y-auto overflow-x-hidden select-none"
+      >
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const active = currentPage === item.page;
+          return (
+            <button
+              key={item.page}
+              type="button"
+              onClick={() => onNavigate(item.page)}
+              title={`${item.label} — ${item.subtitle}`}
+              aria-label={item.label}
+              aria-current={active ? 'page' : undefined}
+              className={`flex h-12 w-12 items-center justify-center rounded-md transition-colors duration-100 touch-manipulation ${
+                active
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+              }`}
+            >
+              <Icon size={20} strokeWidth={active ? 2.2 : 1.75} />
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Mobile: horizontally scrollable strip under top bar (<640px) */}
+      <nav
+        aria-label="Mobile Sections"
+        className="md:hidden sticky top-16 z-30 flex overflow-x-auto gap-1 border-b border-border bg-background px-2 py-1.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch]"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -50,9 +78,9 @@ export function NavRail({ currentPage, onNavigate }: {
               type="button"
               onClick={() => onNavigate(item.page)}
               aria-current={active ? 'page' : undefined}
-              className={`flex flex-shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-colors duration-100 ${
+              className={`flex flex-shrink-0 items-center gap-1.5 min-h-[38px] px-3 py-1.5 text-xs rounded-md transition-colors duration-100 touch-manipulation ${
                 active
-                  ? 'bg-secondary text-foreground font-semibold'
+                  ? 'bg-secondary text-foreground font-semibold border border-border/60'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
