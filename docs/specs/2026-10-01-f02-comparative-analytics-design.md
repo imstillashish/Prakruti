@@ -37,8 +37,10 @@ exactly the way `align.py` does, inner-join actuals. No lead stratification in t
 - **Continuous** per (model, variable, city): `bias`, `mae`, `rmse`, `n`.
   `crps = mae` — for a deterministic forecast CRPS is exactly the MAE; published as its own
   column with this stated in the module docstring (G7: no fake ensemble math).
-  The model set gains two reference rows: `equal_avg` and `weighted_blend` (construction
-  mirrors `baseline.py`'s weighted blend over history).
+  The model set gains two reference rows: `equal_avg` (mean of present models per row) and
+  `weighted_blend` — inverse-train-split-MAE weights per (variable, city), renormalized over
+  present models (construction documented in `verification_meta.json`; `baseline.py`'s lead
+  blend needs `pairs_lead.csv`, which is unavailable offline).
 - **Categorical** per (model, variable, city, threshold): contingency counts + POD, FAR, CSI,
   ETS, and BSS vs sample climatology (deterministic binary calls, p ∈ {0,1} — semantics stated).
   Thresholds: rain 4/8 from `thresholds.py` (mm/h operational units; the PRD's 64.5 mm/24h IMD
@@ -72,12 +74,17 @@ Per (city, variable, lead): every model's value vs blend P50 and the P10–P90 e
 ## 5. Capability B — `GET /api/models/calibration` (paired route)
 
 Honest inventory of the calibration that actually exists in this system:
-1. Static bias factors (`align.py EXPECTED_MAE`) per model × variable × lead, alongside the
-   **realized** bias/MAE from `verification.csv` → `bias_reduction_pct` where computable;
-2. RF hybrid vs blend: test-split RMSE per variable/lead (`predict.py expected_rmse`) vs the
-   blend-equivalent baseline — the measured value the correction was verified against;
-3. Explicit `calibration_layers` list describing what the system does (static factor → blend →
-   RF residual correction) — no invented MOS/quantile-mapping layer.
+1. **Additive bias correction, evaluated out-of-sample** (the `baseline.py` methodology): per
+   (model, variable, city) bias estimated on the train split (cutoff 2026-08-29, mirroring
+   `align.py`), applied to test-split forecasts → raw vs corrected bias, `bias_reduction_pct`,
+   and MAE/RMSE before/after (RMSE worsening while MAE improves = tail distortion, stated).
+   Note: `align.py`'s `EXPECTED_MAE` constants are per-model MAE *cross-check benchmarks*, not
+   applied corrections — they are used only as generation-time sanity anchors.
+2. **RF residual correction (operational hybrid)**: blend vs hybrid test-split RMSE per
+   variable/lead (the published `predict.py` / `baseline.py` cross-check constants) → the
+   measured correction delta the hybrid was verified against.
+3. Explicit `calibration_layers` list describing the operational chain (weighted blend → RF
+   residual correction; bias correction evaluated as diagnostic) — no invented MOS/quantile-mapping layer.
 
 ## 6. Capability C serving — `GET /api/models/verification`
 
@@ -107,3 +114,5 @@ whitelist and the daily workflow commit list. `verification_meta.json` n and win
 4. Blend reconstruction (`equal_avg`, `weighted_blend`) no-NaN on a frame with a missing model.
 5. Trajectory binning: daily bins partition the window exactly.
 6. Endpoint smoke: `/api/models/compare|calibration|verification` on live data (200 + keys).
+7. Calibration diagnostic: bias-correction math on a synthetic train/test split — corrected
+   forecast equals forecast + per-key train bias; metrics recomputed match closed-form values.
