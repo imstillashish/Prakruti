@@ -137,13 +137,13 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
             <button
               type="button"
               onClick={handleRefresh}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary hover:bg-accent text-foreground border border-border transition-colors duration-100 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium gradient-animated-emerald transition-transform duration-100 active:translate-y-px cursor-pointer"
               title="Refresh Synoptic RPI Run"
             >
               <RefreshCw
-                className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-foreground' : ''}`}
+                className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
               />
-              <span className="hidden sm:inline">
+              <span className="hidden sm:inline font-bold">
                 {isRefreshing ? 'Recalculating…' : 'Refresh Index'}
               </span>
             </button>
@@ -167,7 +167,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
                 onClick={() => setActiveModelFilter(mf.id)}
                 className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors cursor-pointer shrink-0 border ${
                   activeModelFilter === mf.id
-                    ? 'bg-foreground text-background font-bold border-foreground shadow-xs'
+                    ? 'gradient-animated-ink font-bold border-transparent'
                     : 'bg-card hover:bg-secondary text-muted-foreground border-border'
                 }`}
               >

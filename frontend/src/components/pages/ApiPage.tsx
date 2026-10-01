@@ -20,6 +20,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { PageHeader } from '@/components/shell/PageHeader';
+import { ShaderButton } from '@/components/ui/ShaderButton';
 import { API } from '@/lib/api';
 
 interface ParamDef {
@@ -526,11 +527,11 @@ export function ApiPage() {
             )}
 
             {/* Execute Button */}
-            <button
-              type="button"
+            <ShaderButton
+              variant="indigo"
               onClick={handleExecute}
               disabled={isExecuting}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-foreground text-background font-medium text-xs hover:bg-foreground/90 transition-opacity cursor-pointer disabled:opacity-50"
+              className="w-full text-xs font-mono font-bold"
             >
               {isExecuting ? (
                 <>
@@ -543,7 +544,7 @@ export function ApiPage() {
                   <span>Execute Request ▶</span>
                 </>
               )}
-            </button>
+            </ShaderButton>
           </div>
         </div>
 
@@ -576,7 +577,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('response')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'response'
-                      ? 'bg-foreground text-background font-semibold shadow-xs'
+                      ? 'gradient-animated-ink font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -587,7 +588,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('snippets')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'snippets'
-                      ? 'bg-foreground text-background font-semibold shadow-xs'
+                      ? 'gradient-animated-ink font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -598,7 +599,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('schema')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'schema'
-                      ? 'bg-foreground text-background font-semibold shadow-xs'
+                      ? 'gradient-animated-ink font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -673,7 +674,7 @@ export function ApiPage() {
                       onClick={() => setSnippetLanguage(lang)}
                       className={`px-2.5 py-1 rounded text-xs font-mono uppercase transition-colors cursor-pointer ${
                         snippetLanguage === lang
-                          ? 'bg-foreground text-background font-bold'
+                          ? 'gradient-animated-ink font-bold'
                           : 'bg-secondary text-muted-foreground hover:text-foreground'
                       }`}
                     >
