@@ -358,3 +358,55 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-neutral-300);
 }
+
+/* Responsive Snap Carousel Deck (Mobile / Tablet Horizontal Flow) */
+.carousel-snap-deck {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: none;
+}
+
+.carousel-snap-deck::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-snap-item {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+}
+
+/* Touch-Safe Hit Target (WCAG AAA / Apple HIG >= 44x44px) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Map Gesture Isolation (anti-trap overlay for touch viewports) */
+.map-touch-guard {
+  touch-action: pan-y;
+}
+
+.map-touch-guard.locked {
+  pointer-events: none;
+}
+
+.map-touch-guard.unlocked {
+  pointer-events: auto;
+}
+
+.map-touch-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23, 23, 23, 0.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
