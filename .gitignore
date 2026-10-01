@@ -39,6 +39,14 @@ DESIGN.md
 CLAUDE.md
 GEMINI.md
 .cursorrules
+# Agent memory, AST knowledge graphs (graphify) and Project-Brain
+.planning/
+project-brain/
+.brain/
+.graphify/
+graphify-out/
+*.graphify
+.graphify*
 
 # ------------------------ Databases & binaries -------------------------------
 *.db

@@ -22,10 +22,8 @@ export function SectionBanner({
 }) {
   return (
     <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-x-3 gap-y-2.5 px-5 pt-4 pb-4 border-b border-border ${className ?? ''}`}>
-      <div className="flex items-center gap-3 min-w-0">
-        <span className="w-9 h-9 shrink-0 rounded-md bg-secondary border border-border text-foreground flex items-center justify-center">
-          <Icon className="w-4 h-4" />
-        </span>
+      <div className="flex items-center gap-2.5 min-w-0">
+        <Icon className="w-5 h-5 text-foreground shrink-0" strokeWidth={1.85} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <h2 className="text-base font-semibold text-foreground tracking-tight">{title}</h2>

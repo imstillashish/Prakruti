@@ -191,9 +191,7 @@ export function ExtremeWeatherPage() {
         <div className="space-y-2 max-h-[580px] overflow-y-auto pr-1">
           {filteredAlerts.length === 0 ? (
             <div className="py-12 px-4 text-center rounded-md bg-secondary border border-border">
-              <div className="w-9 h-9 mx-auto mb-2 rounded-full bg-card text-success flex items-center justify-center border border-border">
-                <CheckCircle2 size={18} />
-              </div>
+              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-success" />
               <h4 className="text-sm font-semibold text-foreground">No active bulletins for this station</h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
                 Model data lands every 6 hours — new advisories appear after the next synoptic cycle.
