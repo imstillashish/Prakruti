@@ -12,7 +12,7 @@ const STATUS_CONFIG: Record<DataSource['status'], { icon: LucideIcon; color: str
   unavailable: { icon: XCircle, color: '#b42318', label: 'Offline', badge: 'destructive' },
 };
 
-export function DataHealthPanel() {
+export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { collapsibleOnPhone?: boolean; collapsibleOnTablet?: boolean }) {
   const [sources, setSources] = useState<DataSource[]>(MOCK_DATA_SOURCES);
   const [engineStatus, setEngineStatus] = useState(ENGINE_STATUS);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +39,8 @@ export function DataHealthPanel() {
     <Panel
       title="Data ingest telemetry"
       subtitle={`${healthyCount}/${sources.length} feeds operational`}
+      collapsibleOnPhone={collapsibleOnPhone}
+      collapsibleOnTablet={collapsibleOnTablet}
       actions={
         <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold border bg-secondary text-foreground border-border">
           Nominal

@@ -13,10 +13,13 @@ export function ForecastPage() {
     <div className="space-y-6">
       <ForecastHero selectedCity={selectedCity} />
 
-      <RegionSelector
-        selectedCity={selectedCity}
-        onSelectCity={(c) => setSelectedCity(c)}
-      />
+      {/* Phone picks stations via the docked thumb bar; the card list is tablet+ only. */}
+      <div className="hidden sm:block">
+        <RegionSelector
+          selectedCity={selectedCity}
+          onSelectCity={(c) => setSelectedCity(c)}
+        />
+      </div>
 
       <section>
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
@@ -40,7 +43,9 @@ export function ForecastPage() {
         </div>
       </section>
 
-      <ModelComparison selectedCity={selectedCity} />
+      {/* Comparison is supporting detail here; the map and chart above are the
+          page's job. Collapsed below desktop, expansion is one tap. */}
+      <ModelComparison selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
     </div>
   );
 }

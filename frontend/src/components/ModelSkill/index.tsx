@@ -15,7 +15,7 @@ const MODELS = [
   { key: 'ensemble', label: 'Ensemble Mean', color: '#9e9e9e' },
 ] as const;
 
-export function ModelSkillPanel() {
+export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { collapsibleOnPhone?: boolean; collapsibleOnTablet?: boolean }) {
   const [period, setPeriod] = useState<Period>('Today');
   const [metrics, setMetrics] = useState<SkillMetric[]>(MOCK_SKILL_METRICS);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,6 +49,8 @@ export function ModelSkillPanel() {
       title="Model skill score"
       subtitle="Average miss against ground truth, per model — lower is better"
       term="skillScore"
+      collapsibleOnPhone={collapsibleOnPhone}
+      collapsibleOnTablet={collapsibleOnTablet}
       actions={
         <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary rounded-md">
           {(['Today', '7 Days', '30 Days', 'Season'] as Period[]).map((p) => (

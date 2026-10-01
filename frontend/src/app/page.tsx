@@ -70,21 +70,30 @@ export default function Home() {
                   selectedCity={selectedCity}
                   onSelectCity={handleCitySelect}
                 />
-                <ForecastTimeline selectedCity={selectedCity} />
+                <ForecastTimeline selectedCity={selectedCity} phoneCompact />
                 
-                {/* 2-Column Equal Height Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
-                  <ModelComparison selectedCity={selectedCity} />
-                  <ExtremeWeatherPanel selectedCity={selectedCity} />
+                {/* Paired at lg only: at tablet the inner split left this pair
+                    ~179px each, which is unusable for a six-model comparison. */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+                  <ModelComparison selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
+                  <ExtremeWeatherPanel selectedCity={selectedCity} collapsibleOnPhone />
                 </div>
               </div>
 
               {/* Right Column (Controls & Deep Intelligence) - 5 cols on tablet/desktop */}
               <div className="md:col-span-5 space-y-5 md:space-y-6">
-                <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
-                <ModelContribution selectedCity={selectedCity} />
-                <ModelSkillPanel />
-                <DataHealthPanel />
+                {/* Station picker lives in the docked thumb bar on phone — the desktop-only
+                    RegionSelector card would duplicate it 4 screens deep. */}
+                <div className="hidden md:block">
+                  <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
+                </div>
+                {/* Measured at 768px: expanded these three make this column 1944px
+                    against the left column's 1440px, so they set the page height.
+                    Collapsed, the column is 603px and the page is bound by the
+                    evidence on the left. Secondary detail collapses below desktop. */}
+                <ModelContribution selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
+                <ModelSkillPanel collapsibleOnPhone collapsibleOnTablet />
+                <DataHealthPanel collapsibleOnPhone collapsibleOnTablet />
               </div>
             </div>
           </div>
@@ -102,7 +111,7 @@ export default function Home() {
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-28 md:pl-20 md:pr-4 md:pt-20 md:pb-20 lg:pl-[112px] lg:pr-6 lg:pt-24 lg:pb-20">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pl-20 md:pr-4 md:pt-20 md:pb-20 lg:pl-[112px] lg:pr-6 lg:pt-24 lg:pb-20">
         <StatusStrip />
         {renderContent()}
       </main>
@@ -121,7 +130,7 @@ export default function Home() {
           },
         ]}
         status="45 stations · live"
-        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-24 md:pb-6 md:pl-20 lg:pl-[112px]"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] md:pb-6 md:pl-20 lg:pl-[112px]"
       />
     </div>
   );

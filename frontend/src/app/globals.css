@@ -359,24 +359,30 @@ body {
   background: var(--color-neutral-300);
 }
 
-/* Responsive Snap Carousel Deck (Mobile / Tablet Horizontal Flow) */
-.carousel-snap-deck {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  scrollbar-width: none;
-}
+/* Responsive Snap Carousel Deck (Mobile / Tablet Horizontal Flow).
+   These live in @layer components on purpose: an unlayered rule outranks
+   Tailwind's @layer utilities, which silently kills every breakpoint
+   variant (sm:hidden, lg:grid, lg:overflow-visible) on any element using
+   them — that is how the phone deck ended up painted on desktop. */
+@layer components {
+  .carousel-snap-deck {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scrollbar-width: none;
+  }
 
-.carousel-snap-deck::-webkit-scrollbar {
-  display: none;
-}
+  .carousel-snap-deck::-webkit-scrollbar {
+    display: none;
+  }
 
-.carousel-snap-item {
-  scroll-snap-align: center;
-  flex-shrink: 0;
+  .carousel-snap-item {
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
 }
 
 /* Touch-Safe Hit Target (WCAG AAA / Apple HIG >= 44x44px) */

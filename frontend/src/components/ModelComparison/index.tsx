@@ -39,9 +39,11 @@ const MODEL_INFO: Record<string, { label: string; short: string; provider: strin
 
 interface ModelComparisonProps {
   selectedCity?: string | null;
+  collapsibleOnPhone?: boolean;
+  collapsibleOnTablet?: boolean;
 }
 
-export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProps) {
+export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, collapsibleOnTablet }: ModelComparisonProps) {
   const [variable, setVariable] = useState<Variable>('rainfall');
   const [comparison, setComparison] = useState<ModelComparisonType[]>(MOCK_MODEL_COMPARISON);
   const [isLoading, setIsLoading] = useState(true);
@@ -136,6 +138,8 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
       title="Model consensus"
       subtitle="24h spread between models — closer bars mean better agreement"
       term="models"
+      collapsibleOnPhone={collapsibleOnPhone}
+      collapsibleOnTablet={collapsibleOnTablet}
       className="flex flex-col justify-between h-full"
       actions={
         <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
@@ -189,8 +193,10 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
             </ResponsiveContainer>
           </div>
 
-          {/* Desktop Multi-Column Grid */}
-          <div className="grid grid-cols-5 gap-2.5 mt-4 pt-3 border-t border-border">
+          {/* Desktop Multi-Column Grid. Auto-fit rather than a fixed 5 tracks:
+              the strip is 6 models and lives in slots between ~340px and ~700px,
+              where 5 tracks truncated names to "ECM…" and orphaned the sixth. */}
+          <div className="grid gap-2.5 mt-4 pt-3 border-t border-border [grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))]">
             {normalizedModels.map((m) => {
               const isBlended = m.isBlended || m.model.toLowerCase().includes('blend');
               const val = m[variable];
@@ -212,9 +218,12 @@ export function ModelComparison({ selectedCity = 'Kanpur' }: ModelComparisonProp
                   }`}
                 >
                   <div>
-                    <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="font-semibold text-foreground truncate">{info.short}</span>
-                      <span className="text-[10px] font-mono text-muted-foreground">{info.resolution}</span>
+                    {/* Name and provider stack instead of sharing a line: in auto-fit
+                        tracks (as narrow as 144px) the resolution text squeezed
+                        "AI Blend" down to 12px and clipped it. */}
+                    <div className="mb-1 text-[11px]">
+                      <span className="block font-semibold text-foreground truncate">{info.short}</span>
+                      <span className="block text-[10px] font-mono text-muted-foreground truncate">{info.resolution}</span>
                     </div>
                     <div className="text-base font-bold font-mono text-foreground">
                       {val.toFixed(1)} <span className="text-[11px] font-normal text-muted-foreground">{config.unit}</span>
