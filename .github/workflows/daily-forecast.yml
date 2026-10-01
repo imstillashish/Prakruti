@@ -64,6 +64,16 @@ jobs:
           assert adv['city'].nunique() == 45, f"advisories cover {adv['city'].nunique()} cities, expected 45"
           assert not adv.isna().any().any(), "NaN values in advisories"
           print(f"OK: {len(adv)} advisory rows, {adv['city'].nunique()} cities")
+          unc = pd.read_csv('outputs/uncertainty.csv')
+          assert len(unc) == 3240, f"expected 3240 uncertainty rows, got {len(unc)}"
+          assert not unc.isna().any().any(), "NaN values in uncertainty"
+          for v in ['temperature', 'rainfall', 'wind_speed']:
+              assert (unc[f'p10_{v}'] <= unc[f'p50_{v}'] + 1e-9).all() and \
+                     (unc[f'p50_{v}'] <= unc[f'p90_{v}'] + 1e-9).all(), f"band not monotonic for {v}"
+          exc = pd.read_csv('outputs/exceedance.csv')
+          assert len(exc) == 3240, f"expected 3240 exceedance rows, got {len(exc)}"
+          assert not exc.isna().any().any(), "NaN values in exceedance"
+          print(f"OK: {len(unc)} uncertainty rows, {len(exc)} exceedance rows")
           EOF
 
       - name: Commit refreshed data
@@ -72,7 +82,8 @@ jobs:
           git config user.email "bot@prakruti.local"
           git add outputs/hybrid_forecast.csv outputs/blended_forecast.csv \
                   outputs/confidence_scores.csv outputs/extreme_alerts.csv \
-                  outputs/advisories.csv \
+                  outputs/advisories.csv outputs/uncertainty.csv \
+                  outputs/exceedance.csv outputs/uncertainty_diagnostics.csv \
                   outputs/metadata.json data/forecast_current.csv
           if git diff --cached --quiet; then
             echo "No changes in forecast data — skipping commit"

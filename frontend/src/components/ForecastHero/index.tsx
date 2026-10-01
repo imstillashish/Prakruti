@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
-import { MOCK_FORECAST, getAdvisories, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
-import type { AdvisoryRecord } from '@/lib/api';
+import { MOCK_FORECAST, getAdvisories, getDecision, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
+import type { AdvisoryRecord, DecisionPayload } from '@/lib/api';
 import { monotonePath, EASE, usePrefersReducedMotion } from '@/components/spectrumui/charts/chart-engine';
 import type { ForecastMetrics, TimelinePoint } from '@/types';
 
@@ -137,7 +137,7 @@ interface MetricCellProps {
   value: number;
   decimals: number;
   unit: string;
-  uncertainty?: number;
+  band?: { p10: number; p90: number };
   series: number[];
   timeLabels: string[];
   color: string;
@@ -153,7 +153,7 @@ function MetricCell({
   value,
   decimals,
   unit,
-  uncertainty,
+  band,
   series,
   timeLabels,
   color,
@@ -198,9 +198,14 @@ function MetricCell({
             {dominantModel ? `Dominant: ${dominantModel}` : 'Multi-Model Consensus'}
             <Explain term="confidence" />
           </>
+        ) : band ? (
+          <>
+            P10–P90: <span className="font-semibold text-foreground">{band.p10.toFixed(1)}–{band.p90.toFixed(1)} {unit}</span>
+            <Explain term={explain} />
+          </>
         ) : (
           <>
-            Uncertainty: <span className="font-semibold text-foreground">±{uncertainty} {unit}</span>
+            Calibrated band pending…
             <Explain term={explain} />
           </>
         )}
@@ -256,9 +261,15 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [advisories, setAdvisories] = useState<AdvisoryRecord[]>([]);
   const [advisoriesLoaded, setAdvisoriesLoaded] = useState(false);
+  const [decision, setDecision] = useState<DecisionPayload | null>(null);
 
   useEffect(() => {
     let mounted = true;
+    getDecision(city)
+      .then((payload) => {
+        if (mounted) setDecision(payload);
+      })
+      .catch(() => {});
     getForecastMetrics(city)
       .then((metrics) => {
         if (mounted) setForecast(metrics);
@@ -298,6 +309,27 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
     ? advisories.slice(0, 3).map((a) => ({ category: a.category, action: a.action, evidence: a.evidence }))
     : [];
 
+  // Probabilistic core: first decision record anchors the chips and bands.
+  const nowRec = decision?.records?.[0];
+  const agreementMeta: Record<string, { label: string; cls: string }> = {
+    STRONG_AGREEMENT: { label: 'Strong agreement', cls: 'text-success border-success/30' },
+    MIXED_SPLIT: { label: 'Mixed split', cls: 'text-warning border-warning/30' },
+    HIGH_DISAGREEMENT_LOW_SIGNAL: { label: 'Models disagree', cls: 'text-muted-foreground border-border' },
+    HIGH_TAIL_RISK_TIMING_UNCERTAIN: { label: 'High tail risk', cls: 'text-destructive border-destructive/30' },
+  };
+  const agreement = nowRec ? agreementMeta[nowRec.disagreement_class] : undefined;
+  const probChips: string[] = [];
+  if (nowRec) {
+    const tp = nowRec.threshold_probabilities;
+    const chip = (label: string, key: string, t: string) => {
+      const p = tp?.[key]?.[t];
+      if (p != null) probChips.push(`${label} · ${Math.round(p * 100)}%`);
+    };
+    chip('Rain ≥4 mm/h', 'rainfall', '4');
+    chip('Heat ≥35 °C', 'temperature', '35');
+    chip('Wind ≥25 km/h', 'wind_speed', '25');
+  }
+
   const timeLabels = timeline.length >= 2 ? timeline.map((p) => p.time) : ['NOW', '+6h', '+12h', '+24h', '+48h', '+72h'];
   const rainSeries = timeline.length >= 2 ? timeline.map((p) => p.rainfall) : [forecast.rainfall, forecast.rainfall];
   const tempSeries = timeline.length >= 2 ? timeline.map((p) => p.temperature) : [forecast.temperature, forecast.temperature];
@@ -327,6 +359,21 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               <p className="text-sm text-muted-foreground mt-2">
                 Real-time consensus synthesized from ECMWF, GFS, ICON, and GEM numerical models.
               </p>
+
+              {(agreement || probChips.length > 0) && (
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  {agreement && (
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${agreement.cls}`}>
+                      {agreement.label}
+                    </span>
+                  )}
+                  {probChips.map((chip) => (
+                    <span key={chip} className="inline-flex items-center rounded-md border border-border bg-secondary px-2 py-0.5 text-[11px] font-mono text-muted-foreground">
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               <div className="mt-auto pt-5 space-y-2.5">
                 <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -371,7 +418,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 value={forecast.temperature}
                 decimals={1}
                 unit="°C"
-                uncertainty={forecast.temperatureUncertainty}
+                band={nowRec?.value?.temperature ? { p10: nowRec.value.temperature.p10, p90: nowRec.value.temperature.p90 } : undefined}
                 series={tempSeries}
                 timeLabels={timeLabels}
                 color="#171717"
@@ -382,7 +429,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 value={forecast.rainfall}
                 decimals={0}
                 unit="mm"
-                uncertainty={forecast.rainfallUncertainty}
+                band={nowRec?.value?.rainfall ? { p10: nowRec.value.rainfall.p10, p90: nowRec.value.rainfall.p90 } : undefined}
                 series={rainSeries}
                 timeLabels={timeLabels}
                 color="#1e6fb8"
@@ -395,7 +442,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 value={forecast.wind}
                 decimals={0}
                 unit="km/h"
-                uncertainty={forecast.windUncertainty}
+                band={nowRec?.value?.wind_speed ? { p10: nowRec.value.wind_speed.p10, p90: nowRec.value.wind_speed.p90 } : undefined}
                 series={windSeries}
                 timeLabels={timeLabels}
                 color="#60646c"

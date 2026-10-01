@@ -35,8 +35,14 @@ export interface TimelinePoint {
   wind: number;
   confidence: number;
   risk: 'low' | 'moderate' | 'high' | 'severe';
-  rainfallUncertaintyHigh: number;
-  rainfallUncertaintyLow: number;
+  // Calibrated P10/P90 from /api/decision — present only when the decision
+  // feed is live; mocks omit them and the band stays hidden.
+  rainfallP10?: number;
+  rainfallP90?: number;
+  temperatureP10?: number;
+  temperatureP90?: number;
+  windP10?: number;
+  windP90?: number;
 }
 
 export interface ExtremeEvent {

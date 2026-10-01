@@ -416,6 +416,11 @@ def run_downstream_updates():
         if adv_script.exists():
             subprocess.run([py_exec, str(adv_script)], cwd=str(BASE_DIR), capture_output=True)
 
+        # Run uncertainty.py (P10/P50/P90, exceedance, agreement — feeds /api/decision)
+        unc_script = BASE_DIR / "ai" / "uncertainty.py"
+        if unc_script.exists():
+            subprocess.run([py_exec, str(unc_script)], cwd=str(BASE_DIR), capture_output=True)
+
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():
