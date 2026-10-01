@@ -70,9 +70,10 @@ function ProbabilityArc({ value, color }: { value: number; color: string }) {
 
 interface ExtremeWeatherPanelProps {
   selectedCity?: string | null;
+  collapsibleOnPhone?: boolean;
 }
 
-export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherPanelProps) {
+export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhone }: ExtremeWeatherPanelProps) {
   const [events, setEvents] = useState<ExtremeEvent[]>(MOCK_EXTREME_EVENTS);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -98,6 +99,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur' }: ExtremeWeatherP
       title="Early warning advisory"
       subtitle="IMD Probabilistic Risk Thresholds"
       term="rpi"
+      collapsibleOnPhone={collapsibleOnPhone}
       className="flex flex-col justify-between h-full"
       actions={<Badge variant="warning">Active Bulletins</Badge>}
     >

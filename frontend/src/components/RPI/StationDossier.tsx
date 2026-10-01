@@ -137,7 +137,9 @@ export function StationDossier({
                 {rpiData?.state || 'India'}
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground font-mono truncate">
+            {/* No truncate: at tablet this card is ~266px and the coordinate
+                pair ellipsized to "Coordinates: 2…". It wraps instead. */}
+            <p className="text-[11px] text-muted-foreground font-mono">
               Coordinates: {rpiData?.lat?.toFixed(2) || '26.45'}°N, {rpiData?.lon?.toFixed(2) || '80.33'}°E
             </p>
           </div>

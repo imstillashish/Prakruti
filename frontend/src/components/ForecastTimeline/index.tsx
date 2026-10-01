@@ -55,9 +55,11 @@ const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean;
 
 interface ForecastTimelineProps {
   selectedCity?: string | null;
+  /** Overview hides the D+1–3 deck on phone (it doubles the scroll there); Forecast keeps it. */
+  phoneCompact?: boolean;
 }
 
-export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelineProps) {
+export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: ForecastTimelineProps) {
   const [variable, setVariable] = useState<Variable>('rainfall');
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -252,8 +254,11 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
         </span>
       </div>
 
-      {/* Day-Ahead Horizontal Snap Deck (Mobile/Tablet) & 3-Column Grid (Desktop) */}
-      <div className="mt-5 pt-4 border-t border-border">
+      {/* Day-Ahead Horizontal Snap Deck (Mobile/Tablet) & 3-Column Grid (Desktop).
+          phoneCompact (Overview) hides it below lg: on that page the hero metric
+          cards and the 72h chart carry the trend, and the D+1–3 detail this deck
+          duplicates lives on the Forecast page. */}
+      <div className={`mt-5 pt-4 border-t border-border ${phoneCompact ? 'hidden lg:block' : ''}`}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">

@@ -64,10 +64,11 @@ export function NavRail({ currentPage, onNavigate }: {
         })}
       </nav>
 
-      {/* Mobile: horizontally scrollable strip under top bar (<640px) */}
+      {/* Mobile: section strip docked at the thumb zone, above the thumb command bar
+          (<640px). Fixed to the viewport so section switching never needs a scroll back to top. */}
       <nav
         aria-label="Mobile Sections"
-        className="md:hidden sticky top-16 z-30 flex overflow-x-auto gap-1 border-b border-border bg-background px-2 py-1.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch]"
+        className="md:hidden fixed bottom-[calc(3.25rem+max(0.5rem,env(safe-area-inset-bottom,0px)))] left-0 right-0 z-30 flex overflow-x-auto gap-1 border-t border-border bg-background/95 backdrop-blur-md px-2 py-1.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch]"
       >
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ModelContribution } from '@/components/ModelContribution';
 import { ModelComparison } from '@/components/ModelComparison';
+import { ModelTrajectories } from '@/components/ModelTrajectories';
 import { ModelSkillPanel } from '@/components/ModelSkill';
 import { Panel } from '@/components/shell/Panel';
 import { PageHeader } from '@/components/shell/PageHeader';
@@ -41,16 +42,21 @@ export function ModelIntelligencePage() {
         sub="Which forecast model is most accurate for your city, and by how much."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ModelContribution />
-        <ModelComparison />
+      {/* items-start: these two panels have unrelated content heights, and
+          stretching the shorter one left a 299px dead tail on desktop. */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <ModelContribution collapsibleOnPhone />
+        <ModelComparison collapsibleOnPhone />
       </div>
+
+      <ModelTrajectories />
 
       {/* Regional dominance */}
       <Panel
         title="Regional model dominance"
         subtitle="Which model leads where across India"
         term="weight"
+        collapsibleOnPhone
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {dominance.map((r) => (

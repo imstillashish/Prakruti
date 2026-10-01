@@ -9,9 +9,11 @@ import type { ModelWeight } from '@/types';
 
 interface ModelContributionProps {
   selectedCity?: string | null;
+  collapsibleOnPhone?: boolean;
+  collapsibleOnTablet?: boolean;
 }
 
-export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContributionProps) {
+export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone, collapsibleOnTablet }: ModelContributionProps) {
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
   const [weights, setWeights] = useState<ModelWeight[]>(MOCK_MODEL_WEIGHTS);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +42,8 @@ export function ModelContribution({ selectedCity = 'Kanpur' }: ModelContribution
       title="Model contribution"
       subtitle="How much say each model has in your city's answer"
       term="weight"
+      collapsibleOnPhone={collapsibleOnPhone}
+      collapsibleOnTablet={collapsibleOnTablet}
       actions={
         <span className="flex items-center gap-1.5 text-xs text-primary font-mono font-semibold">
           <TrendingUp size={13} />

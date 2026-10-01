@@ -359,6 +359,8 @@ export function PerformanceMatrix3D() {
       title="3D performance matrix"
       subtitle="How accurate each model is at each lead time — drag to rotate, scroll to zoom"
       term="rmse"
+      collapsibleOnPhone
+      collapsibleOnTablet
       actions={
         <div className="flex flex-wrap items-center gap-2">
           {/* Variable selector */}

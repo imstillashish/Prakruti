@@ -181,7 +181,7 @@ function MetricCell({
   const caption = `${verb.charAt(0).toUpperCase()}${verb.slice(1)} over the next 72h`;
 
   return (
-    <div className="p-4 sm:p-5 bg-card min-w-0">
+    <div className="p-4 sm:p-5 bg-card min-w-0 h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
         {icon}
@@ -210,7 +210,11 @@ function MetricCell({
           </>
         )}
       </div>
-      <div className="mt-2">
+      {/* Phone hides the sparkline: the interactive 72h chart right below the hero
+          carries the same trend; two stacked renderings doubled the scroll.
+          sm:mt-auto anchors it to the cell floor so a stretched row is used
+          rather than trailed by dead space. */}
+      <div className="mt-2 sm:mt-auto hidden sm:block">
         <MetricSpark series={series} timeLabels={timeLabels} color={color} unit={unit} decimals={decimals} />
       </div>
       <div className="mt-0.5 text-[11px] text-muted-foreground">{caption}</div>
@@ -379,8 +383,25 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   What to do about it
                 </h2>
-                {cards.length > 0
-                  ? cards.map((card) => (
+                {/* Phone: one advice card per view in a snap deck (~200px) instead of a
+                    3-card vertical stack (~700px). Desktop keeps the stack. */}
+                {cards.length > 0 ? (
+                  <div className="sm:hidden carousel-snap-deck -mx-3 px-3">
+                    {cards.map((card) => (
+                      <div key={card.category} className="w-[86vw] max-w-[340px] shrink-0 carousel-snap-item rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
+                        {categoryIcon(card.category)}
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-foreground">{card.category}</div>
+                          <div className="text-xs text-muted-foreground leading-relaxed">{card.action}</div>
+                          <div className="mt-1.5 text-[11px] font-mono text-muted-foreground/80">{card.evidence}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {cards.length > 0 && (
+                  <div className="hidden sm:grid sm:grid-cols-3 sm:gap-2.5">
+                    {cards.map((card) => (
                       <div key={card.category} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
                         {categoryIcon(card.category)}
                         <div className="min-w-0">
@@ -389,8 +410,10 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                           <div className="mt-1.5 text-[11px] font-mono text-muted-foreground/80">{card.evidence}</div>
                         </div>
                       </div>
-                    ))
-                  : [0, 1, 2].map((i) => (
+                    ))}
+                  </div>
+                )}
+                {cards.length === 0 && [0, 1, 2].map((i) => (
                       <div key={i} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
                         <div className="h-4 w-4 rounded-full bg-muted shrink-0 mt-0.5" />
                         <div className="min-w-0 flex-1 space-y-1.5">
@@ -410,8 +433,8 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               </div>
             </div>
 
-            {/* Right: the 4-metric readout composite */}
-            <div className="xl:col-span-7 grid grid-cols-1 sm:grid-cols-2 sm:divide-x divide-border">
+            {/* Right: the 4-metric readout composite — 2-up on phone, divider grid on desktop */}
+            <div className="xl:col-span-7 grid grid-cols-2 xl:grid-cols-2 sm:divide-x divide-border">
               <MetricCell
                 label="Air Temperature"
                 icon={<Thermometer size={16} className="text-muted-foreground" />}
