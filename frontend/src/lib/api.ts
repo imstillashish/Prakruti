@@ -634,11 +634,44 @@ export async function getForecastMetrics(city: string = 'Kanpur'): Promise<Forec
 }
 
 /**
+ * PRD §8.3 core decision payload from /api/decision (F-01 probabilistic core):
+ * calibrated P10/P50/P90 bands, threshold exceedance probabilities,
+ * disagreement class and model contributions — all precomputed upstream.
+ */
+export interface DecisionRecord {
+  datetime: string;
+  lead_days: number;
+  value: Record<string, { p10: number; p50: number; p90: number; unit: string }>;
+  threshold_probabilities: Record<string, Record<string, number>>;
+  max_class: Record<string, string>;
+  disagreement_class: string;
+  agreement_score: number;
+  confidence: { label: string | null; score: number | null; reason_codes: string[] };
+  model_contributions: Record<string, Array<{ model_id: string; weight: number }>>;
+}
+
+export interface DecisionPayload {
+  city: string;
+  generated_at: string;
+  engine_version: string;
+  record_count: number;
+  coverage: Record<string, number>;
+  records: DecisionRecord[];
+}
+
+export async function getDecision(city: string): Promise<DecisionPayload | null> {
+  return fetchFromApi<DecisionPayload | null>(
+    `/api/decision?city=${encodeURIComponent(city)}`,
+    null,
+  );
+}
+
+/**
  * Helper to get TimelinePoint[] for ForecastTimeline component.
  */
 export async function getTimelineData(city: string = 'Kanpur'): Promise<TimelinePoint[]> {
   try {
-    const records = await getForecast(city);
+    const [records, decision] = await Promise.all([getForecast(city), getDecision(city)]);
     if (!records || records.length < 6) {
       return MOCK_TIMELINE;
     }
@@ -646,6 +679,7 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
     // Sample across key steps: NOW (0h), +6h, +12h, +24h, +48h, +72h
     const stepIndices = [0, 6, 12, 24, 48, Math.min(71, records.length - 1)];
     const timeLabels = ['NOW', '+6h', '+12h', '+24h', '+48h', '+72h'];
+    const CONF_FROM_LABEL: Record<string, number> = { High: 95, Medium: 75, Low: 55 };
 
     return stepIndices.map((idx, i) => {
       const rec = records[idx] || records[records.length - 1];
@@ -653,6 +687,14 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
       const rain = Math.round((rec.rainfall ?? 0) * 10) / 10;
       const temp = Math.round((rec.temperature ?? 30) * 10) / 10;
       const wind = Math.round((rec.wind_speed ?? 15) * 10) / 10;
+
+      // Calibrated band + real confidence from the decision payload; the band
+      // stays undefined (hidden) when the feed is unavailable — never synthetic.
+      const d = decision?.records?.[idx];
+      const confLabel = d?.confidence?.label;
+      const confidence = confLabel
+        ? CONF_FROM_LABEL[confLabel] ?? Math.round(d!.confidence.score ?? 70)
+        : 70;
 
       let risk: 'low' | 'moderate' | 'high' | 'severe' = 'low';
       if (rain > 50 || wind > 35 || temp > 40) risk = 'severe';
@@ -665,10 +707,14 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
         rainfall: rain,
         temperature: temp,
         wind: wind,
-        confidence: Math.max(60, 92 - i * 6),
+        confidence,
         risk,
-        rainfallUncertaintyHigh: Math.round(rain + 8 + i * 2),
-        rainfallUncertaintyLow: Math.max(0, Math.round(rain - 6 - i * 1.5)),
+        rainfallP10: d?.value?.rainfall ? Math.round(d.value.rainfall.p10 * 100) / 100 : undefined,
+        rainfallP90: d?.value?.rainfall ? Math.round(d.value.rainfall.p90 * 100) / 100 : undefined,
+        temperatureP10: d?.value?.temperature ? Math.round(d.value.temperature.p10 * 10) / 10 : undefined,
+        temperatureP90: d?.value?.temperature ? Math.round(d.value.temperature.p90 * 10) / 10 : undefined,
+        windP10: d?.value?.wind_speed ? Math.round(d.value.wind_speed.p10 * 10) / 10 : undefined,
+        windP90: d?.value?.wind_speed ? Math.round(d.value.wind_speed.p90 * 10) / 10 : undefined,
       };
     });
   } catch {

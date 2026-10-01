@@ -67,6 +67,9 @@ outputs/*
 !outputs/confidence_scores.csv
 !outputs/extreme_alerts.csv
 !outputs/advisories.csv
+!outputs/uncertainty.csv
+!outputs/exceedance.csv
+!outputs/uncertainty_diagnostics.csv
 !outputs/metadata.json
 
 # ------------------------------ Python ---------------------------------------

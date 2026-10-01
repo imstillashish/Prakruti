@@ -381,6 +381,119 @@ def get_advisories():
     return jsonify(records)
 
 
+@app.route('/api/decision', methods=['GET'])
+@app.route('/decision', methods=['GET'])
+def get_decision():
+    """
+    PRD §8.3 core decision payload (F-01): precomputed P10/P50/P90 bands,
+    threshold exceedance probabilities, disagreement class, confidence and
+    model contributions — composed from published CSVs, no query-time compute.
+    Required query parameter:
+      - city
+    """
+    from ai.thresholds import THRESHOLDS
+
+    city = request.args.get('city')
+    if not city:
+        return jsonify({"error": "city query parameter is required"}), 400
+
+    unc = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty.csv"))
+    exc = load_csv_records(os.path.join(OUTPUTS_DIR, "exceedance.csv"))
+    if unc is None or exc is None:
+        return jsonify({"error": "uncertainty artifacts not found — run ai/uncertainty.py"}), 404
+
+    meta = load_metadata() or {}
+    diag = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty_diagnostics.csv")) or []
+    engine_version = diag[0].get("engine_version", "unknown") if diag else "unknown"
+
+    weights = load_csv_records(os.path.join(OUTPUTS_DIR, "model_weights_lead.csv")) or []
+    confidence = {(str(r.get('city')), str(r.get('datetime')), str(r.get('lead_day'))): r
+                  for r in (load_csv_records(os.path.join(OUTPUTS_DIR, "confidence_scores.csv")) or [])}
+
+    city_lower = city.strip().lower()
+    exc_by_key = {(str(r.get('city')), str(r.get('datetime')), str(r.get('lead_days'))): r for r in exc}
+
+    var_thresholds = {
+        "temperature": (THRESHOLDS['High Temperature']['moderate'], THRESHOLDS['High Temperature']['high']),
+        "rainfall": (THRESHOLDS['Heavy Rain']['moderate'], THRESHOLDS['Heavy Rain']['high']),
+        "wind_speed": (THRESHOLDS['High Wind']['moderate'], THRESHOLDS['High Wind']['high']),
+    }
+    var_units = {"temperature": "°C", "rainfall": "mm/h", "wind_speed": "km/h"}
+
+    def num(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    records = []
+    for u in unc:
+        if str(u.get('city', '')).lower() != city_lower:
+            continue
+        dt, lead = str(u.get('datetime')), str(u.get('lead_days'))
+        e = exc_by_key.get((str(u.get('city')), dt, lead), {})
+
+        value, tprob, mclass = {}, {}, {}
+        for var, (t_mod, t_high) in var_thresholds.items():
+            value[var] = {"p10": num(u.get(f"p10_{var}")), "p50": num(u.get(f"p50_{var}")),
+                          "p90": num(u.get(f"p90_{var}")), "unit": var_units[var]}
+            tprob[var] = {str(t_mod): num(e.get(f"p_ge_{var}_{t_mod:g}")),
+                          str(t_high): num(e.get(f"p_ge_{var}_{t_high:g}"))}
+            mclass[var] = e.get(f"max_class_{var}", "none")
+
+        agreement_score = num(u.get("agreement_score")) or 0.0
+        codes = []
+        if agreement_score >= 60:
+            codes.append("HIGH_MODEL_AGREEMENT")
+        elif agreement_score < 40:
+            codes.append("HIGH_MODEL_SPREAD")
+        if any(c != "none" for c in mclass.values()):
+            codes.append("TAIL_RISK_SIGNAL")
+        if (num(u.get("lead_days")) or 0) >= 3:
+            codes.append("LEAD_DEGRADES_SKILL")
+        if not codes:
+            codes.append("NOMINAL_CONTEXT")
+
+        conf = confidence.get((str(u.get('city')), dt, lead), {})
+        # Weights are per (city, variable, lead, model) — expose one ranked list
+        # of the 4 models per variable, per PRD §8.3 model_contributions.
+        contributions = {}
+        for var in var_thresholds:
+            per_var = sorted(
+                ({"model_id": w.get("model"), "weight": num(w.get("weight"))}
+                 for w in weights
+                 if str(w.get("city")).lower() == city_lower
+                 and str(w.get("lead_days")) == lead
+                 and str(w.get("variable")) == var),
+                key=lambda c: c["weight"] or 0.0, reverse=True)
+            contributions[var] = per_var
+
+        records.append({
+            "datetime": u.get("datetime"),
+            "lead_days": num(u.get("lead_days")),
+            "value": value,
+            "threshold_probabilities": tprob,
+            "max_class": mclass,
+            "disagreement_class": u.get("agreement_class"),
+            "agreement_score": agreement_score,
+            "confidence": {"label": conf.get("confidence_label"), "score": num(conf.get("confidence")),
+                           "reason_codes": codes},
+            "model_contributions": contributions,
+        })
+
+    if not records:
+        return jsonify({"error": f"no decision records for city '{city}'"}), 404
+
+    return jsonify({
+        "city": records[0]["datetime"] and city,
+        "generated_at": meta.get("last_updated"),
+        "engine_version": engine_version,
+        "record_count": len(records),
+        "coverage": {d.get("variable"): num(d.get("holdout_coverage")) for d in diag},
+        "records": records,
+    })
+
+
 @app.route('/api/cities', methods=['GET'])
 @app.route('/cities', methods=['GET'])
 def get_cities():

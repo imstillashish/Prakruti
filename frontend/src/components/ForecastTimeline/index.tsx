@@ -7,19 +7,21 @@ import {
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
 import { ChartState } from '@/components/spectrumui/charts/chart-engine';
-import { getTimelineData, MOCK_TIMELINE } from '@/lib/api';
+import { getTimelineData } from '@/lib/api';
 import type { TimelinePoint, Variable } from '@/types';
 import { Calendar } from 'lucide-react';
 
-const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; uncertaintyHigh?: string; uncertaintyLow?: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', uncertaintyHigh: 'rainfallUncertaintyHigh', uncertaintyLow: 'rainfallUncertaintyLow' },
-  temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature' },
-  wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind' },
+const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; bandHigh?: string; bandLow?: string }> = {
+  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10' },
+  temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature', bandHigh: 'temperatureP90', bandLow: 'temperatureP10' },
+  wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind', bandHigh: 'windP90', bandLow: 'windP10' },
 };
 
-const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string; dataList?: TimelinePoint[] }) => {
+type ChartDatum = { time: string; label?: string; high?: number; low?: number; confidence: number };
+
+const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string; dataList?: ChartDatum[] }) => {
   if (!active || !payload?.length) return null;
-  const list = dataList || MOCK_TIMELINE;
+  const list = dataList || [];
   const data = list.find(t => t.time === label);
   return (
     <div
@@ -37,6 +39,11 @@ const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean;
           {typeof p.value === 'number' ? p.value.toFixed(1) : p.value}
         </div>
       ))}
+      {data && data.high != null && data.low != null && (
+        <div className="text-[11px] font-mono text-muted-foreground mt-1">
+          P10–P90: {data.low.toFixed(1)}–{data.high.toFixed(1)}
+        </div>
+      )}
       {data && (
         <div className="text-[11px] text-success font-medium mt-1">
           Confidence: {data.confidence}%
@@ -52,7 +59,7 @@ interface ForecastTimelineProps {
 
 export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelineProps) {
   const [variable, setVariable] = useState<Variable>('rainfall');
-  const [timeline, setTimeline] = useState<TimelinePoint[]>(MOCK_TIMELINE);
+  const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -78,8 +85,8 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
     time: t.time,
     label: t.label,
     value: t[config.key as keyof typeof t] as number,
-    high: config.uncertaintyHigh ? t[config.uncertaintyHigh as keyof typeof t] as number : undefined,
-    low: config.uncertaintyLow ? t[config.uncertaintyLow as keyof typeof t] as number : undefined,
+    high: config.bandHigh ? t[config.bandHigh as keyof typeof t] as number | undefined : undefined,
+    low: config.bandLow ? t[config.bandLow as keyof typeof t] as number | undefined : undefined,
     confidence: t.confidence,
   }));
 
@@ -112,10 +119,6 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 16, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id={`grad-${variable}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={config.color} stopOpacity={0.25} />
-                <stop offset="95%" stopColor={config.color} stopOpacity={0.01} />
-              </linearGradient>
               <linearGradient id="uncertainty-grad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={config.color} stopOpacity={0.12} />
                 <stop offset="95%" stopColor={config.color} stopOpacity={0.02} />
@@ -124,9 +127,13 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
             <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} unit={config.unit === 'mm' ? ' mm' : config.unit} />
-            <ReTooltip content={<CustomTooltip />} />
+            <ReTooltip content={<CustomTooltip dataList={chartData} />} />
             <ReferenceLine x="NOW" stroke={config.color} strokeDasharray="3 3" opacity={0.6} />
-            {config.uncertaintyHigh && (
+            {/* P10–P90 band: high area painted first, low area painted back
+                over it in card color so the envelope wraps the line instead of
+                stacking from zero. Hidden entirely when the decision feed is
+                unavailable — the band is never drawn from synthetic values. */}
+            {config.bandHigh && (
               <Area
                 type="monotone"
                 dataKey="high"
@@ -134,6 +141,18 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
                 fill="url(#uncertainty-grad)"
                 fillOpacity={1}
                 isAnimationActive={false}
+                connectNulls={false}
+              />
+            )}
+            {config.bandLow && (
+              <Area
+                type="monotone"
+                dataKey="low"
+                stroke="none"
+                fill="var(--card, #ffffff)"
+                fillOpacity={1}
+                isAnimationActive={false}
+                connectNulls={false}
               />
             )}
             <Area
@@ -141,7 +160,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
               dataKey="value"
               stroke={config.color}
               strokeWidth={2}
-              fill={`url(#grad-${variable})`}
+              fill="none"
               dot={false}
               activeDot={{ r: 4, stroke: config.color, strokeWidth: 2, fill: '#fff' }}
             />
@@ -153,7 +172,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur' }: ForecastTimelinePr
       <div className="flex items-center justify-between mt-3 pt-2 border-t border-border text-[11px] font-mono text-muted-foreground">
         <span>Range: Next 72 Hours</span>
         <span className="flex items-center gap-1 text-primary">
-          Uncertainty Envelope: 95% Gaussian Confidence Interval
+          Calibrated P10–P90 band (spread-error model, holdout-verified)
           <Explain term="confidence" />
         </span>
       </div>

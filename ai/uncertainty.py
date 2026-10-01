@@ -306,11 +306,12 @@ def generate() -> dict:
             sigma = sigma_of(fits, var, spread_cols[var][i])
             p_dry = dry_prob_for(mu) if var == "rainfall" else None
             qs = quantiles_for(var, mu, sigma, p_dry)
-            for q in QUANTILES:
-                urow[f"p{int(q*100)}_{var}"] = qs[q]
-            # P50 = the published best estimate (spec 2/PRD AC-10). For the skewed
-            # rain mixture the distribution median sits below the mean; the band
-            # stays distribution-derived, the center stays the operational value.
+            # The published band must always bracket the published best
+            # estimate: for the skewed rain mixture the raw mixture P90 can sit
+            # below the mean when dry probability is high. Clamp is a no-op for
+            # median-pinned temperature/wind.
+            urow[f"p10_{var}"] = min(qs[0.1], mu)
+            urow[f"p90_{var}"] = max(qs[0.9], mu)
             urow[f"p50_{var}"] = mu
             urow[f"spread_{var}"] = round(spread_cols[var][i], 4)
 
@@ -322,7 +323,11 @@ def generate() -> dict:
                                         else "moderate" if exc[t_mod] >= TAIL_RISK_P else "none")
             max_tails[var] = max(exc.values())
 
-        pct100 = 100.0 * max(spread_pct[var][i] for var in VARIABLES)
+        # Composite spread percentile: mean of the three per-variable ranks.
+        # (Max-of-3 uniform ranks lands >= 60th pct ~78% of the time by
+        # construction, which would force most rows into the loose classes
+        # regardless of actual model behavior.)
+        pct100 = 100.0 * float(np.mean([spread_pct[var][i] for var in VARIABLES]))
         urow["agreement_class"] = agreement_class(pct100, max(max_tails.values()))
         urow["agreement_score"] = round(100.0 * (1.0 - pct100 / 100.0), 1)
         unc_rows.append(urow)
@@ -333,6 +338,9 @@ def generate() -> dict:
     assert len(unc) == len(hybrid), f"uncertainty rows {len(unc)} != hybrid rows {len(hybrid)}"
     assert not unc.isna().any().any(), "NaN in uncertainty.csv"
     assert not exc.isna().any().any(), "NaN in exceedance.csv"
+    for var in VARIABLES:
+        assert (unc[f"p10_{var}"] <= unc[f"p50_{var}"] + 1e-9).all() and \
+               (unc[f"p50_{var}"] <= unc[f"p90_{var}"] + 1e-9).all(), f"band not monotonic for {var}"
 
     unc.to_csv(OUT / "uncertainty.csv", index=False)
     exc.to_csv(OUT / "exceedance.csv", index=False)
