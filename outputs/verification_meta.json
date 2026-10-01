@@ -1,0 +1,32 @@
+{
+  "engine_version": "ver-2026-10-01-v1",
+  "window_start": "2026-07-18 00:00:00",
+  "window_end": "2026-09-16 23:00:00",
+  "n_pairs": 65880,
+  "truth_source": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+  "methods": [
+    "ecmwf",
+    "gfs",
+    "icon",
+    "gem",
+    "equal_avg",
+    "weighted_blend"
+  ],
+  "thresholds": {
+    "rainfall": [
+      4.0,
+      8.0
+    ],
+    "temperature": [
+      35.0,
+      37.0
+    ],
+    "wind_speed": [
+      25.0,
+      32.0
+    ]
+  },
+  "blend_weight_method": "inverse-train-MAE per (variable, city), train cutoff 2026-08-29 00:00:00, renormalized over present models",
+  "crps_note": "deterministic feeds: crps == mae; proper CRPS needs ensemble members",
+  "generated_at": "2026-10-01T12:31:19"
+}

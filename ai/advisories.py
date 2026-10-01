@@ -63,44 +63,44 @@ def _evidence(df, col, moderate, unit):
 
 
 def _actions(scenario, ev):
-    """Three (category, action) rows for a scenario.
+    """Three (category, action, evidence_key) rows for a scenario.
     ev keys are hybrid_forecast columns -> (peak, hours_above, peak_time, text, crossed)."""
     if scenario == 'heavy_rain':
         peak, hours, _, _, _ = ev['rainfall']
         return [
-            ('Personal Gear', f"Rain peaks at {peak:.0f} mm/hr with {hours}h of sustained fall — carry rainwear and waterproof footwear, not a compact umbrella."),
-            ('Transit & Travel', f"Waterlogging likely during the {hours}h wet window — avoid low-lying underpasses and expect delays on flood-prone routes."),
-            ('Work & Outdoors', f"With {hours}h above alert levels, postpone non-essential field work and secure outdoor equipment before the peak."),
+            ('Personal Gear', f"Rain peaks at {peak:.0f} mm/hr with {hours}h of sustained fall — carry rainwear and waterproof footwear, not a compact umbrella.", 'rainfall'),
+            ('Transit & Travel', f"Waterlogging likely during the {hours}h wet window — avoid low-lying underpasses and expect delays on flood-prone routes.", 'rainfall'),
+            ('Work & Outdoors', f"With {hours}h above alert levels, postpone non-essential field work and secure outdoor equipment before the peak.", 'rainfall'),
         ]
     if scenario == 'light_rain':
         peak, _, t, _, _ = ev['rainfall']
         return [
-            ('Personal Gear', f"Only {peak:.1f} mm/hr expected near {t:%H:%M} IST — keep a compact umbrella handy for the evening."),
-            ('Transit & Travel', f"Roads stay largely dry; brief damp patches possible around {t:%H:%M} IST — normal travel is fine."),
-            ('Work & Outdoors', f"Rain stays light ({peak:.1f} mm/hr peak) — outdoor work can continue with short shower breaks."),
+            ('Personal Gear', f"Only {peak:.1f} mm/hr expected near {t:%H:%M} IST — keep a compact umbrella handy for the evening.", 'rainfall'),
+            ('Transit & Travel', f"Roads stay largely dry; brief damp patches possible around {t:%H:%M} IST — normal travel is fine.", 'rainfall'),
+            ('Work & Outdoors', f"Rain stays light ({peak:.1f} mm/hr peak) — outdoor work can continue with short shower breaks.", 'rainfall'),
         ]
     if scenario == 'heat':
         peak, hours, t, _, _ = ev['temperature']
         return [
-            ('Hydration', f"Temperature hits {peak:.0f}°C around {t:%H:%M} IST — carry water and sip through the afternoon, don't wait for thirst."),
-            ('Shade & Timing', f"{hours}h above 35°C — shift outdoor errands before 10:00 or after 17:00; midday sun is the hazard."),
-            ('Vulnerable Groups', f"At {peak:.0f}°C, check on elderly neighbours and keep children indoors through the {hours}h hot spell."),
+            ('Hydration', f"Temperature hits {peak:.0f}°C around {t:%H:%M} IST — carry water and sip through the afternoon, don't wait for thirst.", 'temperature'),
+            ('Shade & Timing', f"{hours}h above 35°C — shift outdoor errands before 10:00 or after 17:00; midday sun is the hazard.", 'temperature'),
+            ('Vulnerable Groups', f"At {peak:.0f}°C, check on elderly neighbours and keep children indoors through the {hours}h hot spell.", 'temperature'),
         ]
     if scenario == 'wind':
         peak, hours, t, _, _ = ev['wind_speed']
         return [
-            ('Secure Loose Objects', f"Gusts reach {peak:.0f} km/h around {t:%H:%M} IST — bring in awnings, bins and rooftop items before the peak."),
-            ('Two-Wheelers & Driving', f"{hours}h of wind above 25 km/h — expect sideways gusts on exposed roads; ride two-wheelers with extra caution."),
-            ('Outdoor Operations', f"Sustained {peak:.0f} km/h winds — crane/lift work and temporary structures should pause during the peak window."),
+            ('Secure Loose Objects', f"Gusts reach {peak:.0f} km/h around {t:%H:%M} IST — bring in awnings, bins and rooftop items before the peak.", 'wind_speed'),
+            ('Two-Wheelers & Driving', f"{hours}h of wind above 25 km/h — expect sideways gusts on exposed roads; ride two-wheelers with extra caution.", 'wind_speed'),
+            ('Outdoor Operations', f"Sustained {peak:.0f} km/h winds — crane/lift work and temporary structures should pause during the peak window.", 'wind_speed'),
         ]
     # calm — margins against each threshold, still evidence
     rain_margin = 4 - ev['rainfall'][0]
     temp_margin = 35 - ev['temperature'][0]
     wind_margin = 25 - ev['wind_speed'][0]
     return [
-        ('Rain Outlook', f"{ev['rainfall'][3]}; {rain_margin:.1f} mm of headroom before any alert."),
-        ('Temperature', f"{ev['temperature'][3]}; {temp_margin:.1f}°C below the heat-alert line."),
-        ('Wind', f"{ev['wind_speed'][3]}; {wind_margin:.1f} km/h below the wind-alert line."),
+        ('Rain Outlook', f"{ev['rainfall'][3]}; {rain_margin:.1f} mm of headroom before any alert.", 'rainfall'),
+        ('Temperature', f"{ev['temperature'][3]}; {temp_margin:.1f}°C below the heat-alert line.", 'temperature'),
+        ('Wind', f"{ev['wind_speed'][3]}; {wind_margin:.1f} km/h below the wind-alert line.", 'wind_speed'),
     ]
 
 
@@ -133,7 +133,7 @@ def generate(input_path=INPUT_PATH, output_path=OUTPUT_PATH):
             scenario = 'calm'
 
         meta = SCENARIOS[scenario]
-        for rank, (category, action) in enumerate(_actions(scenario, ev), start=1):
+        for rank, (category, action, evidence_key) in enumerate(_actions(scenario, ev), start=1):
             rows.append({
                 'city': city,
                 'scenario': scenario,
@@ -147,10 +147,7 @@ def generate(input_path=INPUT_PATH, output_path=OUTPUT_PATH):
                 ),
                 'category': category,
                 'action': action,
-                'evidence': ev[THRESHOLDS['Heavy Rain']['column'] if scenario in ('heavy_rain', 'light_rain')
-                                else THRESHOLDS['High Wind']['column'] if scenario == 'wind'
-                                else THRESHOLDS['High Temperature']['column'] if scenario == 'heat'
-                                else 'rainfall'][3],
+                'evidence': ev[evidence_key][3],
                 'rank': rank,
             })
 

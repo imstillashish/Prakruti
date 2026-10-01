@@ -1,0 +1,41 @@
+{
+  "cycle_id": "2026-10-01T11:15:45",
+  "expected_models": [
+    "ecmwf",
+    "gfs",
+    "icon",
+    "gem"
+  ],
+  "models": {
+    "ecmwf": {
+      "status": "RECEIVED",
+      "rows": 3240
+    },
+    "gfs": {
+      "status": "RECEIVED",
+      "rows": 3240
+    },
+    "icon": {
+      "status": "RECEIVED",
+      "rows": 3240
+    },
+    "gem": {
+      "status": "RECEIVED",
+      "rows": 3240
+    }
+  },
+  "received_models": [
+    "ecmwf",
+    "gfs",
+    "icon",
+    "gem"
+  ],
+  "missing_models": [],
+  "source_completeness": {
+    "expected": 4,
+    "available": 4,
+    "fallback": false
+  },
+  "forecast_checksum": "sha256:2f78da2f566b60b69c11cb97a6d65ee1ddb7d7410adbfa83e89f01215b9080a6",
+  "stale": false
+}

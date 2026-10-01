@@ -50,15 +50,24 @@ jobs:
       - name: Validate outputs
         run: |
           python - <<'EOF'
-          import pandas as pd
+          import pandas as pd, json, os
           df = pd.read_csv('outputs/hybrid_forecast.csv')
           assert len(df) == 3240, f"expected 3240 rows, got {len(df)}"
           assert df['city'].nunique() == 45, f"expected 45 cities, got {df['city'].nunique()}"
           assert not df.isna().any().any(), "NaN values in hybrid forecast"
-          # RF correction must have actually applied
+          # RF correction must have actually applied — unless the cycle is
+          # degraded (a model missing), where publishing the blend as the
+          # hybrid is the specified fallback (PRD F-01.A)
+          fallback = False
+          if os.path.exists('outputs/cycle_state.json'):
+              fallback = json.load(open('outputs/cycle_state.json')).get('source_completeness', {}).get('fallback', False)
           diff = (df['temperature'] - df['blend_temperature']).abs().mean()
-          assert diff > 0, "hybrid equals blend — RF correction did not run"
-          print(f"OK: {len(df)} rows, {df['city'].nunique()} cities, mean |hybrid-blend| temp = {diff:.4f}")
+          if fallback:
+              assert diff == 0, "degraded cycle: hybrid must equal blend (RF skipped)"
+              print("OK: degraded cycle — blend published as hybrid_forecast (RF skipped)")
+          else:
+              assert diff > 0, "hybrid equals blend — RF correction did not run"
+              print(f"OK: {len(df)} rows, {df['city'].nunique()} cities, mean |hybrid-blend| temp = {diff:.4f}")
           adv = pd.read_csv('outputs/advisories.csv')
           assert len(adv) == 135, f"expected 135 advisory rows, got {len(adv)}"
           assert adv['city'].nunique() == 45, f"advisories cover {adv['city'].nunique()} cities, expected 45"
@@ -74,6 +83,12 @@ jobs:
           assert len(exc) == 3240, f"expected 3240 exceedance rows, got {len(exc)}"
           assert not exc.isna().any().any(), "NaN values in exceedance"
           print(f"OK: {len(unc)} uncertainty rows, {len(exc)} exceedance rows")
+          ver = pd.read_csv('outputs/verification.csv')
+          assert len(ver) > 0 and not ver[['bias', 'mae', 'rmse']].isna().any().any(), "verification metrics missing/NaN"
+          assert ver['model'].nunique() >= 6, "expected 4 models + 2 reference methods in verification"
+          cal = pd.read_csv('outputs/verification_calibration.csv')
+          assert len(cal) > 0, "calibration diagnostic missing"
+          print(f"OK: {len(ver)} verification rows, {len(cal)} calibration rows")
           EOF
 
       - name: Commit refreshed data
@@ -84,6 +99,9 @@ jobs:
                   outputs/confidence_scores.csv outputs/extreme_alerts.csv \
                   outputs/advisories.csv outputs/uncertainty.csv \
                   outputs/exceedance.csv outputs/uncertainty_diagnostics.csv \
+                  outputs/verification.csv outputs/verification_categorical.csv \
+                  outputs/verification_calibration.csv outputs/verification_meta.json \
+                  outputs/cycle_state.json outputs/cycle_delta.json \
                   outputs/metadata.json data/forecast_current.csv
           if git diff --cached --quiet; then
             echo "No changes in forecast data — skipping commit"
