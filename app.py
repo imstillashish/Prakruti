@@ -755,7 +755,12 @@ def get_models_compare():
 
     clean = load_csv_records(os.path.join(OUTPUTS_DIR, "interim", "forecast_current_clean.csv"))
     if not clean:
-        return jsonify({"error": "forecast_current_clean.csv not found — run the forecast pipeline"}), 404
+        # outputs/interim/ is local-only by design (see .gitignore): the daily
+        # workflow ships the same rows as the committed snapshot. Deployed
+        # environments only have the snapshot, and it carries identical columns.
+        clean = load_csv_records(os.path.join(DATA_DIR, "forecast_current.csv"))
+    if not clean:
+        return jsonify({"error": "no forecast snapshot found — run the forecast pipeline"}), 404
     unc = load_csv_records(os.path.join(OUTPUTS_DIR, "uncertainty.csv"))
     if not unc:
         return jsonify({"error": "uncertainty.csv not found — run ai/uncertainty.py"}), 404
