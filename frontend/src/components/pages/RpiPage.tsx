@@ -152,9 +152,9 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
       />
 
       {/* Zero-Scroll Command Deck Split Viewport: h-[calc(100vh-12rem)] */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 h-[calc(100vh-12rem)] min-h-[560px] max-h-[860px]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 h-auto md:h-[calc(100vh-12rem-4rem)] min-h-[560px] max-h-[860px]">
         {/* Left Column (7 cols): Model Filters & Full-Height Leaflet Map */}
-        <div className="lg:col-span-7 h-full flex flex-col gap-2 min-h-0">
+        <div className="md:col-span-7 h-full flex flex-col gap-2 min-h-0">
           {/* Quick Model Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 shrink-0">
             <span className="text-[11px] font-mono font-bold text-muted-foreground mr-1 flex items-center gap-1">
@@ -193,7 +193,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
         </div>
 
         {/* Right Column (5 cols): Docked Station Intelligence Dossier */}
-        <div className="lg:col-span-5 h-full min-h-0">
+        <div className="md:col-span-5 h-full min-h-0">
           <StationDossier
             rpiData={rpiData}
             stations={stations}
