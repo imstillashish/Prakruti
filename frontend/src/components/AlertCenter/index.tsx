@@ -88,9 +88,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className="w-8 h-8 shrink-0 rounded-md bg-secondary border border-border text-destructive flex items-center justify-center">
-              <ShieldAlert size={15} />
-            </span>
+            <ShieldAlert className="w-5 h-5 shrink-0 text-destructive" />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-base font-semibold tracking-tight text-foreground">Alert Center</span>
@@ -202,9 +200,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {filteredAlerts.length === 0 ? (
             <div className="py-12 px-4 text-center rounded-lg bg-secondary border border-border">
-              <div className="w-9 h-9 mx-auto mb-2 rounded-md bg-card border border-success/20 text-success flex items-center justify-center">
-                <CheckCircle2 size={16} />
-              </div>
+              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-success" />
               <h4 className="text-sm font-semibold text-foreground">No alerts right now</h4>
               <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
                 No active hazard advisories match the current filter selection.
