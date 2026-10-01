@@ -22,6 +22,7 @@ import { DataHealthPage } from '@/components/pages/DataHealthPage';
 import { RpiPage } from '@/components/pages/RpiPage';
 import { ApiPage } from '@/components/pages/ApiPage';
 import { MinimalFooter } from '@/components/spectrumui/blocks/footers/minimal-footer';
+import { DockedThumbBar } from '@/components/shell/DockedThumbBar';
 import { NavPage, CityForecast } from '@/types';
 
 export default function Home() {
@@ -57,14 +58,14 @@ export default function Home() {
       case 'overview':
       default:
         return (
-          <div className="space-y-6">
+          <div className="space-y-5 md:space-y-6">
             {/* Top Forecast Decision Hero */}
             <ForecastHero selectedCity={selectedCity} />
 
             {/* Core Operational Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column (Primary Visualizations) - 7 cols */}
-              <div className="lg:col-span-7 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6 items-start">
+              {/* Left Column (Primary Visualizations) - 7 cols on tablet/desktop */}
+              <div className="md:col-span-7 space-y-5 md:space-y-6">
                 <WeatherMap
                   selectedCity={selectedCity}
                   onSelectCity={handleCitySelect}
@@ -72,14 +73,14 @@ export default function Home() {
                 <ForecastTimeline selectedCity={selectedCity} />
                 
                 {/* 2-Column Equal Height Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
                   <ModelComparison selectedCity={selectedCity} />
                   <ExtremeWeatherPanel selectedCity={selectedCity} />
                 </div>
               </div>
 
-              {/* Right Column (Controls & Deep Intelligence) - 5 cols */}
-              <div className="lg:col-span-5 space-y-6">
+              {/* Right Column (Controls & Deep Intelligence) - 5 cols on tablet/desktop */}
+              <div className="md:col-span-5 space-y-5 md:space-y-6">
                 <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
                 <ModelContribution selectedCity={selectedCity} />
                 <ModelSkillPanel />
@@ -95,12 +96,13 @@ export default function Home() {
     <div className="relative min-h-screen overflow-x-hidden" onClick={handleTopBarNav}>
       <TopBar selectedCity={selectedCity} />
       <NavRail currentPage={currentPage} onNavigate={setCurrentPage} />
+      <DockedThumbBar selectedCity={selectedCity} onSelectCity={handleCitySelect} />
 
       {/* Global Backend Connecting / Cold Start Indicator */}
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 pt-24 pb-20 md:pl-[112px]">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-28 md:pl-20 md:pr-4 md:pt-20 md:pb-20 lg:pl-[112px] lg:pr-6 lg:pt-24 lg:pb-20">
         <StatusStrip />
         {renderContent()}
       </main>
@@ -119,7 +121,7 @@ export default function Home() {
           },
         ]}
         status="45 stations · live"
-        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 md:pl-[112px]"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-24 md:pb-6 md:pl-20 lg:pl-[112px]"
       />
     </div>
   );
