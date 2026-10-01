@@ -224,53 +224,50 @@ body {
 /* Minimal ambient animated gradient drift for status and severity panels */
 @keyframes ambient-drift {
   0% {
-    background-position: 0% 20%;
-  }
-  50% {
-    background-position: 100% 80%;
+    background-position: 0% 0%;
   }
   100% {
-    background-position: 0% 20%;
+    background-position: 100% 100%;
   }
 }
 
 .ambient-gradient-success {
-  background-color: rgba(22, 163, 74, 0.08);
+  background-color: #ffffff;
   background-image: linear-gradient(
     135deg,
-    rgba(34, 197, 94, 0.22) 0%,
-    rgba(16, 185, 129, 0.36) 35%,
-    rgba(6, 182, 212, 0.24) 70%,
-    rgba(34, 197, 94, 0.22) 100%
+    rgba(22, 163, 74, 0.05) 0%,
+    rgba(34, 197, 94, 0.13) 40%,
+    rgba(22, 163, 74, 0.05) 75%,
+    rgba(34, 197, 94, 0.11) 100%
   );
-  background-size: 220% 220%;
-  animation: ambient-drift 5s ease-in-out infinite;
+  background-size: 200% 200%;
+  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 .ambient-gradient-warning {
-  background-color: rgba(171, 100, 0, 0.08);
+  background-color: #ffffff;
   background-image: linear-gradient(
     135deg,
-    rgba(245, 158, 11, 0.22) 0%,
-    rgba(249, 115, 22, 0.36) 35%,
-    rgba(234, 179, 8, 0.24) 70%,
-    rgba(245, 158, 11, 0.22) 100%
+    rgba(171, 100, 0, 0.05) 0%,
+    rgba(217, 119, 6, 0.13) 40%,
+    rgba(171, 100, 0, 0.05) 75%,
+    rgba(217, 119, 6, 0.11) 100%
   );
-  background-size: 220% 220%;
-  animation: ambient-drift 5s ease-in-out infinite;
+  background-size: 200% 200%;
+  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 .ambient-gradient-destructive {
-  background-color: rgba(180, 35, 24, 0.08);
+  background-color: #ffffff;
   background-image: linear-gradient(
     135deg,
-    rgba(239, 68, 68, 0.22) 0%,
-    rgba(244, 63, 94, 0.36) 35%,
-    rgba(225, 29, 72, 0.24) 70%,
-    rgba(239, 68, 68, 0.22) 100%
+    rgba(180, 35, 24, 0.05) 0%,
+    rgba(225, 29, 72, 0.13) 40%,
+    rgba(180, 35, 24, 0.05) 75%,
+    rgba(225, 29, 72, 0.11) 100%
   );
-  background-size: 220% 220%;
-  animation: ambient-drift 5s ease-in-out infinite;
+  background-size: 200% 200%;
+  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {
