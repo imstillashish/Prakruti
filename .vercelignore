@@ -1,0 +1,47 @@
+# Standard build ignores
+node_modules
+.next
+.turbo
+.git
+.github
+
+# Python backend & environments
+.venv
+venv
+env
+__pycache__
+*.py
+*.joblib
+*.sqlite*
+*.db
+*.csv
+*.parquet
+
+# Root data and documentation
+/data/
+/database/
+/outputs/
+/docs/
+/ai/
+/api/
+/app.py
+/save_db.py
+/Procfile
+/render.yaml
+/requirements.txt
+/superpowers/
+/.agents/
+/.freebuff/
+/.claude/
+/.continue/
+/.pytest_cache/
+/scratch/
+/PRD.md
+/DESIGN.md
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/.cursorrules
+
+# Whitelist frontend data directory
+!frontend/src/data/**
