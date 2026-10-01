@@ -419,9 +419,9 @@ export function ApiPage() {
       />
 
       {/* Main Viewport Grid: Zero-Outer-Scroll Pinned Console: h-[calc(100vh-12rem)] */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 h-[calc(100vh-12rem)] min-h-[580px] max-h-[860px]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 h-auto md:h-[calc(100vh-12rem-4rem)] min-h-[580px] max-h-[860px]">
         {/* Left Column (38% / 5 cols): Endpoint Navigator & Parameters */}
-        <div className="lg:col-span-5 h-full flex flex-col rounded-lg border border-border bg-card overflow-hidden">
+        <div className="md:col-span-5 h-full flex flex-col rounded-lg border border-border bg-card overflow-hidden">
           {/* Endpoint Search Bar */}
           <div className="p-3 border-b border-border bg-secondary/30 shrink-0">
             <div className="relative">
@@ -549,7 +549,7 @@ export function ApiPage() {
         </div>
 
         {/* Right Column (62% / 7 cols): Live Inspector Console */}
-        <div className="lg:col-span-7 h-full flex flex-col rounded-lg border border-border bg-card overflow-hidden">
+        <div className="md:col-span-7 h-full flex flex-col rounded-lg border border-border bg-card overflow-hidden">
           {/* Pinned Top Bar: Live URL Strip & Tab Controls */}
           <div className="p-3 border-b border-border bg-secondary/30 shrink-0 space-y-2.5">
             <div className="flex items-center gap-2">
