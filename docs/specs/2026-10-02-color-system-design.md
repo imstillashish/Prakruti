@@ -153,7 +153,7 @@ No new value above 88% saturation is introduced, and every one that exceeds the 
 
 1. **Colors section replaced** by the role table in §3 above (accent + data roles + series + invariants), replacing the Expo-derived swatch list.
 2. **CTA rule changed** from "black is the only CTA fill" to "the accent is the only CTA fill" — removing the §1.4 contradiction.
-3. **§12 drops five colourways to four:** ocean (action), amber (hazard protocols), emerald (verification/recalculate), ink (text chrome). Indigo leaves the action lane and survives only as the categorical ICON hue.
+3. **§12 drops five colourways to three:** ocean (action), amber (hazard protocols), emerald (verification/recalculate). Indigo leaves the action lane and survives only as the categorical ICON hue. Ink is retired rather than kept for "text chrome", because all nine `.gradient-animated-ink` usages are active/selected states that the accent now owns — keeping the utility would leave a dead colorway in the doc.
 4. **Three new enforceable rules:** no raw hex outside the two token files; accent never data / data never accent; colour never the sole code.
 5. **Untouched:** typography, spacing, radii, elevation, responsive/multi-device rules, the Expo-derived Overview prose, and §12's dual-engine motion mechanics. Repairing the doc's non-colour provenance is a separate decision.
 
@@ -187,7 +187,7 @@ One module for JS consumers, because recharts `stroke=` props and Leaflet `divIc
 ### 7.2 `scratch/palette_audit.py` (Playwright, all 8 pages × 390/768/1440)
 
 1. Computed text/background contrast ≥ 4.5:1 for body and ≥ 3:1 for large text on every coloured pair.
-2. Retired values (`#1e6fb8`, `#111827`, `#94a3b8`, `#f8fafc`, `#6f6f6f`) appear nowhere.
+2. Retired values (`#111827`, `#94a3b8`, `#f8fafc`, `#6f6f6f`) appear nowhere; `#1e6fb8` survives only as a stop inside the ocean *action* gradient and appears on no rainfall surface.
 3. Teal appears only on rainfall surfaces; the accent appears only on action/selection surfaces.
 4. Per-page distinct hue count stays within budget.
 
