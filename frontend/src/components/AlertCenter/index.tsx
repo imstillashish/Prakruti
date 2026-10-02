@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, AlertTriangle, Info, MapPin, RotateCcw, CheckCircle2, ChevronDown } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
-import { AlertCircle, ShieldAlert } from 'lucide-react';
 import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
@@ -15,9 +14,9 @@ interface AlertDrawerProps {
 type SeverityFilter = 'all' | 'danger' | 'warning';
 
 const alertStyles: Record<Alert['type'], { icon: IconComponent; dot: string; badge: string }> = {
-  danger: { icon: AlertCircle, dot: 'bg-destructive', badge: 'bg-destructive/10 text-destructive border-destructive/20' },
+  danger: { icon: AlertTriangle, dot: 'bg-destructive', badge: 'bg-destructive/10 text-destructive border-destructive/20' },
   warning: { icon: AlertTriangle, dot: 'bg-warning', badge: 'bg-warning/10 text-warning border-warning/20' },
-  info: { icon: Info, dot: 'bg-water', badge: 'bg-water/10 text-water border-water/20' },
+  info: { icon: Info, dot: 'bg-data-rain', badge: 'bg-data-rain/10 text-data-rain-dark border-data-rain/20' },
 };
 
 export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
@@ -90,7 +89,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2.5 min-w-0">
-            <ShieldAlert className="w-5 h-5 shrink-0 text-destructive" />
+            <AlertTriangle className="w-5 h-5 shrink-0 text-destructive" />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-base font-semibold tracking-tight text-foreground">Alert Center</span>

@@ -54,17 +54,17 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
               <tr key={m} className={isOurs ? 'bg-secondary/60' : 'hover:bg-secondary/40'}>
                 <td className="py-2.5 font-semibold text-foreground">
                   {METHOD_DISPLAY[m] ?? m}
-                  {isOurs && <span className="ml-2 text-[10px] uppercase tracking-wider text-success font-bold">ours</span>}
+                  {isOurs && <span className="ml-2 text-[10px] uppercase tracking-wider text-data-ok-text font-bold">ours</span>}
                 </td>
                 {VARS.map((v) => {
                   const r = rows.find((x) => x.model === m && x.variable === v);
                   if (!r) return <td key={`${v}-na`} className="px-2 text-right text-muted-foreground">—</td>;
                   return (
                     <Fragment key={v}>
-                      <td className={`py-2.5 text-right px-2 font-semibold ${r.mae === best.get(`${v}:mae`) ? 'text-success' : 'text-foreground'}`}>
+                      <td className={`py-2.5 text-right px-2 font-semibold ${r.mae === best.get(`${v}:mae`) ? 'text-data-ok-text' : 'text-foreground'}`}>
                         {fmt(r.mae)}
                       </td>
-                      <td className={`py-2.5 text-right px-2 ${r.rmse === best.get(`${v}:rmse`) ? 'text-success font-semibold' : 'text-muted-foreground'}`}>
+                      <td className={`py-2.5 text-right px-2 ${r.rmse === best.get(`${v}:rmse`) ? 'text-data-ok-text font-semibold' : 'text-muted-foreground'}`}>
                         {fmt(r.rmse)}
                       </td>
                     </Fragment>

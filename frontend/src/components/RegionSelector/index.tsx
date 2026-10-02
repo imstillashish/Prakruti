@@ -115,8 +115,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       {/* Quick Mobile Station Ribbon (<640px) */}
       <div className="block sm:hidden">
         <div className="flex items-center justify-between mb-1.5 px-0.5">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
             Quick Stations
           </span>
           <span className="text-[10px] text-muted-foreground font-mono">Swipe &rarr;</span>
@@ -133,7 +132,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
                 onClick={() => handleQuickStationSelect(station)}
                 className={`snap-start shrink-0 min-h-[44px] px-3.5 py-2 rounded-full text-xs font-mono transition-all flex items-center justify-center active:scale-95 ${
                   isSelected
-                    ? 'gradient-animated-ink text-white font-bold shadow-xs'
+                    ? 'bg-action text-white font-bold shadow-xs'
                     : 'bg-card text-foreground border border-border hover:bg-secondary'
                 }`}
               >

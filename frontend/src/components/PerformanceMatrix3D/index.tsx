@@ -55,7 +55,7 @@ function PerformanceBar({ cell, maxRmse, spacing, onHover, isHovered, colorMode 
   targetHeight.current = normalizedHeight;
 
   const baseColor = colorMode === 'model'
-    ? MODEL_COLORS[cell.model] || '#1e6fb8'
+    ? MODEL_COLORS[cell.model] || '#171717'
     : getBarColor(cell.skillScore);
 
   useFrame((_state, delta) => {
@@ -250,7 +250,7 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">Bias</span>
-            <span className={`font-semibold ${cell.bias >= 0 ? 'text-warning' : 'text-water'}`}>
+            <span className={`font-semibold ${cell.bias >= 0 ? 'text-warning' : 'text-data-rain'}`}>
               {cell.bias > 0 ? '+' : ''}{cell.bias} {matrix.unit}
             </span>
           </div>
@@ -443,7 +443,7 @@ export function PerformanceMatrix3D() {
             MODELS.map(m => (
               <div key={m} className="flex items-center gap-1.5">
                 <span
-                  className="w-2 h-2 rounded-full shrink-0"
+                  className="w-2.5 h-2.5 rounded-xs shrink-0"
                   style={{ background: MODEL_COLORS[m] }}
                 />
                 <span className="text-xs text-muted-foreground">{m}</span>
@@ -452,15 +452,15 @@ export function PerformanceMatrix3D() {
           ) : (
             <>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-foreground" />
+                <span className="w-2.5 h-2.5 rounded-xs bg-foreground" />
                 <span className="text-xs text-muted-foreground">High Skill ({'>'}70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-warning" />
+                <span className="w-2.5 h-2.5 rounded-xs bg-warning" />
                 <span className="text-xs text-muted-foreground">Medium (40–70%)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-destructive" />
+                <span className="w-2.5 h-2.5 rounded-xs bg-destructive" />
                 <span className="text-xs text-muted-foreground">Low ({'<'}40%)</span>
               </div>
             </>

@@ -83,7 +83,7 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
                     <span className="text-xs font-mono font-semibold text-foreground">
                       {VAR_SHORT[h.variable]} · day {h.lead_days}
                     </span>
-                    <span className="text-[11px] font-mono font-bold text-success">
+                    <span className="text-[11px] font-mono font-bold text-data-ok-text">
                       −{h.rmse_reduction_pct.toFixed(1)}%
                     </span>
                   </div>
@@ -123,7 +123,7 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
                         <td className="py-2 text-right px-2 text-muted-foreground">{VAR_SHORT[r.variable]}</td>
                         <td className="py-2 text-right px-2 text-foreground">{fmt(r.bias_raw)}</td>
                         <td className="py-2 text-right px-2 text-foreground">{fmt(r.bias_corrected)}</td>
-                        <td className={`py-2 text-right px-2 ${maeDelta <= 0 ? 'text-success' : 'text-[#ab6400]'}`}>
+                        <td className={`py-2 text-right px-2 ${maeDelta <= 0 ? 'text-data-ok-text' : 'text-[#ab6400]'}`}>
                           {maeDelta > 0 ? '+' : ''}{maeDelta.toFixed(3)}
                         </td>
                         <td className="py-2 text-right px-2 font-semibold text-foreground">

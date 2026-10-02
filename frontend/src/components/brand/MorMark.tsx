@@ -17,9 +17,9 @@ export function MorMark({ className }: { className?: string }) {
         <path d="M 152 74 L 152 34" />
         <path d="M 168 76 L 186 40" />
       </g>
-      <path fill="#1e6fb8" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
-      <path fill="#1e6fb8" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
-      <path fill="#1e6fb8" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
+      <path fill="#0e7490" d="M 113 40 C 103 30 103 15 114 6 C 125 15 123 30 113 40 Z" />
+      <path fill="#0e7490" d="M 147 34 C 137 24 137 9 148 0 C 159 9 157 24 147 34 Z" />
+      <path fill="#0e7490" d="M 181 40 C 171 30 171 15 182 6 C 193 15 191 30 181 40 Z" />
     </svg>
   );
 }

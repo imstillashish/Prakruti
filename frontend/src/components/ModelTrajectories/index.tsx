@@ -22,7 +22,7 @@ const MODEL_DISPLAY: Record<string, string> = {
 };
 
 const CLUSTER_BADGE: Record<string, string> = {
-  TIGHT: 'text-success border-success/30 bg-success/5',
+  TIGHT: 'text-data-ok-text border-success/30 bg-success/5',
   MIXED: 'text-[#ab6400] border-[#ab6400]/30 bg-[#ab6400]/5',
   SPLIT: 'text-destructive border-destructive/30 bg-destructive/5',
 };
@@ -166,7 +166,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
               </div>
               <div className="flex items-center gap-4 mt-2 pt-2.5 border-t border-border text-xs font-mono">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-foreground" />
+                  <span className="w-4 h-0.5 bg-foreground" />
                   <span className="text-foreground font-semibold">Blend P50</span>
                 </div>
                 <div className="flex items-center gap-1.5">

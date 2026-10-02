@@ -41,7 +41,7 @@ export function NavRail({
                     expanded ? 'gap-3 px-3 text-left' : 'justify-center'
                   } ${
                     active
-                      ? 'gradient-animated-ink font-semibold'
+                      ? 'bg-action-soft text-action-pressed font-semibold'
                       : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                   }`}
                 >
@@ -117,7 +117,7 @@ export function NavRail({
               aria-current={active ? 'page' : undefined}
               className={`flex h-12 w-12 items-center justify-center rounded-md transition-colors duration-100 touch-manipulation ${
                 active
-                  ? 'gradient-animated-ink'
+                  ? 'bg-action-soft text-action-pressed'
                   : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
@@ -144,7 +144,7 @@ export function NavRail({
               aria-current={active ? 'page' : undefined}
               className={`flex flex-shrink-0 items-center gap-1.5 min-h-[44px] px-3 py-2 text-xs rounded-md transition-colors duration-100 touch-manipulation ${
                 active
-                  ? 'gradient-animated-ink font-semibold'
+                  ? 'bg-action-soft text-action-pressed font-semibold'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >

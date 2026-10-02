@@ -126,7 +126,6 @@ export function BackendConnectingIndicator() {
         >
           {/* Main Title Row */}
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
             <span className="text-xs font-mono font-bold text-foreground">
               Connecting to Live Forecast Backend...
             </span>
@@ -147,7 +146,6 @@ export function BackendConnectingIndicator() {
         <div
           className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card ambient-gradient-success border border-border border-l-2 border-l-success rounded-lg shadow-lg transition-all"
         >
-          <span className="w-2 h-2 rounded-full bg-success" />
           <span className="text-xs font-mono font-bold text-primary">
             Live Backend Connected
           </span>

@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CloudRain, RefreshCw, ShieldCheck, Activity, HeartPulse } from '@/components/icons';
-import { Thermometer, Wind, Umbrella, Car, Sun, Droplet } from 'lucide-react';
+import { CloudRain, RefreshCw, ShieldCheck, Activity, Thermometer, Wind, Sun, Truck, Users, Droplet } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';
@@ -10,6 +9,7 @@ import { MOCK_FORECAST, getAdvisories, getDecision, getForecastMetrics, getMetad
 import type { AdvisoryRecord, DecisionPayload } from '@/lib/api';
 import { monotonePath, EASE, usePrefersReducedMotion } from '@/components/spectrumui/charts/chart-engine';
 import type { ForecastMetrics, TimelinePoint } from '@/types';
+import { DATA } from '@/lib/palette';
 
 function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: number }) {
   // rAF is throttled to zero in background tabs/webviews — setTimeout still
@@ -191,7 +191,7 @@ function MetricCell({
         <span className={`${big ? 'text-5xl sm:text-6xl' : 'text-3xl sm:text-4xl'} font-semibold text-foreground tracking-tight tabular-nums`}>
           <AnimatedNumber value={value} decimals={decimals} />
         </span>
-        <span className={`text-sm font-medium ${tone === 'success' ? 'text-success' : 'text-muted-foreground'}`}>{unit}</span>
+        <span className={`text-sm font-medium ${tone === 'success' ? 'text-data-ok-text' : 'text-muted-foreground'}`}>{unit}</span>
       </div>
       <div className="mt-1.5 flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
         {explain === 'confidence' ? (
@@ -228,7 +228,7 @@ function MetricCell({
    the Alert Center can never disagree about what counts as hazardous. */
 const BADGE_TONE_CLASS: Record<AdvisoryRecord['tone'], string> = {
   destructive: 'text-destructive',
-  info: 'text-[#155a92]',
+  info: 'text-data-rain-dark',
   muted: 'text-muted-foreground',
 };
 
@@ -236,18 +236,18 @@ function categoryIcon(category: string) {
   switch (category) {
     case 'Personal Gear':
     case 'Rain Outlook':
-      return <Umbrella size={17} className="shrink-0 mt-0.5 text-water" />;
+      return <CloudRain size={17} className="shrink-0 mt-0.5 text-data-rain" />;
     case 'Transit & Travel':
     case 'Two-Wheelers & Driving':
-      return <Car size={17} className="shrink-0 mt-0.5 text-foreground" />;
+      return <Truck size={17} className="shrink-0 mt-0.5 text-foreground" />;
     case 'Hydration':
-      return <Droplet size={17} className="shrink-0 mt-0.5 text-water" />;
+      return <Droplet size={17} className="shrink-0 mt-0.5 text-data-rain" />;
     case 'Vulnerable Groups':
-      return <HeartPulse size={17} className="shrink-0 mt-0.5 text-destructive" />;
+      return <Users size={17} className="shrink-0 mt-0.5 text-destructive" />;
     case 'Secure Loose Objects':
       return <Wind size={17} className="shrink-0 mt-0.5 text-foreground" />;
     case 'Temperature':
-      return <Thermometer size={17} className="shrink-0 mt-0.5 text-warning" />;
+      return <Sun size={17} className="shrink-0 mt-0.5 text-warning" />;
     default:
       return <Sun size={17} className="shrink-0 mt-0.5 text-warning" />;
   }
@@ -317,7 +317,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   // Probabilistic core: first decision record anchors the chips and bands.
   const nowRec = decision?.records?.[0];
   const agreementMeta: Record<string, { label: string; cls: string }> = {
-    STRONG_AGREEMENT: { label: 'Strong agreement', cls: 'text-success border-success/30' },
+    STRONG_AGREEMENT: { label: 'Strong agreement', cls: 'text-data-ok-text border-success/30' },
     MIXED_SPLIT: { label: 'Mixed split', cls: 'text-warning border-warning/30' },
     HIGH_DISAGREEMENT_LOW_SIGNAL: { label: 'Models disagree', cls: 'text-muted-foreground border-border' },
     HIGH_TAIL_RISK_TIMING_UNCERTAIN: { label: 'High tail risk', cls: 'text-destructive border-destructive/30' },
@@ -387,7 +387,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 {/* Phone: one advice card per view in a snap deck (~200px) instead of a
                     3-card vertical stack (~700px). Desktop keeps the stack. */}
                 {cards.length > 0 ? (
-                  <div className="sm:hidden carousel-snap-deck -mx-3 px-3">
+                  <div className="sm:hidden carousel-snap-deck gap-3 pb-2 touch-pan-y -mx-4 px-4">
                     {cards.map((card) => (
                       <div key={card.category} className="w-[86vw] max-w-[340px] shrink-0 carousel-snap-item rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
                         {categoryIcon(card.category)}
@@ -414,16 +414,34 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                     ))}
                   </div>
                 )}
-                {cards.length === 0 && [0, 1, 2].map((i) => (
-                      <div key={i} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
-                        <div className="h-4 w-4 rounded-full bg-muted shrink-0 mt-0.5" />
-                        <div className="min-w-0 flex-1 space-y-1.5">
-                          <div className="h-3 w-24 rounded bg-muted" />
-                          <div className="h-3 w-full rounded bg-muted" />
-                          <div className="h-3 w-3/4 rounded bg-muted" />
+                {cards.length === 0 && (
+                  <>
+                    <div className="sm:hidden carousel-snap-deck gap-3 pb-2 touch-pan-y -mx-4 px-4">
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className="w-[86vw] max-w-[340px] shrink-0 carousel-snap-item rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
+                          <div className="h-4 w-4 rounded-full bg-muted shrink-0 mt-0.5" />
+                          <div className="min-w-0 flex-1 space-y-1.5">
+                            <div className="h-3 w-24 rounded bg-muted" />
+                            <div className="h-3 w-full rounded bg-muted" />
+                            <div className="h-3 w-3/4 rounded bg-muted" />
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="hidden sm:grid sm:grid-cols-3 sm:gap-2.5">
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className="rounded-md border border-border bg-card p-3 flex items-start gap-2.5">
+                          <div className="h-4 w-4 rounded-full bg-muted shrink-0 mt-0.5" />
+                          <div className="min-w-0 flex-1 space-y-1.5">
+                            <div className="h-3 w-24 rounded bg-muted" />
+                            <div className="h-3 w-full rounded bg-muted" />
+                            <div className="h-3 w-3/4 rounded bg-muted" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
                 {advisoriesLoaded && cards.length === 0 ? (
                   <p className="text-[11px] font-mono text-muted-foreground">Advisory feed unavailable — see Data Health.</p>
                 ) : null}
@@ -449,16 +467,16 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               />
               <MetricCell
                 label="Precipitation"
-                icon={<CloudRain size={16} className="text-water" />}
+                icon={<CloudRain size={16} className="text-data-rain" />}
                 value={forecast.rainfall}
                 decimals={0}
                 unit="mm"
                 band={nowRec?.value?.rainfall ? { p10: nowRec.value.rainfall.p10, p90: nowRec.value.rainfall.p90 } : undefined}
                 series={rainSeries}
                 timeLabels={timeLabels}
-                color="#1e6fb8"
+                color={DATA.rain}
                 big
-                tone="water"
+                tone="plain"
               />
               <MetricCell
                 label="Wind (10m)"

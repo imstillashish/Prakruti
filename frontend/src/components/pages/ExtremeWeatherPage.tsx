@@ -5,8 +5,7 @@ import { PageHeader } from '@/components/shell/PageHeader';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { WeatherMap } from '@/components/WeatherMap';
-import { MapPin, RotateCcw, CheckCircle2, ChevronDown } from '@/components/icons';
-import { ShieldAlert } from 'lucide-react';
+import { MapPin, RotateCcw, CheckCircle2, ChevronDown, AlertTriangle } from '@/components/icons';
 import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
@@ -72,7 +71,7 @@ export function ExtremeWeatherPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        icon={ShieldAlert}
+        icon={AlertTriangle}
         title="Extreme Weather Guidance"
         sub="Real-time severe event risk, threshold breaches, and emergency advisories"
       />
@@ -137,14 +136,14 @@ export function ExtremeWeatherPage() {
               onClick={() => setSeverityFilter('warning')}
               className={`min-h-[44px] sm:min-h-[36px] py-2 px-3 text-xs font-mono transition-colors duration-100 flex items-center gap-1.5 rounded-sm ${
                 severityFilter === 'warning'
-                  ? 'bg-warning text-foreground font-bold'
-                  : 'text-warning hover:bg-warning/10'
+                  ? 'bg-warning text-white font-bold'
+                  : 'text-foreground hover:bg-warning/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'warning' ? 'bg-foreground' : 'bg-warning'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'warning' ? 'bg-white' : 'bg-warning'}`} />
               <span>Orange</span>
               <span className={`text-[10px] px-1 font-mono rounded-full ${
-                severityFilter === 'warning' ? 'bg-foreground/10 text-foreground' : 'bg-warning/10 text-warning'
+                severityFilter === 'warning' ? 'bg-white/20 text-white' : 'bg-card border border-border text-foreground'
               }`}>
                 {orangeCount}
               </span>

@@ -27,15 +27,17 @@ export interface PerformanceMatrixData {
   cells: PerformanceCell[];
 }
 
+import { SERIES, DATA } from '@/lib/palette';
+
 export const MODELS = ['AI Model', 'ECMWF IFS', 'GFS', 'Ensemble', 'Blended'] as const;
 export const LEAD_TIMES = ['6h', '12h', '24h', '48h', '72h'] as const;
 
 export const MODEL_COLORS: Record<string, string> = {
-  'AI Model': '#000000',
-  'ECMWF IFS': '#171717',
-  'GFS': '#1e6fb8',
-  'Ensemble': '#9e9e9e',
-  'Blended': '#16a34a',
+  'AI Model': SERIES.ICON,
+  'ECMWF IFS': SERIES.ECMWF,
+  'GFS': SERIES.GFS,
+  'Ensemble': SERIES.GEM,
+  'Blended': DATA.ok,
 };
 
 const buildMatrix = (

@@ -3,11 +3,11 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { Layers, MapPin, Cpu, CheckCircle, BarChart2, Sliders, ShieldCheck } from '@/components/icons';
-import { TrendingUp, Percent } from 'lucide-react';
+import { Layers, MapPin, CheckCircle, BarChart2, Sliders, ShieldCheck } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData } from '@/types';
+import { SERIES, DATA } from '@/lib/palette';
 
 // Dynamic import with SSR disabled for Leaflet
 const RealTrustAtlasMap = dynamic(() => import('./RealTrustAtlasMap'), {
@@ -32,30 +32,30 @@ const MODEL_COLOR_CONFIG: Record<
 > = {
   ECMWF: {
     label: 'ECMWF IFS',
-    bg: 'bg-foreground',
+    bg: 'bg-series-1',
     text: 'text-foreground',
-    hex: '#171717',
+    hex: SERIES.ECMWF,
     desc: 'European Centre for Medium-Range Weather Forecasts (Primary Precipitation Bias Weight)',
   },
   ICON: {
     label: 'ICON Seamless',
-    bg: 'bg-[#60646c]',
-    text: 'text-[#60646c]',
-    hex: '#60646c',
+    bg: 'bg-series-2',
+    text: 'text-foreground',
+    hex: SERIES.ICON,
     desc: 'German Weather Service (High Convective & Thermal Precision)',
   },
   GFS: {
     label: 'GFS Global',
-    bg: 'bg-water',
-    text: 'text-water',
-    hex: '#1e6fb8',
+    bg: 'bg-series-3',
+    text: 'text-foreground',
+    hex: SERIES.GFS,
     desc: 'NOAA NCEP (Synoptic Circulation & Jet Stream Boundary Tracking)',
   },
   GEM: {
     label: 'GEM Canada',
-    bg: 'bg-[#9e9e9e]',
-    text: 'text-[#9e9e9e]',
-    hex: '#9e9e9e',
+    bg: 'bg-series-4',
+    text: 'text-foreground',
+    hex: SERIES.GEM,
     desc: 'Environment and Climate Change Canada (Surface Temperature & Dewpoint)',
   },
 };
@@ -125,7 +125,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
 
             <div className="flex items-center justify-between text-xs font-mono pt-1 text-muted-foreground">
               <span>Station Confidence:</span>
-              <strong className="text-success font-bold bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20">
+              <strong className="text-data-ok-text font-bold bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20">
                 {rpiData.confidence}% Score
               </strong>
             </div>
@@ -148,15 +148,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#171717]" />
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} />
                     ECMWF IFS (Europe)
                   </span>
                   <span className="font-bold text-foreground">{weights.ecmwf}%</span>
                 </div>
                 <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-[#171717]"
-                    style={{ width: `${weights.ecmwf}%` }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: SERIES.ECMWF, width: `${weights.ecmwf}%` }}
                   />
                 </div>
               </div>
@@ -165,15 +165,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#60646c]" />
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ICON }} />
                     ICON Seamless (Germany)
                   </span>
                   <span className="font-bold text-foreground">{weights.icon}%</span>
                 </div>
                 <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-[#60646c]"
-                    style={{ width: `${weights.icon}%` }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: SERIES.ICON, width: `${weights.icon}%` }}
                   />
                 </div>
               </div>
@@ -182,15 +182,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#1e6fb8]" />
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GFS }} />
                     GFS Global (NOAA USA)
                   </span>
                   <span className="font-bold text-foreground">{weights.gfs}%</span>
                 </div>
                 <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-[#1e6fb8]"
-                    style={{ width: `${weights.gfs}%` }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: SERIES.GFS, width: `${weights.gfs}%` }}
                   />
                 </div>
               </div>
@@ -199,15 +199,15 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#9e9e9e]" />
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GEM }} />
                     GEM Seamless (Canada)
                   </span>
                   <span className="font-bold text-foreground">{weights.gem}%</span>
                 </div>
                 <div className="w-full h-1 rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-[#9e9e9e]"
-                    style={{ width: `${weights.gem}%` }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: SERIES.GEM, width: `${weights.gem}%` }}
                   />
                 </div>
               </div>

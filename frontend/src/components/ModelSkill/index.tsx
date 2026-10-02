@@ -4,15 +4,16 @@ import { Panel } from '@/components/shell/Panel';
 import { Award } from '@/components/icons';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
+import { SERIES } from '@/lib/palette';
 
 type Period = 'Today' | '7 Days' | '30 Days' | 'Season';
 
 const MODELS = [
-  { key: 'blended', label: 'Hybrid AI-NWP Blend', color: '#171717' },
-  { key: 'ai', label: 'AI Residual Model', color: '#1e6fb8' },
-  { key: 'nwpA', label: 'ECMWF IFS (0.25°)', color: '#60646c' },
-  { key: 'nwpB', label: 'GFS Seamless', color: '#60646c' },
-  { key: 'ensemble', label: 'Ensemble Mean', color: '#9e9e9e' },
+  { key: 'blended', label: 'Hybrid AI-NWP Blend', color: SERIES.ECMWF },
+  { key: 'ai', label: 'AI Residual Model', color: SERIES.ICON },
+  { key: 'nwpA', label: 'ECMWF IFS (0.25°)', color: SERIES.ECMWF },
+  { key: 'nwpB', label: 'GFS Seamless', color: SERIES.GFS },
+  { key: 'ensemble', label: 'Ensemble Mean', color: SERIES.GEM },
 ] as const;
 
 export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { collapsibleOnPhone?: boolean; collapsibleOnTablet?: boolean }) {
@@ -90,7 +91,7 @@ export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
             </span>
             {i === 0 && (
               <span
-                className="flex items-center gap-1 rounded-full text-[10px] font-semibold text-success bg-success/10 px-2 py-0.5 border border-success/20"
+                className="flex items-center gap-1 rounded-md text-[10px] font-semibold text-data-ok-text bg-card px-2 py-0.5 border border-border"
               >
                 <Award size={10} /> Top Skill
               </span>
@@ -102,9 +103,9 @@ export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
       </div>
 
       <div
-        className="mt-3.5 p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground"
+        className="mt-3.5 p-3 rounded-md bg-card border border-border text-xs font-mono text-muted-foreground"
       >
-        Hybrid AI blend reduces error by <span className="font-bold text-success">~18.2%</span> relative to any isolated NWP model run.
+        Hybrid AI blend reduces error by <span className="font-bold text-data-ok-text">~18.2%</span> relative to any isolated NWP model run.
       </div>
     </Panel>
   );

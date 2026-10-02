@@ -16,6 +16,7 @@ import type {
   CityForecast,
   SkillMetric,
 } from '@/types';
+import { SERIES } from '@/lib/palette';
 
 export const MOCK_FORECAST: ForecastMetrics = {
   rainfall: 72,
@@ -30,8 +31,8 @@ export const MOCK_FORECAST: ForecastMetrics = {
 
 export const MOCK_MODEL_WEIGHTS: ModelWeight[] = [
   { name: 'AI Model', id: 'ai', weight: 45, color: '#000000', rmse: 5.1, mae: 3.8 },
-  { name: 'ECMWF IFS', id: 'ecmwf', weight: 35, color: '#171717', rmse: 5.8, mae: 4.2 },
-  { name: 'GFS Seamless', id: 'gfs', weight: 12, color: '#1e6fb8', rmse: 6.3, mae: 4.9 },
+  { name: 'ECMWF IFS', id: 'ecmwf', weight: 35, color: SERIES.ECMWF, rmse: 5.8, mae: 4.2 },
+  { name: 'GFS Seamless', id: 'gfs', weight: 12, color: SERIES.GFS, rmse: 6.3, mae: 4.9 },
   { name: 'Ensemble', id: 'ensemble', weight: 8, color: '#9e9e9e', rmse: 5.5, mae: 4.1 },
 ];
 

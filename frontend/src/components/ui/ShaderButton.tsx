@@ -74,6 +74,7 @@ export function ShaderButton({
       {...props}
       className={cn(
         'relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md font-semibold text-white',
+        v.fallbackBg,
         v.shadow,
         'transition-transform duration-100 active:translate-y-px',
         'focus-visible:outline-2 focus-visible:outline-offset-2',

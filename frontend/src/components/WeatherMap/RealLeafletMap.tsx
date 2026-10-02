@@ -7,6 +7,7 @@ import { CityForecast } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { RotateCcw } from '@/components/icons';
 import { ZoomIn, ZoomOut } from 'lucide-react';
+import { DATA, seriesColor } from '@/lib/palette';
 interface RealLeafletMapProps {
   leadTime: string;
   selectedCity?: string | null;
@@ -131,7 +132,7 @@ export default function RealLeafletMap({
     const isDarkBg = BASE_TILE === 'satellite';
 
     cities.forEach((city) => {
-      const color = city.rainfall > 80 ? '#155a92' : city.rainfall > 50 ? '#1e6fb8' : city.rainfall > 20 ? '#5b93c7' : '#a5c4e0';
+      const color = city.rainfall > 50 ? DATA.rainDark : DATA.rain;
       const text = `${city.rainfall} mm`;
       const isSelected = selectedCity ? city.city.toLowerCase() === selectedCity.toLowerCase() : false;
 
@@ -142,7 +143,7 @@ export default function RealLeafletMap({
             <!-- Radar Beacon Pulse Animation -->
             <div class="absolute inset-0 rounded-full animate-ping ${isSelected ? 'opacity-70' : 'opacity-35'}" style="background-color: ${color};"></div>
             
-            ${isSelected ? `<div class="absolute -inset-1.5 rounded-full border-2 border-blue-500 animate-pulse shadow-md"></div>` : ''}
+            ${isSelected ? `<div class="absolute -inset-1.5 rounded-full border-2 border-[#0d74ce] animate-pulse shadow-md"></div>` : ''}
 
             <!-- Pinpoint Center Core -->
             <div class="relative ${isSelected ? 'w-5 h-5 scale-110' : 'w-4 h-4'} rounded-full border-2 border-white shadow-lg flex items-center justify-center" style="background-color: ${color};">
@@ -158,7 +159,7 @@ export default function RealLeafletMap({
                 : 'bg-popover text-popover-foreground border-border'
             }">
               <span>${city.city}</span>
-              <span class="ml-1 opacity-80 text-[9px] font-medium" style="color: ${isSelected ? '#ffffff' : color};">${text}</span>
+              <span class="ml-1 opacity-80 text-[9px] font-medium" style="color: ${isSelected || isDarkBg ? '#ffffff' : '#0e7490'};">${text}</span>
             </div>
           </div>
         `,
@@ -173,17 +174,17 @@ export default function RealLeafletMap({
         <div style="font-family: inherit; min-width: 170px; padding: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f3; padding-bottom: 4px;">
             <span style="font-weight: 800; font-size: 13px; color: #171717; text-transform: uppercase;">${city.city}</span>
-            <span style="font-size: 10px; font-weight: 700; color: #1e6fb8; background: rgba(30,111,184,0.08); padding: 2px 6px; border-radius: 9999px;">${city.state}</span>
+            <span style="font-size: 10px; font-weight: 700; color: #0a5594; background: rgba(13,116,206,0.08); padding: 2px 6px; border-radius: 9999px;">${city.state}</span>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px;">
-            <div><span style="color: #60646c; font-size: 10px; display: block;">Rainfall</span><strong style="color: #1e6fb8; font-size: 12px;">${city.rainfall} mm</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Rainfall</span><strong style="color: #0e7490; font-size: 12px;">${city.rainfall} mm</strong></div>
             <div><span style="color: #60646c; font-size: 10px; display: block;">Temp</span><strong style="color: #ab6400; font-size: 12px;">${city.temperature}°C</strong></div>
             <div><span style="color: #60646c; font-size: 10px; display: block;">Wind</span><strong style="color: #60646c; font-size: 12px;">${city.wind} km/h</strong></div>
-            <div><span style="color: #60646c; font-size: 10px; display: block;">Reliability</span><strong style="color: #16a34a; font-size: 12px;">${city.confidence}% ${city.confidenceLabel ? '(' + city.confidenceLabel + ')' : ''}</strong></div>
+            <div><span style="color: #60646c; font-size: 10px; display: block;">Reliability</span><strong style="color: #15803d; font-size: 12px;">${city.confidence}% ${city.confidenceLabel ? '(' + city.confidenceLabel + ')' : ''}</strong></div>
           </div>
           <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #f0f0f3; font-size: 10px; color: #60646c; display: flex; justify-content: space-between;">
             <span>Dominant Model:</span>
-            <strong style="color: #1e6fb8;">${city.dominantModel}</strong>
+            <strong style="color: ${seriesColor(city.dominantModel)};">${city.dominantModel}</strong>
           </div>
           ${city.explanation ? `
           <div style="margin-top: 4px; font-size: 9.5px; color: #60646c; font-style: italic; background: #fafafa; padding: 4px 6px; border-radius: 6px; border: 1px solid #f0f0f3; line-height: 1.3;">
@@ -308,7 +309,7 @@ export default function RealLeafletMap({
             <div className="grid grid-cols-2 gap-1.5 text-xs">
               <div className="bg-secondary p-1.5 rounded-md">
                 <span className="text-muted-foreground block text-[10px]">Rainfall</span>
-                <span className="font-semibold text-water text-sm">{activeCardCity.rainfall} mm</span>
+                <span className="font-semibold text-data-rain text-sm">{activeCardCity.rainfall} mm</span>
               </div>
               <div className="bg-secondary p-1.5 rounded-md">
                 <span className="text-muted-foreground block text-[10px]">Temperature</span>
@@ -320,7 +321,7 @@ export default function RealLeafletMap({
               </div>
               <div className="hidden sm:block bg-secondary p-1.5 rounded-md">
                 <span className="text-muted-foreground block text-[10px]">Confidence</span>
-                <span className="font-semibold text-success text-sm">{activeCardCity.confidence}%</span>
+                <span className="font-semibold text-foreground text-sm">{activeCardCity.confidence}%</span>
               </div>
             </div>
             <div className="hidden sm:flex mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground items-center justify-between">

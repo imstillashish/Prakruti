@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, CloudRain, CheckCircle2, Activity, Layers, Sparkles } from '@/components/icons';
-import { ShieldAlert, Thermometer, Wind, Building2, Calendar } from 'lucide-react';
+import { AlertTriangle, CloudRain, CheckCircle2, Activity, Layers, Sparkles, Building, Thermometer, Wind } from '@/components/icons';
 import { Explain } from '@/components/explain/Explain';
 import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData, RpiPriority } from '@/types';
@@ -29,7 +28,7 @@ const PRIORITY_CONFIG: Record<
     sublabel: 'Routine Surveillance · All Parameters Normal',
     strokeColor: '#16a34a',
     bgBadge: 'bg-success/10',
-    textBadge: 'text-success',
+    textBadge: 'text-data-ok-text',
     borderBadge: 'border-success/20',
     glow: 'rgba(22, 163, 74, 0.25)',
   },
@@ -75,7 +74,7 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
     <section className="relative overflow-hidden rounded-lg border border-border bg-card">
       {/* Top Government EOC Banner */}
       <SectionBanner
-        icon={Building2}
+        icon={Building}
         title="Emergency Operations Center"
         pill="MoES · NDMA"
         subline="National Disaster Decision Framework · Live 24h Synoptic Horizon"
@@ -190,7 +189,7 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
           <div className="p-2.5 rounded-md bg-card border border-border">
             <div className="flex justify-between items-center text-xs mb-1">
               <span className="font-semibold text-foreground flex items-center gap-1.5 font-mono text-[11px]">
-                <CloudRain className="w-3.5 h-3.5 text-water" />
+                <CloudRain className="w-3.5 h-3.5 text-data-rain" />
                 Rainfall (35% wt)
               </span>
               <span className="font-bold text-foreground font-mono text-xs">
@@ -199,7 +198,7 @@ export function RpiHero({ rpiData }: RpiHeroProps) {
             </div>
             <div className="w-full h-1 rounded-full bg-secondary">
               <div
-                className="h-full rounded-full bg-water"
+                className="h-full rounded-full bg-data-rain"
                 style={{ width: `${rpiData.rainRisk}%` }}
               />
             </div>

@@ -9,9 +9,8 @@ import { Explain } from '@/components/explain/Explain';
 import { ChartState } from '@/components/spectrumui/charts/chart-engine';
 import { getTimelineData } from '@/lib/api';
 import type { TimelinePoint, Variable } from '@/types';
-import { Calendar } from 'lucide-react';
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; bandHigh?: string; bandLow?: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10' },
+  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--data-rain)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10' },
   temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature', bandHigh: 'temperatureP90', bandLow: 'temperatureP10' },
   wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind', bandHigh: 'windP90', bandLow: 'windP10' },
 };
@@ -44,7 +43,7 @@ const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean;
         </div>
       )}
       {data && (
-        <div className="text-[11px] text-success font-medium mt-1">
+        <div className="text-[11px] text-data-ok-text font-medium mt-1">
           Confidence: {data.confidence}%
         </div>
       )}
@@ -104,7 +103,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       case 'severe': return { label: 'Severe Alert', cls: 'text-destructive bg-destructive/10 border-destructive/30' };
       case 'high': return { label: 'High Risk', cls: 'text-[#ab6400] bg-[#ab6400]/10 border-[#ab6400]/30' };
       case 'moderate': return { label: 'Moderate', cls: 'text-warning bg-warning/10 border-warning/30' };
-      default: return { label: 'Low Risk', cls: 'text-success bg-success/10 border-success/30' };
+      default: return { label: 'Low Risk', cls: 'text-data-ok-text bg-success/10 border-success/30' };
     }
   };
 
@@ -313,7 +312,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                   <div className="grid grid-cols-3 gap-2 py-2 px-2.5 rounded-md bg-secondary/50 border border-border mb-3 font-mono text-xs">
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Rain</div>
-                      <div className="font-bold text-water">{day.rain.toFixed(1)} <span className="text-[10px] font-normal text-muted-foreground">mm</span></div>
+                      <div className="font-bold text-data-rain">{day.rain.toFixed(1)} <span className="text-[10px] font-normal text-muted-foreground">mm</span></div>
                     </div>
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Temp</div>
