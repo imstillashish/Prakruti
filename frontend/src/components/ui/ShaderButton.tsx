@@ -1,16 +1,17 @@
 'use client';
 /**
  * Creative button (ui-layouts style) whose fill is a live animated mesh
- * gradient via @shadergradient/react, tinted to Prakruti's blue family —
- * link blue #0d74ce, water #1e6fb8, sky-light #cfe7ff. Static site blue
- * renders on the server and under prefers-reduced-motion; the shader canvas
- * mounts only after hydration.
+ * gradient via @shadergradient/react. Variants follow DESIGN.md v4 §12:
+ * ocean acts, amber dispatches, emerald verifies. The static fill renders on
+ * the server and under prefers-reduced-motion; the shader canvas mounts only
+ * after hydration.
  */
 import { Suspense, useEffect, useState } from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 import { cn } from '@/lib/utils';
+import { SHADER_FILL } from '@/lib/palette';
 
-export type ShaderVariant = 'ocean' | 'emerald' | 'amber' | 'indigo' | 'ink';
+export type ShaderVariant = 'ocean' | 'emerald' | 'amber';
 
 export interface ShaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
@@ -29,50 +30,26 @@ const VARIANTS: Record<
     fallbackBg: string;
     shadow: string;
     focusOutline: string;
-    color1: string;
-    color2: string;
-    color3: string;
+    fill: readonly string[];
   }
 > = {
   ocean: {
-    fallbackBg: 'bg-[#0d74ce]',
+    fallbackBg: 'bg-action',
     shadow: 'shadow-[0_4px_12px_rgba(13,116,206,0.25)]',
-    focusOutline: 'focus-visible:outline-[#0d74ce]',
-    color1: '#0d74ce',
-    color2: '#1e6fb8',
-    color3: '#cfe7ff',
-  },
-  indigo: {
-    fallbackBg: 'bg-[#4f46e5]',
-    shadow: 'shadow-[0_4px_12px_rgba(79,70,229,0.25)]',
-    focusOutline: 'focus-visible:outline-[#4f46e5]',
-    color1: '#4f46e5',
-    color2: '#6366f1',
-    color3: '#c7d2fe',
+    focusOutline: 'focus-visible:outline-action',
+    fill: SHADER_FILL.ocean,
   },
   emerald: {
-    fallbackBg: 'bg-[#16a34a]',
+    fallbackBg: 'bg-success',
     shadow: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]',
-    focusOutline: 'focus-visible:outline-[#16a34a]',
-    color1: '#16a34a',
-    color2: '#059669',
-    color3: '#bbf7d0',
+    focusOutline: 'focus-visible:outline-success',
+    fill: SHADER_FILL.emerald,
   },
   amber: {
-    fallbackBg: 'bg-[#ab6400]',
+    fallbackBg: 'bg-warning',
     shadow: 'shadow-[0_4px_12px_rgba(171,100,0,0.25)]',
-    focusOutline: 'focus-visible:outline-[#ab6400]',
-    color1: '#ab6400',
-    color2: '#d97706',
-    color3: '#fde68a',
-  },
-  ink: {
-    fallbackBg: 'bg-[#171717]',
-    shadow: 'shadow-[0_4px_12px_rgba(23,23,23,0.25)]',
-    focusOutline: 'focus-visible:outline-[#171717]',
-    color1: '#171717',
-    color2: '#33373e',
-    color3: '#9ca3af',
+    focusOutline: 'focus-visible:outline-warning',
+    fill: SHADER_FILL.amber,
   },
 };
 
@@ -123,9 +100,9 @@ export function ShaderButton({
                 uFrequency={5.5}
                 uStrength={4}
                 uAmplitude={1.2}
-                color1={v.color1}
-                color2={v.color2}
-                color3={v.color3}
+                color1={v.fill[0]}
+                color2={v.fill[1]}
+                color3={v.fill[2]}
                 lightType="3d"
                 cDistance={3.6}
                 cPolarAngle={90}

@@ -38,6 +38,17 @@ export const SERIES: Record<ModelName, string> = {
 
 export const SERIES_ORDER: readonly ModelName[] = ['ECMWF', 'ICON', 'GFS', 'GEM'] as const;
 
+/**
+ * Animated-CTA fills (DESIGN.md v4 §12). WebGL uniforms take literal stops,
+ * so they live here alongside the other JS-only bindings — first stop mirrors
+ * the matching token, the rest are the gradient's depth and highlight.
+ */
+export const SHADER_FILL = {
+  ocean: [ACCENT.base, '#1e6fb8', '#cfe7ff'],
+  emerald: [DATA.ok, '#059669', '#bbf7d0'],
+  amber: [DATA.watch, '#d97706', '#fde68a'],
+} as const;
+
 export function seriesColor(model: string): string {
   const m = model.toUpperCase();
   if (m === 'ICON') return SERIES.ICON;

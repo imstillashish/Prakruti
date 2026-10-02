@@ -512,7 +512,7 @@ export function ApiPage() {
 
             {/* Execute Button */}
             <ShaderButton
-              variant="indigo"
+              variant="ocean"
               onClick={handleExecute}
               disabled={isExecuting}
               className="w-full text-xs font-mono font-bold"
