@@ -69,8 +69,13 @@
   --card-foreground: #171717;
   --popover: #ffffff;
   --popover-foreground: #171717;
-  --primary: #000000;           /* pure black — primary CTA fill only */
-  --primary-active: #1a1a1a;    /* press state */
+  /* ===== v4 action accent — the one chroma the chrome gets (DESIGN.md v4) ===== */
+  --action: #0d74ce;            /* action, selection, wayfinding */
+  --action-hover: #0b63b0;
+  --action-pressed: #0a5594;
+  --action-soft: #ecf4fc;       /* selected row/segment wash */
+  --primary: var(--action);     /* compatibility alias: ui primitives use bg-primary */
+  --primary-active: var(--action-pressed);
   --primary-foreground: #ffffff;
   --secondary: #f0f0f3;         /* surface-strong: badges, secondary buttons */
   --secondary-foreground: #171717;
@@ -80,11 +85,33 @@
   --accent-foreground: #171717;
   --destructive: #b42318;       /* hazard — AA-darkened from reference #eb8e90 */
   --warning: #ab6400;           /* watch amber */
-  --water: #1e6fb8;             /* rainfall/water signal — darkened sky family */
   --semantic-success: #16a34a;  /* OK only, never decoration */
+
+  /* ===== v4 data roles — colour that encodes meaning, never decoration ===== */
+  --data-rain: #0e7490;         /* rainfall/water teal: blue now means action */
+  --data-rain-dark: #155e75;    /* rain text on tinted fills */
+  --data-rain-light: #67e8f9;   /* rain fill only */
+  --data-wind: #475569;         /* speed rides on width/opacity, not hue */
+  --data-temp-cool: #fbbf24;    /* temperature scale — fill only, never text */
+  --data-temp-mid: #f97316;
+  --data-temp-hot: #dc2626;
+  --data-ok: var(--semantic-success);
+  --data-ok-text: #15803d;      /* AA text variant: success green is 3.30:1 */
+  --data-watch: var(--warning);
+  --data-hazard: var(--destructive);
+  --data-confidence-high: var(--data-ok);
+  --data-confidence-watch: var(--data-watch);
+  --data-confidence-low: var(--data-hazard);
+
+  /* Categorical model identity — a data scale, never an action colour */
+  --series-1: #171717;          /* ECMWF */
+  --series-2: #4f46e5;          /* ICON */
+  --series-3: #c2410c;          /* GFS */
+  --series-4: #be185d;          /* GEM */
+  --series-ink: #171717;        /* blend line: emphasised baseline */
   --border: #dcdee0;            /* hairline-strong */
   --input: #dcdee0;
-  --ring: #171717;
+  --ring: var(--action);        /* focus follows the accent */
   --radius: 0.75rem;            /* 12px — panels & floating layers */
 }
 
@@ -106,7 +133,26 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-warning: var(--warning);
-  --color-water: var(--water);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-pressed: var(--action-pressed);
+  --color-action-soft: var(--action-soft);
+  --color-data-rain: var(--data-rain);
+  --color-data-rain-dark: var(--data-rain-dark);
+  --color-data-rain-light: var(--data-rain-light);
+  --color-data-wind: var(--data-wind);
+  --color-data-temp-cool: var(--data-temp-cool);
+  --color-data-temp-mid: var(--data-temp-mid);
+  --color-data-temp-hot: var(--data-temp-hot);
+  --color-data-ok: var(--data-ok);
+  --color-data-ok-text: var(--data-ok-text);
+  --color-data-watch: var(--data-watch);
+  --color-data-hazard: var(--data-hazard);
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-series-3: var(--series-3);
+  --color-series-4: var(--series-4);
+  --color-series-ink: var(--series-ink);
   --color-success: var(--semantic-success);
   --color-text-link: var(--color-text-link);
   --color-sky-light: var(--color-sky-light);
