@@ -114,6 +114,15 @@
   --colorway-deep-emerald: #047857;  /* verification */
   --colorway-deep-amber: #b45309;    /* hazard protocols */
   --colorway-deep-neutral: #33373e;  /* hue-less on/off */
+  /* Ramps are translucent so the deep base stays the surface text is read on. */
+  --colorway-ramp-ocean: linear-gradient(135deg,
+    rgba(30, 111, 184, 0.90), rgba(13, 116, 206, 0.55), rgba(56, 189, 248, 0.40));
+  --colorway-ramp-emerald: linear-gradient(135deg,
+    rgba(5, 150, 105, 0.90), rgba(22, 163, 74, 0.55), rgba(52, 211, 153, 0.38));
+  --colorway-ramp-amber: linear-gradient(135deg,
+    rgba(217, 119, 6, 0.88), rgba(180, 83, 9, 0.55), rgba(245, 158, 11, 0.38));
+  --colorway-ramp-neutral: linear-gradient(135deg,
+    rgba(23, 23, 23, 0.90), rgba(51, 55, 62, 0.60), rgba(156, 163, 175, 0.35));
   --border: #dcdee0;            /* hairline-strong */
   --input: #dcdee0;
   --ring: var(--action);        /* focus follows the accent */
@@ -340,8 +349,7 @@ body {
    onestop opaque gradients failed AA wherever a highlight landed under a label. */
 .gradient-animated-ocean {
   background-color: var(--colorway-deep-ocean);
-  background-image: linear-gradient(135deg,
-    rgba(30, 111, 184, 0.90), rgba(13, 116, 206, 0.55), rgba(56, 189, 248, 0.40));
+  background-image: var(--colorway-ramp-ocean);
   background-size: 250% 250%;
   animation: gradient-flow 6s ease infinite;
   color: #ffffff;
@@ -349,8 +357,7 @@ body {
 
 .gradient-animated-emerald {
   background-color: var(--colorway-deep-emerald);
-  background-image: linear-gradient(135deg,
-    rgba(5, 150, 105, 0.90), rgba(22, 163, 74, 0.55), rgba(52, 211, 153, 0.38));
+  background-image: var(--colorway-ramp-emerald);
   background-size: 250% 250%;
   animation: gradient-flow 6s ease infinite;
   color: #ffffff;
@@ -358,8 +365,7 @@ body {
 
 .gradient-animated-amber {
   background-color: var(--colorway-deep-amber);
-  background-image: linear-gradient(135deg,
-    rgba(217, 119, 6, 0.88), rgba(180, 83, 9, 0.55), rgba(245, 158, 11, 0.38));
+  background-image: var(--colorway-ramp-amber);
   background-size: 250% 250%;
   animation: gradient-flow 6s ease infinite;
   color: #ffffff;
@@ -367,12 +373,45 @@ body {
 
 .gradient-animated-neutral {
   background-color: var(--colorway-deep-neutral);
-  background-image: linear-gradient(135deg,
-    rgba(23, 23, 23, 0.90), rgba(51, 55, 62, 0.60), rgba(156, 163, 175, 0.35));
+  background-image: var(--colorway-ramp-neutral);
   background-size: 250% 250%;
   animation: gradient-flow 6s ease infinite;
   color: #ffffff;
 }
+
+/* State-scoped fills: a control wears the action colour only while it is the
+   active one, so a row of inactive tabs never reads as a row of actions. */
+.gradient-on-active[data-state="active"],
+.gradient-on-active[aria-selected="true"],
+.gradient-on-active[aria-pressed="true"],
+.gradient-on-active[aria-current] {
+  background-color: var(--colorway-deep-ocean);
+  background-image: var(--colorway-ramp-ocean);
+  color: #ffffff;
+  animation: gradient-flow 6s ease infinite;
+}
+
+/* On/off controls claim no semantic role, so their on state is the hue-less one. */
+.gradient-on-checked[data-state="checked"] {
+  background-color: var(--colorway-deep-neutral);
+  background-image: var(--colorway-ramp-neutral);
+  color: #ffffff;
+  animation: gradient-flow 6s ease infinite;
+}
+
+/* Engagement-only motion: an action button sits still on its deep base and the
+   ramp starts moving when a pointer or keyboard actually engages it. */
+.gradient-state {
+  background-size: 250% 250%;
+  animation: none;
+}
+
+.gradient-state:hover,
+.gradient-state:focus-visible,
+.gradient-state:active {
+  animation: gradient-flow 6s ease infinite;
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
@@ -384,7 +423,15 @@ body {
   .gradient-animated-ocean,
   .gradient-animated-emerald,
   .gradient-animated-amber,
-  .gradient-animated-neutral {
+  .gradient-animated-neutral,
+  .gradient-on-active[data-state="active"],
+  .gradient-on-active[aria-selected="true"],
+  .gradient-on-active[aria-pressed="true"],
+  .gradient-on-active[aria-current],
+  .gradient-on-checked[data-state="checked"],
+  .gradient-state:hover,
+  .gradient-state:focus-visible,
+  .gradient-state:active {
     animation: none;
     background-size: 100% 100%;
   }
