@@ -108,7 +108,6 @@
   --series-2: #4f46e5;          /* ICON */
   --series-3: #c2410c;          /* GFS */
   --series-4: #be185d;          /* GEM */
-  --series-ink: #171717;        /* blend line: emphasised baseline */
   --border: #dcdee0;            /* hairline-strong */
   --input: #dcdee0;
   --ring: var(--action);        /* focus follows the accent */
@@ -152,7 +151,6 @@
   --color-series-2: var(--series-2);
   --color-series-3: var(--series-3);
   --color-series-4: var(--series-4);
-  --color-series-ink: var(--series-ink);
   --color-success: var(--semantic-success);
   --color-text-link: var(--color-text-link);
   --color-sky-light: var(--color-sky-light);
