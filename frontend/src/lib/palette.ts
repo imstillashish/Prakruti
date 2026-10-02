@@ -50,14 +50,15 @@ export const COLORWAY_DEEP = {
 } as const;
 
 /**
- * Animated-CTA fills (DESIGN.md v4 §12). WebGL uniforms take literal stops,
- * so they live here alongside the other JS-only bindings — first stop mirrors
- * the matching token, the rest are the gradient's depth and highlight.
+ * Animated-CTA fills (DESIGN.md v4 §12). WebGL uniforms take literal stops, so
+ * they live here alongside the other JS-only bindings. Every stop clears 4.5:1
+ * with white: the label reads the lit mesh, and the previous highlight stops
+ * (#cfe7ff 1.27:1) put it far under AA wherever the light caught them.
  */
 export const SHADER_FILL = {
-  ocean: [ACCENT.base, '#1e6fb8', '#cfe7ff'],
-  emerald: [DATA.ok, '#059669', '#bbf7d0'],
-  amber: [DATA.watch, '#d97706', '#fde68a'],
+  ocean: ['#084b86', '#0a5faa', ACCENT.base],
+  emerald: ['#034f39', '#036348', '#047857'],
+  amber: ['#6b3105', '#8f4207', '#b45309'],
 } as const;
 
 export function seriesColor(model: string): string {

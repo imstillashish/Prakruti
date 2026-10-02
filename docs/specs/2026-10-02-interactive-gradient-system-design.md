@@ -156,6 +156,33 @@ different accent per page (selection is ocean everywhere, even where the data is
 Stops live in `globals.css` for the mesh utilities and in `lib/palette.ts` for the WebGL uniforms, as
 the v4 invariant already requires. No component carries a gradient stop of its own.
 
+### 6.1 Amendment, 2026-10-02 (Task 8, after measurement)
+
+The table above is what this spec prescribed. Measurement changed two things, and the
+values below are what shipped.
+
+**A stop that composites below 4.5:1 with white is a defect.** A control's label reads the
+*composite* of the deep base and the translucent ramp, not the base on its own, so the
+prescribed highlight stops put the painted fill at 3.40:1 (ocean), 3.53:1 (emerald) and
+3.34:1 (amber). Verified twice: by compositing each stop at its declared alpha, and by
+sampling painted pixels on the running app (the emerald role action read `rgb(7,147,100)`,
+3.91:1 against its white label). The defects §1.2 set out to remove were therefore still
+present — they had moved from the base to the composite. Contrast measured against the
+deep-base token, which is what the audit's assertion does, cannot see this.
+
+**The action ramps now sweep between a deep shade of the hue and the accent.** Ocean
+`#084b86` · `#0a5faa` · `#0d74ce`; emerald `#034f39` · `#036348` · `#047857`; amber
+`#6b3105` · `#8f4207` · `#b45309`; neutral unchanged. `SHADER_FILL` in `lib/palette.ts`
+takes the same three per colorway, because the WebGL canvas covers the deep base while it
+is mounted and its previous stops included `#cfe7ff` (1.27:1). Measured afterwards: focal
+CTA 4.77:1, active lead-time chip 4.90:1, nav item 4.92:1, "Refresh Index" 7.08:1.
+
+**Cost, accepted by the owner:** the ramps no longer carry a light highlight, so the fills
+read deeper and flatter; the colour lives in the base hue rather than a sheen. The
+guarantee is now structural — every stop clears 4.5:1 on its own, and a composite of two
+AA-safe colours is AA-safe — and `scratch/palette_contrast_check.py` composites every stop
+over its base and fails on any that drops below.
+
 ## 7. Motion discipline and budget
 
 - One focal moment per view. Tier 2 motion is feedback and state, never ambience.

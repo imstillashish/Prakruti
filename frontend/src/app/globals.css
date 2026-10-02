@@ -114,13 +114,16 @@
   --colorway-deep-emerald: #047857;  /* verification */
   --colorway-deep-amber: #b45309;    /* hazard protocols */
   --colorway-deep-neutral: #33373e;  /* hue-less on/off */
-  /* Ramps are translucent so the deep base stays the surface text is read on. */
+  /* The label sits on the deep base composited with the ramp, so a stop that is
+     light enough to look good drags the painted fill under AA. The three action
+     ramps therefore sweep between a deep shade of the hue and the accent itself.
+     scratch/palette_contrast_check.py composites every stop over its base. */
   --colorway-ramp-ocean: linear-gradient(135deg,
-    rgba(30, 111, 184, 0.90), rgba(13, 116, 206, 0.55), rgba(56, 189, 248, 0.40));
+    rgba(8, 75, 134, 0.90), rgba(10, 95, 170, 0.55), rgba(13, 116, 206, 0.40));
   --colorway-ramp-emerald: linear-gradient(135deg,
-    rgba(5, 150, 105, 0.90), rgba(22, 163, 74, 0.55), rgba(52, 211, 153, 0.38));
+    rgba(3, 79, 57, 0.90), rgba(3, 99, 72, 0.55), rgba(4, 120, 87, 0.40));
   --colorway-ramp-amber: linear-gradient(135deg,
-    rgba(217, 119, 6, 0.88), rgba(180, 83, 9, 0.55), rgba(245, 158, 11, 0.38));
+    rgba(107, 49, 5, 0.90), rgba(143, 66, 7, 0.55), rgba(180, 83, 9, 0.40));
   --colorway-ramp-neutral: linear-gradient(135deg,
     rgba(23, 23, 23, 0.90), rgba(51, 55, 62, 0.60), rgba(156, 163, 175, 0.35));
   --border: #dcdee0;            /* hairline-strong */
@@ -343,10 +346,11 @@ body {
   }
 }
 
-/* Each utility is two layers: an opaque deep base that the label is measured
-   against, and a translucent ramp that moves over it. The ramp can never drag
-   the text surface below the deep base's contrast, which is why the previous
-   onestop opaque gradients failed AA wherever a highlight landed under a label. */
+/* Each utility is two layers: an opaque deep base and a translucent ramp moving
+   over it. The earlier ramps carried light highlight stops, and because the label
+   reads the composite — not the base — a highlight under it painted 3.3-3.5:1.
+   No stop may composite below 4.5:1 with white; the colours below are chosen so
+   none of them does. */
 .gradient-animated-ocean {
   background-color: var(--colorway-deep-ocean);
   background-image: var(--colorway-ramp-ocean);

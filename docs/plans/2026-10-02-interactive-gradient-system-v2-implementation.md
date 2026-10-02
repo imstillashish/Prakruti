@@ -200,8 +200,12 @@ control.
 **Files:**
 - Modify: `DESIGN.md` §12 (four colorways, the state matrix, the deep-base rule), the Colors
   section's accent table if the deep bases belong there, and `AGENTS.md`'s colourway list
+  — both are **gitignored and untracked** (`.gitignore:39,41`; policy commit `005f270`
+  "stop tracking internal agent docs"), so these amendments are local to the checkout.
+  The tracked record of the same change belongs in the spec under `docs/specs/`.
 - Modify (local, uncommitted): `scratch/palette_contrast_check.py` — assert the four colorway names
-  in `DESIGN.md` and that `indigo|ink` are absent as live colorways
+  in `DESIGN.md`, that `indigo|ink` are absent as live colorways, and that no ramp stop
+  composites below 4.5:1 with white over its deep base.
 
 **Interfaces:**
 - Consumes: everything above.
@@ -213,7 +217,8 @@ control.
   palette guard unchanged.
 - [ ] **Step 3: Perceptual evidence** — screenshots of a selection-dense page and an RPI page at the
   three viewports, plus a `forced-colors` capture proving the active state survives without colour.
-- [ ] **Step 4: Commit** `docs(design): amend §12 to the tiered gradient system`
+- [ ] **Step 4: Commit** the AA ramp correction and the spec amendment — `DESIGN.md` and
+  `AGENTS.md` themselves cannot be committed; they are gitignored by policy.
 
 ---
 
