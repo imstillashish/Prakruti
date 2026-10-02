@@ -162,6 +162,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                   <div className="mt-2.5 flex flex-wrap items-center gap-3">
                     <ShaderButton
                       type="button"
+                      variant="amber"
                       onClick={() => handleDispatch(rec.id)}
                       className="h-8 px-3 text-xs"
                     >

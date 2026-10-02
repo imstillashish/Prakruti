@@ -138,7 +138,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
             <button
               type="button"
               onClick={handleRefresh}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium gradient-animated-emerald transition-transform duration-100 active:translate-y-px cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium gradient-animated-emerald gradient-state transition-transform duration-100 active:translate-y-px cursor-pointer"
               title="Refresh Synoptic RPI Run"
             >
               <RefreshCw
