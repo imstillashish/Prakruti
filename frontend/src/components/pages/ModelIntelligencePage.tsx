@@ -8,7 +8,7 @@ import { Panel } from '@/components/shell/Panel';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { getWeights, MOCK_REGION_DOMINANCE } from '@/lib/api';
 import type { RegionModelDominance } from '@/types';
-import { MapPin, BrainCircuit } from '@/components/icons';
+import { MapPin, Sparkles } from '@/components/icons';
 export function ModelIntelligencePage() {
   const [dominance, setDominance] = useState<RegionModelDominance[]>(MOCK_REGION_DOMINANCE);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +36,7 @@ export function ModelIntelligencePage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        icon={BrainCircuit}
+        icon={Sparkles}
         title="Model Intelligence"
         sub="Which forecast model is most accurate for your city, and by how much."
       />
@@ -65,7 +65,7 @@ export function ModelIntelligencePage() {
           {dominance.map((r) => (
             <div key={r.region} className="p-3 rounded-md bg-card border border-border">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1 font-mono">
-                <MapPin size={11} className="text-water" />
+                <MapPin size={11} className="text-data-rain" />
                 {r.region}
               </div>
               <div className="text-sm font-semibold text-foreground">{r.dominantModel}</div>

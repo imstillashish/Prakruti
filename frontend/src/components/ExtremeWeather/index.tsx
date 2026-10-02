@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { AlertTriangle, CloudRain, ChevronRight } from '@/components/icons';
+import { AlertTriangle, CloudRain, ChevronRight, Flame, Wind, Thermometer } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
-import { Thermometer, Wind, ShieldAlert } from 'lucide-react';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
@@ -11,7 +10,7 @@ import type { ExtremeEvent } from '@/types';
 
 const EVENT_ICONS: Record<ExtremeEvent['type'], IconComponent> = {
   heavy_rainfall: CloudRain,
-  heatwave: Thermometer,
+  heatwave: Flame,
   high_wind: Wind,
   cyclone: AlertTriangle,
   cold_wave: Thermometer,

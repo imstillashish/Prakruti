@@ -1,8 +1,6 @@
 'use client';
-
-import React, { useState } from 'react';
-import { Flame, CheckCircle2, Send, Info } from '@/components/icons';
-import { Droplets, Wind, Building2 } from 'lucide-react';
+import { useState } from 'react';
+import { Flame, CheckCircle2, Send, Info, CloudRain, Wind, Building } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Badge } from '@/components/ui/badge';
@@ -41,13 +39,13 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'rain':
-        return <Droplets className="w-3.5 h-3.5 text-water shrink-0" />;
+        return <CloudRain className="w-3.5 h-3.5 text-data-rain shrink-0" />;
       case 'heat':
         return <Flame className="w-3.5 h-3.5 text-destructive shrink-0" />;
       case 'wind':
         return <Wind className="w-3.5 h-3.5 text-foreground shrink-0" />;
       default:
-        return <Building2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />;
+        return <Building className="w-3.5 h-3.5 text-muted-foreground shrink-0" />;
     }
   };
 
@@ -82,7 +80,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
     <section className="rounded-lg border border-border bg-card overflow-hidden">
       {/* Header bar */}
       <SectionBanner
-        icon={Building2}
+        icon={Building}
         title="Resource Recommendation Engine"
         pill="Govt EOC Active"
         subline={
@@ -124,7 +122,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[11px] text-muted-foreground">Mobilized:</span>
-          <span className="font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20 text-[11px]">
+          <span className="font-bold text-data-ok-text bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20 text-[11px]">
             {dispatchedIds.size} / {rpiData.recommendations.length} Orders
           </span>
         </div>

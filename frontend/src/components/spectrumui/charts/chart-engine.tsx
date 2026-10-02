@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { SERIES, DATA } from '@/lib/palette';
 
 export const marketVarsClassName =
-  '[--spectrum-chart-up:#16a34a] [--spectrum-chart-down:#b42318] [--spectrum-chart-surface:#fff]';
+  `[--spectrum-chart-up:${DATA.ok}] [--spectrum-chart-down:${DATA.hazard}] [--spectrum-chart-surface:#fff]`;
 
 export const UP = 'var(--spectrum-chart-up)';
 export const DOWN = 'var(--spectrum-chart-down)';
@@ -590,7 +591,7 @@ export function changeColor(change: number, cap = 4) {
 }
 
 export const seriesVarsClassName =
-  '[--spectrum-series-1:#171717] [--spectrum-series-2:#1e6fb8] [--spectrum-series-3:#60646c] [--spectrum-series-4:#9e9e9e] [--spectrum-series-5:#dcdee0] [--spectrum-series-6:#ab6400] [--spectrum-track:#f0f0f3] [--spectrum-chart-surface:#fff] [--spectrum-chart-up:#16a34a] [--spectrum-chart-down:#b42318]';
+  `[--spectrum-series-1:${SERIES.ECMWF}] [--spectrum-series-2:${SERIES.ICON}] [--spectrum-series-3:${SERIES.GFS}] [--spectrum-series-4:${SERIES.GEM}] [--spectrum-series-5:${DATA.rain}] [--spectrum-series-6:${DATA.watch}] [--spectrum-track:#f0f0f3] [--spectrum-chart-surface:#fff] [--spectrum-chart-up:${DATA.ok}] [--spectrum-chart-down:${DATA.hazard}]`;
 
 export const SERIES_COLORS = [
   'var(--spectrum-series-1)',

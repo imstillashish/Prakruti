@@ -1,10 +1,9 @@
 'use client';
-
-import React, { useState, useMemo } from 'react';
-import { ShieldCheck, Cpu, Sliders, CheckCircle2, Flame, Layers, ArrowRight, AlertTriangle, ExternalLink } from '@/components/icons';
-import { ShieldAlert, Droplets, Wind, TrendingUp, Building2 } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ShieldCheck, Sparkles, Sliders, CheckCircle2, Flame, CloudRain, Wind, Layers, ArrowRight, AlertTriangle, ExternalLink } from '@/components/icons';
 import { RpiData, RpiPriority, ResourceAction } from '@/types';
 import { Explain } from '@/components/explain/Explain';
+import { SERIES, DATA } from '@/lib/palette';
 
 interface StationDossierProps {
   rpiData: RpiData | null;
@@ -19,22 +18,22 @@ const MODEL_INFO: Record<
 > = {
   ECMWF: {
     label: 'ECMWF IFS',
-    hex: '#171717',
+    hex: SERIES.ECMWF,
     desc: 'European Centre (Primary Precipitation Bias Weight)',
   },
   ICON: {
     label: 'ICON Seamless',
-    hex: '#60646c',
+    hex: SERIES.ICON,
     desc: 'German Weather Service (Convective & Boundary Layer Precision)',
   },
   GFS: {
     label: 'GFS Global',
-    hex: '#1e6fb8',
+    hex: SERIES.GFS,
     desc: 'NOAA NCEP (Synoptic Circulation & Jet Stream Tracking)',
   },
   GEM: {
     label: 'GEM Canada',
-    hex: '#9e9e9e',
+    hex: SERIES.GEM,
     desc: 'Environment Canada (Surface Temperature & Dewpoint)',
   },
 };
@@ -45,7 +44,7 @@ const PRIORITY_BADGE_STYLE: Record<
 > = {
   Low: {
     bg: 'bg-success/10',
-    text: 'text-success',
+    text: 'text-data-ok-text',
     border: 'border-success/30',
     label: 'LOW RISK',
   },
@@ -151,7 +150,7 @@ export function StationDossier({
             onClick={() => setActiveTab('risk')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'risk'
-                ? 'gradient-animated-ink font-semibold'
+                ? 'bg-action-soft text-action-pressed font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -162,7 +161,7 @@ export function StationDossier({
             onClick={() => setActiveTab('ndma')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'ndma'
-                ? 'gradient-animated-ink font-semibold'
+                ? 'bg-action-soft text-action-pressed font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -173,7 +172,7 @@ export function StationDossier({
             onClick={() => setActiveTab('hotspots')}
             className={`flex-1 py-1 px-2 text-center rounded-sm transition-colors cursor-pointer text-xs ${
               activeTab === 'hotspots'
-                ? 'gradient-animated-ink font-semibold'
+                ? 'bg-action-soft text-action-pressed font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -195,11 +194,11 @@ export function StationDossier({
             <div className="p-3 rounded-md bg-secondary/50 border border-border">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-foreground" />
+                  <AlertTriangle className="w-3.5 h-3.5 text-foreground" />
                   RPI Synoptic Evaluation
                 </span>
                 <span className="text-[11px] font-mono text-muted-foreground">
-                  Confidence: <strong className="text-success">{rpiData.confidence}%</strong>
+                  Confidence: <strong className="text-data-ok-text">{rpiData.confidence}%</strong>
                 </span>
               </div>
 
@@ -207,7 +206,7 @@ export function StationDossier({
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="p-2 rounded bg-card border border-border">
                   <div className="text-[10px] font-mono text-muted-foreground flex items-center justify-center gap-1">
-                    <Droplets className="w-2.5 h-2.5 text-water" /> Rain Risk
+                    <CloudRain className="w-2.5 h-2.5 text-data-rain" /> Rain Risk
                   </div>
                   <div className="text-xs font-mono font-bold text-foreground mt-0.5">
                     {rpiData.rainRisk}%
@@ -236,7 +235,7 @@ export function StationDossier({
             <div className="p-3 rounded-md bg-card border border-border space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <Cpu className="w-3.5 h-3.5 text-foreground" />
+                  <Sparkles className="w-3.5 h-3.5 text-foreground" />
                   <span className="text-xs font-semibold text-foreground">Dominant Model in Grid</span>
                 </div>
                 <span
@@ -265,48 +264,48 @@ export function StationDossier({
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
                     <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full bg-[#171717]" /> ECMWF IFS
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} /> ECMWF IFS
                     </span>
                     <span className="font-bold text-foreground">{weights.ecmwf}%</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#171717]" style={{ width: `${weights.ecmwf}%` }} />
+                    <div className="h-full" style={{ backgroundColor: SERIES.ECMWF, width: `${weights.ecmwf}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
                     <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full bg-[#60646c]" /> ICON Seamless
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ICON }} /> ICON Seamless
                     </span>
                     <span className="font-bold text-foreground">{weights.icon}%</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#60646c]" style={{ width: `${weights.icon}%` }} />
+                    <div className="h-full" style={{ backgroundColor: SERIES.ICON, width: `${weights.icon}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
                     <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full bg-[#1e6fb8]" /> GFS Global
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GFS }} /> GFS Global
                     </span>
                     <span className="font-bold text-foreground">{weights.gfs}%</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#1e6fb8]" style={{ width: `${weights.gfs}%` }} />
+                    <div className="h-full" style={{ backgroundColor: SERIES.GFS, width: `${weights.gfs}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
                     <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full bg-[#9e9e9e]" /> GEM Canada
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GEM }} /> GEM Canada
                     </span>
                     <span className="font-bold text-foreground">{weights.gem}%</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#9e9e9e]" style={{ width: `${weights.gem}%` }} />
+                    <div className="h-full" style={{ backgroundColor: SERIES.GEM, width: `${weights.gem}%` }} />
                   </div>
                 </div>
               </div>
@@ -323,7 +322,7 @@ export function StationDossier({
                   onClick={() => setNdmaCategory(cat)}
                   className={`px-2 py-0.5 rounded text-[11px] font-mono capitalize transition-colors cursor-pointer ${
                     ndmaCategory === cat
-                      ? 'gradient-animated-ink font-bold'
+                      ? 'bg-action-soft text-action-pressed font-bold border border-action/30'
                       : 'bg-secondary text-muted-foreground hover:text-foreground'
                   }`}
                 >

@@ -64,7 +64,7 @@ export function ModelPerformancePage() {
                 <thead>
                   <tr className="border-b border-border text-muted-foreground">
                     <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Period</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] text-success">Blended (Ours)</th>
+                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] text-data-ok-text">Blended (Ours)</th>
                     <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">AI Model</th>
                     <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">ECMWF IFS</th>
                     <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">GFS</th>
@@ -75,7 +75,7 @@ export function ModelPerformancePage() {
                   {metrics.map((row) => (
                     <tr key={row.period} className="text-foreground hover:bg-secondary">
                       <td className="py-2.5 font-semibold text-foreground">{row.period}</td>
-                      <td className="py-2.5 text-right font-bold text-success bg-success/10 px-2 rounded-sm">{row.blended}</td>
+                      <td className="py-2.5 text-right font-bold text-data-ok-text bg-card px-2 rounded-sm">{row.blended}</td>
                       <td className="py-2.5 text-right text-muted-foreground px-2">{row.ai}</td>
                       <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpA}</td>
                       <td className="py-2.5 text-right text-muted-foreground px-2">{row.nwpB}</td>

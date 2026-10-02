@@ -168,7 +168,7 @@ export function StatusStrip() {
             title="Refresh status"
             className="p-1 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
           >
-            <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-water' : ''} />
+            <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-action' : ''} />
           </button>
         </div>
       </div>

@@ -89,8 +89,7 @@ export function DockedThumbBar({
               <ChevronDown size={13} className="text-muted-foreground shrink-0" />
             </button>
 
-            <span className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-full bg-secondary border border-border/60 text-[10px] font-mono font-medium text-foreground whitespace-nowrap shrink-0">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#16a34a] animate-pulse" />
+            <span className="inline-flex items-center px-2 py-1.5 rounded-full bg-success/10 border border-success/20 text-[10px] font-mono font-semibold text-data-ok-text whitespace-nowrap shrink-0">
               <span className="hidden min-[360px]:inline">LOW RISK</span>
               <span className="min-[360px]:hidden">LOW</span>
             </span>

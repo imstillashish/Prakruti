@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CheckCircle, Activity, Clock } from '@/components/icons';
+import { CheckCircle, Activity, Clock, AlertTriangle, X } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
-import { AlertCircle, XCircle } from 'lucide-react';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { MOCK_DATA_SOURCES, ENGINE_STATUS, getForecast } from '@/lib/api';
@@ -10,8 +9,8 @@ import { DataSource } from '@/types';
 
 const STATUS_CONFIG: Record<DataSource['status'], { icon: IconComponent; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
   healthy: { icon: CheckCircle, color: '#16a34a', label: 'Nominal', badge: 'default' },
-  delayed: { icon: AlertCircle, color: '#ab6400', label: 'Delayed', badge: 'warning' },
-  unavailable: { icon: XCircle, color: '#b42318', label: 'Offline', badge: 'destructive' },
+  delayed: { icon: AlertTriangle, color: '#ab6400', label: 'Delayed', badge: 'warning' },
+  unavailable: { icon: X, color: '#b42318', label: 'Offline', badge: 'destructive' },
 };
 
 export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { collapsibleOnPhone?: boolean; collapsibleOnTablet?: boolean }) {
@@ -79,11 +78,11 @@ export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
       </div>
 
       <div
-        className="mt-3.5 p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground"
+        className="mt-3.5 p-3 rounded-md bg-card border border-border text-xs font-mono text-muted-foreground"
       >
         <div className="flex items-center justify-between text-[11px]">
           <span>Cache Invalidation: 60m TTL</span>
-          <span className="text-success font-bold">100% Data Integrity</span>
+          <span className="text-data-ok-text font-bold">100% Data Integrity</span>
         </div>
       </div>
     </Panel>

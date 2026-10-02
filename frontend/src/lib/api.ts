@@ -42,6 +42,7 @@ import {
   MOCK_REGION_DOMINANCE,
   ENGINE_STATUS,
 } from '@/data/mockData';
+import { SERIES } from '@/lib/palette';
 
 export {
   MOCK_FORECAST,
@@ -866,10 +867,10 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
     }
 
     const modelDisplayNames: Record<string, { name: string; color: string }> = {
-      ecmwf: { name: 'ECMWF IFS', color: '#171717' },
-      gfs: { name: 'GFS Seamless', color: '#1e6fb8' },
-      icon: { name: 'ICON Seamless', color: '#60646c' },
-      gem: { name: 'GEM Seamless', color: '#9e9e9e' },
+      ecmwf: { name: 'ECMWF IFS', color: SERIES.ECMWF },
+      gfs: { name: 'GFS Seamless', color: SERIES.GFS },
+      icon: { name: 'ICON Seamless', color: SERIES.ICON },
+      gem: { name: 'GEM Seamless', color: SERIES.GEM },
       ai: { name: 'AI Hybrid Model', color: '#000000' },
     };
 

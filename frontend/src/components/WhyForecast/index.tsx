@@ -4,6 +4,7 @@ import { Modal } from '@/components/ui/Modal';
 import { getModelWeightsData, getConfidence, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight, ConfidenceRecord } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { SERIES } from '@/lib/palette';
 
 interface WhyForecastModalProps {
   open: boolean;
@@ -58,7 +59,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
               className="p-3 rounded-md bg-secondary border border-border"
             >
               <div className="text-[11px] text-muted-foreground mb-0.5">{item.label}</div>
-              <div className={`text-sm font-semibold ${item.highlight ? 'text-success' : 'text-foreground'}`}>
+              <div className={`text-sm font-semibold ${item.highlight ? 'text-data-ok-text' : 'text-foreground'}`}>
                 {item.value}
               </div>
             </div>
@@ -75,7 +76,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
               <ProgressBar
                 key={w.id}
                 value={w.weight}
-                color={w.id === 'ecmwf' ? '#171717' : w.id === 'gfs' ? '#1e6fb8' : w.id === 'icon' ? '#60646c' : '#9e9e9e'}
+                color={w.id === 'ecmwf' ? SERIES.ECMWF : w.id === 'gfs' ? SERIES.GFS : w.id === 'icon' ? SERIES.ICON : SERIES.GEM}
                 label={w.name}
                 height={6}
               />

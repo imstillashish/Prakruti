@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Terminal, Play, Copy, Check, Code2, Clock, Layers, Search, ExternalLink, ShieldCheck, CloudRain, Flame, Activity, AlertTriangle, RefreshCw } from '@/components/icons';
-import { Database } from 'lucide-react';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { API } from '@/lib/api';
@@ -395,7 +394,6 @@ export function ApiPage() {
         action={
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-card border border-border text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               <span>Host: prakruti-api.onrender.com</span>
             </span>
           </div>
@@ -561,7 +559,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('response')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'response'
-                      ? 'gradient-animated-ink font-semibold'
+                      ? 'bg-action-soft text-action-pressed font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -572,7 +570,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('snippets')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'snippets'
-                      ? 'gradient-animated-ink font-semibold'
+                      ? 'bg-action-soft text-action-pressed font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -583,7 +581,7 @@ export function ApiPage() {
                   onClick={() => setInspectorTab('schema')}
                   className={`px-3 py-1 rounded-sm transition-colors cursor-pointer text-xs ${
                     inspectorTab === 'schema'
-                      ? 'gradient-animated-ink font-semibold'
+                      ? 'bg-action-soft text-action-pressed font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -597,7 +595,7 @@ export function ApiPage() {
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       responseStatus === 200
-                        ? 'bg-success/10 text-success border border-success/30'
+                        ? 'bg-action-soft text-data-ok-text border border-success/30'
                         : 'bg-destructive/10 text-destructive border border-destructive/30'
                     }`}
                   >
@@ -631,8 +629,8 @@ export function ApiPage() {
                   >
                     {copiedType === 'json' ? (
                       <>
-                        <Check size={11} className="text-success" />
-                        <span className="text-success font-bold">Copied</span>
+                        <Check size={11} className="text-data-ok-text" />
+                        <span className="text-data-ok-text font-bold">Copied</span>
                       </>
                     ) : (
                       <>
@@ -656,10 +654,10 @@ export function ApiPage() {
                       key={lang}
                       type="button"
                       onClick={() => setSnippetLanguage(lang)}
-                      className={`px-3 py-2 min-h-[36px] flex items-center rounded text-xs font-mono uppercase transition-colors cursor-pointer touch-manipulation ${
+                      className={`px-3 py-2 min-h-[36px] flex items-center rounded text-xs font-mono uppercase transition-colors cursor-pointer touch-manipulation border ${
                         snippetLanguage === lang
-                          ? 'gradient-animated-ink font-bold'
-                          : 'bg-secondary text-muted-foreground hover:text-foreground'
+                          ? 'bg-action-soft text-action-pressed font-bold border-action/30'
+                          : 'bg-secondary text-muted-foreground hover:text-foreground border-transparent'
                       }`}
                     >
                       {lang === 'ts' ? 'TypeScript' : lang}
@@ -676,8 +674,8 @@ export function ApiPage() {
                     >
                       {copiedType === 'snippet' ? (
                         <>
-                          <Check size={11} className="text-success" />
-                          <span className="text-success font-bold">Copied</span>
+                          <Check size={11} className="text-data-ok-text" />
+                          <span className="text-data-ok-text font-bold">Copied</span>
                         </>
                       ) : (
                         <>

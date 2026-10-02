@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/shell/PageHeader';
 import { StationDossier } from '@/components/RPI/StationDossier';
 import { getRpiData, getAllRpiData, SERVER_WAKING_UP_MSG } from '@/lib/api';
 import { RpiData } from '@/types';
+import { SERIES } from '@/lib/palette';
 
 // Dynamic import with SSR disabled for Leaflet Map
 const RealTrustAtlasMap = dynamic(() => import('@/components/RPI/RealTrustAtlasMap'), {
@@ -26,10 +27,10 @@ interface RpiPageProps {
 
 const MODEL_FILTERS = [
   { id: 'ALL', label: 'All Models', color: '#171717' },
-  { id: 'ECMWF', label: 'ECMWF IFS', color: '#171717' },
-  { id: 'ICON', label: 'ICON Seamless', color: '#60646c' },
-  { id: 'GFS', label: 'GFS Global', color: '#1e6fb8' },
-  { id: 'GEM', label: 'GEM Canada', color: '#9e9e9e' },
+  { id: 'ECMWF', label: 'ECMWF IFS', color: SERIES.ECMWF },
+  { id: 'ICON', label: 'ICON Seamless', color: SERIES.ICON },
+  { id: 'GFS', label: 'GFS Global', color: SERIES.GFS },
+  { id: 'GEM', label: 'GEM Canada', color: SERIES.GEM },
 ];
 
 export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps) {
@@ -167,7 +168,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
                 onClick={() => setActiveModelFilter(mf.id)}
                 className={`px-3 py-2 min-h-[40px] flex items-center rounded-md text-xs font-mono transition-colors cursor-pointer shrink-0 border touch-manipulation ${
                   activeModelFilter === mf.id
-                    ? 'gradient-animated-ink font-bold border-transparent'
+                    ? 'bg-action-soft text-action-pressed font-bold border-action/30'
                     : 'bg-card hover:bg-secondary text-muted-foreground border-border'
                 }`}
               >

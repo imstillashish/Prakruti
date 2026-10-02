@@ -1,5 +1,5 @@
 'use client';
-import { AlertTriangle, BrainCircuit, CloudRain, Gauge, Globe2, HeartPulse, LayoutDashboard, Terminal } from '@/components/icons';
+import { AlertTriangle, Sparkles, CloudRain, Gauge, Globe2, HeartPulse, LayoutDashboard, Terminal } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
 import type { NavPage } from '@/types';
 
@@ -11,7 +11,7 @@ export const NAV_ITEMS: { page: NavPage; label: string; subtitle: string; icon: 
   // the closest catalogue analogue (atlas, hazard, health) rather than mixing
   // a second icon language into the list.
   { page: 'rpi', label: 'RPI & Trust Atlas', subtitle: 'Where weather risk is highest, and which model to trust there', icon: Globe2 },
-  { page: 'model-intelligence', label: 'Model Intelligence', subtitle: 'Which forecast model is most accurate for your city, and by how much', icon: BrainCircuit },
+  { page: 'model-intelligence', label: 'Model Intelligence', subtitle: 'Which forecast model is most accurate for your city, and by how much', icon: Sparkles },
   { page: 'extreme-weather', label: 'Extreme Weather', subtitle: 'Early warnings for heatwaves, cloudbursts and windstorms', icon: AlertTriangle },
   { page: 'model-performance', label: 'Performance', subtitle: 'How much error the AI blend removes compared to any single model', icon: Gauge },
   { page: 'data-health', label: 'Data Health', subtitle: 'Whether the data feeding the forecasts is fresh and complete', icon: HeartPulse },

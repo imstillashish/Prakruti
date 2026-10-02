@@ -1,8 +1,7 @@
 'use client';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { MapPin, Info, Lock } from '@/components/icons';
-import { Hand } from 'lucide-react';
+import { MapPin, Info, Lock, Pointer } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CityForecast } from '@/types';
@@ -44,7 +43,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
               <span className="text-sm font-semibold text-foreground tracking-tight">
                 Synoptic Geospatial Map
               </span>
-              <Badge variant="water">45 Stations</Badge>
+              <Badge variant="rain">45 Stations</Badge>
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">Real CartoDB Topographic Grid · Live Station Telemetry</p>
           </div>
@@ -117,7 +116,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
               onClick={() => setIsMapActive(true)}
               className="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] rounded-full bg-card/95 text-foreground border border-border shadow-lg text-xs font-semibold active:scale-95 transition-all cursor-pointer"
             >
-              <Hand size={16} className="text-water" />
+              <Pointer size={16} className="text-action" />
               <span>Tap to interact with map</span>
             </button>
             <span className="mt-2 text-[10px] sm:text-[11px] font-mono text-muted-foreground bg-card/90 px-2.5 py-1 rounded-full border border-border shadow-xs">

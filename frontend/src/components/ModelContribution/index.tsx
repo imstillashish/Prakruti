@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { TrendingUp } from 'lucide-react';
+import { Activity } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
 import { ChartState } from '@/components/spectrumui/charts/chart-engine';
@@ -46,7 +46,7 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
       collapsibleOnTablet={collapsibleOnTablet}
       actions={
         <span className="flex items-center gap-1.5 text-xs text-primary font-mono font-semibold">
-          <TrendingUp size={13} />
+          <Activity size={13} />
           Dynamic
         </span>
       }

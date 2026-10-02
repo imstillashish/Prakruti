@@ -3,7 +3,6 @@ import { DataHealthPanel } from '@/components/DataHealth';
 import { Panel } from '@/components/shell/Panel';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { Activity } from '@/components/icons';
-import { Server } from 'lucide-react';
 import { ENGINE_STATUS } from '@/lib/api';
 
 export function DataHealthPage() {

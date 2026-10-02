@@ -7,9 +7,10 @@ import { Panel } from '@/components/shell/Panel';
 import { getModelComparisonData, MOCK_MODEL_COMPARISON } from '@/lib/api';
 import { useMediaQuery, DESKTOP_QUERY } from '@/lib/useMediaQuery';
 import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
+import { DATA } from '@/lib/palette';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: '#1e6fb8' },
+  rainfall: { label: 'Rainfall', unit: 'mm', color: DATA.rain },
   temperature: { label: 'Temperature', unit: '°C', color: '#ab6400' },
   wind: { label: 'Wind', unit: 'km/h', color: '#60646c' },
 };
@@ -237,7 +238,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                       {isBlended ? (
                         <span className="text-foreground font-semibold">Consensus Blend</span>
                       ) : (
-                        <span className={delta > 0 ? 'text-[#ab6400]' : delta < 0 ? 'text-water' : 'text-muted-foreground'}>
+                        <span className={delta > 0 ? 'text-[#ab6400]' : delta < 0 ? 'text-data-rain' : 'text-muted-foreground'}>
                           {delta > 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1)} {config.unit}
                         </span>
                       )}
@@ -255,11 +256,11 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
           {/* Desktop Legend */}
           <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-border text-xs font-mono">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-foreground" />
+              <span className="w-3.5 h-0.5 bg-foreground" />
               <span className="text-foreground font-semibold">Hybrid AI Blend</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e]" />
+              <span className="w-3.5 h-0.5 bg-[#9e9e9e]" />
               <span className="text-muted-foreground">Raw NWP Forecasts</span>
             </div>
           </div>
@@ -337,7 +338,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                         {isBlended ? (
                           <span className="text-foreground font-semibold">● Consensus Anchor</span>
                         ) : (
-                          <span className={delta > 0 ? 'text-[#ab6400] font-medium' : delta < 0 ? 'text-water font-medium' : 'text-muted-foreground'}>
+                          <span className={delta > 0 ? 'text-[#ab6400] font-medium' : delta < 0 ? 'text-data-rain font-medium' : 'text-muted-foreground'}>
                             {delta > 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1)} {config.unit} vs Blend
                           </span>
                         )}
@@ -359,7 +360,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
 
                   <div className="mt-4 pt-2.5 border-t border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
                     <span>Consensus State</span>
-                    <span className={Math.abs(delta) < 5 ? 'text-success font-medium' : 'text-[#ab6400] font-medium'}>
+                    <span className={Math.abs(delta) < 5 ? 'text-data-ok-text font-medium' : 'text-[#ab6400] font-medium'}>
                       {Math.abs(delta) < 5 ? 'Tight Consensus' : 'Elevated Spread'}
                     </span>
                   </div>
