@@ -130,9 +130,10 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
                 key={station}
                 type="button"
                 onClick={() => handleQuickStationSelect(station)}
+                aria-pressed={Boolean(isSelected)}
                 className={`snap-start shrink-0 min-h-[44px] px-3.5 py-2 rounded-full text-xs font-mono transition-all flex items-center justify-center active:scale-95 ${
                   isSelected
-                    ? 'bg-action text-white font-bold shadow-xs'
+                    ? 'gradient-on-active font-bold'
                     : 'bg-card text-foreground border border-border hover:bg-secondary'
                 }`}
               >

@@ -56,9 +56,10 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
               <button
                 key={t}
                 onClick={() => setLeadTime(t)}
+                aria-pressed={leadTime === t}
                 className={`px-2.5 py-2 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation ${
                   leadTime === t
-                    ? 'bg-card text-foreground font-semibold shadow-xs'
+                    ? 'gradient-on-active font-semibold'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 type="button"

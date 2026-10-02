@@ -122,7 +122,7 @@ export function ChartStatusSwitcher({ className }: { className?: string }) {
   'rounded-full px-3 py-1 font-mono text-[11px] leading-none transition-colors',
   'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black/20 ',
   active
-  ? 'bg-white text-foreground shadow-sm  '
+  ? 'gradient-animated-ocean text-white '
   : 'text-muted-foreground hover:text-foreground  ',
   )}
   >

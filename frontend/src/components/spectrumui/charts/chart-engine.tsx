@@ -425,7 +425,7 @@ export function RangeSelector({
   >
   <span
   aria-hidden
-  className="absolute inset-y-0.5 left-0.5 rounded-full bg-white shadow-sm ring-1 ring-black/[0.06]  "
+  className="absolute inset-y-0.5 left-0.5 rounded-full gradient-animated-ocean  "
   style={{
   width: `calc(${width}% - 4px)`,
   transform: `translateX(calc(${index * 100}% + ${index * 4}px))`,
@@ -445,7 +445,7 @@ export function RangeSelector({
   'relative z-10 rounded-full px-2.5 py-1 font-mono text-[11px] leading-none tracking-wide transition-colors duration-200',
   'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black/20 ',
   active
-  ? 'text-foreground '
+  ? 'text-white '
   : 'text-muted-foreground hover:text-foreground  ',
   )}
   style={{ flex: `0 0 ${width}%` }}

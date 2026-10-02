@@ -493,11 +493,11 @@ function FilterPill({
   (motionOn ? (
   <motion.span
   layoutId={layoutId}
-  className="absolute inset-0 rounded-full bg-foreground "
+  className="absolute inset-0 rounded-full gradient-animated-ocean "
   transition={SPRING_FLUID}
   />
   ) : (
-  <span className="absolute inset-0 rounded-full bg-foreground " />
+  <span className="absolute inset-0 rounded-full gradient-animated-ocean " />
   ))}
   <span className="relative z-10">{label}</span>
   <span
