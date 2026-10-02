@@ -1,22 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import {
-  ShieldAlert,
-  ShieldCheck,
-  Cpu,
-  Sliders,
-  CheckCircle2,
-  Droplets,
-  Flame,
-  Wind,
-  Layers,
-  ArrowRight,
-  TrendingUp,
-  AlertTriangle,
-  Building2,
-  ExternalLink,
-} from 'lucide-react';
+import { ShieldCheck, Cpu, Sliders, CheckCircle2, Flame, Layers, ArrowRight, AlertTriangle, ExternalLink } from '@/components/icons';
+import { ShieldAlert, Droplets, Wind, TrendingUp, Building2 } from 'lucide-react';
 import { RpiData, RpiPriority, ResourceAction } from '@/types';
 import { Explain } from '@/components/explain/Explain';
 

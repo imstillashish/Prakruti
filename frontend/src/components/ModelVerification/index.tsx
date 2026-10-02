@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { Panel } from '@/components/shell/Panel';
 import { getModelVerification } from '@/lib/api';
 import type { VerificationPayload, ContinuousVerificationRow, CategoricalVerificationRow } from '@/lib/api';
@@ -38,10 +38,12 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
           <tr className="border-b border-border text-muted-foreground">
             <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Method</th>
             {VARS.map((v) => (
-              <>
-                <th key={`${v}-mae`} className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} MAE</th>
-                <th key={`${v}-rmse`} className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} RMSE</th>
-              </>
+              // The MAE/RMSE pair is one array entry, so the key belongs on the
+              // fragment itself — React warns when the fragment is unkeyed.
+              <Fragment key={v}>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} MAE</th>
+                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} RMSE</th>
+              </Fragment>
             ))}
           </tr>
         </thead>
@@ -58,14 +60,14 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
                   const r = rows.find((x) => x.model === m && x.variable === v);
                   if (!r) return <td key={`${v}-na`} className="px-2 text-right text-muted-foreground">—</td>;
                   return (
-                    <>
-                      <td key={`${v}-mae`} className={`py-2.5 text-right px-2 font-semibold ${r.mae === best.get(`${v}:mae`) ? 'text-success' : 'text-foreground'}`}>
+                    <Fragment key={v}>
+                      <td className={`py-2.5 text-right px-2 font-semibold ${r.mae === best.get(`${v}:mae`) ? 'text-success' : 'text-foreground'}`}>
                         {fmt(r.mae)}
                       </td>
-                      <td key={`${v}-rmse`} className={`py-2.5 text-right px-2 ${r.rmse === best.get(`${v}:rmse`) ? 'text-success font-semibold' : 'text-muted-foreground'}`}>
+                      <td className={`py-2.5 text-right px-2 ${r.rmse === best.get(`${v}:rmse`) ? 'text-success font-semibold' : 'text-muted-foreground'}`}>
                         {fmt(r.rmse)}
                       </td>
-                    </>
+                    </Fragment>
                   );
                 })}
               </tr>

@@ -3,17 +3,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import {
-  Layers,
-  MapPin,
-  Cpu,
-  TrendingUp,
-  Percent,
-  CheckCircle,
-  BarChart2,
-  Sliders,
-  ShieldCheck,
-} from 'lucide-react';
+import { Layers, MapPin, Cpu, CheckCircle, BarChart2, Sliders, ShieldCheck } from '@/components/icons';
+import { TrendingUp, Percent } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData } from '@/types';

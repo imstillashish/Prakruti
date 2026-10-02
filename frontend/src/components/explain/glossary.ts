@@ -1,6 +1,8 @@
 // One entry per term shown with an info-bubble. Reviewed as prose by the team.
 export type GlossaryEntry = { title: string; body: string };
-export const glossary: Record<string, GlossaryEntry> = {
+// `satisfies` (not a Record annotation) keeps the keys as literals so the
+// GlossaryKey union below comes out of the object itself.
+export const glossary = {
   rmse: {
     title: "Average miss (RMSE)",
     body: "How far off a forecast model is on average, in real units (°C, mm, km/h). Smaller is better.",
@@ -45,6 +47,10 @@ export const glossary: Record<string, GlossaryEntry> = {
     title: "Skill score",
     body: "How much better (or worse) a model is than a basic average, in percent. Positive means it beats the baseline.",
   },
+  calibration: {
+    title: "Raw vs calibrated",
+    body: "Raw numbers straight from the weather models, versus our corrected forecast. The correction layers first fix each model's known bias, then a machine-learning step clears what is left — the % figures come from days the correction never saw.",
+  },
   coldStart: {
     title: "Why is it loading?",
     body: "The free server hosting the forecast engine goes to sleep when idle. Waking it can take up to a minute on first visit.",
@@ -53,4 +59,7 @@ export const glossary: Record<string, GlossaryEntry> = {
     title: "Forecast station",
     body: "A city location with its own dedicated blended forecast — 45 across India.",
   },
-};
+} satisfies Record<string, GlossaryEntry>;
+
+/** Every term <Explain term> / <Panel term> accepts — a typo is a type error. */
+export type GlossaryKey = keyof typeof glossary;

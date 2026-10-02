@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
 import { getModelComparisonData, MOCK_MODEL_COMPARISON } from '@/lib/api';
+import { useMediaQuery, DESKTOP_QUERY } from '@/lib/useMediaQuery';
 import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
 
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string }> = {
@@ -48,6 +49,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
   const [comparison, setComparison] = useState<ModelComparisonType[]>(MOCK_MODEL_COMPARISON);
   const [isLoading, setIsLoading] = useState(true);
   const [activeModelIdx, setActiveModelIdx] = useState(0);
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const deckRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -164,39 +166,42 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
         {/* Desktop View (>1024px): Multi-Column Comparison Grid & Chart */}
         <div className="hidden lg:block">
           <div className="w-full h-[180px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 10, right: 8, bottom: 0, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
-                <XAxis dataKey="model" tickFormatter={(v: string) => SHORT_MODEL[v] ?? v} interval={0} tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-                <Tooltip
-                  cursor={{ fill: 'rgba(219,219,219,0.3)' }}
-                  contentStyle={{
-                    background: '#ffffff',
-                    border: '1px solid #dcdee0',
-                    borderRadius: 8,
-                    boxShadow: 'var(--shadow-md)',
-                    fontSize: 12,
-                    fontFamily: 'JetBrains Mono',
-                  }}
-                  formatter={(v: unknown) => [`${v} ${config.unit}`, config.label]}
-                />
-                <Bar dataKey="value" radius={[2, 2, 0, 0]}>
-                  {chartData.map((d, i) => (
-                    <Cell
-                      key={i}
-                      fill={d.isBlended ? '#171717' : '#9e9e9e'}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {isDesktop === true && (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 8, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
+                  <XAxis dataKey="model" tickFormatter={(v: string) => SHORT_MODEL[v] ?? v} interval={0} tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(219,219,219,0.3)' }}
+                    contentStyle={{
+                      background: '#ffffff',
+                      border: '1px solid #dcdee0',
+                      borderRadius: 8,
+                      boxShadow: 'var(--shadow-md)',
+                      fontSize: 12,
+                      fontFamily: 'JetBrains Mono',
+                    }}
+                    formatter={(v: unknown) => [`${v} ${config.unit}`, config.label]}
+                  />
+                  <Bar dataKey="value" radius={[2, 2, 0, 0]}>
+                    {chartData.map((d, i) => (
+                      <Cell
+                        key={i}
+                        fill={d.isBlended ? '#171717' : '#9e9e9e'}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
 
-          {/* Desktop Multi-Column Grid. Auto-fit rather than a fixed 5 tracks:
+          {/* Desktop Multi-Column Grid. Auto-fit via .model-chip-grid (see
+              globals.css — the inline arbitrary class never compiled):
               the strip is 6 models and lives in slots between ~340px and ~700px,
-              where 5 tracks truncated names to "ECM…" and orphaned the sixth. */}
-          <div className="grid gap-2.5 mt-4 pt-3 border-t border-border [grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))]">
+              where 5 fixed tracks truncated names to "ECM…" and orphaned the sixth. */}
+          <div className="model-chip-grid grid gap-2.5 mt-4 pt-3 border-t border-border">
             {normalizedModels.map((m) => {
               const isBlended = m.isBlended || m.model.toLowerCase().includes('blend');
               const val = m[variable];

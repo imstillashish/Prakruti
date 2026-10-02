@@ -5,7 +5,8 @@ import { PageHeader } from '@/components/shell/PageHeader';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { WeatherMap } from '@/components/WeatherMap';
-import { ShieldAlert, MapPin, RotateCcw, CheckCircle2, ChevronDown } from 'lucide-react';
+import { MapPin, RotateCcw, CheckCircle2, ChevronDown } from '@/components/icons';
+import { ShieldAlert } from 'lucide-react';
 import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
@@ -76,7 +77,9 @@ export function ExtremeWeatherPage() {
         sub="Real-time severe event risk, threshold breaches, and emergency advisories"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* items-start: the advisory is a short status card next to a tall map;
+          stretching it left the card hollow. */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <ExtremeWeatherPanel />
         <WeatherMap />
       </div>

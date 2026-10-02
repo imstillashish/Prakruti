@@ -2,19 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  ShieldAlert,
-  AlertTriangle,
-  CloudRain,
-  Thermometer,
-  Wind,
-  CheckCircle2,
-  Activity,
-  Layers,
-  Sparkles,
-  Building2,
-  Calendar,
-} from 'lucide-react';
+import { AlertTriangle, CloudRain, CheckCircle2, Activity, Layers, Sparkles } from '@/components/icons';
+import { ShieldAlert, Thermometer, Wind, Building2, Calendar } from 'lucide-react';
 import { Explain } from '@/components/explain/Explain';
 import { SectionBanner } from '@/components/shell/SectionBanner';
 import { RpiData, RpiPriority } from '@/types';

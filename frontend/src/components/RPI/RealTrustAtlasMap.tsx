@@ -6,21 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { RpiData } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { getRpiMapGeoJson, RpiMapGeoJson } from '@/lib/api';
-import {
-  RotateCcw,
-  ZoomIn,
-  ZoomOut,
-  Sparkles,
-  Layers,
-  ShieldCheck,
-  Satellite,
-  Mountain,
-  SunMedium,
-  Globe2,
-  Search,
-  CheckCircle2,
-} from 'lucide-react';
-
+import { RotateCcw, Sparkles, Layers, ShieldCheck, Satellite, Globe2, Search, CheckCircle2 } from '@/components/icons';
+import { ZoomIn, ZoomOut, Mountain, SunMedium } from 'lucide-react';
 interface RealTrustAtlasMapProps {
   stations: RpiData[];
   selectedCity?: string | null;
