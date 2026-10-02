@@ -1,7 +1,9 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { X, AlertCircle, AlertTriangle, Info, MapPin, RotateCcw, ShieldAlert, CheckCircle2, ChevronDown, LucideIcon } from 'lucide-react';
+import { X, AlertTriangle, Info, MapPin, RotateCcw, CheckCircle2, ChevronDown } from '@/components/icons';
+import type { IconComponent } from '@/components/icons';
+import { AlertCircle, ShieldAlert } from 'lucide-react';
 import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
@@ -12,7 +14,7 @@ interface AlertDrawerProps {
 
 type SeverityFilter = 'all' | 'danger' | 'warning';
 
-const alertStyles: Record<Alert['type'], { icon: LucideIcon; dot: string; badge: string }> = {
+const alertStyles: Record<Alert['type'], { icon: IconComponent; dot: string; badge: string }> = {
   danger: { icon: AlertCircle, dot: 'bg-destructive', badge: 'bg-destructive/10 text-destructive border-destructive/20' },
   warning: { icon: AlertTriangle, dot: 'bg-warning', badge: 'bg-warning/10 text-warning border-warning/20' },
   info: { icon: Info, dot: 'bg-water', badge: 'bg-water/10 text-water border-water/20' },

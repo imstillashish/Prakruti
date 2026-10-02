@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
 import { getModelCompare } from '@/lib/api';
+import { useMediaQuery, DESKTOP_QUERY } from '@/lib/useMediaQuery';
 import type { ModelComparePayload, ModelCompareSeries } from '@/lib/api';
 
 type VarKey = 'temperature' | 'rainfall' | 'wind_speed';
@@ -54,6 +55,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
   const [data, setData] = useState<ModelComparePayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeLeadIdx, setActiveLeadIdx] = useState(0);
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -143,22 +145,24 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
                 )}
               </div>
               <div className="w-full h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
-                    <XAxis dataKey="hour" interval={3} tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={44} />
-                    <Tooltip
-                      contentStyle={{ background: '#fff', border: '1px solid #dcdee0', borderRadius: 8, fontSize: 12, fontFamily: 'JetBrains Mono' }}
-                      formatter={(v) => (typeof v === 'number' ? `${v.toFixed(1)} ${cfg.unit}` : String(v))}
-                    />
-                    <Area dataKey="band" stroke="none" fill="#f0f0f3" fillOpacity={0.9} />
-                    {models.map((m) => (
-                      <Line key={m} dataKey={m} stroke="#9e9e9e" strokeWidth={1.2} dot={false} name={MODEL_DISPLAY[m] ?? m} />
-                    ))}
-                    <Line dataKey="blend" stroke="#171717" strokeWidth={2.2} dot={false} name="Blend P50" />
-                  </ComposedChart>
-                </ResponsiveContainer>
+                {isDesktop === true && (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
+                      <XAxis dataKey="hour" interval={3} tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: '#6f6f6f', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} width={44} />
+                      <Tooltip
+                        contentStyle={{ background: '#fff', border: '1px solid #dcdee0', borderRadius: 8, fontSize: 12, fontFamily: 'JetBrains Mono' }}
+                        formatter={(v) => (typeof v === 'number' ? `${v.toFixed(1)} ${cfg.unit}` : String(v))}
+                      />
+                      <Area dataKey="band" stroke="none" fill="#f0f0f3" fillOpacity={0.9} />
+                      {models.map((m) => (
+                        <Line key={m} dataKey={m} stroke="#9e9e9e" strokeWidth={1.2} dot={false} name={MODEL_DISPLAY[m] ?? m} />
+                      ))}
+                      <Line dataKey="blend" stroke="#171717" strokeWidth={2.2} dot={false} name="Blend P50" />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                )}
               </div>
               <div className="flex items-center gap-4 mt-2 pt-2.5 border-t border-border text-xs font-mono">
                 <div className="flex items-center gap-1.5">
@@ -203,15 +207,17 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
                         </span>
                       </div>
                       <div className="h-[88px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <ComposedChart data={built.rows} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-                            <Area dataKey="band" stroke="none" fill="#f0f0f3" fillOpacity={0.9} />
-                            {built.models.map((m) => (
-                              <Line key={m} dataKey={m} stroke="#9e9e9e" strokeWidth={1} dot={false} />
-                            ))}
-                            <Line dataKey="blend" stroke="#171717" strokeWidth={2} dot={false} />
-                          </ComposedChart>
-                        </ResponsiveContainer>
+                        {isDesktop === false && (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <ComposedChart data={built.rows} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
+                              <Area dataKey="band" stroke="none" fill="#f0f0f3" fillOpacity={0.9} />
+                              {built.models.map((m) => (
+                                <Line key={m} dataKey={m} stroke="#9e9e9e" strokeWidth={1} dot={false} />
+                              ))}
+                              <Line dataKey="blend" stroke="#171717" strokeWidth={2} dot={false} />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        )}
                       </div>
                       <div className="mt-3 space-y-1.5 text-xs font-mono">
                         {built.models.map((m) => {

@@ -1,13 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { AlertTriangle, CloudRain, Thermometer, Wind, ChevronRight, ShieldAlert, LucideIcon } from 'lucide-react';
+import { AlertTriangle, CloudRain, ChevronRight } from '@/components/icons';
+import type { IconComponent } from '@/components/icons';
+import { Thermometer, Wind, ShieldAlert } from 'lucide-react';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import type { ExtremeEvent } from '@/types';
 
-const EVENT_ICONS: Record<ExtremeEvent['type'], LucideIcon> = {
+const EVENT_ICONS: Record<ExtremeEvent['type'], IconComponent> = {
   heavy_rainfall: CloudRain,
   heatwave: Thermometer,
   high_wind: Wind,
@@ -100,7 +102,6 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
       subtitle="IMD Probabilistic Risk Thresholds"
       term="rpi"
       collapsibleOnPhone={collapsibleOnPhone}
-      className="flex flex-col justify-between h-full"
       actions={<Badge variant="warning">Active Bulletins</Badge>}
     >
       <div>

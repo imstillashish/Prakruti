@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { MapPin, Info, Hand, Lock } from 'lucide-react';
+import { MapPin, Info, Lock } from '@/components/icons';
+import { Hand } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -32,16 +33,19 @@ const LEAD_TIMES = ['6h', '12h', '24h', '48h', '72h'];
 interface WeatherMapProps {
   selectedCity?: string | null;
   onSelectCity?: (city: CityForecast) => void;
+  /** Stretch to the grid row height (Forecast page pairs it with a taller
+      panel). Below lg the map keeps its fixed viewport heights. */
+  fillHeight?: boolean;
 }
 
-export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
+export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMapProps) {
   const [layer, setLayer] = useState<MapLayer>('rainfall');
   const [leadTime, setLeadTime] = useState('24h');
   const [isMapActive, setIsMapActive] = useState(false);
   const [isTwoFingerTouch, setIsTwoFingerTouch] = useState(false);
 
   return (
-    <section className="rounded-lg border border-border bg-card overflow-hidden">
+    <section className={`rounded-lg border border-border bg-card overflow-hidden${fillHeight ? ' flex flex-col h-full' : ''}`}>
       {/* Controls Bar */}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 px-4 sm:px-5 py-3 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
@@ -107,13 +111,14 @@ export function WeatherMap({ selectedCity, onSelectCity }: WeatherMapProps) {
       </div>
 
       {/* Map Body Container with Touch-Trap Protection */}
-      <div className="relative w-full overflow-hidden">
+      <div className={`relative w-full overflow-hidden${fillHeight ? ' flex-1 min-h-0' : ''}`}>
         <RealLeafletMap
           layer={layer}
           leadTime={leadTime}
           selectedCity={selectedCity}
           onSelectCity={onSelectCity}
           isMapActive={isMapActive}
+          fillHeight={fillHeight}
         />
 
         {/* Mobile & Touch Gesture Isolation Guard (Viewport < 1024px) */}

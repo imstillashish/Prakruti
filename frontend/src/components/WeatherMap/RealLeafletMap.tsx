@@ -6,14 +6,15 @@ import { getCityForecastsData, MOCK_CITIES, MOCK_REGION_DOMINANCE } from '@/lib/
 import { CityForecast, MapLayer } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { getRiskColor } from '@/lib/utils';
-import { RotateCcw, ZoomIn, ZoomOut, Sparkles, Satellite, Mountain, SunMedium, Globe2 } from 'lucide-react';
-
+import { RotateCcw, Sparkles, Satellite, Globe2 } from '@/components/icons';
+import { ZoomIn, ZoomOut, Mountain, SunMedium } from 'lucide-react';
 interface RealLeafletMapProps {
   layer: MapLayer;
   leadTime: string;
   selectedCity?: string | null;
   onSelectCity?: (city: CityForecast) => void;
   isMapActive?: boolean;
+  fillHeight?: boolean;
 }
 
 type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
@@ -51,6 +52,7 @@ export default function RealLeafletMap({
   selectedCity,
   onSelectCity,
   isMapActive = false,
+  fillHeight = false,
 }: RealLeafletMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -282,7 +284,13 @@ export default function RealLeafletMap({
   };
 
   return (
-    <div className="relative w-full h-[240px] sm:h-[360px] lg:h-[480px] overflow-hidden rounded-b-lg border-t border-border">
+    <div
+      className={
+        fillHeight
+          ? 'relative w-full h-[240px] sm:h-[360px] lg:h-full overflow-hidden rounded-b-lg border-t border-border'
+          : 'relative w-full h-[240px] sm:h-[360px] lg:h-[480px] overflow-hidden rounded-b-lg border-t border-border'
+      }
+    >
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 

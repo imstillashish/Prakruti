@@ -1,15 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  Droplets,
-  Flame,
-  Wind,
-  Building2,
-  CheckCircle2,
-  Send,
-  Info,
-} from 'lucide-react';
+import { Flame, CheckCircle2, Send, Info } from '@/components/icons';
+import { Droplets, Wind, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Badge } from '@/components/ui/badge';

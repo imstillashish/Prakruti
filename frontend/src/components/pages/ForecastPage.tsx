@@ -30,11 +30,14 @@ export function ForecastPage() {
             Pick a station above — the map and the 72-hour horizon update together.
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* No items-start: the map card stretches to the row height so the
+            166px white tail beside the taller timeline disappears. */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-7">
             <WeatherMap
               selectedCity={selectedCity}
               onSelectCity={(c) => setSelectedCity(typeof c === 'string' ? c : c.city)}
+              fillHeight
             />
           </div>
           <div className="lg:col-span-5">

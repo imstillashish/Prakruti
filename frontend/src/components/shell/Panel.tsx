@@ -1,10 +1,11 @@
 'use client';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@/components/icons';
 import { Explain } from '@/components/explain/Explain';
+import type { GlossaryKey } from '@/components/explain/glossary';
 
 export function Panel({ title, subtitle, term, actions, children, className, bodyClassName, collapsibleOnPhone, collapsibleOnTablet }: {
-  title: string; subtitle?: string; term?: string; actions?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string;
+  title: string; subtitle?: string; term?: GlossaryKey; actions?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string;
   collapsibleOnPhone?: boolean;
   collapsibleOnTablet?: boolean;
 }) {

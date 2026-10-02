@@ -1,24 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Terminal,
-  Play,
-  Copy,
-  Check,
-  Code2,
-  Clock,
-  Layers,
-  Database,
-  Search,
-  ExternalLink,
-  ShieldCheck,
-  CloudRain,
-  Flame,
-  Activity,
-  AlertTriangle,
-  RefreshCw,
-} from 'lucide-react';
+import { Terminal, Play, Copy, Check, Code2, Clock, Layers, Search, ExternalLink, ShieldCheck, CloudRain, Flame, Activity, AlertTriangle, RefreshCw } from '@/components/icons';
+import { Database } from 'lucide-react';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { API } from '@/lib/api';

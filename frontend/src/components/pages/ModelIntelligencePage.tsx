@@ -8,8 +8,7 @@ import { Panel } from '@/components/shell/Panel';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { getWeights, MOCK_REGION_DOMINANCE } from '@/lib/api';
 import type { RegionModelDominance } from '@/types';
-import { MapPin, BrainCircuit } from 'lucide-react';
-
+import { MapPin, BrainCircuit } from '@/components/icons';
 export function ModelIntelligencePage() {
   const [dominance, setDominance] = useState<RegionModelDominance[]>(MOCK_REGION_DOMINANCE);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,12 +41,16 @@ export function ModelIntelligencePage() {
         sub="Which forecast model is most accurate for your city, and by how much."
       />
 
-      {/* items-start: these two panels have unrelated content heights, and
-          stretching the shorter one left a 299px dead tail on desktop. */}
+      {/* Contribution (327px) and skill (386px) are the two short cards, so
+          they pair evenly; the consensus card runs full width below — inside
+          a half-width column its chip grid wrapped and stretched the row to
+          628px, stranding ~300px of white beside the shorter card. */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <ModelContribution collapsibleOnPhone />
-        <ModelComparison collapsibleOnPhone />
+        <ModelSkillPanel collapsibleOnPhone />
       </div>
+
+      <ModelComparison collapsibleOnPhone />
 
       <ModelTrajectories />
 
@@ -71,8 +74,6 @@ export function ModelIntelligencePage() {
           ))}
         </div>
       </Panel>
-
-      <ModelSkillPanel />
     </div>
   );
 }

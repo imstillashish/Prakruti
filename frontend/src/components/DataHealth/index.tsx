@@ -1,12 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CheckCircle, AlertCircle, XCircle, Activity, Clock, LucideIcon } from 'lucide-react';
+import { CheckCircle, Activity, Clock } from '@/components/icons';
+import type { IconComponent } from '@/components/icons';
+import { AlertCircle, XCircle } from 'lucide-react';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
 import { MOCK_DATA_SOURCES, ENGINE_STATUS, getForecast } from '@/lib/api';
 import { DataSource } from '@/types';
 
-const STATUS_CONFIG: Record<DataSource['status'], { icon: LucideIcon; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
+const STATUS_CONFIG: Record<DataSource['status'], { icon: IconComponent; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
   healthy: { icon: CheckCircle, color: '#16a34a', label: 'Nominal', badge: 'default' },
   delayed: { icon: AlertCircle, color: '#ab6400', label: 'Delayed', badge: 'warning' },
   unavailable: { icon: XCircle, color: '#b42318', label: 'Offline', badge: 'destructive' },

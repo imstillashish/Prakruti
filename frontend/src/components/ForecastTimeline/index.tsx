@@ -10,7 +10,6 @@ import { ChartState } from '@/components/spectrumui/charts/chart-engine';
 import { getTimelineData } from '@/lib/api';
 import type { TimelinePoint, Variable } from '@/types';
 import { Calendar } from 'lucide-react';
-
 const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; bandHigh?: string; bandLow?: string }> = {
   rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--water)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10' },
   temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature', bandHigh: 'temperatureP90', bandLow: 'temperatureP10' },
@@ -289,18 +288,21 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                 className="w-[88vw] sm:w-[340px] lg:w-auto shrink-0 lg:shrink carousel-snap-item lg:snap-align-none rounded-lg border border-border bg-card p-3.5 sm:p-4 flex flex-col justify-between transition-shadow hover:shadow-xs cursor-pointer lg:cursor-default"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border">
-                        {day.lead}
-                      </span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {day.title}
-                      </span>
-                    </div>
-                    <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${risk.cls}`}>
+                  {/* Two rows: the day chip and the risk pill share the top line,
+                      the title gets the full width. On the narrow lg grid column
+                      (~200px inner) all three on one line squeezed the pill until
+                      "Low Risk" broke across two lines. */}
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border">
+                      {day.lead}
+                    </span>
+                    <span className={`shrink-0 whitespace-nowrap text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${risk.cls}`}>
                       {risk.label}
                     </span>
+                  </div>
+
+                  <div className="text-sm font-semibold text-foreground mb-1.5">
+                    {day.title}
                   </div>
 
                   <div className="text-[11px] font-mono text-muted-foreground mb-3">

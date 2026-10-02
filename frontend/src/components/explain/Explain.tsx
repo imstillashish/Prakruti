@@ -1,10 +1,10 @@
 'use client';
-import { Info } from 'lucide-react';
+import { Info } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { glossary } from './glossary';
+import { glossary, type GlossaryKey } from './glossary';
 
-export function Explain({ term, className }: { term: string; className?: string }) {
+export function Explain({ term, className }: { term: GlossaryKey; className?: string }) {
   const entry = glossary[term];
   if (!entry) {
     if (process.env.NODE_ENV === 'development') console.warn(`[Explain] missing glossary term: ${term}`);
