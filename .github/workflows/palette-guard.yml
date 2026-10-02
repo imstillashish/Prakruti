@@ -1,0 +1,31 @@
+name: Palette Guard
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject raw colour hex in components
+        run: |
+          offenders=$(grep -rEn '#[0-9a-fA-F]{3,8}\b' frontend/src \
+            --include='*.tsx' --include='*.ts' \
+            | grep -v '^frontend/src/lib/palette.ts:' || true)
+          if [ -n "$offenders" ]; then
+            echo "$offenders" | head -40
+            echo "::error::Colour hex belongs in app/globals.css or lib/palette.ts only (DESIGN.md v4)"
+            exit 1
+          fi
+      - name: Reject raw colour hex in non-token stylesheets
+        run: |
+          offenders=$(grep -rEn '#[0-9a-fA-F]{3,8}\b' frontend/src \
+            --include='*.css' \
+            | grep -v '^frontend/src/app/globals.css:' || true)
+          if [ -n "$offenders" ]; then
+            echo "$offenders" | head -40
+            echo "::error::Colour hex belongs in app/globals.css or lib/palette.ts only (DESIGN.md v4)"
+            exit 1
+          fi
