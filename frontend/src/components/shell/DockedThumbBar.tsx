@@ -82,7 +82,7 @@ export function DockedThumbBar({
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-secondary hover:bg-accent border border-border/80 text-foreground font-mono text-xs font-semibold active:scale-[0.98] transition-transform touch-manipulation"
               aria-label={`Select station, currently ${city}`}
             >
-              <MapPin size={14} className="text-water shrink-0" />
+              <MapPin size={14} className="text-action shrink-0" />
               <span className="truncate max-w-[80px] min-[360px]:max-w-[110px]">
                 {city.toUpperCase()}
               </span>

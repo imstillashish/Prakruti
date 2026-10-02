@@ -116,7 +116,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       <div className="block sm:hidden">
         <div className="flex items-center justify-between mb-1.5 px-0.5">
           <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-water animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
             Quick Stations
           </span>
           <span className="text-[10px] text-muted-foreground font-mono">Swipe &rarr;</span>
@@ -147,7 +147,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       {/* Main Geographic Selectors Bar */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-border bg-card px-3 py-2">
         <span className="inline-flex items-center rounded-md bg-secondary px-2.5 py-1.5 text-xs font-semibold text-foreground border border-border">
-          <MapPin size={13} className="mr-1.5 text-water" />
+          <MapPin size={13} className="mr-1.5 text-action" />
           India
         </span>
 

@@ -8,6 +8,7 @@ import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { getRpiMapGeoJson, RpiMapGeoJson } from '@/lib/api';
 import { RotateCcw, ShieldCheck, Search } from '@/components/icons';
 import { ZoomIn, ZoomOut } from 'lucide-react';
+import { SERIES, DATA } from '@/lib/palette';
 interface RealTrustAtlasMapProps {
   stations: RpiData[];
   selectedCity?: string | null;
@@ -20,10 +21,10 @@ interface RealTrustAtlasMapProps {
 const BASE_TILE = MAPBOX_ACCESS_TOKEN ? 'satellite' : 'positron';
 
 const MODEL_STYLE_MAP: Record<string, { hex: string; label: string }> = {
-  ECMWF: { hex: '#171717', label: 'ECMWF IFS (European Centre)' },
-  ICON: { hex: '#60646c', label: 'ICON Seamless (DWD Germany)' },
-  GFS: { hex: '#1e6fb8', label: 'GFS Global (NOAA / NCEP)' },
-  GEM: { hex: '#9e9e9e', label: 'GEM Global (ECCC Canada)' },
+  ECMWF: { hex: SERIES.ECMWF, label: 'ECMWF IFS (European Centre)' },
+  ICON: { hex: SERIES.ICON, label: 'ICON Seamless (DWD Germany)' },
+  GFS: { hex: SERIES.GFS, label: 'GFS Global (NOAA / NCEP)' },
+  GEM: { hex: SERIES.GEM, label: 'GEM Global (ECCC Canada)' },
 };
 
 export default function RealTrustAtlasMap({
@@ -178,7 +179,7 @@ export default function RealTrustAtlasMap({
               : 'bg-popover text-popover-foreground border-border'
           }">
             <span>${st.city}</span>
-            <span class="ml-1 text-[8.5px] font-semibold" style="color: ${color};">${dom}</span>
+            <span class="ml-1 text-[8.5px] font-semibold" style="color: ${isSelected || isDarkBg ? '#ffffff' : color};">${dom}</span>
           </div>
         </div>
       `;
@@ -197,16 +198,16 @@ export default function RealTrustAtlasMap({
         <div style="font-family: inherit; min-width: 195px; padding: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f3; padding-bottom: 4px;">
             <strong style="font-size: 13px; color: #171717; text-transform: uppercase;">${st.city}</strong>
-            <span style="font-size: 10px; font-weight: 700; color: #1e6fb8; background: rgba(30,111,184,0.08); padding: 2px 6px; border-radius: 9999px;">${st.state}</span>
+            <span style="font-size: 10px; font-weight: 700; color: #0a5594; background: rgba(13,116,206,0.08); padding: 2px 6px; border-radius: 9999px;">${st.state}</span>
           </div>
           <div style="margin-bottom: 6px;">
             <span style="font-size: 10px; color: #60646c; display: block;">Dominant NWP Model:</span>
             <span style="font-size: 12px; font-weight: 800; color: ${color};">${dom} (${modelStyle.label.split(' ')[0]})</span>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px; background: #fafafa; padding: 6px; border-radius: 8px; border: 1px solid #f0f0f3;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px; background: #ffffff; padding: 6px; border-radius: 8px; border: 1px solid #f0f0f3;">
             <div><span style="color: #60646c; font-size: 9.5px; display: block;">RPI Score</span><strong style="font-size: 12px; color: #171717;">${st.rpiScore}/100</strong></div>
-            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Confidence</span><strong style="font-size: 12px; color: #16a34a;">${st.confidence}%</strong></div>
-            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Rainfall</span><strong style="font-size: 11px; color: #1e6fb8;">${st.rainfall} mm</strong></div>
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Confidence</span><strong style="font-size: 12px; color: #15803d;">${st.confidence}%</strong></div>
+            <div><span style="color: #60646c; font-size: 9.5px; display: block;">Rainfall</span><strong style="font-size: 11px; color: ${DATA.rain};">${st.rainfall} mm</strong></div>
             <div><span style="color: #60646c; font-size: 9.5px; display: block;">Temp</span><strong style="font-size: 11px; color: #ab6400;">${st.temperature}°C</strong></div>
           </div>
           <div style="margin-top: 6px; font-size: 9.5px; color: #60646c; text-align: center;">Click to update EOC Resource Protocols</div>
@@ -273,7 +274,7 @@ export default function RealTrustAtlasMap({
         <div className="px-2 py-1 rounded-full bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
           <span
             className={`w-1.5 h-1.5 ${
-              apiConnected ? 'bg-success' : 'bg-water'
+              apiConnected ? 'bg-success' : 'bg-warning'
             }`}
           />
           <span>{MAPBOX_ACCESS_TOKEN ? 'Mapbox API (HD GL)' : 'Leaflet CartoDB'}</span>
@@ -324,19 +325,19 @@ export default function RealTrustAtlasMap({
         </div>
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#171717]" />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} />
             <span className="text-foreground text-[11px]">ECMWF</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#60646c]" />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.ICON }} />
             <span className="text-foreground text-[11px]">ICON</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1e6fb8]" />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.GFS }} />
             <span className="text-foreground text-[11px]">GFS</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e]" />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.GEM }} />
             <span className="text-foreground text-[11px]">GEM</span>
           </div>
         </div>
