@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Bell, Cpu } from 'lucide-react';
+import { Bell, Cpu } from '@/components/icons';
 import { MorMark } from '@/components/brand/MorMark';
+import SplitFlapText from '@/components/SplitFlapText';
 import { BlendingEngineModal } from '@/components/BlendingEngine';
 import { AlertDrawer } from '@/components/AlertCenter';
 
@@ -26,19 +27,28 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           {/* Mor — the peacock rain-dancer, brand mark */}
           <MorMark className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 text-foreground" />
-          <div className="min-w-0 leading-tight">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base sm:text-[17px] font-bold tracking-tight text-foreground whitespace-nowrap">
-                Prakruti
-              </span>
-              <span className="text-xs sm:text-[13px] font-medium text-muted-foreground whitespace-nowrap">
-                प्रकृति
-              </span>
-            </div>
-            {/* Subtitle hidden on mobile to prevent vertical crowding */}
-            <div className="hidden sm:block text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground truncate">
-              MoES · NCMRWF Forecast Intelligence
-            </div>
+          {/* flex (not the default block) so the board is the flex item and
+              centres on the header's midline rather than a line box */}
+          <div className="flex items-center">
+            {/* Brand name as a departure board: clacks between the English and
+                Devanagari spellings. padTo keeps the header width constant
+                while the Hindi word uses fewer, wider tiles. */}
+            <SplitFlapText
+              words={['PRAKRUTI', 'प्रकृति']}
+              flipDuration={0.12}
+              stagger={0.06}
+              cycleDelay={3000}
+              charset="alphanumeric"
+              flipsPerChar={8}
+              tileColor="#171717"
+              textColor="#f8fafc"
+              tileRadius={4}
+              gap={2}
+              fontSize={16}
+              loop
+              padTo={8}
+              aria-label="Prakruti"
+            />
           </div>
 
           {/* Desktop-only IST clock */}
@@ -86,7 +96,7 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
 
           {/* Active station badge: tablet & desktop (mobile uses docked thumb bar) */}
           {selectedCity && (
-            <span className="hidden md:inline-flex items-center h-9 text-xs font-mono font-semibold tracking-wide text-foreground bg-secondary border border-border/60 rounded-md px-2.5">
+            <span className="hidden sm:inline-flex items-center h-9 text-xs font-mono font-semibold tracking-wide text-foreground bg-secondary border border-border/60 rounded-md px-2.5">
               {selectedCity.toUpperCase()}
             </span>
           )}

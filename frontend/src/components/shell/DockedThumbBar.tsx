@@ -1,6 +1,6 @@
 'use client';
 import { useState, useMemo, useEffect } from 'react';
-import { MapPin, Bell, RotateCcw, ChevronDown, Check, Search } from 'lucide-react';
+import { MapPin, Bell, RotateCcw, ChevronDown, Check, Search } from '@/components/icons';
 import { Modal } from '@/components/ui/Modal';
 import { AlertDrawer } from '@/components/AlertCenter';
 import { MOCK_CITIES, MOCK_ALERTS, getCityForecastsData } from '@/lib/api';
@@ -71,7 +71,7 @@ export function DockedThumbBar({
     <>
       <aside
         aria-label="Mobile navigation bar"
-        className="block md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="block sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         <div className="flex items-center justify-between gap-2 max-w-lg mx-auto">
           {/* Left: Station Quick Chip & Synoptic Risk Pill */}
