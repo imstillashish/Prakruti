@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, ChevronDown, CircleDashed, Loader2, X } from 'lucide-react';
+import { Check, ChevronDown, X } from '@/components/icons';
+import { CircleDashed, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const KEYFRAMES = `

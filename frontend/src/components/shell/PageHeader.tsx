@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { IconComponent } from '@/components/icons';
 
 /**
  * Page-level header used once at the top of every tab: ink icon plate,
@@ -11,7 +11,7 @@ export function PageHeader({
   sub,
   action,
 }: {
-  icon: LucideIcon;
+  icon: IconComponent;
   title: string;
   sub: string;
   action?: React.ReactNode;

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CloudRain, Thermometer, Wind, RefreshCw, ShieldCheck, Umbrella, Car, Sun, Activity, Droplet, HeartPulse } from 'lucide-react';
+import { CloudRain, RefreshCw, ShieldCheck, Activity, HeartPulse } from '@/components/icons';
+import { Thermometer, Wind, Umbrella, Car, Sun, Droplet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Explain } from '@/components/explain/Explain';

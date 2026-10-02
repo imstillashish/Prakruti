@@ -20,7 +20,8 @@
   },
   "registries": {
     "@spectrumui": "https://ui.spectrumhq.in/r/{name}.json",
-    "@react-bits": "https://reactbits.dev/r/{name}.json"
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@itshover": "https://itshover.com/r/{name}.json"
   }
 }
 

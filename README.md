@@ -170,3 +170,9 @@ above; both services read the committed configuration files.
 Weather data from [Open-Meteo](https://open-meteo.com) (ECMWF IFS, NOAA GFS, DWD ICON,
 CMC GEM) and ERA5 reanalysis via the Copernicus Climate Change Service. Built for
 Smart India Hackathon 2026 — PS-26081, Ministry of Earth Sciences (NCMRWF).
+
+Hand-drawn animated icons are vendored from [ItsHover](https://itshover.com)
+(Apache-2.0) into `frontend/src/components/icons/`; `index.ts` there re-exports them
+under the lucide names the app already used. The brand's split-flap board is the
+[SplitFlapText](https://reactbits.dev) component from React Bits, adapted for
+Devanagari.

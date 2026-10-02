@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Panel } from '@/components/shell/Panel';
-import { Award } from 'lucide-react';
+import { Award } from '@/components/icons';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
 

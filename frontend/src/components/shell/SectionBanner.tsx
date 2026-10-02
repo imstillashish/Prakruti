@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { IconComponent } from '@/components/icons';
 
 /**
  * The one banner across the app: ink plate, title, caption-uppercase pill,
@@ -13,7 +13,7 @@ export function SectionBanner({
   chip,
   className,
 }: {
-  icon: LucideIcon;
+  icon: IconComponent;
   title: string;
   pill?: string;
   subline?: React.ReactNode;
