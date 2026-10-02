@@ -412,6 +412,21 @@ body {
   animation: gradient-flow 6s ease infinite;
 }
 
+/* One loop off screen is one loop not painting: MeshVisibility marks what has
+   scrolled away, CSS does the pausing. Selection fills count too — an active
+   nav item or segment keeps its loop running long after it is scrolled past.
+   This sits after every rule that declares the `animation` shorthand: that
+   shorthand resets play-state, and at equal specificity source order decides,
+   so anywhere earlier would be silently overridden. */
+.gradient-animated-ocean[data-offscreen='true'],
+.gradient-animated-emerald[data-offscreen='true'],
+.gradient-animated-amber[data-offscreen='true'],
+.gradient-animated-neutral[data-offscreen='true'],
+.gradient-state[data-offscreen='true'],
+.gradient-on-active[data-offscreen='true'],
+.gradient-on-checked[data-offscreen='true'] {
+  animation-play-state: paused;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,

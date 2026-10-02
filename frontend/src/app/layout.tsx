@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Noto_Sans_Devanagari } from 'next/font/google';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { MeshVisibility } from '@/components/shell/MeshVisibility';
 import { Agentation } from 'agentation';
 import './globals.css';
 
@@ -51,6 +52,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${notoSansDevanagari.variable}`}>
       <body className="antialiased">
         <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+        <MeshVisibility />
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>

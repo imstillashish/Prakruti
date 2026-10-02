@@ -4,9 +4,10 @@
  * gradient via @shadergradient/react. Variants follow DESIGN.md v4 §12:
  * ocean acts, amber dispatches, emerald verifies. The static fill renders on
  * the server and under prefers-reduced-motion; the shader canvas mounts only
- * after hydration.
+ * after hydration. The canvas lives only while the button is near the viewport,
+ * so a page full of dispatch buttons never holds more than a context or two.
  */
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 import { cn } from '@/lib/utils';
 import { COLORWAY_DEEP, SHADER_FILL } from '@/lib/palette';
@@ -57,6 +58,8 @@ export function ShaderButton({
   ...props
 }: ShaderButtonProps) {
   const [shaderOn, setShaderOn] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
+  const root = useRef<HTMLButtonElement>(null);
   const v = VARIANTS[variant] || VARIANTS.ocean;
 
   useEffect(() => {
@@ -65,9 +68,26 @@ export function ShaderButton({
     }
   }, []);
 
+  // Per-button rather than shared: there are a handful of these on a page at
+  // most (the WebGL tier), unlike the dozens of CSS mesh controls that share
+  // MeshVisibility's observer. The margin mounts the canvas slightly before it
+  // is reachable, so scrolling back up never catches it still building.
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      { rootMargin: '200px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <button
       {...props}
+      ref={root}
+      data-gradient-tier="focal"
       className={cn(
         'relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md font-semibold text-white',
         v.shadow,
@@ -85,7 +105,7 @@ export function ShaderButton({
         className="absolute inset-0 z-0"
         style={{ backgroundColor: COLORWAY_DEEP[variant] }}
       />
-      {shaderOn && (
+      {shaderOn && onScreen && (
         <span aria-hidden className="absolute inset-0 z-0">
           <Suspense fallback={null}>
             <ShaderGradientCanvas
