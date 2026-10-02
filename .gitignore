@@ -31,14 +31,20 @@ data/skills/
 skills-lock.json
 # Internal engineering specs and design notes
 docs/superpowers/
+# Per-machine OpenCode MCP wiring (shared rule lives in AGENTS.md)
+opencode.json
 # Repository tooling (history-rewrite and audit scripts)
 superpowers/
 # Internal design document
 DESIGN.md
 # Per-tool AI-assistant instruction files (shared rule lives in AGENTS.md)
+AGENTS.md
 CLAUDE.md
 GEMINI.md
 .cursorrules
+PRD.md
+# Per-machine agent scratch space
+scratch/
 # Agent memory, AST knowledge graphs (graphify) and Project-Brain
 .planning/
 project-brain/
