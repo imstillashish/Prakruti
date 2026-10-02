@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import type { MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { TopBar } from '@/components/shell/TopBar';
 import { NavRail } from '@/components/shell/NavRailView';
 import { BackendConnectingIndicator } from '@/components/BackendConnectingIndicator';
@@ -27,6 +27,10 @@ import { NavPage, CityForecast } from '@/types';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<NavPage>('overview');
+  // The desktop rail and the content gutter both read --rail-w, so a collapsed
+  // rail and a matching gutter can never disagree. Expanded is the default:
+  // the section names are the point of the wider rail.
+  const [railExpanded, setRailExpanded] = useState(true);
   const [selectedCity, setSelectedCity] = useState<string | null>('Kanpur');
   const handleCitySelect = (city: CityForecast | string) => {
     const cityName = typeof city === 'string' ? city : city.city;
@@ -62,29 +66,28 @@ export default function Home() {
             {/* Top Forecast Decision Hero */}
             <ForecastHero selectedCity={selectedCity} />
 
-            {/* Core Operational Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6 items-start">
-              {/* Left Column (Primary Visualizations) - 7 cols on tablet/desktop */}
-              <div className="md:col-span-7 space-y-5 md:space-y-6">
+            {/* Core Operational Grid. Splits side-by-side from lg: at tablet
+                the 7/5 split left the collapsed right rail ~380px short of the
+                map+timeline stack — dead white — so tablet stacks instead. */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6 items-start">
+              {/* Left Column (Primary Visualizations) - 7 cols on desktop.
+                  The hazard advisory sits with the forecast evidence it warns
+                  about; it also brings this rail level with the right one. */}
+              <div className="lg:col-span-7 space-y-5 md:space-y-6">
                 <WeatherMap
                   selectedCity={selectedCity}
                   onSelectCity={handleCitySelect}
                 />
                 <ForecastTimeline selectedCity={selectedCity} phoneCompact />
-                
-                {/* Paired at lg only: at tablet the inner split left this pair
-                    ~179px each, which is unusable for a six-model comparison. */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
-                  <ModelComparison selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
-                  <ExtremeWeatherPanel selectedCity={selectedCity} collapsibleOnPhone />
-                </div>
+                <ExtremeWeatherPanel selectedCity={selectedCity} collapsibleOnPhone />
               </div>
 
-              {/* Right Column (Controls & Deep Intelligence) - 5 cols on tablet/desktop */}
-              <div className="md:col-span-5 space-y-5 md:space-y-6">
-                {/* Station picker lives in the docked thumb bar on phone — the desktop-only
-                    RegionSelector card would duplicate it 4 screens deep. */}
-                <div className="hidden md:block">
+              {/* Right Column (Controls & Deep Intelligence) - 5 cols on desktop */}
+              <div className="lg:col-span-5 space-y-5 md:space-y-6">
+                {/* Station picker lives in the docked thumb bar only on phones (<640px),
+                    which is where the shell puts it; above that the RegionSelector card
+                    is the only station switcher, or 4 screens of content separate it. */}
+                <div className="hidden sm:block">
                   <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
                 </div>
                 {/* Measured at 768px: expanded these three make this column 1944px
@@ -96,22 +99,37 @@ export default function Home() {
                 <DataHealthPanel collapsibleOnPhone collapsibleOnTablet />
               </div>
             </div>
+
+            {/* Full-width consensus row. Inside the 7-col rail the comparison card
+                sat ~640px wide, stretched its row to 1244px and stranded
+                ~1140px of white beside the right rail; full width fits the
+                six-model strip in one row (~475px tall instead of 1244). */}
+            <ModelComparison selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
           </div>
         );
     }
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden" onClick={handleTopBarNav}>
+    <div
+      className="relative min-h-screen overflow-x-hidden"
+      style={{ '--rail-w': railExpanded ? '192px' : '88px' } as CSSProperties}
+      onClick={handleTopBarNav}
+    >
       <TopBar selectedCity={selectedCity} />
-      <NavRail currentPage={currentPage} onNavigate={setCurrentPage} />
+      <NavRail
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        expanded={railExpanded}
+        onToggleExpanded={() => setRailExpanded((v) => !v)}
+      />
       <DockedThumbBar selectedCity={selectedCity} onSelectCity={handleCitySelect} />
 
       {/* Global Backend Connecting / Cold Start Indicator */}
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pl-20 md:pr-4 md:pt-20 md:pb-20 lg:pl-[112px] lg:pr-6 lg:pt-24 lg:pb-20">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:pl-20 sm:pr-4 sm:pt-20 sm:pb-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] lg:pr-6 lg:pt-24 lg:pb-20 transition-[padding-left] duration-200 ease-out motion-reduce:transition-none">
         <StatusStrip />
         {renderContent()}
       </main>
@@ -130,7 +148,7 @@ export default function Home() {
           },
         ]}
         status="45 stations · live"
-        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] md:pb-6 md:pl-20 lg:pl-[112px]"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:pb-6 sm:pl-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] transition-[padding-left] duration-200 ease-out motion-reduce:transition-none"
       />
     </div>
   );
