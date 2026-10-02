@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { ShieldCheck, RefreshCw, Layers, MapPin } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Layers, MapPin } from '@/components/icons';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { StationDossier } from '@/components/RPI/StationDossier';
 import { getRpiData, getAllRpiData, SERVER_WAKING_UP_MSG } from '@/lib/api';

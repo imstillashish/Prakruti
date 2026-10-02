@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin } from '@/components/icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
 import type { CityForecast } from '@/types';

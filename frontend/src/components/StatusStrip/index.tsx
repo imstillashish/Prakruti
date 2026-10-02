@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw } from '@/components/icons';
 import { getMetadata, MetadataRecord } from '@/lib/api';
 import { Explain } from '@/components/explain/Explain';
 

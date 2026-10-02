@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
+import { AlertTriangle, RefreshCw } from '@/components/icons';
+import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export type ErrorStateVariant = 'Card' | 'Inline';
