@@ -1,5 +1,7 @@
 {
-  "last_updated": "2026-10-01T11:15:45",
+  "last_updated": "2026-10-02T07:57:21",
   "cities": 45,
-  "models": 4
+  "models": 4,
+  "city_count": 45,
+  "model_count": 4
 }
