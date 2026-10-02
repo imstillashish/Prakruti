@@ -39,6 +39,17 @@ export const SERIES: Record<ModelName, string> = {
 export const SERIES_ORDER: readonly ModelName[] = ['ECMWF', 'ICON', 'GFS', 'GEM'] as const;
 
 /**
+ * Gradient colorway deep bases (spec 2026-10-02 §3.2). The opaque fill a label
+ * is measured against; the animated ramp rides over it.
+ */
+export const COLORWAY_DEEP = {
+  ocean: '#0d74ce',
+  emerald: '#047857',
+  amber: '#b45309',
+  neutral: '#33373e',
+} as const;
+
+/**
  * Animated-CTA fills (DESIGN.md v4 §12). WebGL uniforms take literal stops,
  * so they live here alongside the other JS-only bindings — first stop mirrors
  * the matching token, the rest are the gradient's depth and highlight.

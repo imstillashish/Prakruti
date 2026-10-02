@@ -5,6 +5,11 @@
 **Shape:** eight tasks, harness first. Task 1 writes the checks and runs them red against today's
 code, so every later task turns a failing assertion green rather than an opinion.
 
+**Harness policy (binding):** the scripts under `scratch/` are per-machine and gitignored
+(`.gitignore:47`; the branch history was rewritten on 2026-10-02 to purge them). They are run
+locally and **never committed** — no task stages a `scratch/` path, and their red/green output is
+the evidence recorded in the ledger instead.
+
 **Coordination rule (binding for every task):** another agent is working the same checkout. Before
 touching a file, run `git status --porcelain <file>`; if it is dirty, that file belongs to them —
 leave the hunk, record the skip in the ledger, and continue with the rest of the task. Never stage a
@@ -39,7 +44,7 @@ file you did not write in full.
 - [ ] **Step 3: Run both scripts — expected FAIL**, with today's state listed: 0 sanctioned
   colorways in use, 1 live mesh consumer, and `gradient-animated-ink|indigo` utilities present in
   the stylesheet.
-- [ ] **Step 4: Commit** `test(design): add gradient colorway, state and budget checks`
+- [ ] **Step 4: Record the red run** in the ledger (no commit — the harness is untracked by policy)
 
 ---
 
@@ -186,8 +191,7 @@ control.
 - [ ] **Step 2: Height budgets unchanged** — `python3 scratch/viewport_audit.py` must reproduce the
   phone/tablet/desktop baseline recorded in the v4 acceptance ledger, with zero horizontal overflow.
   A moved number means the gradient changed layout, which is a failure, not a new baseline.
-- [ ] **Step 3: Record the numbers** in the ledger; commit any script changes with the measurements.
-- [ ] **Step 4: Commit** `test(design): record the gradient budget measurements`
+- [ ] **Step 3: Record the numbers** in the ledger (script changes stay untracked).
 
 ---
 
@@ -196,8 +200,8 @@ control.
 **Files:**
 - Modify: `DESIGN.md` §12 (four colorways, the state matrix, the deep-base rule), the Colors
   section's accent table if the deep bases belong there, and `AGENTS.md`'s colourway list
-- Modify: `scratch/palette_contrast_check.py` (assert the four colorway names in `DESIGN.md` and that
-  `indigo|ink` are absent as live colorways)
+- Modify (local, uncommitted): `scratch/palette_contrast_check.py` — assert the four colorway names
+  in `DESIGN.md` and that `indigo|ink` are absent as live colorways
 
 **Interfaces:**
 - Consumes: everything above.

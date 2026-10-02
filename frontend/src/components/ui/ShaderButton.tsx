@@ -9,7 +9,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 import { cn } from '@/lib/utils';
-import { SHADER_FILL } from '@/lib/palette';
+import { COLORWAY_DEEP, SHADER_FILL } from '@/lib/palette';
 
 export type ShaderVariant = 'ocean' | 'emerald' | 'amber';
 
@@ -27,27 +27,23 @@ const SIZES = {
 const VARIANTS: Record<
   ShaderVariant,
   {
-    fallbackBg: string;
     shadow: string;
     focusOutline: string;
     fill: readonly string[];
   }
 > = {
   ocean: {
-    fallbackBg: 'bg-action',
     shadow: 'shadow-[0_4px_12px_rgba(13,116,206,0.25)]',
     focusOutline: 'focus-visible:outline-action',
     fill: SHADER_FILL.ocean,
   },
   emerald: {
-    fallbackBg: 'bg-success',
-    shadow: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]',
+    shadow: 'shadow-[0_4px_12px_rgba(4,120,87,0.25)]',
     focusOutline: 'focus-visible:outline-success',
     fill: SHADER_FILL.emerald,
   },
   amber: {
-    fallbackBg: 'bg-warning',
-    shadow: 'shadow-[0_4px_12px_rgba(171,100,0,0.25)]',
+    shadow: 'shadow-[0_4px_12px_rgba(180,83,9,0.25)]',
     focusOutline: 'focus-visible:outline-warning',
     fill: SHADER_FILL.amber,
   },
@@ -74,7 +70,6 @@ export function ShaderButton({
       {...props}
       className={cn(
         'relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md font-semibold text-white',
-        v.fallbackBg,
         v.shadow,
         'transition-transform duration-100 active:translate-y-px',
         'focus-visible:outline-2 focus-visible:outline-offset-2',
@@ -85,7 +80,11 @@ export function ShaderButton({
       )}
     >
       {/* Fallback fill — pre-hydration, reduced-motion, and WebGL-failure state */}
-      <span aria-hidden className={cn('absolute inset-0 z-0', v.fallbackBg)} />
+      <span
+        aria-hidden
+        className="absolute inset-0 z-0"
+        style={{ backgroundColor: COLORWAY_DEEP[variant] }}
+      />
       {shaderOn && (
         <span aria-hidden className="absolute inset-0 z-0">
           <Suspense fallback={null}>
