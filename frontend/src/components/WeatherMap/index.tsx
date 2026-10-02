@@ -4,9 +4,8 @@ import dynamic from 'next/dynamic';
 import { MapPin, Info, Lock } from '@/components/icons';
 import { Hand } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { MapLayer, CityForecast } from '@/types';
+import { CityForecast } from '@/types';
 
 // Dynamically import Leaflet with SSR disabled
 const RealLeafletMap = dynamic(() => import('./RealLeafletMap'), {
@@ -19,15 +18,6 @@ const RealLeafletMap = dynamic(() => import('./RealLeafletMap'), {
   ),
 });
 
-const LAYERS: { id: MapLayer; label: string }[] = [
-  { id: 'rainfall', label: 'Rainfall' },
-  { id: 'temperature', label: 'Temperature' },
-  { id: 'wind', label: 'Wind' },
-  { id: 'extreme_risk', label: 'Extreme Risk' },
-  { id: 'model_dominance', label: 'Model Dominance' },
-  { id: 'confidence', label: 'Confidence' },
-];
-
 const LEAD_TIMES = ['6h', '12h', '24h', '48h', '72h'];
 
 interface WeatherMapProps {
@@ -39,7 +29,6 @@ interface WeatherMapProps {
 }
 
 export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMapProps) {
-  const [layer, setLayer] = useState<MapLayer>('rainfall');
   const [leadTime, setLeadTime] = useState('24h');
   const [isMapActive, setIsMapActive] = useState(false);
   const [isTwoFingerTouch, setIsTwoFingerTouch] = useState(false);
@@ -57,7 +46,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
               </span>
               <Badge variant="water">45 Stations</Badge>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Real CartoDB Topographic Grid · Seamless Multi-Layer Navigation</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Real CartoDB Topographic Grid · Live Station Telemetry</p>
           </div>
         </div>
 
@@ -80,20 +69,6 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
             ))}
           </div>
 
-          {/* Layer selector */}
-          <Select value={layer} onValueChange={(v) => setLayer(v as MapLayer)}>
-            <SelectTrigger className="w-[140px] sm:w-[170px] h-8 text-xs font-mono">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {LAYERS.map((l) => (
-                <SelectItem key={l.id} value={l.id} className="text-xs font-mono">
-                  {l.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="p-1.5 text-muted-foreground hover:text-foreground cursor-help">
@@ -113,7 +88,6 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
       {/* Map Body Container with Touch-Trap Protection */}
       <div className={`relative w-full overflow-hidden${fillHeight ? ' flex-1 min-h-0' : ''}`}>
         <RealLeafletMap
-          layer={layer}
           leadTime={leadTime}
           selectedCity={selectedCity}
           onSelectCity={onSelectCity}

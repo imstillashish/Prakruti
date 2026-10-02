@@ -6,8 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { RpiData } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { getRpiMapGeoJson, RpiMapGeoJson } from '@/lib/api';
-import { RotateCcw, Sparkles, Layers, ShieldCheck, Satellite, Globe2, Search, CheckCircle2 } from '@/components/icons';
-import { ZoomIn, ZoomOut, Mountain, SunMedium } from 'lucide-react';
+import { RotateCcw, ShieldCheck, Search } from '@/components/icons';
+import { ZoomIn, ZoomOut } from 'lucide-react';
 interface RealTrustAtlasMapProps {
   stations: RpiData[];
   selectedCity?: string | null;
@@ -16,7 +16,8 @@ interface RealTrustAtlasMapProps {
   activeModelFilter?: string | null;
 }
 
-type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
+// Fixed base map — satellite when a Mapbox token is configured, OSM otherwise.
+const BASE_TILE = MAPBOX_ACCESS_TOKEN ? 'satellite' : 'positron';
 
 const MODEL_STYLE_MAP: Record<string, { hex: string; label: string }> = {
   ECMWF: { hex: '#171717', label: 'ECMWF IFS (European Centre)' },
@@ -34,11 +35,7 @@ export default function RealTrustAtlasMap({
 }: RealTrustAtlasMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markersRef = useRef<{ [key: string]: L.Marker }>({});
-
-  // Active Tile Layer State (Default to satellite if Mapbox token exists, else positron)
-  const [activeTile, setActiveTile] = useState<TileType>(MAPBOX_ACCESS_TOKEN ? 'satellite' : 'positron');
   const [searchQuery, setSearchQuery] = useState('');
   const [geoJsonData, setGeoJsonData] = useState<RpiMapGeoJson | null>(null);
   const [apiConnected, setApiConnected] = useState<boolean>(false);
@@ -77,14 +74,13 @@ export default function RealTrustAtlasMap({
       attributionControl: false,
     });
 
-    const tileInfo = MAP_CONFIG.tiles[activeTile] || MAP_CONFIG.tiles['positron'];
-    const tileLayer = L.tileLayer(tileInfo.url, {
+    const tileInfo = MAP_CONFIG.tiles[BASE_TILE];
+    L.tileLayer(tileInfo.url, {
       maxZoom: tileInfo.maxZoom,
       tileSize: tileInfo.tileSize || 256,
       subdomains: ('subdomains' in tileInfo && tileInfo.subdomains) ? tileInfo.subdomains : 'abc',
     }).addTo(map);
 
-    tileLayerRef.current = tileLayer;
     mapInstanceRef.current = map;
 
     const timer1 = setTimeout(() => map.invalidateSize(), 150);
@@ -101,14 +97,6 @@ export default function RealTrustAtlasMap({
       mapInstanceRef.current = null;
     };
   }, []);
-
-  // 3. Tile Layer Switching
-  useEffect(() => {
-    if (!mapInstanceRef.current || !tileLayerRef.current) return;
-    const tileInfo = MAP_CONFIG.tiles[activeTile] || MAP_CONFIG.tiles['positron'];
-    tileLayerRef.current.setUrl(tileInfo.url);
-    mapInstanceRef.current.invalidateSize();
-  }, [activeTile]);
 
   // Combined Station Data from GeoJSON API or Props
   const displayStations: RpiData[] = useMemo(() => {
@@ -142,7 +130,7 @@ export default function RealTrustAtlasMap({
     return list;
   }, [geoJsonData, stations, activeModelFilter]);
 
-  // 4. Render Markers with Dominant-Model Color-Coding
+  // 3. Render Markers with Dominant-Model Color-Coding
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || displayStations.length === 0) return;
@@ -151,7 +139,7 @@ export default function RealTrustAtlasMap({
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
-    const isDarkBg = activeTile === 'satellite' || activeTile === 'terrain';
+    const isDarkBg = BASE_TILE === 'satellite';
 
     displayStations.forEach((st) => {
       const isSelected = selectedCity?.toLowerCase() === st.city.toLowerCase();
@@ -237,9 +225,9 @@ export default function RealTrustAtlasMap({
 
       markersRef.current[st.city] = marker;
     });
-  }, [displayStations, selectedCity, onSelectCity, activeTile]);
+  }, [displayStations, selectedCity, onSelectCity]);
 
-  // 5. Auto Pan / Zoom to Selected City
+  // 4. Auto Pan / Zoom to Selected City
   useEffect(() => {
     if (!selectedCity || !mapInstanceRef.current) return;
     const match = displayStations.find((s) => s.city.toLowerCase() === selectedCity.toLowerCase());
@@ -292,67 +280,8 @@ export default function RealTrustAtlasMap({
         </div>
       </div>
 
-      {/* Top Right Floating Controls: Tile Switcher & Zoom */}
+      {/* Top Right Floating Controls: Zoom & Reset */}
       <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-1.5">
-        {/* Tile Layer Selector Bar */}
-        <div className="p-0.5 rounded-md bg-card border border-border flex items-center gap-0.5">
-          <button
-            onClick={() => setActiveTile('satellite')}
-            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
-              activeTile === 'satellite'
-                ? 'bg-foreground text-background font-bold'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-            type="button"
-            title="Satellite Streets"
-          >
-            <Satellite size={11} />
-            <span className="hidden sm:inline">Satellite</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('terrain')}
-            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
-              activeTile === 'terrain'
-                ? 'bg-foreground text-background font-bold'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-            type="button"
-            title="Topographic Terrain"
-          >
-            <Mountain size={11} />
-            <span className="hidden sm:inline">Terrain</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('positron')}
-            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
-              activeTile === 'positron'
-                ? 'bg-foreground text-background font-bold'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-            type="button"
-            title="Scientific Light Map"
-          >
-            <SunMedium size={11} />
-            <span className="hidden sm:inline">Light</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('osm')}
-            className={`flex items-center gap-1 px-2 py-1 text-xs font-mono transition-colors cursor-pointer ${
-              activeTile === 'osm'
-                ? 'bg-foreground text-background font-bold'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-            type="button"
-            title="OpenStreetMap"
-          >
-            <Globe2 size={11} />
-            <span className="hidden sm:inline">OSM</span>
-          </button>
-        </div>
-
         {/* Zoom & Reset Buttons */}
         <div className="flex flex-col gap-0.5 rounded-md border border-border bg-card overflow-hidden">
           <button

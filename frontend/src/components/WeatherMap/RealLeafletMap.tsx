@@ -2,14 +2,12 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getCityForecastsData, MOCK_CITIES, MOCK_REGION_DOMINANCE } from '@/lib/api';
-import { CityForecast, MapLayer } from '@/types';
+import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
+import { CityForecast } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
-import { getRiskColor } from '@/lib/utils';
-import { RotateCcw, Sparkles, Satellite, Globe2 } from '@/components/icons';
-import { ZoomIn, ZoomOut, Mountain, SunMedium } from 'lucide-react';
+import { RotateCcw } from '@/components/icons';
+import { ZoomIn, ZoomOut } from 'lucide-react';
 interface RealLeafletMapProps {
-  layer: MapLayer;
   leadTime: string;
   selectedCity?: string | null;
   onSelectCity?: (city: CityForecast) => void;
@@ -17,37 +15,10 @@ interface RealLeafletMapProps {
   fillHeight?: boolean;
 }
 
-type TileType = 'satellite' | 'terrain' | 'positron' | 'osm';
-
-function getCityMetric(city: CityForecast, layer: MapLayer): { text: string; color: string } {
-  switch (layer) {
-    case 'rainfall': {
-      const color = city.rainfall > 80 ? '#155a92' : city.rainfall > 50 ? '#1e6fb8' : city.rainfall > 20 ? '#5b93c7' : '#a5c4e0';
-      return { text: `${city.rainfall} mm`, color };
-    }
-    case 'temperature': {
-      const color = city.temperature > 35 ? '#b42318' : city.temperature > 30 ? '#ab6400' : city.temperature > 25 ? '#60646c' : '#16a34a';
-      return { text: `${city.temperature}°C`, color };
-    }
-    case 'wind': {
-      const color = city.wind > 25 ? '#424242' : city.wind > 18 ? '#60646c' : '#9e9e9e';
-      return { text: `${city.wind} km/h`, color };
-    }
-    case 'extreme_risk':
-      return { text: city.risk.toUpperCase(), color: getRiskColor(city.risk) };
-    case 'model_dominance':
-      return { text: city.dominantModel, color: '#1e6fb8' };
-    case 'confidence': {
-      const color = city.confidence >= 85 ? '#16a34a' : city.confidence >= 75 ? '#ab6400' : '#b42318';
-      return { text: `${city.confidence}%`, color };
-    }
-    default:
-      return { text: `${city.rainfall} mm`, color: '#1e6fb8' };
-  }
-}
+// Fixed base map — satellite when a Mapbox token is configured, OSM otherwise.
+const BASE_TILE = MAPBOX_ACCESS_TOKEN ? 'satellite' : 'osm';
 
 export default function RealLeafletMap({
-  layer,
   leadTime,
   selectedCity,
   onSelectCity,
@@ -57,10 +28,6 @@ export default function RealLeafletMap({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [key: string]: L.Marker }>({});
-  const tileLayerRef = useRef<L.TileLayer | null>(null);
-  
-  // Default to satellite if Mapbox token is present, otherwise standard osm
-  const [activeTile, setActiveTile] = useState<TileType>(MAPBOX_ACCESS_TOKEN ? 'satellite' : 'osm');
   const [activeHoverCity, setActiveHoverCity] = useState<CityForecast | null>(null);
   const [cities, setCities] = useState<CityForecast[]>(MOCK_CITIES);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,16 +66,14 @@ export default function RealLeafletMap({
       attributionControl: false,
     });
 
-    const initialTileKey = MAPBOX_ACCESS_TOKEN ? 'satellite' : 'osm';
-    const tileInfo = MAP_CONFIG.tiles[initialTileKey];
+    const tileInfo = MAP_CONFIG.tiles[BASE_TILE];
 
-    const tileLayer = L.tileLayer(tileInfo.url, {
+    L.tileLayer(tileInfo.url, {
       maxZoom: tileInfo.maxZoom,
       tileSize: 256,
       subdomains: ('subdomains' in tileInfo && tileInfo.subdomains) ? tileInfo.subdomains : 'abc',
     }).addTo(map);
 
-    tileLayerRef.current = tileLayer;
     mapInstanceRef.current = map;
 
     // Gesture isolation: On mobile/touch (<1024px), disable dragging unless explicitly unlocked
@@ -154,15 +119,7 @@ export default function RealLeafletMap({
     }
   }, [isMapActive]);
 
-  // 2. Handle Tile Layer Switching
-  useEffect(() => {
-    if (!mapInstanceRef.current || !tileLayerRef.current) return;
-    const tileInfo = MAP_CONFIG.tiles[activeTile];
-    tileLayerRef.current.setUrl(tileInfo.url);
-    mapInstanceRef.current.invalidateSize();
-  }, [activeTile]);
-
-  // 3. Render Synoptic Weather Station Pulse Markers
+  // 2. Render Synoptic Weather Station Pulse Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -171,10 +128,11 @@ export default function RealLeafletMap({
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
-    const isDarkBg = activeTile === 'satellite';
+    const isDarkBg = BASE_TILE === 'satellite';
 
     cities.forEach((city) => {
-      const { text, color } = getCityMetric(city, layer);
+      const color = city.rainfall > 80 ? '#155a92' : city.rainfall > 50 ? '#1e6fb8' : city.rainfall > 20 ? '#5b93c7' : '#a5c4e0';
+      const text = `${city.rainfall} mm`;
       const isSelected = selectedCity ? city.city.toLowerCase() === selectedCity.toLowerCase() : false;
 
       const customIcon = L.divIcon({
@@ -254,9 +212,9 @@ export default function RealLeafletMap({
 
       markersRef.current[city.city] = marker;
     });
-  }, [layer, activeTile, onSelectCity, cities, selectedCity]);
+  }, [onSelectCity, cities, selectedCity]);
 
-  // 4. Smooth FlyTo Zoom & Open Popup when city is selected
+  // 3. Smooth FlyTo Zoom & Open Popup when city is selected
   useEffect(() => {
     if (!selectedCity || !mapInstanceRef.current) return;
     const target = cities.find((c) => c.city.toLowerCase() === selectedCity.toLowerCase());
@@ -296,8 +254,7 @@ export default function RealLeafletMap({
 
       {/* Floating Map Controls Bar */}
       <div className={`absolute ${isMapActive ? 'top-16 lg:top-4' : 'top-4'} right-3 lg:right-4 z-[500] flex flex-col gap-2 font-mono transition-all`}>
-        {/* Zoom & Reset Controls — self-start keeps it compact instead of
-            stretching to the layer switcher's width and leaving dead space */}
+        {/* Zoom & Reset Controls — self-start keeps the cluster compact */}
         <div className="flex flex-col self-start bg-card p-1 shadow-md border border-border rounded-md">
           <button
             onClick={handleZoomIn}
@@ -324,68 +281,6 @@ export default function RealLeafletMap({
             type="button"
           >
             <RotateCcw size={15} />
-          </button>
-        </div>
-
-        {/* Mapbox & Cartographic Tile Mode Switcher */}
-        <div className="bg-card p-1.5 shadow-md border border-border rounded-lg flex flex-col gap-1 min-w-[125px]">
-          <span className="text-[10px] font-semibold text-muted-foreground px-1.5 py-0.5 uppercase tracking-[0.08em]">
-            Layer
-          </span>
-          <button
-            onClick={() => setActiveTile('satellite')}
-           
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
-              activeTile === 'satellite'
-                ? 'bg-foreground text-white font-semibold'
-                : 'text-muted-foreground hover:bg-secondary'
-            }`}
-            type="button"
-          >
-            <Satellite size={12} />
-            <span>Satellite</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('terrain')}
-           
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
-              activeTile === 'terrain'
-                ? 'bg-foreground text-white font-semibold'
-                : 'text-muted-foreground hover:bg-secondary'
-            }`}
-            type="button"
-          >
-            <Mountain size={12} />
-            <span>Terrain</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('positron')}
-           
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
-              activeTile === 'positron'
-                ? 'bg-foreground text-white font-semibold'
-                : 'text-muted-foreground hover:bg-secondary'
-            }`}
-            type="button"
-          >
-            <SunMedium size={12} />
-            <span>Scientific</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTile('osm')}
-           
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-mono transition-colors text-left ${
-              activeTile === 'osm'
-                ? 'bg-foreground text-white font-semibold'
-                : 'text-muted-foreground hover:bg-secondary'
-            }`}
-            type="button"
-          >
-            <Globe2 size={12} />
-            <span>Topographic</span>
           </button>
         </div>
       </div>
@@ -440,27 +335,6 @@ export default function RealLeafletMap({
           </div>
         );
       })()}
-
-      {/* Model Dominance Overlay */}
-      {layer === 'model_dominance' && (
-        <div
-          className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 p-2.5 sm:p-3 shadow-md border border-border max-w-[190px] sm:max-w-[220px] bg-card font-mono rounded-lg"
-        >
-          <div className="text-[11px] font-bold text-foreground mb-1.5 flex items-center gap-1.5">
-            <Sparkles size={12} className="text-success" />
-            REGIONAL DOMINANCE
-          </div>
-          <div className="space-y-1 text-[11px] text-muted-foreground">
-            {MOCK_REGION_DOMINANCE.slice(0, 4).map((r) => (
-              <div key={r.region} className="flex justify-between items-center">
-                <span className="text-muted-foreground">{r.region}:</span>
-                <span className="font-bold text-foreground">{r.dominantModel}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
 
       {/* Leaflet CSS Overrides to Prevent Tailwind `img` Reset Collisions */}
       <style jsx global>{`
