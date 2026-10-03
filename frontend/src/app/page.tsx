@@ -18,6 +18,7 @@ import { ForecastPage } from '@/components/pages/ForecastPage';
 import { ModelIntelligencePage } from '@/components/pages/ModelIntelligencePage';
 import { ExtremeWeatherPage } from '@/components/pages/ExtremeWeatherPage';
 import { ModelPerformancePage } from '@/components/pages/ModelPerformancePage';
+import { LeaderboardPage } from '@/components/pages/LeaderboardPage';
 import { DataHealthPage } from '@/components/pages/DataHealthPage';
 import { RpiPage } from '@/components/pages/RpiPage';
 import { ApiPage } from '@/components/pages/ApiPage';
@@ -55,6 +56,8 @@ export default function Home() {
         return <RpiPage selectedCity={selectedCity} onSelectCity={handleCitySelect} />;
       case 'model-performance':
         return <ModelPerformancePage />;
+      case 'leaderboard':
+        return <LeaderboardPage />;
       case 'data-health':
         return <DataHealthPage />;
       case 'api':

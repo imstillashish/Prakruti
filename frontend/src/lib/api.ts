@@ -336,9 +336,13 @@ export async function fetchWithReconnect<T = any>(
  * Generic fetch with Render cold-start handling that delegates to fetchWithReconnect.
  * When a fallback is provided, returns the fallback on error so components do not crash.
  */
-export async function fetchFromApi<T>(endpoint: string, fallback?: T): Promise<T> {
+export async function fetchFromApi<T>(
+  endpoint: string,
+  fallback?: T,
+  options?: FetchOptions
+): Promise<T> {
   try {
-    return await fetchWithReconnect<T>(endpoint);
+    return await fetchWithReconnect<T>(endpoint, options);
   } catch (err) {
     if (fallback !== undefined) {
       return fallback;
@@ -794,6 +798,156 @@ export async function getModelCalibration(opts?: {
     `/api/models/calibration?${params.toString()}`, 
     null,
   );
+}
+
+/**
+ * F-03 contextual benchmarking (PRD §7.3): stratified leaderboard boards from
+ * /api/models/leaderboard. Ranks and metrics are precomputed by
+ * ai/benchmark.py — nothing is scored at query time, and there is no composite
+ * index: every row exposes its constituents (PRD §10.5.A).
+ */
+export type LeaderboardBoard = 'accuracy' | 'extreme' | 'lead';
+
+export interface LeaderboardMeta {
+  engine_version: string;
+  generated_at: string;
+  window: { start: string; end: string; days: number };
+  windows_published: number[];
+  truth_source: string | null;
+  n_min: { hourly_pairs: number; observed_events: number };
+  rank_metrics: Record<string, string>;
+  boards: Record<string, string>;
+  tiers: Record<string, string>;
+  dims: { conditioned: string[]; not_conditioned: Array<{ dim: string; reason: string }> };
+  composite_index: { published: boolean; reason: string };
+  low_sample_policy: string;
+  row_count: number;
+  stations_scored: number;
+  methods_ranked: number;
+  primary_thresholds: Record<string, number>;
+  bootstrap: { unit: string; draws: number; ci: string; rank_range: string; seed: string };
+  ci_policy: string;
+  pareto_methods: string[];
+  pareto_note: string;
+  signals: LeaderboardSignal[];
+}
+
+export interface LeaderboardRow {
+  board: LeaderboardBoard;
+  geo: string;
+  variable: string;
+  window_days: number | null;
+  lead_days: number | null;
+  threshold: number | null;
+  method: string;
+  tier: 'blend' | 'baseline' | 'model';
+  rank: number;
+  metric: 'mae' | 'csi';
+  value: number;
+  mae: number | null;
+  rmse: number | null;
+  bias: number | null;
+  pod: number | null;
+  far: number | null;
+  csi: number | null;
+  ets: number | null;
+  bss: number | null;
+  n: number;
+  cases: number | null;
+  low_sample: number;
+  ci_low: number | null;
+  ci_high: number | null;
+  rank_low: number | null;
+  rank_high: number | null;
+}
+
+export interface LeaderboardSignal {
+  id: 'lowest_error' | 'best_extreme' | 'best_lead' | 'blend_gain';
+  variable: string;
+  geo: string;
+  window_days: number | null;
+  measure: LeaderboardBoard;
+  metric: 'mae' | 'csi';
+  threshold: number | null;
+  lead_days: number | null;
+  leader: string;
+  value: number;
+  ci_low: number | null;
+  ci_high: number | null;
+  runner_up: string | null;
+  gap: number | null;
+  n: number;
+  cases: number | null;
+  delta_pct: number | null;
+  beaten: string | null;
+  low_sample: number;
+}
+
+/** One full-window MAE x CSI point from outputs/leaderboard_pareto.csv. */
+export interface ParetoPoint {
+  geo: string;
+  variable: string;
+  threshold: number;
+  method: string;
+  tier: 'blend' | 'baseline' | 'model';
+  mae: number;
+  mae_ci_low: number | null;
+  mae_ci_high: number | null;
+  csi: number;
+  csi_ci_low: number | null;
+  csi_ci_high: number | null;
+  n_pairs: number;
+  cases: number | null;
+  low_sample: number;
+  frontier: number;
+}
+
+export interface CycleState {
+  cycle_id: string;
+  expected_models: string[];
+  models: Record<string, { status: string; rows: number }>;
+  received_models: string[];
+  missing_models: string[];
+  source_completeness: { expected: number; available: number; fallback: boolean };
+  forecast_checksum: string;
+  stale: boolean;
+}
+
+export interface LeaderboardPayload {
+  meta: LeaderboardMeta;
+  rows: LeaderboardRow[];
+  pareto: ParetoPoint[];
+}
+
+export async function getModelLeaderboard(opts?: {
+  board?: LeaderboardBoard;
+  variable?: string;
+  geo?: string;
+  window?: number | 'full';
+  lead_days?: number;
+  threshold?: number;
+}): Promise<LeaderboardPayload | null> {
+  const params = new URLSearchParams();
+  if (opts?.board) params.set('board', opts.board);
+  if (opts?.variable) params.set('variable', opts.variable);
+  if (opts?.geo) params.set('geo', opts.geo);
+  if (opts?.window !== undefined) params.set('window', String(opts.window));
+  if (opts?.lead_days !== undefined) params.set('lead_days', String(opts.lead_days));
+  if (opts?.threshold !== undefined) params.set('threshold', String(opts.threshold));
+  return fetchFromApi<LeaderboardPayload | null>(
+    `/api/models/leaderboard?${params.toString()}`,
+    null,
+  );
+}
+
+/**
+ * F-01.A per-model ingestion state for the current cycle (/api/cycle).
+ */
+export async function getCycleState(): Promise<CycleState | null> {
+  return fetchFromApi<CycleState | null>('/api/cycle', null, {
+    totalTimeoutMs: 2000,
+    retryIntervalMs: 500,
+  });
 }
 
 /**
