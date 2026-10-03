@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { Bell, Cpu } from '@/components/icons';
 import { MorMark } from '@/components/brand/MorMark';
 import SplitFlapText from '@/components/SplitFlapText';
@@ -61,16 +60,6 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
 
         {/* Right cluster: engine status, alerts, diagnostics, station */}
         <div className="flex items-center gap-1">
-          {/* v4 Palette Prototype link */}
-          <Link
-            href="/palette-prototype"
-            className="inline-flex items-center gap-1.5 px-2.5 h-9 text-xs font-mono font-medium text-action-pressed bg-action-soft hover:bg-action-soft/80 border border-action/20 rounded-md transition-colors touch-manipulation"
-            title="Inspect Color System v4 Prototype"
-          >
-            <span className="hidden sm:inline">v4 Palette</span>
-            <span className="sm:hidden">v4</span>
-          </Link>
-
           {/* Operational status: tablet & desktop */}
           <button
             type="button"
