@@ -3,33 +3,46 @@ import { ModelEmblem, provenanceFor } from '@/components/common/ModelEmblem';
 import { ChevronDown, Info } from '@/components/icons';
 
 /**
- * Disclosure control for a method row: a compact chip inside the dense tables,
- * a full-width 44px block inside the phone cards. The hit area of the chip is
- * expanded past its painted box (DESIGN.md §9.6) instead of growing the row.
+ * Disclosure control for a method row: a labelled chip in the dense tables, just the
+ * info glyph inside the phone cards. The hit area is expanded past the painted box
+ * (DESIGN.md §9.6) instead of growing the row.
  */
 export function SourceToggle({
   open,
   onToggle,
-  block = false,
+  iconOnly = false,
+  label,
 }: {
   open: boolean;
   onToggle: () => void;
-  block?: boolean;
+  iconOnly?: boolean;
+  label?: string;
 }) {
+  if (iconOnly) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-label={`Source for ${label ?? 'this model'}`}
+        title="Model source & provenance"
+        className="relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary after:absolute after:-inset-3 after:content-['']"
+      >
+        <Info size={13} />
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={open}
-      className={`relative flex touch-manipulation items-center rounded-md border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-        block
-          ? 'w-full min-h-[44px] justify-between gap-2 px-3 py-3 text-[11px] font-mono'
-          : 'gap-1 px-2 py-1 text-[10px] font-mono uppercase after:absolute after:-inset-y-3 after:-inset-x-2 after:content-[""]'
-      }`}
+      className="relative flex touch-manipulation items-center gap-1 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-[10px] font-mono uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary after:absolute after:-inset-y-3 after:-inset-x-2 after:content-['']"
     >
       <span className="inline-flex items-center gap-1.5">
         <Info size={12} className="shrink-0" />
-        {block ? 'Model source & provenance' : 'Source'}
+        Source
       </span>
       <ChevronDown
         size={12}

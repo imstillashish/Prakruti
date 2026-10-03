@@ -35,17 +35,17 @@ export function Hero({ meta }: HeroProps) {
   const models = ['ecmwf', 'gfs', 'icon', 'gem'];
 
   return (
-    <header className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-b from-sky-500/10 via-background to-background p-6 md:p-8">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <header className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-b from-sky-500/10 via-background to-background p-3 sm:p-6 md:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
         {/* Left: Editorial Heading & Context */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground/70 uppercase">
+        <div className="lg:col-span-8 space-y-3 sm:space-y-4">
+          <div className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground/70 uppercase">
             Model benchmark · verified against observations
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
             Ranked against the weather that actually happened
           </h1>
-          <p className="max-w-2xl text-sm md:text-base text-muted-foreground leading-relaxed">
+          <p className="hidden sm:block max-w-2xl text-sm md:text-base text-muted-foreground leading-relaxed">
             Every rank is scored against station observations — stratified by variable, window and lead, never blended into one number.
           </p>
 
@@ -74,7 +74,7 @@ export function Hero({ meta }: HeroProps) {
 
         {/* Right: Live Cycle Rail */}
         <div className="lg:col-span-4 w-full">
-          <div className="rounded-lg border border-border/80 bg-card/80 p-4 backdrop-blur-xs shadow-2xs space-y-3">
+          <div className="rounded-lg border border-border/80 bg-card/80 p-2 backdrop-blur-xs shadow-2xs space-y-3 sm:p-4">
             {cycleError ? (
               <div className="text-xs text-muted-foreground font-mono">
                 Cycle state unavailable — run the forecast pipeline
@@ -87,7 +87,9 @@ export function Hero({ meta }: HeroProps) {
                     {cycle.source_completeness?.available ?? 0}/{cycle.source_completeness?.expected ?? 4} sources
                   </span>
                 </div>
-                <div className="space-y-2">
+                {/* Per-model receipt rows are a desktop detail; the phone hero keeps
+                    the "4/4 sources" summary line only. */}
+                <div className="hidden sm:block space-y-2">
                   {models.map((modelKey) => {
                     const info = cycle.models?.[modelKey];
                     const isReceived = info?.status === 'received' || (info?.rows && info.rows > 0);

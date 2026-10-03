@@ -43,9 +43,9 @@ export function Bench({
   const leadOptions = [1, 2, 3];
 
   return (
-    <div id="leaderboard-bench" className="space-y-5">
+    <div id="leaderboard-bench" className="space-y-4 sm:space-y-5">
       {/* Bench Controls Strip */}
-      <div className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-2xs space-y-4">
+      <div className="rounded-xl border border-border bg-card p-3 sm:p-5 shadow-2xs space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Left Controls: Geography & Window */}
           <div className="flex flex-wrap items-center gap-3">

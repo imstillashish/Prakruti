@@ -208,7 +208,7 @@ Reuse: `Panel`, `Select`, `Tabs` primitives, `ui/ShaderSwitch`/gradient tokens f
 
 ## 7. Responsive matrix & guardrails
 
-- **Phone (<640):** hero condensed (headline ~30px, stats as chips), cycle rail = horizontal snap strip, pills snap-scroll, ranking table reflows to per-method cards (rank + method + score ±CI + two secondary metrics + n), Pareto full-width (~260px) with list below, signals collapse after the first two behind “All signals”. Budget ≤ 3.0 viewport-heights.
+- **Phone (<640):** hero condensed (headline ~30px, stats as chips), cycle rail = horizontal snap strip, pills snap-scroll, ranking table reflows to per-method cards (rank + method + score ±CI + two secondary metrics + n), Pareto full-width (~260px) with list below, signals, the two named boards and the methodology footnotes fold behind single tap rows (the bench above already carries the ranks). Budget ≤ 3.0 viewport-heights — measured 2.93 at 390×844 on 2026-10-03, after the first build measured 5.18.
 - **Tablet (640–1024):** two columns where meaningful; table keeps rank/method/score ±CI + one decomposed column; bench controls wrap without horizontal overflow.
 - **Desktop (>1024):** full table, 7/5 Pareto split, dense 28px controls allowed.
 - ≥44px targets on phone/tablet; tap popovers replace hover-only tooltips; reduced-motion respected; no `rounded-full` status dots anywhere; accent never encodes data; green only as semantic data-ok.

@@ -6,7 +6,7 @@ import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
 import type { LeaderboardCategory, LeaderboardState } from './types';
 import { CATEGORY_VARIABLE, VARIABLE_UNIT } from './types';
-import { Award, ArrowRight, Activity, AlertTriangle, Clock } from '@/components/icons';
+import { Award, ArrowRight, Activity, AlertTriangle, ChevronDown, Clock } from '@/components/icons';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 
 interface SignalLeadersProps {
@@ -33,6 +33,7 @@ const EXTREME_PHRASES: Record<string, string> = {
 
 export function SignalLeaders({ category, meta, onSelectContext }: SignalLeadersProps) {
   const [showAllMobile, setShowAllMobile] = useState(false);
+  const [phoneShow, setPhoneShow] = useState(false);
   const [extremeBoard, setExtremeBoard] = useState<LeaderboardRow[]>([]);
   const [leadBoard, setLeadBoard] = useState<LeaderboardRow[]>([]);
   const [boardsLoading, setBoardsLoading] = useState(false);
@@ -99,18 +100,39 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
   }
 
   return (
-    <div className="space-y-6 pt-4 border-t border-border/60">
+    <div className="space-y-3 pt-3 border-t border-border/60 sm:space-y-6 sm:pt-4">
       <div>
         <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Signal Leaders & Key Findings
         </h2>
-        <p className="text-xs text-muted-foreground font-mono">
+        <p className="hidden sm:block text-xs text-muted-foreground font-mono">
           Precomputed operational highlights across observation-stratified benchmarks.
         </p>
       </div>
 
+      {/* Phone folds the whole block behind one row — the category view has to hold
+          the 3.0-viewport scroll budget, and the bench above already carries the ranks. */}
+      <button
+        type="button"
+        onClick={() => setPhoneShow(!phoneShow)}
+        aria-expanded={phoneShow}
+        className="sm:hidden w-full min-h-[44px] flex items-center justify-between gap-1.5 rounded-md border border-border bg-card px-3 text-xs font-mono text-primary cursor-pointer shadow-2xs hover:bg-muted/30"
+      >
+        <span>
+          {phoneShow
+            ? 'Hide signals & findings'
+            : `Signals & findings · ${displaySignals.length}`}
+        </span>
+        <ChevronDown
+          size={13}
+          className={`shrink-0 transition-transform motion-reduce:transition-none ${phoneShow ? 'rotate-180' : ''}`}
+        />
+      </button>
+
       {/* Statement Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div
+        className={`${phoneShow ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:grid`}
+      >
         {displaySignals.map((sig, idx) => {
           const leaderName = METHOD_LABELS[sig.leader] || sig.leader;
           const beatenName = sig.beaten ? METHOD_LABELS[sig.beaten] || sig.beaten : '';
@@ -200,7 +222,7 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
         <button
           type="button"
           onClick={() => setShowAllMobile(!showAllMobile)}
-          className="sm:hidden w-full h-10 min-h-[44px] rounded-md border border-border bg-card text-xs font-mono text-primary flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs hover:bg-muted/30"
+          className="sm:hidden w-full h-10 min-h-[44px] flex items-center justify-center gap-1.5 rounded-md border border-border bg-card text-xs font-mono text-primary cursor-pointer shadow-2xs hover:bg-muted/30"
         >
           <span>{showAllMobile ? 'Show fewer signals' : `View all ${displaySignals.length} signals`}</span>
         </button>
@@ -208,7 +230,9 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
 
       {/* Two Named Signal Boards (Variable category only) */}
       {category !== 'overall' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div
+          className={`${phoneShow ? 'grid' : 'hidden'} grid-cols-1 md:grid-cols-2 gap-6 pt-2 sm:grid`}
+        >
           {/* Extreme Detection Board */}
           <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">

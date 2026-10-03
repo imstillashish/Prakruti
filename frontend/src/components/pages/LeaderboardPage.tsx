@@ -138,12 +138,12 @@ export function LeaderboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-6">
       {/* 1. Hero Band with Atmospheric Sky-Blue wash & Cycle Rail */}
       <Hero meta={meta} />
 
       {/* 2. Category Navigation Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none snap-x">
+      <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none snap-x sm:pb-1">
         {CATEGORIES.map((cat) => {
           const isActive = state.category === cat.id;
 

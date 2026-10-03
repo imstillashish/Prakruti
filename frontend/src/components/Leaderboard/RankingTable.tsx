@@ -5,6 +5,7 @@ import type { LeaderboardMeasure } from './types';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
+import { ChevronDown } from '@/components/icons';
 import { ModelSourceCard, SourceToggle } from './ModelSourceCard';
 
 interface RankingTableProps {
@@ -39,6 +40,7 @@ export function RankingTable({
   leadDays,
 }: RankingTableProps) {
   const [openRow, setOpenRow] = useState<string | null>(null);
+  const [showMethod, setShowMethod] = useState(false);
 
   if (!rows || rows.length === 0) {
     const isExtreme = measure === 'extreme';
@@ -60,7 +62,7 @@ export function RankingTable({
   return (
     <div className="space-y-4">
       {/* Mobile Card Reflow (<640px) */}
-      <div className="block sm:hidden space-y-3">
+      <div className="block sm:hidden space-y-2">
         {rows.map((row) => {
           const rowKey = `${row.board}-${row.geo}-${row.variable}-${row.method}`;
           const mKey = row.method.toUpperCase();
@@ -73,7 +75,7 @@ export function RankingTable({
           return (
             <div
               key={`${row.board}-${row.geo}-${row.variable}-${row.method}`}
-              className={`rounded-lg border p-4 shadow-2xs space-y-2.5 ${
+              className={`rounded-lg border p-2.5 shadow-2xs space-y-2 ${
                 row.tier === 'blend' ? 'border-primary/40 bg-primary/[0.02]' : 'border-border bg-card'
               }`}
             >
@@ -114,16 +116,24 @@ export function RankingTable({
               </div>
 
               {/* Primary Score */}
-              <div className="flex items-baseline justify-between border-t border-border/40 pt-2 font-mono">
+              <div className="flex items-baseline justify-between border-t border-border/40 pt-1.5 font-mono sm:pt-2">
                 <span className="text-xs text-muted-foreground">{metricName} ({metricDirection})</span>
-                <div className="text-sm font-semibold text-foreground">
-                  {row.value.toFixed(2)} {unit}
-                  {ciDiff !== null && <span className="text-muted-foreground text-xs font-normal"> ±{ciDiff}</span>}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-foreground">
+                    {row.value.toFixed(2)} {unit}
+                    {ciDiff !== null && <span className="text-muted-foreground text-xs font-normal"> ±{ciDiff}</span>}
+                  </span>
+                  <SourceToggle
+                    iconOnly
+                    label={METHOD_LABELS[row.method] || row.method}
+                    open={openRow === rowKey}
+                    onToggle={() => setOpenRow(openRow === rowKey ? null : rowKey)}
+                  />
                 </div>
               </div>
 
               {/* Secondary Decomposed Metrics */}
-              <div className="grid grid-cols-3 gap-2 border-t border-border/40 pt-2 text-xs font-mono">
+              <div className="grid grid-cols-3 gap-2 border-t border-border/40 pt-1.5 text-xs font-mono sm:pt-2">
                 {measure === 'extreme' ? (
                   <>
                     <div>
@@ -157,11 +167,6 @@ export function RankingTable({
                 )}
               </div>
 
-              <SourceToggle
-                block
-                open={openRow === rowKey}
-                onToggle={() => setOpenRow(openRow === rowKey ? null : rowKey)}
-              />
               {openRow === rowKey && (
                 <ModelSourceCard
                   method={row.method}
@@ -344,23 +349,39 @@ export function RankingTable({
       </div>
 
       {/* Disclosures & Metadata Footer */}
-      <div className="rounded-md border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground space-y-1 font-mono">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-1.5">
+      <div className="rounded-md border border-border/60 bg-muted/20 p-2.5 text-xs text-muted-foreground space-y-1 font-mono sm:p-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-1.5 text-[11px] sm:text-xs">
           <span>
             Ranked by {metricName} ({metricDirection}) · {variable} · {geo === 'IN' ? 'All India' : geo} ·{' '}
             {windowDays === 'full' || !windowDays ? 'Full window' : `${windowDays} days`}
             {threshold !== null && threshold !== undefined && ` · threshold ≥ ${threshold} ${unit}`}
             {leadDays !== null && leadDays !== undefined && ` · lead day ${leadDays}`}
           </span>
-          <span>{rows.length} methods evaluated</span>
+          <span className="flex items-center gap-2">
+            {rows.length} methods evaluated
+            <button
+              type="button"
+              onClick={() => setShowMethod(!showMethod)}
+              aria-expanded={showMethod}
+              className="relative inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground touch-manipulation after:absolute after:-inset-y-4 after:-inset-x-2 after:content-[''] sm:hidden"
+            >
+              Methodology
+              <ChevronDown
+                size={11}
+                className={`transition-transform motion-reduce:transition-none ${showMethod ? 'rotate-180' : ''}`}
+              />
+            </button>
+          </span>
         </div>
-        <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
-          <span>no composite index — constituents only (PRD §10.5.A)</span>
-          <span>Unconditioned dimensions: weather_regime, season, geographic_unit</span>
-        </div>
-        <div className="text-[11px] text-muted-foreground/80">
-          Confidence intervals (95%) and rank ranges published for national aggregate only.
-          {lowSampleCount > 0 && ` ${lowSampleCount} method(s) flagged with low sample size.`}
+        <div className={`${showMethod ? 'block' : 'hidden'} space-y-1 pt-1 sm:block`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
+            <span>no composite index — constituents only (PRD §10.5.A)</span>
+            <span>Unconditioned dimensions: weather_regime, season, geographic_unit</span>
+          </div>
+          <div className="text-[11px] text-muted-foreground/80">
+            Confidence intervals (95%) and rank ranges published for national aggregate only.
+            {lowSampleCount > 0 && ` ${lowSampleCount} method(s) flagged with low sample size.`}
+          </div>
         </div>
       </div>
     </div>
