@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { LeaderboardRow } from '@/lib/api';
 import { getModelLeaderboard } from '@/lib/api';
 import { SERIES } from '@/lib/palette';
@@ -174,9 +174,8 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                 (row.tier === 'blend' ? '#0d74ce' : '#64748b');
 
               return (
-                <>
+                <Fragment key={row.method}>
                 <tr
-                  key={row.method}
                   className={`transition-colors hover:bg-muted/20 ${
                     row.tier === 'blend' ? 'bg-primary/[0.03]' : ''
                   }`}
@@ -283,7 +282,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                     </td>
                   </tr>
                 )}
-                </>
+                </Fragment>
               );
             })}
           </tbody>

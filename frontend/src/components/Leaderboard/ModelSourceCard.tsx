@@ -24,7 +24,7 @@ export function SourceToggle({
       className={`relative flex touch-manipulation items-center rounded-md border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
         block
           ? 'w-full min-h-[44px] justify-between gap-2 px-3 py-3 text-[11px] font-mono'
-          : 'gap-1 px-2 py-1 text-[10px] font-mono uppercase after:absolute after:-inset-y-2.5 after:-inset-x-2 after:content-[""]'
+          : 'gap-1 px-2 py-1 text-[10px] font-mono uppercase after:absolute after:-inset-y-3 after:-inset-x-2 after:content-[""]'
       }`}
     >
       <span className="inline-flex items-center gap-1.5">

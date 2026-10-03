@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import type { LeaderboardRow } from '@/lib/api';
 import type { LeaderboardMeasure } from './types';
 import { SERIES } from '@/lib/palette';
@@ -218,9 +218,8 @@ export function RankingTable({
               }
 
               return (
-                <>
+                <Fragment key={rowKey}>
                 <tr
-                  key={`${row.board}-${row.geo}-${row.variable}-${row.method}`}
                   className={`transition-colors hover:bg-muted/20 ${
                     row.tier === 'blend' ? 'bg-primary/[0.03]' : ''
                   }`}
@@ -337,7 +336,7 @@ export function RankingTable({
                     </td>
                   </tr>
                 )}
-                </>
+                </Fragment>
               );
             })}
           </tbody>
