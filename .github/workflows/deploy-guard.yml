@@ -1,0 +1,34 @@
+name: Deploy Guard
+
+# Two rules the published tree must keep for the deploys to stay predictable:
+#   1. no env or secret files are ever tracked — only *.example templates; both
+#      hosts read their own settings and git ships nothing confidential.
+#   2. render.yaml keeps the service on main with /health as the probe — the
+#      keep-awake and nightly guards both assume that contract.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No tracked env or secret files
+        run: |
+          offenders=$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|key|p12)$' | grep -v '\.example$' || true)
+          if [ -n "$offenders" ]; then
+            echo "$offenders"
+            echo "::error::Env or secret files are tracked — only *.example templates belong in git"
+            exit 1
+          fi
+          echo "No tracked env or secret files."
+      - name: Render blueprint is pinned to main + /health
+        run: |
+          grep -qE '^[[:space:]]*branch:[[:space:]]*main[[:space:]]*$' render.yaml \
+            || { echo "::error::render.yaml must pin 'branch: main' (deploys run from main only)"; exit 1; }
+          grep -qE '^[[:space:]]*healthCheckPath:[[:space:]]*/health[[:space:]]*$' render.yaml \
+            || { echo "::error::render.yaml must set 'healthCheckPath: /health'"; exit 1; }
+          echo "render.yaml pinned: branch main, healthCheckPath /health."

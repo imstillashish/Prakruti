@@ -5,6 +5,9 @@ node_modules
 .git
 .github
 
+# Env and secret files (machine tokens live in local .env files)
+.env*
+
 # Python backend & environments
 .venv
 venv

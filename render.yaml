@@ -3,8 +3,14 @@ services:
     name: prakruti-api
     env: python
     plan: free
+    region: oregon
+    # Deploys run from main only; the daily workflow's data commits are what ship
+    # fresh CSVs to the API. See docs/DEPLOYMENT.md.
+    branch: main
+    autoDeploy: true
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0

@@ -1,0 +1,4 @@
+# Machine-local env files must never reach a deployment (VERCEL_OIDC_TOKEN
+# lives in .env.local). The project-level file takes precedence over the
+# repo-root .vercelignore.
+.env*
