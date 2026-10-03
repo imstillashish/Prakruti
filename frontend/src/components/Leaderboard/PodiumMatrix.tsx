@@ -5,6 +5,8 @@ import { getModelLeaderboard } from '@/lib/api';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
 import type { LeaderboardCategory } from './types';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
+import { ModelSourceCard, SourceToggle } from './ModelSourceCard';
 
 interface PodiumMatrixProps {
   onSelectCategory: (category: LeaderboardCategory) => void;
@@ -48,6 +50,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [matrix, setMatrix] = useState<MethodMatrixRow[]>([]);
+  const [openRow, setOpenRow] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -171,6 +174,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                 (row.tier === 'blend' ? '#0d74ce' : '#64748b');
 
               return (
+                <>
                 <tr
                   key={row.method}
                   className={`transition-colors hover:bg-muted/20 ${
@@ -180,6 +184,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                   {/* Method Cell */}
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
+                      <ModelEmblem method={row.method} size={16} />
                       <span
                         className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
                         style={{ backgroundColor: seriesColor }}
@@ -195,6 +200,10 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                       <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                         {row.tier}
                       </span>
+                      <SourceToggle
+                        open={openRow === row.method}
+                        onToggle={() => setOpenRow(openRow === row.method ? null : row.method)}
+                      />
                     </div>
                   </td>
 
@@ -264,6 +273,17 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                     );
                   })}
                 </tr>
+                {openRow === row.method && (
+                  <tr className="bg-muted/20">
+                    <td colSpan={3 + VARIABLES.length} className="px-4 pb-4 pt-1">
+                      <ModelSourceCard
+                        method={row.method}
+                        label={METHOD_LABELS[row.method] || row.method}
+                      />
+                    </td>
+                  </tr>
+                )}
+                </>
               );
             })}
           </tbody>

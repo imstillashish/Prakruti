@@ -240,6 +240,10 @@ NOAA emblem — a registered trademark — is used unaltered for identification 
 an attribution line at the foot of the Leaderboard page. Provenance notes live in the
 component and the README.
 
+That map also backs a source card on every method row (ranked table and the overall
+matrix): owner, resolution, update cadence, license and the model's source page, revealed
+by the row's Source control — tap on phone, no hover path.
+
 ## 10. Out of scope (deliberate)
 
 Weather-regime and season strata (still unbuilt; disclosed as unmet dims); city-level CIs; Pareto zoom and cost axis; voting; per-model cycle timestamps; F-04 model cards; any cross-variable composite.

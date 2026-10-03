@@ -1,8 +1,11 @@
 'use client';
+import { useState } from 'react';
 import type { LeaderboardRow } from '@/lib/api';
 import type { LeaderboardMeasure } from './types';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
+import { ModelSourceCard, SourceToggle } from './ModelSourceCard';
 
 interface RankingTableProps {
   rows: LeaderboardRow[];
@@ -35,6 +38,8 @@ export function RankingTable({
   threshold,
   leadDays,
 }: RankingTableProps) {
+  const [openRow, setOpenRow] = useState<string | null>(null);
+
   if (!rows || rows.length === 0) {
     const isExtreme = measure === 'extreme';
     return (
@@ -48,6 +53,7 @@ export function RankingTable({
 
   const metricName = measure === 'extreme' ? 'CSI' : 'MAE';
   const metricDirection = measure === 'extreme' ? 'higher is better' : 'lower is better';
+  const colSpan = measure === 'extreme' ? 8 : 7;
 
   const lowSampleCount = rows.filter((r) => r.low_sample === 1).length;
 
@@ -56,6 +62,7 @@ export function RankingTable({
       {/* Mobile Card Reflow (<640px) */}
       <div className="block sm:hidden space-y-3">
         {rows.map((row) => {
+          const rowKey = `${row.board}-${row.geo}-${row.variable}-${row.method}`;
           const mKey = row.method.toUpperCase();
           const seriesColor = SERIES[mKey as ModelName] || (row.tier === 'blend' ? '#0d74ce' : '#64748b');
           const ciDiff =
@@ -80,6 +87,7 @@ export function RankingTable({
                       ({row.rank_low}↔{row.rank_high})
                     </span>
                   )}
+                  <ModelEmblem method={row.method} size={16} />
                   <span
                     className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
                     style={{ backgroundColor: seriesColor }}
@@ -148,6 +156,18 @@ export function RankingTable({
                   </>
                 )}
               </div>
+
+              <SourceToggle
+                block
+                open={openRow === rowKey}
+                onToggle={() => setOpenRow(openRow === rowKey ? null : rowKey)}
+              />
+              {openRow === rowKey && (
+                <ModelSourceCard
+                  method={row.method}
+                  label={METHOD_LABELS[row.method] || row.method}
+                />
+              )}
             </div>
           );
         })}
@@ -180,6 +200,7 @@ export function RankingTable({
           </thead>
           <tbody className="divide-y divide-border/60">
             {rows.map((row) => {
+              const rowKey = `${row.board}-${row.geo}-${row.variable}-${row.method}`;
               const mKey = row.method.toUpperCase();
               const seriesColor = SERIES[mKey as ModelName] || (row.tier === 'blend' ? '#0d74ce' : '#64748b');
               const ciDiff =
@@ -197,6 +218,7 @@ export function RankingTable({
               }
 
               return (
+                <>
                 <tr
                   key={`${row.board}-${row.geo}-${row.variable}-${row.method}`}
                   className={`transition-colors hover:bg-muted/20 ${
@@ -216,6 +238,7 @@ export function RankingTable({
                   {/* Method Cell */}
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
+                      <ModelEmblem method={row.method} size={16} />
                       <span
                         className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
                         style={{ backgroundColor: seriesColor }}
@@ -236,6 +259,10 @@ export function RankingTable({
                           low n
                         </span>
                       )}
+                      <SourceToggle
+                        open={openRow === rowKey}
+                        onToggle={() => setOpenRow(openRow === rowKey ? null : rowKey)}
+                      />
                     </div>
                   </td>
 
@@ -300,6 +327,17 @@ export function RankingTable({
                     </>
                   )}
                 </tr>
+                {openRow === rowKey && (
+                  <tr className="bg-muted/20">
+                    <td colSpan={colSpan} className="px-4 pb-4 pt-1">
+                      <ModelSourceCard
+                        method={row.method}
+                        label={METHOD_LABELS[row.method] || row.method}
+                      />
+                    </td>
+                  </tr>
+                )}
+                </>
               );
             })}
           </tbody>
