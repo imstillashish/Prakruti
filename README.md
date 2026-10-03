@@ -152,7 +152,8 @@ The free-tier API sleeps after ~15 min idle; the first request wakes it
 
 Backend runs on Render (`render.yaml` → https://prakruti-api.onrender.com), frontend
 on Vercel (https://prakruti-ten.vercel.app). Local development uses the two commands
-above; both services read the committed configuration files.
+above; both services read the committed configuration files. What ships to each
+target, and what enforces it, is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Team EXELION
 
