@@ -1,46 +1,44 @@
 {
-  "cycle_id": "2026-10-02T07:57:21",
-  "previous_cycle_id": "2026-10-01T11:15:45",
+  "cycle_id": "2026-10-03T22:21:33",
+  "previous_cycle_id": "2026-10-02T07:57:21",
   "available": true,
   "quantile_shift": {
     "temperature": {
-      "p10": 0.0686,
-      "p50": 0.079,
-      "p90": 0.0894
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "rainfall": {
-      "p10": -0.0023,
-      "p50": -0.0065,
-      "p90": -0.0123
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "wind_speed": {
-      "p10": -0.3439,
-      "p50": -0.3694,
-      "p90": -0.3041
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     }
   },
   "biggest_p50_mover": {
     "temperature": {
-      "city": "Thane",
-      "delta": 1.5747
+      "city": "Agartala",
+      "delta": 0.0
     },
     "rainfall": {
-      "city": "Madurai",
-      "delta": -0.2955
+      "city": "Agartala",
+      "delta": 0.0
     },
     "wind_speed": {
-      "city": "Thiruvananthapuram",
-      "delta": -3.5227
+      "city": "Agartala",
+      "delta": 0.0
     }
   },
   "confidence_shifts": {
-    "upgraded": 2,
+    "upgraded": 0,
     "downgraded": 6,
     "transitions": {
       "High->Medium": 5,
-      "High->Very High": 1,
-      "Very High->High": 1,
-      "Medium->High": 1
+      "Very High->High": 1
     }
   },
   "models_recovered": [],
