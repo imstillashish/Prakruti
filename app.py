@@ -977,6 +977,100 @@ def get_models_calibration():
     })
 
 
+@app.route('/api/models/leaderboard', methods=['GET'])
+@app.route('/models/leaderboard', methods=['GET'])
+def get_models_leaderboard():
+    """F-03 contextual benchmarking: stratified leaderboard boards (accuracy,
+    extreme, lead) precomputed by ai/benchmark.py — ranks and metrics are read
+    from the artifact, nothing is scored at query time."""
+    rows = load_csv_records(os.path.join(OUTPUTS_DIR, "leaderboard.csv"))
+    if rows is None:
+        return jsonify({"error": "leaderboard.csv not found — run ai/benchmark.py"}), 404
+
+    meta = {}
+    meta_path = os.path.join(OUTPUTS_DIR, "benchmark_meta.json")
+    if os.path.exists(meta_path):
+        with open(meta_path, encoding="utf-8") as f:
+            meta = json.load(f)
+
+    pareto_rows = load_csv_records(os.path.join(OUTPUTS_DIR, "leaderboard_pareto.csv")) or []
+
+    board = request.args.get('board')
+    variable = request.args.get('variable')
+    geo = request.args.get('geo') or request.args.get('city')
+    window = request.args.get('window')
+    lead = request.args.get('lead_days', type=int)
+    threshold = request.args.get('threshold', type=float)
+
+    if board and board not in ("accuracy", "extreme", "lead"):
+        return jsonify({"error": "board must be one of accuracy|extreme|lead"}), 400
+    if variable and variable not in VARIABLE_UNITS:
+        return jsonify({"error": "variable must be one of temperature|rainfall|wind_speed"}), 400
+    window_days = None
+    if window is not None and window not in ("full", "all"):
+        try:
+            window_days = int(window)
+        except ValueError:
+            return jsonify({"error": "window must be an integer number of days or 'full'"}), 400
+
+    # `geo` selects a city or, for IN/all, only the pooled national rows.
+    geo_filter = None
+    if geo:
+        geo_filter = geo.strip().lower()
+        if geo_filter in ("in", "all", "all india", "india"):
+            geo_filter = "IN"
+
+    int_keys = {"rank", "rank_low", "rank_high", "low_sample", "n", "cases",
+                "window_days", "lead_days"}
+    float_keys = {"threshold", "value", "mae", "rmse", "bias",
+                  "pod", "far", "csi", "ets", "bss", "ci_low", "ci_high"}
+    pareto_int_keys = {"threshold", "n_pairs", "cases", "low_sample", "frontier"}
+    pareto_float_keys = {"mae", "mae_ci_low", "mae_ci_high",
+                         "csi", "csi_ci_low", "csi_ci_high"}
+
+    def keep(r):
+        if board and r.get("board") != board:
+            return False
+        if variable and r.get("variable") != variable:
+            return False
+        if geo_filter and str(r.get("geo", "")).lower() != geo_filter.lower():
+            return False
+        if window is not None:
+            rw = r.get("window_days")
+            if window_days is None:
+                if rw is not None:
+                    return False
+            elif rw is None or int(rw) != window_days:
+                return False
+        if lead is not None and (r.get("lead_days") is None or int(r["lead_days"]) != lead):
+            return False
+        if threshold is not None and (r.get("threshold") is None
+                                      or abs(float(r["threshold"]) - threshold) > 1e-9):
+            return False
+        return True
+
+    out = []
+    for r in rows:
+        if not keep(r):
+            continue
+        out.append({k: (int(v) if k in int_keys and v is not None
+                        else float(v) if k in float_keys and v is not None else v)
+                    for k, v in r.items()})
+
+    # Pareto is full-window by construction: filter it by variable and geo only.
+    pareto_out = []
+    for r in pareto_rows:
+        if variable and r.get("variable") != variable:
+            continue
+        if geo_filter and str(r.get("geo", "")).lower() != geo_filter.lower():
+            continue
+        pareto_out.append({k: (int(v) if k in pareto_int_keys and v is not None
+                               else float(v) if k in pareto_float_keys and v is not None else v)
+                           for k, v in r.items()})
+
+    return jsonify({"meta": meta, "rows": out, "pareto": pareto_out})
+
+
 @app.route('/api/cities', methods=['GET'])
 @app.route('/cities', methods=['GET'])
 def get_cities():
