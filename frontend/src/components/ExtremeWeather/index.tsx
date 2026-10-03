@@ -50,8 +50,12 @@ function ProbabilityArc({ value, color }: { value: number; color: string }) {
   const circ = 2 * Math.PI * r;
   const offset = circ - (value / 100) * circ;
   return (
-    <div className="relative flex items-center justify-center shrink-0 font-mono">
-      <svg width="60" height="60" viewBox="0 0 60 60">
+    <div
+      className="relative flex items-center justify-center shrink-0 font-mono"
+      title={`Risk Probability: ${value}%`}
+      aria-label={`Risk Probability: ${value}%`}
+    >
+      <svg width="60" height="60" viewBox="0 0 60 60" role="img" aria-label={`Risk Probability ${value}%`}>
         <circle cx="30" cy="30" r={r} fill="none" strokeWidth="4" stroke="#dcdee0" />
         <circle
           cx="30" cy="30" r={r} fill="none" strokeWidth="4"
@@ -97,8 +101,8 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
 
   return (
     <Panel
-      title="Early warning advisory"
-      subtitle="IMD Probabilistic Risk Thresholds"
+      title="Severe Weather Risk"
+      subtitle="Severe Storm Chance and early warnings based on IMD & NDMA criteria"
       term="rpi"
       collapsibleOnPhone={collapsibleOnPhone}
       actions={<Badge variant="warning">Active Bulletins</Badge>}
@@ -121,8 +125,13 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
                 )}
               >
                 <div className="flex items-center gap-3">
-                  {/* Probability meter */}
-                  <ProbabilityArc value={event.probability} color={color} />
+                  {/* Risk Probability meter */}
+                  <div className="flex flex-col items-center shrink-0" title={`Risk Probability: ${event.probability}%`}>
+                    <ProbabilityArc value={event.probability} color={color} />
+                    <span className="text-[9px] font-mono font-medium text-muted-foreground uppercase tracking-tight mt-0.5">
+                      Risk Prob.
+                    </span>
+                  </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
@@ -134,7 +143,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
                     <div className="text-[11px] font-mono font-semibold text-muted-foreground mb-0.5">{event.window}</div>
                     <div className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{event.description}</div>
                     <div className="text-[10px] font-mono text-muted-foreground mt-1">
-                      Ensemble Agreement: <span className="font-bold text-foreground">{event.confidence}%</span>
+                      Model Agreement: <span className="font-bold text-foreground">{event.confidence}%</span>
                     </div>
                   </div>
 
@@ -147,7 +156,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
       </div>
 
       <div className="border-t border-border mt-3 pt-2 text-[11px] font-mono text-muted-foreground text-center">
-        Calibrated to IMD &amp; NDMA disaster threshold criteria
+        Matches official IMD &amp; NDMA disaster risk criteria
       </div>
     </Panel>
   );
