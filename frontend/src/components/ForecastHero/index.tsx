@@ -454,15 +454,6 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 {advisoriesLoaded && cards.length === 0 ? (
                   <p className="text-[11px] font-mono text-muted-foreground">Advisory feed unavailable — see Data Health.</p>
                 ) : null}
-                <Button
-                  variant="outline"
-                  onClick={() => setShowTechProof((prev) => !prev)}
-                  aria-expanded={showTechProof}
-                  aria-controls="technical-evidence-drawer"
-                  className="h-8 px-3 text-xs cursor-pointer"
-                >
-                  🔬 Inspect Model Evidence & Technical Data {showTechProof ? '▲' : '▼'}
-                </Button>
               </div>
             </div>
 
