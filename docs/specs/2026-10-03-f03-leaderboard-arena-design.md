@@ -221,12 +221,25 @@ Reuse: `Panel`, `Select`, `Tabs` primitives, `ui/ShaderSwitch`/gradient tokens f
 4. Flow checks in preview: category switch, measure switch, Ranking↔Pareto, geography change, threshold chips, signal→bench preselection, low-sample city, empty-extremes context.
 5. DESIGN.md §9.6 audit at 390×844 / 768×1024 / 1440×900 with **measured numbers reported** (overflow, targets, viewport-height budgets).
 6. Grep guardrails on new files: no `rounded-full` color dots, no `#0d74ce`-as-data, no invented copy not in §5.5.
+7. Mark-load guard: every `/brands/` file referenced by an emblem returns 200 and renders with non-zero width on the Leaderboard at 1440 (audit check).
 
 ## 9. Pipeline / CI
 
 - `ai/benchmark.py` writes three artifacts; `outputs/leaderboard_pareto.csv` joins `.gitignore`'s whitelist and the daily workflow's commit list.
 - The existing benchmark verify step in `.github/workflows/daily-forecast.yml` picks up §3.6 automatically.
 
+## 9.1 Brand marks
+
+Institutional marks are the owners' published files in `frontend/public/brands/` — the
+ECMWF master logo, the DWD Wortbildmarke plus its Bildmarke (`dwd-mark.png`, cropped from
+that same file), the NOAA emblem, and the ECCC bilingual signature. The signature is
+~16:1 and unreadable at icon sizes, so GEM rows render the flag portion of that file
+through a crop window rather than invented art. `ModelEmblem` (method-keyed, native
+aspect) serves them everywhere a method is named; no recoloring or stretching, and the
+NOAA emblem — a registered trademark — is used unaltered for identification only, with
+an attribution line at the foot of the Leaderboard page. Provenance notes live in the
+component and the README.
+
 ## 10. Out of scope (deliberate)
 
-Weather-regime and season strata (still unbuilt; disclosed as unmet dims); city-level CIs; Pareto zoom and cost axis; voting; model logos; per-model cycle timestamps; F-04 model cards; any cross-variable composite.
+Weather-regime and season strata (still unbuilt; disclosed as unmet dims); city-level CIs; Pareto zoom and cost axis; voting; per-model cycle timestamps; F-04 model cards; any cross-variable composite.

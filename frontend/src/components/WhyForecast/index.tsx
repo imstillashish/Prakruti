@@ -4,6 +4,7 @@ import { Modal } from '@/components/ui/Modal';
 import { getModelWeightsData, getConfidence, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight, ConfidenceRecord } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { SERIES } from '@/lib/palette';
 
 interface WhyForecastModalProps {
@@ -59,8 +60,9 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
               className="p-3 rounded-md bg-secondary border border-border"
             >
               <div className="text-[11px] text-muted-foreground mb-0.5">{item.label}</div>
-              <div className={`text-sm font-semibold ${item.highlight ? 'text-data-ok-text' : 'text-foreground'}`}>
-                {item.value}
+              <div className={`text-sm font-semibold flex items-center gap-1.5 ${item.highlight ? 'text-data-ok-text' : 'text-foreground'}`}>
+                {item.highlight && <ModelEmblem method={conf?.dominant_model || 'ECMWF'} size={15} />}
+                <span>{item.value}</span>
               </div>
             </div>
           ))}

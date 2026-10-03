@@ -1,9 +1,11 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { ShieldCheck, Sparkles, Sliders, CheckCircle2, Flame, CloudRain, Wind, Layers, ArrowRight, AlertTriangle, ExternalLink } from '@/components/icons';
+import { ShieldCheck, Sparkles, Sliders, Check, CheckCircle2, Flame, CloudRain, Wind, Layers, ArrowRight, AlertTriangle, ExternalLink } from '@/components/icons';
 import { RpiData, RpiPriority, ResourceAction } from '@/types';
 import { Explain } from '@/components/explain/Explain';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { SERIES, DATA } from '@/lib/palette';
+import { ShaderButton } from '@/components/ui/ShaderButton';
 
 interface StationDossierProps {
   rpiData: RpiData | null;
@@ -239,10 +241,11 @@ export function StationDossier({
                   <span className="text-xs font-semibold text-foreground">Dominant Model in Grid</span>
                 </div>
                 <span
-                  className="px-2 py-0.5 rounded text-[10px] font-mono font-bold text-white uppercase"
+                  className="px-2 py-0.5 rounded text-[10px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
                   style={{ backgroundColor: modelMeta.hex }}
                 >
-                  {domModel} Leads
+                  <ModelEmblem method={domModel} size={14} />
+                  <span>{domModel} Leads</span>
                 </span>
               </div>
               <div className="text-xs text-muted-foreground leading-relaxed">
@@ -263,8 +266,9 @@ export function StationDossier({
               <div className="space-y-2 text-xs font-mono">
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} /> ECMWF IFS
+                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
+                      <ModelEmblem method="ecmwf" size={14} />
+                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} /> ECMWF IFS
                     </span>
                     <span className="font-bold text-foreground">{weights.ecmwf}%</span>
                   </div>
@@ -275,8 +279,9 @@ export function StationDossier({
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ICON }} /> ICON Seamless
+                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
+                      <ModelEmblem method="icon" size={14} />
+                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} /> ICON Seamless
                     </span>
                     <span className="font-bold text-foreground">{weights.icon}%</span>
                   </div>
@@ -287,8 +292,9 @@ export function StationDossier({
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GFS }} /> GFS Global
+                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
+                      <ModelEmblem method="gfs" size={14} />
+                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} /> GFS Global
                     </span>
                     <span className="font-bold text-foreground">{weights.gfs}%</span>
                   </div>
@@ -299,8 +305,9 @@ export function StationDossier({
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1 text-[11px] text-foreground">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GEM }} /> GEM Canada
+                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
+                      <ModelEmblem method="gem" size={14} />
+                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} /> GEM Canada
                     </span>
                     <span className="font-bold text-foreground">{weights.gem}%</span>
                   </div>
@@ -369,17 +376,26 @@ export function StationDossier({
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => toggleAcknowledge(rec.id)}
-                        className={`shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-transform duration-100 active:translate-y-px cursor-pointer border ${
-                          ack
-                            ? 'gradient-animated-amber font-bold border-transparent'
-                            : 'bg-card hover:bg-secondary text-muted-foreground border-border'
-                        }`}
-                      >
-                        {ack ? '✓ Standby Active' : 'Standby'}
-                      </button>
+                      {ack ? (
+                        <ShaderButton
+                          type="button"
+                          variant="amber"
+                          size="sm"
+                          onClick={() => toggleAcknowledge(rec.id)}
+                          className="shrink-0 h-6 px-2 py-0.5 text-[10px] font-mono cursor-pointer inline-flex items-center gap-1"
+                        >
+                          <Check size={11} className="shrink-0" />
+                          <span>Standby Active</span>
+                        </ShaderButton>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => toggleAcknowledge(rec.id)}
+                          className="shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-transform duration-100 active:translate-y-px cursor-pointer border bg-card hover:bg-secondary text-muted-foreground border-border"
+                        >
+                          Standby
+                        </button>
+                      )}
                     </div>
 
                     <p className="text-[11px] text-muted-foreground leading-relaxed">

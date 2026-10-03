@@ -6,8 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { RpiData } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { getRpiMapGeoJson, RpiMapGeoJson } from '@/lib/api';
-import { RotateCcw, ShieldCheck, Search } from '@/components/icons';
-import { ZoomIn, ZoomOut } from 'lucide-react';
+import { RotateCcw, ShieldCheck, Search, ZoomIn, ZoomOut } from '@/components/icons';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { SERIES, DATA } from '@/lib/palette';
 interface RealTrustAtlasMapProps {
   stations: RpiData[];
@@ -325,19 +325,23 @@ export default function RealTrustAtlasMap({
         </div>
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} />
+            <ModelEmblem method="ecmwf" size={13} />
+            <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} />
             <span className="text-foreground text-[11px]">ECMWF</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.ICON }} />
+            <ModelEmblem method="icon" size={13} />
+            <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} />
             <span className="text-foreground text-[11px]">ICON</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.GFS }} />
+            <ModelEmblem method="gfs" size={13} />
+            <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} />
             <span className="text-foreground text-[11px]">GFS</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: SERIES.GEM }} />
+            <ModelEmblem method="gem" size={13} />
+            <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} />
             <span className="text-foreground text-[11px]">GEM</span>
           </div>
         </div>

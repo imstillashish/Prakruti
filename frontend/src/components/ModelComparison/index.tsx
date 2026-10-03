@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { Sparkles, ChevronLeft, ChevronRight } from '@/components/icons';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
@@ -272,8 +274,8 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
               Multi-Model Consensus Spread
             </span>
-            <span className="text-[11px] font-mono text-muted-foreground">
-              Swipe models ↔
+            <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground select-none">
+              <ChevronLeft size={11} /><span>swipe models</span><ChevronRight size={11} />
             </span>
           </div>
 
@@ -306,12 +308,15 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <div>
-                        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
-                          {info.label}
-                        </span>
-                        <div className="text-[11px] font-mono text-muted-foreground">
-                          {info.provider} · {info.resolution}
+                      <div className="flex items-center gap-2">
+                        <ModelEmblem method={m.model} size={22} />
+                        <div>
+                          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
+                            {info.label}
+                          </span>
+                          <div className="text-[11px] font-mono text-muted-foreground">
+                            {info.provider} · {info.resolution}
+                          </div>
                         </div>
                       </div>
                       <span
@@ -336,7 +341,10 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                       </div>
                       <div className="mt-1 text-[11px] font-mono">
                         {isBlended ? (
-                          <span className="text-foreground font-semibold">● Consensus Anchor</span>
+                          <span className="text-foreground font-semibold inline-flex items-center gap-1.5">
+                            <Sparkles size={12} className="text-primary shrink-0" />
+                            Consensus Anchor
+                          </span>
                         ) : (
                           <span className={delta > 0 ? 'text-[#ab6400] font-medium' : delta < 0 ? 'text-data-rain font-medium' : 'text-muted-foreground'}>
                             {delta > 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1)} {config.unit} vs Blend

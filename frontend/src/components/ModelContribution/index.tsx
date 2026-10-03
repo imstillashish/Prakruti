@@ -4,6 +4,7 @@ import { Activity } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
 import { ChartState } from '@/components/spectrumui/charts/chart-engine';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getModelWeightsData, MOCK_MODEL_WEIGHTS } from '@/lib/api';
 import type { ModelWeight } from '@/types';
 
@@ -81,10 +82,11 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
               onMouseLeave={() => setHoveredModel(null)}
             >
               <div className="flex items-center justify-between mb-1 text-xs">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <ModelEmblem method={w.id || w.name} size={16} />
                   <span
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ background: w.color }}
+                    className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
+                    style={{ backgroundColor: w.color }}
                   />
                   <span className="text-foreground font-medium">{w.name}</span>
                 </div>

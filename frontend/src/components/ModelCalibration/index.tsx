@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Panel } from '@/components/shell/Panel';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getModelCalibration } from '@/lib/api';
 import type { CalibrationPayload } from '@/lib/api';
 
@@ -119,7 +120,12 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
                     const maeDelta = r.mae_corrected - r.mae_raw;
                     return (
                       <tr key={`${r.model}-${r.variable}`} className="hover:bg-secondary/40">
-                        <td className="py-2 font-semibold text-foreground">{MODEL_DISPLAY[r.model] ?? r.model}</td>
+                        <td className="py-2 font-semibold text-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <ModelEmblem method={r.model} size={15} />
+                            <span>{MODEL_DISPLAY[r.model] ?? r.model}</span>
+                          </div>
+                        </td>
                         <td className="py-2 text-right px-2 text-muted-foreground">{VAR_SHORT[r.variable]}</td>
                         <td className="py-2 text-right px-2 text-foreground">{fmt(r.bias_raw)}</td>
                         <td className="py-2 text-right px-2 text-foreground">{fmt(r.bias_corrected)}</td>

@@ -181,6 +181,13 @@ export function LeaderboardPage() {
         meta={meta}
         onSelectContext={handleStateChange}
       />
+
+      {/* 5. Mark attribution — logos are the owners' published files, identification only */}
+      <p className="text-[10px] leading-snug text-muted-foreground">
+        Model marks are published logos owned by ECMWF, DWD, NOAA (a registered trademark of
+        the U.S. Department of Commerce) and ECCC — shown for identification only. No
+        endorsement implied.
+      </p>
     </div>
   );
 }

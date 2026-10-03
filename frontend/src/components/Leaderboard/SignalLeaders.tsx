@@ -6,7 +6,8 @@ import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
 import type { LeaderboardCategory, LeaderboardState } from './types';
 import { CATEGORY_VARIABLE, VARIABLE_UNIT } from './types';
-import { Award, Zap, TrendingUp, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Award, ArrowRight, Activity, AlertTriangle, Clock } from '@/components/icons';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 
 interface SignalLeadersProps {
   category: LeaderboardCategory;
@@ -124,14 +125,14 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
 
           if (sig.id === 'lowest_error') {
             sentence = `${leaderName} has the lowest average error — MAE ${sig.value.toFixed(2)} ${unit}${ciStr}`;
-            icon = <TrendingUp size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />;
+            icon = <Activity size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />;
           } else if (sig.id === 'best_extreme') {
             const phrase = EXTREME_PHRASES[sig.variable] || 'extremes';
             sentence = `${leaderName} catches ${phrase} best — CSI ${sig.value.toFixed(2)}${ciStr} across ${sig.cases ?? 0} events`;
-            icon = <ShieldAlert size={18} className="text-amber-600 dark:text-amber-400 shrink-0" />;
+            icon = <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 shrink-0" />;
           } else if (sig.id === 'best_lead') {
             sentence = `${leaderName} holds up best at day 3 — MAE ${sig.value.toFixed(2)} ${unit}${ciStr}`;
-            icon = <Zap size={18} className="text-primary shrink-0" />;
+            icon = <Clock size={18} className="text-primary shrink-0" />;
           } else if (sig.id === 'blend_gain') {
             // delta_pct is published in percent points, not a ratio.
             const pct = sig.delta_pct !== null ? Math.abs(sig.delta_pct).toFixed(1) : '0';
@@ -172,9 +173,12 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
               }`}
             >
               <div className="flex items-start justify-between gap-2">
-                <span className="p-1.5 rounded-md bg-muted/60 text-foreground border border-border/40">
-                  {icon}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="p-1.5 rounded-md bg-muted/60 text-foreground border border-border/40">
+                    {icon}
+                  </span>
+                  <ModelEmblem method={sig.leader} size={22} />
+                </div>
                 <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                   {sig.variable}
                 </span>

@@ -177,3 +177,18 @@ Hand-drawn animated icons are vendored from [ItsHover](https://itshover.com)
 under the lucide names the app already used. The brand's split-flap board is the
 [SplitFlapText](https://reactbits.dev) component from React Bits, adapted for
 Devanagari.
+
+Model marks on the site are the owners' published files (`frontend/public/brands/`),
+shown for identification only and never recolored or distorted:
+
+| File | Source | Terms |
+|------|--------|-------|
+| `ecmwf.png` | ECMWF master logo, ECMWF/Copernicus branding page | © ECMWF |
+| `dwd.png`, `dwd-mark.png` | DWD Wortbildmarke (dwd.de legal notice); the second is that file's Bildmarke, cropped | © Deutscher Wetterdienst |
+| `noaa.svg` | NOAA emblem, Wikimedia Commons | PD-USGov; registered trademark of the U.S. Department of Commerce |
+| `eccc.svg` | ECCC bilingual signature, Wikimedia Commons | PD Canada / PD-textlogo; trademark-protected in Canada |
+
+Rows render the ECCC flag through a crop window of its signature file — the full
+signature is ~16:1 and unreadable as an icon. The mapping and provenance notes live in
+`frontend/src/components/common/ModelEmblem.tsx`. Nothing here implies affiliation or
+endorsement by these agencies.

@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, Fragment } from 'react';
+import { ChevronLeft, ChevronRight } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getModelVerification } from '@/lib/api';
 import type { VerificationPayload, ContinuousVerificationRow, CategoricalVerificationRow } from '@/lib/api';
 
@@ -53,8 +55,11 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
             return (
               <tr key={m} className={isOurs ? 'bg-secondary/60' : 'hover:bg-secondary/40'}>
                 <td className="py-2.5 font-semibold text-foreground">
-                  {METHOD_DISPLAY[m] ?? m}
-                  {isOurs && <span className="ml-2 text-[10px] uppercase tracking-wider text-data-ok-text font-bold">ours</span>}
+                  <div className="flex items-center gap-1.5">
+                    <ModelEmblem method={m} size={15} />
+                    <span>{METHOD_DISPLAY[m] ?? m}</span>
+                    {isOurs && <span className="ml-1 text-[10px] uppercase tracking-wider text-data-ok-text font-bold">ours</span>}
+                  </div>
                 </td>
                 {VARS.map((v) => {
                   const r = rows.find((x) => x.model === m && x.variable === v);
@@ -100,7 +105,12 @@ function CategoricalTable({ rows }: { rows: CategoricalVerificationRow[] }) {
         <tbody className="divide-y divide-border">
           {METHOD_ORDER.filter((m) => rain.some((r) => r.model === m)).map((m) => (
             <tr key={m} className={m === OURS ? 'bg-secondary/60' : ''}>
-              <td className="py-2.5 font-semibold text-foreground">{METHOD_DISPLAY[m] ?? m}</td>
+              <td className="py-2.5 font-semibold text-foreground">
+                <div className="flex items-center gap-1.5">
+                  <ModelEmblem method={m} size={15} />
+                  <span>{METHOD_DISPLAY[m] ?? m}</span>
+                </div>
+              </td>
               {thresholds.map((t) => {
                 const r = rain.find((x) => x.model === m && x.threshold === t);
                 return (
@@ -200,7 +210,10 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
           <div className="block lg:hidden">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
-                Method scorecards · swipe ↔
+                Method scorecards
+              </span>
+              <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground select-none">
+                <ChevronLeft size={11} /><span>swipe</span><ChevronRight size={11} />
               </span>
               <span className="text-[11px] font-mono text-muted-foreground">
                 {methods.findIndex((m) => m === current) + 1}/{methods.length}
@@ -220,9 +233,12 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
                     className={`w-[82vw] sm:w-[340px] shrink-0 carousel-snap-item rounded-lg border p-4 ${isOurs ? 'bg-secondary/60 border-foreground/30 ring-1 ring-foreground/20' : 'bg-card border-border'}`}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
-                        {METHOD_DISPLAY[m] ?? m}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <ModelEmblem method={m} size={16} />
+                        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
+                          {METHOD_DISPLAY[m] ?? m}
+                        </span>
+                      </div>
                       {isOurs && (
                         <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-foreground text-background">
                           Ours

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Layers, MapPin, CheckCircle, BarChart2, Sliders, ShieldCheck } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { SectionBanner } from '@/components/shell/SectionBanner';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { RpiData } from '@/types';
 import { SERIES, DATA } from '@/lib/palette';
 
@@ -106,10 +107,11 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                 </span>
               </div>
               <span
-                className="rounded-sm px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase"
+                className="rounded-sm px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
                 style={{ backgroundColor: modelInfo.hex }}
               >
-                {domModel} LEADS
+                <ModelEmblem method={domModel} size={14} />
+                <span>{domModel} LEADS</span>
               </span>
             </div>
 
@@ -148,7 +150,8 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ECMWF }} />
+                    <ModelEmblem method="ecmwf" size={15} />
+                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} />
                     ECMWF IFS (Europe)
                   </span>
                   <span className="font-bold text-foreground">{weights.ecmwf}%</span>
@@ -165,7 +168,8 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.ICON }} />
+                    <ModelEmblem method="icon" size={15} />
+                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} />
                     ICON Seamless (Germany)
                   </span>
                   <span className="font-bold text-foreground">{weights.icon}%</span>
@@ -182,7 +186,8 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GFS }} />
+                    <ModelEmblem method="gfs" size={15} />
+                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} />
                     GFS Global (NOAA USA)
                   </span>
                   <span className="font-bold text-foreground">{weights.gfs}%</span>
@@ -199,7 +204,8 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-mono">
                   <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: SERIES.GEM }} />
+                    <ModelEmblem method="gem" size={15} />
+                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} />
                     GEM Seamless (Canada)
                   </span>
                   <span className="font-bold text-foreground">{weights.gem}%</span>

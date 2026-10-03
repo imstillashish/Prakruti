@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { ParetoPoint } from '@/lib/api';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 
 interface ParetoViewProps {
   points: ParetoPoint[];
@@ -250,6 +251,7 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
+                        <ModelEmblem method={pt.method} size={16} />
                         <span
                           className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
                           style={{ backgroundColor: seriesColor }}

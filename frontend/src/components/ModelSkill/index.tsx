@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Panel } from '@/components/shell/Panel';
 import { Award } from '@/components/icons';
+import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getSkillMetricsData, MOCK_SKILL_METRICS } from '@/lib/api';
 import type { SkillMetric } from '@/types';
 import { SERIES } from '@/lib/palette';
@@ -82,9 +83,10 @@ export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
                 : 'bg-card border-border hover:bg-secondary'
             }`}
           >
+            <ModelEmblem method={m.key} size={16} />
             <span
-              className="w-2 h-2 rounded-full shrink-0"
-              style={{ background: m.color }}
+              className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0"
+              style={{ backgroundColor: m.color }}
             />
             <span className={`text-xs flex-1 ${i === 0 ? 'font-bold text-foreground' : 'text-foreground'}`}>
               {m.label}
