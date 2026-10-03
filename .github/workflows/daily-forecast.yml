@@ -89,6 +89,15 @@ jobs:
           cal = pd.read_csv('outputs/verification_calibration.csv')
           assert len(cal) > 0, "calibration diagnostic missing"
           print(f"OK: {len(ver)} verification rows, {len(cal)} calibration rows")
+          # F-03 leaderboard: ranks are precomputed, but every stratum must have
+          # a rank-1 method and every row a tier (ai/benchmark.py --verify)
+          lb = pd.read_csv('outputs/leaderboard.csv')
+          assert len(lb) > 0, "leaderboard is empty"
+          strata = ['board', 'geo', 'variable', 'window_days', 'lead_days', 'threshold']
+          assert lb.groupby(strata, dropna=False)['rank'].min().eq(1).all(), \
+                 "a leaderboard stratum has no rank-1 method"
+          assert lb['tier'].notna().all(), "leaderboard row without a tier"
+          print(f"OK: {len(lb)} leaderboard rows across {sorted(lb['board'].unique())}")
           EOF
 
       - name: Commit refreshed data
@@ -102,6 +111,8 @@ jobs:
                   outputs/verification.csv outputs/verification_categorical.csv \
                   outputs/verification_calibration.csv outputs/verification_meta.json \
                   outputs/cycle_state.json outputs/cycle_delta.json \
+                  outputs/leaderboard.csv outputs/leaderboard_pareto.csv \
+                  outputs/benchmark_meta.json \
                   outputs/metadata.json data/forecast_current.csv
           if git diff --cached --quiet; then
             echo "No changes in forecast data — skipping commit"

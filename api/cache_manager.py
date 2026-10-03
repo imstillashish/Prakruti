@@ -459,6 +459,11 @@ def run_downstream_updates():
         if ver_script.exists():
             subprocess.run([py_exec, str(ver_script)], cwd=str(BASE_DIR), capture_output=True)
 
+        # Run benchmark.py (F-03: leaderboard boards — reads verify's artifacts)
+        bench_script = BASE_DIR / "ai" / "benchmark.py"
+        if bench_script.exists():
+            subprocess.run([py_exec, str(bench_script)], cwd=str(BASE_DIR), capture_output=True)
+
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():

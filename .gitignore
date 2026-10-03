@@ -88,6 +88,9 @@ outputs/*
 !outputs/verification_categorical.csv
 !outputs/verification_calibration.csv
 !outputs/verification_meta.json
+!outputs/leaderboard.csv
+!outputs/leaderboard_pareto.csv
+!outputs/benchmark_meta.json
 !outputs/cycle_state.json
 !outputs/cycle_delta.json
 !outputs/metadata.json
