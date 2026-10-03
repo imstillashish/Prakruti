@@ -4,60 +4,60 @@ export type GlossaryEntry = { title: string; body: string };
 // GlossaryKey union below comes out of the object itself.
 export const glossary = {
   rmse: {
-    title: "Average miss (RMSE)",
-    body: "How far off a forecast model is on average, in real units (°C, mm, km/h). Smaller is better.",
+    title: "Average Forecast Error (RMSE)",
+    body: "How far off the forecast typically is in real units (°C, mm, km/h). Smaller is better: think of it as hitting closer to the dartboard bullseye.",
   },
   uncertainty: {
-    title: "Uncertainty (±)",
-    body: "The range the real value is likely to fall in. Smaller means a sharper forecast.",
+    title: "Expected Range (±)",
+    body: "The window where actual weather is likely to fall. A tighter range means a sharper, more focused forecast.",
   },
   weight: {
-    title: "Model influence",
-    body: "How much say each forecast model has in the final answer. Models that have been more accurate for this city recently get more say.",
+    title: "Model Influence",
+    body: "How much say each supercomputer has in our final blended answer. Models that have performed best for your city get more say.",
   },
   confidence: {
-    title: "Confidence",
-    body: "How sure the blended forecast is, from 0 to 100%. Based on past accuracy, agreement between the 4 models, and how far ahead the forecast is.",
+    title: "Forecast Certainty",
+    body: "How sure our system is (0–100%). When all 4 international models agree, certainty is high.",
   },
   rpi: {
-    title: "Risk score (RPI)",
-    body: "A 0–100 danger score combining rainfall, heat and wind so disaster agencies can rank where to act first.",
+    title: "Weather Danger Score (0–100)",
+    body: "A combined hazard score factoring rain, heat, and wind so disaster agencies and citizens know when to take precautions.",
   },
   leadDay: {
-    title: "Day-ahead labels",
-    body: "D+1 means tomorrow, D+2 the day after, D+3 three days ahead. Accuracy is tracked separately for each.",
+    title: "Forecast Horizon (D+1, D+2, D+3)",
+    body: "How many days ahead the forecast looks. D+1 is tomorrow, D+2 is two days ahead, and D+3 is three days ahead.",
   },
   era5: {
-    title: "ERA5 ground truth",
-    body: "A trusted historical weather record used to check how accurate each model actually was.",
+    title: "Verified Historical Weather (ERA5)",
+    body: "A gold-standard weather archive combining satellite and station data, used as an answer key to check model accuracy.",
   },
   models: {
-    title: "The 4 models",
-    body: "ECMWF (Europe), GFS (USA), ICON (Germany) and GEM (Canada) — the world's leading weather prediction systems, blended into one answer.",
+    title: "The 4 Supercomputers",
+    body: "European ECMWF, American GFS, German ICON, and Canadian GEM, blended into one reliable answer.",
   },
   ensembleAgreement: {
-    title: "Ensemble agreement",
-    body: "How closely the 4 models agree with each other. High agreement usually means a more trustworthy forecast.",
+    title: "Model Consensus",
+    body: "How closely the 4 supercomputers agree with one another. When all 4 show similar numbers, the forecast is much more reliable.",
   },
   nwp: {
-    title: "NWP",
-    body: "Numerical Weather Prediction — physics-based simulation of the atmosphere on supercomputers.",
+    title: "Atmospheric Simulation (NWP)",
+    body: "Numerical Weather Prediction: physics-based atmospheric simulations calculated by international supercomputing centers.",
   },
   skillScore: {
-    title: "Skill score",
-    body: "How much better (or worse) a model is than a basic average, in percent. Positive means it beats the baseline.",
+    title: "Accuracy Advantage",
+    body: "How much better the model performs compared to a basic historical average. Positive numbers mean beating the baseline.",
   },
   calibration: {
-    title: "Raw vs calibrated",
-    body: "Raw numbers straight from the weather models, versus our corrected forecast. The correction layers first fix each model's known bias, then a machine-learning step clears what is left — the % figures come from days the correction never saw.",
+    title: "Raw vs Calibrated Forecast",
+    body: "Raw forecasts straight from the supercomputers versus our localized corrections, adjusted for terrain and regional microclimates.",
   },
   coldStart: {
-    title: "Why is it loading?",
-    body: "The free server hosting the forecast engine goes to sleep when idle. Waking it can take up to a minute on first visit.",
+    title: "Waking Up the Engine",
+    body: "The forecast server spins down when idle to conserve energy. Waking it back up takes 30 to 60 seconds on the first visit.",
   },
   station: {
-    title: "Forecast station",
-    body: "A city location with its own dedicated blended forecast — 45 across India.",
+    title: "City Forecast Station",
+    body: "A specific weather tracking hub with its own tailored blend, covering 45 major cities across India.",
   },
 } satisfies Record<string, GlossaryEntry>;
 
