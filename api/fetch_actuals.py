@@ -251,7 +251,7 @@ def fetch_all_actuals(start_date=None, end_date=None, cities_csv=CITIES_CSV,
         if df is not None and not df.empty:
             frames.append(df)
             success_count += 1
-            print(f"  ✓ {len(df)} hourly records")
+            print(f"  [OK] {len(df)} hourly records")
         else:
             fail_count += 1
 

@@ -464,6 +464,11 @@ def run_downstream_updates():
         if bench_script.exists():
             subprocess.run([py_exec, str(bench_script)], cwd=str(BASE_DIR), capture_output=True)
 
+        # Run cards.py (F-04: model/benchmark cards — read the leaderboard artifacts)
+        cards_script = BASE_DIR / "ai" / "cards.py"
+        if cards_script.exists():
+            subprocess.run([py_exec, str(cards_script)], cwd=str(BASE_DIR), capture_output=True)
+
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():

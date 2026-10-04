@@ -103,6 +103,7 @@ def check_forecast_freshness_async():
 
 
 from api.cache_manager import ensure_fresh_forecast, load_metadata
+from api.live_weather import fetch_live_conditions
 
 # Trigger non-blocking freshness check in background
 try:
@@ -183,6 +184,7 @@ def index():
             "skill": "/api/skill",
             "alerts": "/api/alerts",
             "cities": "/api/cities",
+            "live": "/api/live?city=Kanpur",
             "confidence": "/api/confidence",
             "rpi": "/api/rpi",
             "rpi_map": "/api/rpi/map"
@@ -213,6 +215,21 @@ def get_metadata():
             "model_count": 4
         }
     return jsonify(meta)
+
+
+@app.route('/api/live', methods=['GET'])
+@app.route('/live', methods=['GET'])
+def get_live():
+    """
+    Current measured conditions for one city, from Open-Meteo (free, key-less).
+    Served through a TTL cache so the browser can poll cheaply. 404 for a city
+    that is not in data/cities.csv; the frontend hides the live band on 404.
+    """
+    city = (request.args.get('city') or 'Kanpur').strip()
+    payload = fetch_live_conditions(city)
+    if payload is None:
+        return jsonify({"error": f"No live observations available for '{city}'"}), 404
+    return jsonify(payload)
 
 
 @app.route('/api/forecast', methods=['GET'])
@@ -1071,6 +1088,18 @@ def get_models_leaderboard():
     return jsonify({"meta": meta, "rows": out, "pareto": pareto_out})
 
 
+@app.route('/api/models/cards', methods=['GET'])
+@app.route('/models/cards', methods=['GET'])
+def get_model_cards():
+    """F-04 model metadata profiles and benchmark specification cards,
+    precomputed by ai/cards.py from the leaderboard/verification artifacts."""
+    path = os.path.join(OUTPUTS_DIR, "metadata_cards.json")
+    if not os.path.exists(path):
+        return jsonify({"error": "metadata_cards.json not found — run ai/cards.py"}), 404
+    with open(path, encoding="utf-8") as f:
+        return jsonify(json.load(f))
+
+
 @app.route('/api/cities', methods=['GET'])
 @app.route('/cities', methods=['GET'])
 def get_cities():
@@ -1459,6 +1488,7 @@ def not_found(e):
             "skill": "/api/skill",
             "alerts": "/api/alerts",
             "cities": "/api/cities",
+            "live": "/api/live?city=Kanpur",
             "confidence": "/api/confidence",
             "rpi": "/api/rpi",
             "rpi_map": "/api/rpi/map"
@@ -1468,6 +1498,6 @@ def not_found(e):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
-    print(f"\n🚀 Hybrid Weather AI API starting on http://localhost:{port}")
-    print(f"📡 Endpoints available at http://localhost:{port}/api/\n")
+    print(f"\n[INIT] Hybrid Weather AI API starting on http://localhost:{port}")
+    print(f"[API] Endpoints available at http://localhost:{port}/api/\n")
     app.run(host='0.0.0.0', port=port, debug=True)

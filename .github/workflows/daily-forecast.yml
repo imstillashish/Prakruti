@@ -112,7 +112,7 @@ jobs:
                   outputs/verification_calibration.csv outputs/verification_meta.json \
                   outputs/cycle_state.json outputs/cycle_delta.json \
                   outputs/leaderboard.csv outputs/leaderboard_pareto.csv \
-                  outputs/benchmark_meta.json \
+                  outputs/benchmark_meta.json outputs/metadata_cards.json \
                   outputs/metadata.json data/forecast_current.csv
           if git diff --cached --quiet; then
             echo "No changes in forecast data — skipping commit"

@@ -28,5 +28,5 @@
   },
   "blend_weight_method": "inverse-train-MAE per (variable, city), train cutoff 2026-08-29 00:00:00, renormalized over present models",
   "crps_note": "deterministic feeds: crps == mae; proper CRPS needs ensemble members",
-  "generated_at": "2026-10-02T07:57:20"
+  "generated_at": "2026-10-03T10:20:46"
 }

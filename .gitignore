@@ -93,6 +93,7 @@ outputs/*
 !outputs/leaderboard.csv
 !outputs/leaderboard_pareto.csv
 !outputs/benchmark_meta.json
+!outputs/metadata_cards.json
 !outputs/cycle_state.json
 !outputs/cycle_delta.json
 !outputs/metadata.json
@@ -153,5 +154,12 @@ desktop.ini
 data/archive/
 .weather_cache/
 
+# Throwaway worktree the §9.6 audit builds production in (never tracked)
+.verify-build/
+
 # Brainstorming companion artifacts (never tracked)
 .superpowers/
+
+# Presentation and workflow diagrams (never tracked)
+workflows.mmd
+*.mmd

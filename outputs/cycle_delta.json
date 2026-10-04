@@ -1,44 +1,43 @@
 {
-  "cycle_id": "2026-10-03T22:21:33",
+  "cycle_id": "2026-10-03T10:21:14",
   "previous_cycle_id": "2026-10-02T07:57:21",
   "available": true,
   "quantile_shift": {
     "temperature": {
-      "p10": 0.0,
-      "p50": 0.0,
-      "p90": 0.0
+      "p10": -0.09,
+      "p50": -0.0926,
+      "p90": -0.0952
     },
     "rainfall": {
-      "p10": 0.0,
-      "p50": 0.0,
-      "p90": 0.0
+      "p10": 0.0048,
+      "p50": 0.0136,
+      "p90": 0.0298
     },
     "wind_speed": {
-      "p10": 0.0,
-      "p50": 0.0,
-      "p90": 0.0
+      "p10": -0.0879,
+      "p50": -0.094,
+      "p90": -0.0794
     }
   },
   "biggest_p50_mover": {
     "temperature": {
-      "city": "Agartala",
-      "delta": 0.0
+      "city": "Thane",
+      "delta": -1.5694
     },
     "rainfall": {
-      "city": "Agartala",
-      "delta": 0.0
+      "city": "Bengaluru",
+      "delta": 0.4417
     },
     "wind_speed": {
-      "city": "Agartala",
-      "delta": 0.0
+      "city": "Shillong",
+      "delta": -1.9422
     }
   },
   "confidence_shifts": {
     "upgraded": 0,
-    "downgraded": 6,
+    "downgraded": 3,
     "transitions": {
-      "High->Medium": 5,
-      "Very High->High": 1
+      "High->Medium": 3
     }
   },
   "models_recovered": [],

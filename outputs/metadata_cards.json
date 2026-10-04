@@ -1,0 +1,1704 @@
+{
+  "engine_version": "cards-2026-10-03-v1",
+  "generated_at": "2026-10-03T11:55:59Z",
+  "model_cards": {
+    "ecmwf": {
+      "identity": {
+        "name": "ECMWF IFS (HRES)",
+        "provider": "ECMWF — European Centre for Medium-Range Weather Forecasts",
+        "architecture": "Global spectral-transform NWP (IFS cycle 48t1)",
+        "feed_id": "ecmwf_ifs025",
+        "grid": "9 km octahedral reduced Gaussian (TCo1279)",
+        "domain": "Global",
+        "run_cycle": "4 runs/day (00/06/12/18 UTC)",
+        "max_lead": "+10 days (240 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+        "data_license": "CC-BY-4.0 (ECMWF real-time open data)"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 1.0,
+        "board_firsts_in": 21,
+        "variables": {
+          "temperature": {
+            "rank": 1,
+            "mae": 0.454356,
+            "bias": 0.061251
+          },
+          "rainfall": {
+            "rank": 1,
+            "mae": 0.237081,
+            "bias": -0.005077
+          },
+          "wind_speed": {
+            "rank": 1,
+            "mae": 1.592998,
+            "bias": -0.258405
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.285714,
+          "rainfall": 0.221154,
+          "wind_speed": 0.214286
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": 0.061,
+              "unit": "°C",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": -0.005,
+              "unit": "mm/h",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -0.258,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Mumbai",
+          "gap": 2.887,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 3240,
+        "leaderboard_rows": 1100
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "equal_avg": {
+      "identity": {
+        "name": "Equal Average",
+        "provider": "Prakruti — Team EXELION",
+        "architecture": "Equal-weight multi-model ensemble mean",
+        "feed_id": null,
+        "grid": "n/a — derived from the four model feeds on the 45-city pool",
+        "domain": "45 Indian cities",
+        "run_cycle": "Rebuilt every pipeline cycle with the rolling 72-hour window",
+        "max_lead": "72 h (3 lead days)",
+        "delivered_lead": "72 h",
+        "source_url": "https://github.com/imstillashish/Prakruti",
+        "data_license": "Prakruti original — repository terms"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 3.0,
+        "board_firsts_in": 0,
+        "variables": {
+          "temperature": {
+            "rank": 3,
+            "mae": 0.676289,
+            "bias": -0.104742
+          },
+          "rainfall": {
+            "rank": 3,
+            "mae": 0.336093,
+            "bias": 0.008961
+          },
+          "wind_speed": {
+            "rank": 3,
+            "mae": 2.139463,
+            "bias": -1.082187
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.260664,
+          "rainfall": 0.029268,
+          "wind_speed": 0.0
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.105,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": 0.009,
+              "unit": "mm/h",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -1.082,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Surat",
+          "gap": -3.011,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": null,
+        "rows_last_cycle": null,
+        "leaderboard_rows": 695
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "gem": {
+      "identity": {
+        "name": "CMC GEM (GDPS)",
+        "provider": "ECCC — Meteorological Service of Canada",
+        "architecture": "Global Environmental Multiscale deterministic NWP",
+        "feed_id": "gem_seamless",
+        "grid": "15 km global deterministic (GDPS)",
+        "domain": "Global",
+        "run_cycle": "2 runs/day (00/12 UTC)",
+        "max_lead": "+10 days (240 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps_en/",
+        "data_license": "Open Government Licence — Canada (MSC)"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 6.33,
+        "board_firsts_in": 0,
+        "variables": {
+          "temperature": {
+            "rank": 6,
+            "mae": 1.179287,
+            "bias": 0.416321
+          },
+          "rainfall": {
+            "rank": 7,
+            "mae": 0.505477,
+            "bias": 0.003597
+          },
+          "wind_speed": {
+            "rank": 6,
+            "mae": 3.796114,
+            "bias": -2.125012
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.208178,
+          "rainfall": 0.01378,
+          "wind_speed": 0.0
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": 0.416,
+              "unit": "°C",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": 0.004,
+              "unit": "mm/h",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -2.125,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Surat",
+          "gap": -6.71,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 3240,
+        "leaderboard_rows": 1146
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "gfs": {
+      "identity": {
+        "name": "NOAA GFS",
+        "provider": "NOAA / NCEP — National Centers for Environmental Prediction",
+        "architecture": "Finite-volume cubed-sphere dynamical core (FV3)",
+        "feed_id": "gfs_seamless",
+        "grid": "13 km FV3 cubed-sphere (C768)",
+        "domain": "Global",
+        "run_cycle": "4 runs/day (00/06/12/18 UTC)",
+        "max_lead": "+16 days (384 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
+        "data_license": "U.S. public domain (NOAA/NWS data)"
+      },
+      "profile": {
+        "best_variable": "rainfall",
+        "mean_rank_accuracy_full_in": 6.0,
+        "board_firsts_in": 2,
+        "variables": {
+          "temperature": {
+            "rank": 7,
+            "mae": 1.440311,
+            "bias": -0.578578
+          },
+          "rainfall": {
+            "rank": 4,
+            "mae": 0.413368,
+            "bias": 0.067679
+          },
+          "wind_speed": {
+            "rank": 7,
+            "mae": 4.550914,
+            "bias": -3.615061
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.048826,
+          "rainfall": 0.020492,
+          "wind_speed": 0.027431
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.579,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": 0.068,
+              "unit": "mm/h",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -3.615,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Thiruvananthapuram",
+          "gap": 4.467,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 3240,
+        "leaderboard_rows": 1153
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "icon": {
+      "identity": {
+        "name": "DWD ICON",
+        "provider": "DWD — Deutscher Wetterdienst, Germany",
+        "architecture": "Icosahedral nonhydrostatic global NWP",
+        "feed_id": "icon_seamless",
+        "grid": "13 km icosahedral triangular grid",
+        "domain": "Global",
+        "run_cycle": "4 runs/day (00/06/12/18 UTC)",
+        "max_lead": "+7.5 days (180 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://www.dwd.de/EN/research/weatherforecasting/num_modelling/01_num_weather_prediction_modells/icon_description.html",
+        "data_license": "CC-BY-4.0 (© Deutscher Wetterdienst, opendata)"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 4.33,
+        "board_firsts_in": 2,
+        "variables": {
+          "temperature": {
+            "rank": 4,
+            "mae": 0.885733,
+            "bias": -0.317961
+          },
+          "rainfall": {
+            "rank": 5,
+            "mae": 0.451025,
+            "bias": -0.030357
+          },
+          "wind_speed": {
+            "rank": 4,
+            "mae": 2.792518,
+            "bias": 1.669728
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.364,
+          "rainfall": 0.035484,
+          "wind_speed": 0.0
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.318,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": -0.03,
+              "unit": "mm/h",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": 1.67,
+              "unit": "km/h",
+              "reading": "under-forecast (runs low)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Vijayawada",
+          "gap": 3.707,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 3240,
+        "leaderboard_rows": 1111
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "persistence": {
+      "identity": {
+        "name": "Persistence (lag-24h)",
+        "provider": "Prakruti — Team EXELION",
+        "architecture": "Observed-value baseline from 24 hours earlier",
+        "feed_id": null,
+        "grid": "n/a — city observations, no model grid",
+        "domain": "45 Indian cities",
+        "run_cycle": "Rebuilt every pipeline cycle from the observation history",
+        "max_lead": "72 h (3 lead days)",
+        "delivered_lead": "72 h",
+        "source_url": "https://github.com/imstillashish/Prakruti",
+        "data_license": "Prakruti original — repository terms"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 5.33,
+        "board_firsts_in": 0,
+        "variables": {
+          "temperature": {
+            "rank": 5,
+            "mae": 0.953599,
+            "bias": -0.01537
+          },
+          "rainfall": {
+            "rank": 6,
+            "mae": 0.482205,
+            "bias": -0.003057
+          },
+          "wind_speed": {
+            "rank": 5,
+            "mae": 2.836295,
+            "bias": -0.046918
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": null,
+          "rainfall": null,
+          "wind_speed": null
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.015,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": -0.003,
+              "unit": "mm/h",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -0.047,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": null
+      },
+      "feed": {
+        "status": null,
+        "rows_last_cycle": null,
+        "leaderboard_rows": 552
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "weighted_blend": {
+      "identity": {
+        "name": "Prakruti Blend",
+        "provider": "Prakruti — Team EXELION",
+        "architecture": "Inverse-error weighted multi-model blend (per city, lead day, variable)",
+        "feed_id": null,
+        "grid": "n/a — derived from the four model feeds on the 45-city pool",
+        "domain": "45 Indian cities",
+        "run_cycle": "Rebuilt every pipeline cycle with the rolling 72-hour window",
+        "max_lead": "72 h (3 lead days)",
+        "delivered_lead": "72 h",
+        "source_url": "https://github.com/imstillashish/Prakruti",
+        "data_license": "Prakruti original — repository terms"
+      },
+      "profile": {
+        "best_variable": "temperature",
+        "mean_rank_accuracy_full_in": 2.0,
+        "board_firsts_in": 2,
+        "variables": {
+          "temperature": {
+            "rank": 2,
+            "mae": 0.520353,
+            "bias": -0.024666
+          },
+          "rainfall": {
+            "rank": 2,
+            "mae": 0.300817,
+            "bias": 0.014461
+          },
+          "wind_speed": {
+            "rank": 2,
+            "mae": 1.633596,
+            "bias": -0.527645
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.339506,
+          "rainfall": 0.032967,
+          "wind_speed": 0.076923
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.025,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": 0.014,
+              "unit": "mm/h",
+              "reading": "under-forecast (runs low)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -0.528,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Goa",
+          "gap": -1.728,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": null,
+        "rows_last_cycle": null,
+        "leaderboard_rows": 690
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    }
+  },
+  "benchmark_cards": {
+    "BM-ACC-RAIN-W7": {
+      "board": "accuracy",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "window_days": 7,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 7560,
+        "n_max": 7560,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-RAIN-W30": {
+      "board": "accuracy",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "window_days": 30,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 32400,
+        "n_max": 32400,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-RAIN-W45": {
+      "board": "accuracy",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "window_days": 45,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 48600,
+        "n_max": 48600,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-RAIN-WFULL": {
+      "board": "accuracy",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "window_days": null,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 64800,
+        "n_max": 65880,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-TEMP-WFULL": {
+      "board": "accuracy",
+      "variable": "temperature",
+      "unit": "°C",
+      "window_days": null,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 64800,
+        "n_max": 65880,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-TEMP-W45": {
+      "board": "accuracy",
+      "variable": "temperature",
+      "unit": "°C",
+      "window_days": 45,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 48600,
+        "n_max": 48600,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-TEMP-W30": {
+      "board": "accuracy",
+      "variable": "temperature",
+      "unit": "°C",
+      "window_days": 30,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 32400,
+        "n_max": 32400,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-TEMP-W7": {
+      "board": "accuracy",
+      "variable": "temperature",
+      "unit": "°C",
+      "window_days": 7,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 7560,
+        "n_max": 7560,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-WIND-W7": {
+      "board": "accuracy",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "window_days": 7,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 7560,
+        "n_max": 7560,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-WIND-W30": {
+      "board": "accuracy",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "window_days": 30,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 32400,
+        "n_max": 32400,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-WIND-W45": {
+      "board": "accuracy",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "window_days": 45,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 48600,
+        "n_max": 48600,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-WIND-WFULL": {
+      "board": "accuracy",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "window_days": null,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 64800,
+        "n_max": 65880,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-RAIN-T8": {
+      "board": "extreme",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "threshold": 8.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 164
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-RAIN-T4": {
+      "board": "extreme",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "threshold": 4.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 962
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-TEMP-T37": {
+      "board": "extreme",
+      "variable": "temperature",
+      "unit": "°C",
+      "threshold": 37.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 151
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-TEMP-T35": {
+      "board": "extreme",
+      "variable": "temperature",
+      "unit": "°C",
+      "threshold": 35.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 666
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-WIND-T32": {
+      "board": "extreme",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "threshold": 32.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 13
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-EXT-WIND-T25": {
+      "board": "extreme",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "threshold": 25.0,
+      "metric": {
+        "primary": "CSI",
+        "direction": "higher is better"
+      },
+      "secondary_metrics": [
+        "pod",
+        "far",
+        "ets"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 65880,
+        "n_max": 65880,
+        "cases": 172
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-RAIN-D1": {
+      "board": "lead",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "lead_days": 1,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-RAIN-D2": {
+      "board": "lead",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "lead_days": 2,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-RAIN-D3": {
+      "board": "lead",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "lead_days": 3,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-TEMP-D1": {
+      "board": "lead",
+      "variable": "temperature",
+      "unit": "°C",
+      "lead_days": 1,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-TEMP-D2": {
+      "board": "lead",
+      "variable": "temperature",
+      "unit": "°C",
+      "lead_days": 2,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-TEMP-D3": {
+      "board": "lead",
+      "variable": "temperature",
+      "unit": "°C",
+      "lead_days": 3,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-WIND-D1": {
+      "board": "lead",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "lead_days": 1,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-WIND-D2": {
+      "board": "lead",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "lead_days": 2,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-WIND-D3": {
+      "board": "lead",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "lead_days": 3,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 45360,
+        "n_max": 45360,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-18",
+        "end": "2026-09-16",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-03T04:58:33Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    }
+  }
+}
