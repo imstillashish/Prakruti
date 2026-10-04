@@ -1,43 +1,46 @@
 {
-  "cycle_id": "2026-10-03T10:21:14",
-  "previous_cycle_id": "2026-10-02T07:57:21",
+  "cycle_id": "2026-10-04T22:27:14",
+  "previous_cycle_id": "2026-10-03T10:21:14",
   "available": true,
   "quantile_shift": {
     "temperature": {
-      "p10": -0.09,
-      "p50": -0.0926,
-      "p90": -0.0952
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "rainfall": {
-      "p10": 0.0048,
-      "p50": 0.0136,
-      "p90": 0.0298
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "wind_speed": {
-      "p10": -0.0879,
-      "p50": -0.094,
-      "p90": -0.0794
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     }
   },
   "biggest_p50_mover": {
     "temperature": {
-      "city": "Thane",
-      "delta": -1.5694
+      "city": "Agartala",
+      "delta": 0.0
     },
     "rainfall": {
-      "city": "Bengaluru",
-      "delta": 0.4417
+      "city": "Agartala",
+      "delta": 0.0
     },
     "wind_speed": {
-      "city": "Shillong",
-      "delta": -1.9422
+      "city": "Agartala",
+      "delta": 0.0
     }
   },
   "confidence_shifts": {
-    "upgraded": 0,
-    "downgraded": 3,
+    "upgraded": 3,
+    "downgraded": 4,
     "transitions": {
-      "High->Medium": 3
+      "High->Medium": 3,
+      "Very High->High": 1,
+      "Medium->High": 2,
+      "High->Very High": 1
     }
   },
   "models_recovered": [],
