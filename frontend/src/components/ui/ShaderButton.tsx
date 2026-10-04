@@ -12,7 +12,7 @@ import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 import { cn } from '@/lib/utils';
 import { COLORWAY_DEEP, SHADER_FILL } from '@/lib/palette';
 
-export type ShaderVariant = 'ocean' | 'emerald' | 'amber';
+export type ShaderVariant = 'ocean' | 'emerald' | 'amber' | 'destructive' | 'neutral' | 'rain';
 
 export interface ShaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
@@ -47,6 +47,21 @@ const VARIANTS: Record<
     shadow: 'shadow-[0_4px_12px_rgba(180,83,9,0.25)]',
     focusOutline: 'focus-visible:outline-warning',
     fill: SHADER_FILL.amber,
+  },
+  destructive: {
+    shadow: 'shadow-[0_4px_12px_rgba(180,35,24,0.25)]',
+    focusOutline: 'focus-visible:outline-destructive',
+    fill: SHADER_FILL.destructive,
+  },
+  neutral: {
+    shadow: 'shadow-[0_4px_12px_rgba(23,23,23,0.25)]',
+    focusOutline: 'focus-visible:outline-foreground',
+    fill: SHADER_FILL.neutral,
+  },
+  rain: {
+    shadow: 'shadow-[0_4px_12px_rgba(14,116,144,0.25)]',
+    focusOutline: 'focus-visible:outline-[#0e7490]',
+    fill: SHADER_FILL.rain,
   },
 };
 

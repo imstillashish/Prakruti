@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RefreshCw } from '@/components/icons';
+import { RefreshCw, Satellite } from '@/components/icons';
 import { getMetadata, MetadataRecord } from '@/lib/api';
 import { Explain } from '@/components/explain/Explain';
 
@@ -29,7 +29,7 @@ function EngineChip({
   if (isWakingUp) {
     return (
       <span className="inline-flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full border-2 border-warning border-t-transparent animate-spin" />
+        <Satellite size={13} className="text-warning" />
         <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-warning">Connecting</span>
       </span>
     );
@@ -151,7 +151,10 @@ export function StatusStrip() {
             </span>
             <span className="text-foreground flex items-center gap-1">
               {modelCount}
-              <Explain term="models" />
+              {/* The strip sits directly under the fixed TopBar, so a pseudo-element
+                  tap zone is clipped on its top edge; the phone-only 44px box keeps
+                  the glyph a real touch target. */}
+              <Explain term="models" className="min-h-11 min-w-11 justify-center sm:min-h-0 sm:min-w-0" />
             </span>
           </span>
 
@@ -166,7 +169,7 @@ export function StatusStrip() {
             type="button"
             onClick={handleManualRefresh}
             title="Refresh status"
-            className="p-1 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
+            className="relative flex min-h-11 min-w-11 items-center justify-center p-1 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors sm:min-h-0 sm:min-w-0 after:absolute after:-inset-3 after:content-['']"
           >
             <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-action' : ''} />
           </button>

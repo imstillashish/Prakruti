@@ -9,15 +9,18 @@ import { SectionBanner } from '@/components/shell/SectionBanner';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { RpiData } from '@/types';
 import { SERIES, DATA } from '@/lib/palette';
+import { LoadingState } from '@/components/ui/LoadingState';
 
 // Dynamic import with SSR disabled for Leaflet
 const RealTrustAtlasMap = dynamic(() => import('./RealTrustAtlasMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[540px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border">
-      <div className="w-10 h-10 border-2 border-primary border-t-transparent animate-spin" />
-      <span className="text-xs font-medium tracking-wide">Starting AI weather engine… This may take up to 60 seconds.</span>
-    </div>
+    <LoadingState
+      label="Starting the AI weather engine"
+      hint="This can take up to 60 seconds"
+      rows={6}
+      className="h-[540px]"
+    />
   ),
 });
 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getBackendStatus, BackendStatusType } from '@/lib/api';
+import { Satellite, CheckCircle2 } from '@/components/icons';
+import type { AnimatedIconHandle } from '@/components/icons';
 
 /**
  * BackendConnectingIndicator
@@ -9,10 +11,10 @@ import { getBackendStatus, BackendStatusType } from '@/lib/api';
  * Displays a lightweight, compact status pill/banner ONLY while the Render backend is connecting / waking up.
  * - Positioned globally in the top dashboard area using fixed positioning to prevent layout shift.
  * - When connecting:
- *   🟠 Fetching Live Backend Data...
- *   Animated spinner + "Render server is waking up (may take up to 60 seconds)"
+ *   A card-shaped waiting surface: the itshover dish pulses as the signal
+ *   arrives and the action ramp steps along the bottom edge.
  * - When connected:
- *   🟢 Live Backend Connected (shown for 2 seconds, then smoothly hidden)
+ *   A short "live backend connected" pill (shown 2 seconds, then hidden)
  * - Uses CSS transitions and lightweight keyframes only.
  */
 export function BackendConnectingIndicator() {
@@ -28,6 +30,16 @@ export function BackendConnectingIndicator() {
   const wasConnectingRef = useRef<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const exitTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const dishRef = useRef<AnimatedIconHandle>(null);
+
+  // Keep the dish signalling while we wait — the icon animates on hover by
+  // default, and nothing hovers a status pill.
+  useEffect(() => {
+    if (status !== 'connecting') return;
+    dishRef.current?.startAnimation();
+    const id = window.setInterval(() => dishRef.current?.startAnimation(), 2400);
+    return () => window.clearInterval(id);
+  }, [status]);
 
   useEffect(() => {
     let mounted = true;
@@ -121,33 +133,35 @@ export function BackendConnectingIndicator() {
       aria-live="polite"
     >
       {isConnecting && (
-        <div
-          className="pointer-events-auto flex flex-col items-center gap-1 px-4 py-2 bg-card ambient-gradient-warning border border-border border-l-2 border-l-warning rounded-lg shadow-lg transition-all"
-        >
-          {/* Main Title Row */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-foreground">
-              Connecting to Live Forecast Backend...
-            </span>
+        <div className="pointer-events-auto w-[min(92vw,21rem)] overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          <div className="flex items-center gap-2.5 px-3.5 py-2.5">
+            <Satellite ref={dishRef} size={16} className="shrink-0 text-action" />
+            <div className="min-w-0">
+              <div className="text-xs font-semibold leading-tight text-foreground">
+                Waking the forecast engine
+              </div>
+              <div className="text-[10.5px] font-mono text-muted-foreground">
+                Live backend is starting up · up to 60s
+              </div>
+            </div>
           </div>
-
-          {/* Subtitle with Animated Spinner */}
-          <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground">
+          <span aria-hidden className="loading-sweep block h-0.5 overflow-hidden bg-secondary">
             <span
-              className="w-2.5 h-2.5 rounded-full border border-warning border-t-transparent animate-spin inline-block flex-shrink-0"
-              aria-label="Loading spinner"
+              className="block h-full w-1/2"
+              style={{
+                backgroundColor: 'var(--colorway-deep-ocean)',
+                backgroundImage: 'var(--colorway-ramp-ocean)',
+              }}
             />
-            <span>Render server is waking up (may take up to 60s)</span>
-          </div>
+          </span>
         </div>
       )}
 
       {isConnected && (
-        <div
-          className="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 bg-card ambient-gradient-success border border-border border-l-2 border-l-success rounded-lg shadow-lg transition-all"
-        >
-          <span className="text-xs font-mono font-bold text-primary">
-            Live Backend Connected
+        <div className="pointer-events-auto flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-1.5 shadow-lg">
+          <CheckCircle2 size={14} className="text-success" />
+          <span className="text-xs font-mono font-bold text-foreground">
+            Live backend connected
           </span>
         </div>
       )}

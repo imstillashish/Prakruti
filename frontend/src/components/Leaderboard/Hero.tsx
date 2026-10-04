@@ -104,12 +104,12 @@ export function Hero({ meta }: HeroProps) {
                         <div className="flex items-center gap-1.5 text-muted-foreground">
                           {isReceived ? (
                             <>
-                              <Check size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                              <Check size={14} className="text-success shrink-0" />
                               <span>received · {info?.rows?.toLocaleString() ?? 0} rows</span>
                             </>
                           ) : isStale ? (
                             <>
-                              <Clock size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                              <Clock size={14} className="text-warning shrink-0" />
                               <span>stale — previous cycle</span>
                             </>
                           ) : (
@@ -124,7 +124,7 @@ export function Hero({ meta }: HeroProps) {
                   })}
                 </div>
                 {cycle.source_completeness?.fallback && (
-                  <div className="pt-1 text-[11px] font-mono text-amber-600 dark:text-amber-400 border-t border-border/60">
+                  <div className="pt-1 text-[11px] font-mono text-warning border-t border-border/60">
                     fallback blending in effect
                   </div>
                 )}

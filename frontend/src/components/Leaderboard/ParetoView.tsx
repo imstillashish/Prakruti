@@ -265,7 +265,7 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-success/10 text-data-ok-text border border-success/20">
                         Frontier
                       </span>
                     </div>

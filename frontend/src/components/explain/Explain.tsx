@@ -12,7 +12,7 @@ export function Explain({ term, className }: { term: GlossaryKey; className?: st
   }
   const trigger = (
     <button type="button" aria-label={`What is ${entry.title}?`}
-      className={`inline-flex items-center align-middle text-muted-foreground hover:text-foreground cursor-help ${className ?? ''}`}>
+      className={`relative inline-flex items-center align-middle text-muted-foreground hover:text-foreground cursor-help after:absolute after:-inset-4 after:content-[''] ${className ?? ''}`}>
       <Info size={13} strokeWidth={1.75} />
     </button>
   );

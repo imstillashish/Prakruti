@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Panel } from '@/components/shell/Panel';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getModelCalibration } from '@/lib/api';
 import type { CalibrationPayload } from '@/lib/api';
@@ -45,7 +46,7 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
       term="calibration"
       collapsibleOnPhone
     >
-      {isLoading && <div className="h-[180px] animate-pulse rounded-lg bg-secondary/50" />}
+      {isLoading && <LoadingState label="Loading calibration diagnostics" rows={3} className="h-[180px] border-0 bg-transparent" />}
 
       {!isLoading && !data && (
         <div className="py-10 text-center text-xs font-mono text-muted-foreground">

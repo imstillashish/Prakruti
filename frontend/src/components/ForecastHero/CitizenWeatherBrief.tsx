@@ -172,7 +172,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
 
 function GuidanceCard({ item }: { item: GuidanceCardItem }) {
   return (
-    <div className="rounded-md border border-border bg-card p-3 flex flex-col justify-between">
+    <div className="rounded-md border border-border bg-card p-3 flex flex-col justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:px-4 sm:py-0 sm:first:pl-0 sm:last:pr-0">
       <div>
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-1.5 font-medium text-xs text-foreground">
@@ -201,7 +201,7 @@ function GuidanceCard({ item }: { item: GuidanceCardItem }) {
 export function CitizenWeatherBrief({ metrics, city, advisories }: CitizenWeatherBriefProps) {
   if (!metrics) {
     return (
-      <div className="bg-card border border-border rounded-lg p-4">
+      <div className="border-t border-border p-4">
         <div className="text-sm font-semibold text-foreground">Everyday Weather Guidance for {city}</div>
         <p className="text-xs text-muted-foreground mt-1">
           Waiting for station telemetry to calculate daily life guidance.
@@ -216,9 +216,9 @@ export function CitizenWeatherBrief({ metrics, city, advisories }: CitizenWeathe
   );
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4">
+    <div className="border-t border-border p-4">
       {/* Header */}
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/70 pb-3 mb-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/70 pb-2 mb-2">
         <div>
           <h3 className="text-sm font-semibold text-foreground tracking-tight">
             Everyday Citizen Weather Brief
@@ -254,7 +254,9 @@ export function CitizenWeatherBrief({ metrics, city, advisories }: CitizenWeathe
         ))}
       </div>
 
-      <div className="hidden sm:grid sm:grid-cols-3 sm:gap-3">
+      {/* Desktop: three hairline-separated columns — a fourth card around each
+          one nested it inside the brief's own card and boxed every group. */}
+      <div className="hidden sm:grid sm:grid-cols-3 sm:divide-x sm:divide-border">
         {items.map((item) => (
           <GuidanceCard key={item.key} item={item} />
         ))}

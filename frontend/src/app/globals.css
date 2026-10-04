@@ -259,9 +259,11 @@ body {
   margin: 12px 14px;
 }
 
-/* Modal backdrop — dimmed scrim */
+/* Modal backdrop — dimmed scrim, fades in with the dialog panel (its own
+   mount animation, not a transition — there is no exit to animate). */
 .modal-backdrop {
   background: rgba(23, 23, 23, 0.32);
+  animation: fade-in 150ms ease-out;
 }
 
 /* Functional motion only — popover/tooltip fades, accordion open/close. Nothing ambient. */
@@ -283,6 +285,45 @@ body {
 .animate-fade-in { animation: fade-in 120ms ease-out; }
 .animate-accordion-down { animation: accordion-down 150ms ease-out; }
 .animate-accordion-up { animation: accordion-up 150ms ease-out; }
+
+/* Waiting surfaces: a panel never waits behind a spinner. The placeholder is the
+   panel shape — hairline rows with a sheen crossing them — plus one action-ramp
+   stepper on the bottom edge. Both are transform/opacity-safe and stop under
+   reduced motion. */
+@keyframes skeleton-sheen {
+  0% { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+
+.skeleton-sheen {
+  background-image: linear-gradient(
+    90deg,
+    rgba(23, 23, 23, 0) 0%,
+    rgba(23, 23, 23, 0.05) 45%,
+    rgba(23, 23, 23, 0.09) 50%,
+    rgba(23, 23, 23, 0.05) 55%,
+    rgba(23, 23, 23, 0) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 220% 100%;
+  animation: skeleton-sheen 1.6s ease-in-out infinite;
+}
+
+@keyframes loading-sweep {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(210%); }
+}
+
+.loading-sweep > span {
+  animation: loading-sweep 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-sheen,
+  .loading-sweep > span {
+    animation: none;
+  }
+}
 
 /* Minimal ambient animated gradient drift for status and severity panels */
 @keyframes ambient-drift {
@@ -434,6 +475,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
+  .modal-backdrop,
   .animate-accordion-down,
   .animate-accordion-up,
   .ambient-gradient-success,

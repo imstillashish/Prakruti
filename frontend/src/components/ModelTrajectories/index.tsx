@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from '@/components/icons';
 import {
   ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { getModelCompare } from '@/lib/api';
 import { useMediaQuery, DESKTOP_QUERY } from '@/lib/useMediaQuery';
 import type { ModelComparePayload, ModelCompareSeries } from '@/lib/api';
@@ -114,7 +116,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
         </div>
       }
     >
-      {isLoading && <div className="h-[220px] animate-pulse rounded-lg bg-secondary/50" />}
+      {isLoading && <LoadingState label="Loading model trajectories" rows={4} className="h-[220px] border-0 bg-transparent" />}
 
       {!isLoading && series.length === 0 && (
         <div className="py-10 text-center text-xs font-mono text-muted-foreground">
@@ -183,8 +185,11 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
             {/* Mobile & tablet (<1024px): swipeable lead-day deck */}
             <div className="block lg:hidden">
               <div className="flex items-center justify-between mb-2.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
-                  {cfg.label} · swipe lead days ↔
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono flex items-center gap-1.5">
+                  {cfg.label} ·{' '}
+                  <span className="flex items-center gap-0.5 normal-case tracking-normal select-none">
+                    <ChevronLeft size={11} /><span>swipe lead days</span><ChevronRight size={11} />
+                  </span>
                 </span>
                 <span className="text-[11px] font-mono text-muted-foreground">Day {current.lead_days}/3</span>
               </div>

@@ -8,15 +8,19 @@ import { StationDossier } from '@/components/RPI/StationDossier';
 import { getRpiData, getAllRpiData, SERVER_WAKING_UP_MSG } from '@/lib/api';
 import { RpiData } from '@/types';
 import { SERIES } from '@/lib/palette';
+import { ShaderButton } from '@/components/ui/ShaderButton';
+import { LoadingState } from '@/components/ui/LoadingState';
 
 // Dynamic import with SSR disabled for Leaflet Map
 const RealTrustAtlasMap = dynamic(() => import('@/components/RPI/RealTrustAtlasMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[480px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 border border-border rounded-lg">
-      <div className="w-8 h-8 border-2 border-foreground border-t-transparent animate-spin rounded-full" />
-      <span className="text-xs font-mono">Initializing Spatial Trust Atlas…</span>
-    </div>
+    <LoadingState
+      label="Loading spatial trust atlas"
+      hint="Station geometry · per-model skill"
+      rows={5}
+      className="h-full min-h-[480px]"
+    />
   ),
 });
 
@@ -135,10 +139,12 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               </select>
             )}
 
-            <button
+            <ShaderButton
               type="button"
+              variant="emerald"
+              size="sm"
               onClick={handleRefresh}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium gradient-animated-emerald gradient-state transition-transform duration-100 active:translate-y-px cursor-pointer"
+              className="h-8 px-3 text-xs font-mono cursor-pointer"
               title="Refresh Synoptic RPI Run"
             >
               <RefreshCw
@@ -147,7 +153,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               <span className="hidden sm:inline font-bold">
                 {isRefreshing ? 'Recalculating…' : 'Refresh Index'}
               </span>
-            </button>
+            </ShaderButton>
           </div>
         }
       />
@@ -155,7 +161,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
       {/* Zero-Scroll Command Deck Split Viewport: h-[calc(100vh-12rem)] */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 h-auto md:h-[calc(100vh-12rem-4rem)] min-h-[560px] max-h-[860px]">
         {/* Left Column (7 cols): Model Filters & Full-Height Leaflet Map */}
-        <div className="md:col-span-7 h-full flex flex-col gap-2 min-h-0">
+        <div className="md:col-span-7 flex flex-col gap-2 min-h-0 h-full">
           {/* Quick Model Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 shrink-0">
             <span className="text-[11px] font-mono font-bold text-muted-foreground mr-1 flex items-center gap-1">
@@ -173,7 +179,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
                 }`}
               >
                 <span
-                  className="inline-block w-2 h-2 rounded-full mr-1.5"
+                  className="inline-block w-2.5 h-1.5 rounded-xs mr-1.5 shrink-0 border border-border/60 shadow-2xs"
                   style={{ backgroundColor: mf.color }}
                 />
                 {mf.label}
@@ -181,8 +187,8 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
             ))}
           </div>
 
-          {/* Interactive Leaflet Map (Fills remainder of left column) */}
-          <div className="flex-1 rounded-lg border border-border overflow-hidden min-h-0 relative">
+          {/* Interactive Leaflet Map — explicit mobile height, flex-1 on md+ */}
+          <div className="h-[60vw] min-h-[280px] md:flex-1 md:h-auto rounded-lg border border-border overflow-hidden relative">
             <RealTrustAtlasMap
               stations={stations.length > 0 ? stations : rpiData ? [rpiData] : []}
               selectedCity={currentCity}

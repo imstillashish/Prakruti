@@ -6,6 +6,7 @@ import { Explain } from '@/components/explain/Explain';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { SERIES, DATA } from '@/lib/palette';
 import { ShaderButton } from '@/components/ui/ShaderButton';
+import { LoadingState } from '@/components/ui/LoadingState';
 
 interface StationDossierProps {
   rpiData: RpiData | null;
@@ -186,10 +187,12 @@ export function StationDossier({
       {/* Scrollable Interior Panel (fits inside viewport without shifting page) */}
       <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5">
         {isLoading && !rpiData ? (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground gap-2">
-            <div className="w-6 h-6 border-2 border-foreground border-t-transparent animate-spin rounded-full" />
-            <span className="text-xs font-mono">Synchronizing station telemetry…</span>
-          </div>
+          <LoadingState
+            label="Synchronizing station telemetry"
+            hint={`Loading the ${activeTab} view`}
+            rows={4}
+            className="h-64 border-0 bg-transparent"
+          />
         ) : activeTab === 'risk' && rpiData ? (
           <>
             {/* Risk Index Overview Box */}

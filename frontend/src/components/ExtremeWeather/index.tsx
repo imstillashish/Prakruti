@@ -23,23 +23,22 @@ const SEVERITY_STYLES: Record<
     color: string;
     borderClass: string;
     bgClass: string;
-  }
-> = {
+  }>  = {
   alert: {
     badge: 'destructive',
-    color: '#b42318',
+    color: 'var(--color-destructive)',
     borderClass: 'border-destructive/30',
     bgClass: 'ambient-gradient-destructive',
   },
   warning: {
     badge: 'warning',
-    color: '#ab6400',
+    color: 'var(--color-warning)',
     borderClass: 'border-warning/30',
     bgClass: 'ambient-gradient-warning',
   },
   watch: {
     badge: 'success',
-    color: '#16a34a',
+    color: 'var(--color-success)',
     borderClass: 'border-success/30',
     bgClass: 'ambient-gradient-success',
   },
@@ -56,7 +55,7 @@ function ProbabilityArc({ value, color }: { value: number; color: string }) {
       aria-label={`Risk Probability: ${value}%`}
     >
       <svg width="60" height="60" viewBox="0 0 60 60" role="img" aria-label={`Risk Probability ${value}%`}>
-        <circle cx="30" cy="30" r={r} fill="none" strokeWidth="4" stroke="#dcdee0" />
+        <circle cx="30" cy="30" r={r} fill="none" strokeWidth="4" stroke="var(--color-border)" />
         <circle
           cx="30" cy="30" r={r} fill="none" strokeWidth="4"
           stroke={color} strokeLinecap="square"
@@ -155,9 +154,6 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
         </div>
       </div>
 
-      <div className="border-t border-border mt-3 pt-2 text-[11px] font-mono text-muted-foreground text-center">
-        Matches official IMD &amp; NDMA disaster risk criteria
-      </div>
     </Panel>
   );
 }

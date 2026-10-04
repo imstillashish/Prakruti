@@ -5,8 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
 import { CityForecast } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
-import { RotateCcw } from '@/components/icons';
-import { ZoomIn, ZoomOut } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut } from '@/components/icons';
 import { DATA, seriesColor } from '@/lib/palette';
 interface RealLeafletMapProps {
   leadTime: string;

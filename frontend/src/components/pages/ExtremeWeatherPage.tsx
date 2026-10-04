@@ -13,27 +13,18 @@ type SeverityFilter = 'all' | 'danger' | 'warning';
 
 export function ExtremeWeatherPage() {
   const [alerts, setAlerts] = useState<Alert[]>(MOCK_ALERTS);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
   const [openId, setOpenId] = useState<string | null>(null);
 
+  // MOCK alerts stand in while the live bulletin fetch lands in place.
   useEffect(() => {
     let mounted = true;
     getAlertsData()
       .then((data) => {
-        if (mounted && data && data.length > 0) {
-          setAlerts(data);
-          setIsLoading(false);
-        }
+        if (mounted && data && data.length > 0) setAlerts(data);
       })
-      .catch(() => {
-        if (mounted) {
-          setIsError(true);
-          setIsLoading(false);
-        }
-      });
+      .catch(() => {});
     return () => {
       mounted = false;
     };
@@ -122,7 +113,7 @@ export function ExtremeWeatherPage() {
                   : 'text-destructive hover:bg-destructive/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
+              <span className={`w-2.5 h-1.5 rounded-xs shrink-0 ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
               <span>Red</span>
               <span className={`text-[10px] px-1 font-mono rounded-full ${
                 severityFilter === 'danger' ? 'bg-white/20 text-white' : 'bg-destructive/10 text-destructive'
@@ -140,7 +131,7 @@ export function ExtremeWeatherPage() {
                   : 'text-foreground hover:bg-warning/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'warning' ? 'bg-white' : 'bg-warning'}`} />
+              <span className={`w-2.5 h-1.5 rounded-xs shrink-0 ${severityFilter === 'warning' ? 'bg-white' : 'bg-warning'}`} />
               <span>Orange</span>
               <span className={`text-[10px] px-1 font-mono rounded-full ${
                 severityFilter === 'warning' ? 'bg-white/20 text-white' : 'bg-card border border-border text-foreground'
@@ -223,7 +214,7 @@ export function ExtremeWeatherPage() {
                       className="flex w-full items-center justify-between gap-3 p-3.5 text-left transition-colors hover:bg-secondary/50"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className={`w-2 h-2 shrink-0 rounded-full ${isRed ? 'bg-destructive' : 'bg-warning'}`} />
+                        <AlertTriangle size={12} className={`shrink-0 ${isRed ? 'text-destructive' : 'text-warning'}`} />
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="text-[13px] font-medium text-foreground truncate">{alert.title}</span>

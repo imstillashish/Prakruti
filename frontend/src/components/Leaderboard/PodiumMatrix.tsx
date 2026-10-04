@@ -1,6 +1,6 @@
 'use client';
 import { Fragment, useEffect, useState } from 'react';
-import type { LeaderboardRow } from '@/lib/api';
+import type { LeaderboardRow, ModelCard } from '@/lib/api';
 import { getModelLeaderboard } from '@/lib/api';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
@@ -10,6 +10,7 @@ import { ModelSourceCard, SourceToggle } from './ModelSourceCard';
 
 interface PodiumMatrixProps {
   onSelectCategory: (category: LeaderboardCategory) => void;
+  cards?: Record<string, ModelCard> | null;
 }
 
 interface MethodMatrixRow {
@@ -46,7 +47,7 @@ const VARIABLES = [
   { key: 'wind_speed', label: 'Wind Speed', unit: 'km/h' },
 ];
 
-export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
+export function PodiumMatrix({ onSelectCategory, cards }: PodiumMatrixProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [matrix, setMatrix] = useState<MethodMatrixRow[]>([]);
@@ -209,7 +210,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                   {/* 1st Places */}
                   <td className="py-3 px-4 text-center font-mono font-semibold text-foreground">
                     {row.firsts > 0 ? (
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs">
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-xs bg-success/10 text-data-ok-text border border-success/20 text-xs">
                         {row.firsts}
                       </span>
                     ) : (
@@ -249,7 +250,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                           <span
                             className={`text-xs font-bold px-1.5 py-0.5 rounded-xs ${
                               cell.rank === 1
-                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                ? 'bg-success/15 text-data-ok-text border border-success/20'
                                 : cell.rank === 2
                                 ? 'bg-primary/10 text-primary border border-primary/20'
                                 : 'bg-muted text-muted-foreground border border-border'
@@ -278,6 +279,7 @@ export function PodiumMatrix({ onSelectCategory }: PodiumMatrixProps) {
                       <ModelSourceCard
                         method={row.method}
                         label={METHOD_LABELS[row.method] || row.method}
+                        card={cards?.[row.method]}
                       />
                     </td>
                   </tr>

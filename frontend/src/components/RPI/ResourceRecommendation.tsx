@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Flame, CheckCircle2, Send, Info, CloudRain, Wind, Building } from '@/components/icons';
+import { Flame, CheckCircle2, Send, Info, CloudRain, Wind, Building, Truck } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { Badge } from '@/components/ui/badge';
@@ -62,17 +62,18 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
     }
   };
 
-  const statusDotClass = (rec: ResourceAction, dispatched: boolean) => {
-    if (dispatched) return 'bg-success';
+  // Vector micro-icon per row (Pattern 4): dispatch state decides shape, priority its color.
+  const statusIconClass = (rec: ResourceAction, dispatched: boolean) => {
+    if (dispatched) return 'text-success';
     switch (rec.priority) {
       case 'critical':
-        return 'bg-destructive';
+        return 'text-destructive';
       case 'high':
-        return 'bg-warning';
+        return 'text-warning';
       case 'medium':
-        return 'bg-muted-foreground';
+        return 'text-muted-foreground';
       default:
-        return 'bg-success';
+        return 'text-success';
     }
   };
 
@@ -141,7 +142,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                 onClick={() => setOpenId(open ? null : rec.id)}
                 className="flex w-full items-center gap-2.5 px-5 py-3 text-left transition-colors duration-150 hover:bg-secondary/50"
               >
-                <span className={`h-2 w-2 shrink-0 rounded-full ${statusDotClass(rec, dispatched)}`} />
+                <Truck size={14} className={`shrink-0 ${statusIconClass(rec, dispatched)}`} />
                 <span className="shrink-0">{getCategoryIcon(rec.category)}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13px] font-medium text-foreground">

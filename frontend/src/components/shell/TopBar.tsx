@@ -79,7 +79,7 @@ export function TopBar({ selectedCity }: { selectedCity: string | null }) {
             title="Active weather alerts"
           >
             <Bell size={18} className="sm:w-4 sm:h-4" />
-            <span className="absolute top-2.5 right-2.5 sm:top-2 sm:right-2 h-2 w-2 sm:h-1.5 sm:w-1.5 rounded-full bg-destructive" />
+            <span className="absolute top-2 right-2 sm:top-1.5 sm:right-1.5 h-[6px] w-[6px] rounded-sm bg-destructive" />
           </button>
 
           {/* Data health shortcut: desktop & tablet */}

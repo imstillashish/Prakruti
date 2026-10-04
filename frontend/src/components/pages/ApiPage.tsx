@@ -523,7 +523,7 @@ export function ApiPage() {
               ) : (
                 <>
                   <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>Execute Request ▶</span>
+                  <span>Execute Request</span>
                 </>
               )}
             </ShaderButton>

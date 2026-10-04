@@ -46,7 +46,9 @@ export const COLORWAY_DEEP = {
   ocean: '#0d74ce',
   emerald: '#047857',
   amber: '#b45309',
-  neutral: '#33373e',
+  neutral: '#1f242d',
+  destructive: '#b42318',
+  rain: '#0e7490',
 } as const;
 
 /**
@@ -59,6 +61,9 @@ export const SHADER_FILL = {
   ocean: ['#084b86', '#0a5faa', ACCENT.base],
   emerald: ['#034f39', '#036348', '#047857'],
   amber: ['#6b3105', '#8f4207', '#b45309'],
+  neutral: ['#111827', '#1f2937', '#374151'],
+  destructive: ['#7f1d1d', '#991b1b', '#b42318'],
+  rain: ['#164e63', '#155e75', '#0e7490'],
 } as const;
 
 export function seriesColor(model: string): string {

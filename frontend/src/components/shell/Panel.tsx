@@ -19,13 +19,20 @@ export function Panel({ title, subtitle, term, actions, children, className, bod
   return (
     <section className={`rounded-lg border border-border bg-card ${className ?? ''}`}>
       <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-border px-4 py-2.5 rounded-t-lg">
-        <div className="min-w-0 max-w-full flex-1 basis-52">
+        {/* Phone: the title owns its row. Sharing it with a segmented control
+            (Model Skill's four periods, Model Agreement's three variables)
+            squeezed the title to a sliver, and the subtitle then wrapped into a
+            ten-line column: a collapsed panel measured 261-357px tall. From sm
+            the rows share one line again. */}
+        <div className="min-w-0 max-w-full basis-full sm:basis-0 sm:flex-1">
           <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
             {title}{term && <Explain term={term} />}
           </h2>
           {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
         </div>
-        <div className="flex flex-shrink-0 items-center gap-1.5">
+        {/* flex-shrink-0 keeps the controls intact; the sideways scroll is the
+            safety net the phone nav strip already uses. */}
+        <div className="flex flex-shrink-0 items-center gap-1.5 max-w-full overflow-x-auto [scrollbar-width:none]">
           {actions}
           {collapsible && (
             <button

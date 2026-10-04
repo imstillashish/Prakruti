@@ -13,6 +13,7 @@ import {
   PerformanceMatrixData,
 } from '@/data/performanceMatrixData';
 import { Panel } from '@/components/shell/Panel';
+import { Droplet, Thermometer, Wind, RotateCcw, type IconComponent } from '@/components/icons';
 
 /* ──────────────────── Color helpers ──────────────────── */
 
@@ -328,10 +329,10 @@ function Scene({ matrix, colorMode, autoRotate }: SceneProps) {
 type VariableKey = 'rainfall' | 'temperature' | 'wind';
 type ColorMode = 'model' | 'skill';
 
-const VARIABLE_CONFIG: Record<VariableKey, { label: string; icon: string }> = {
-  rainfall: { label: 'Rainfall', icon: '🌧️' },
-  temperature: { label: 'Temperature', icon: '🌡️' },
-  wind: { label: 'Wind Speed', icon: '💨' },
+const VARIABLE_CONFIG: Record<VariableKey, { label: string; icon: IconComponent }> = {
+  rainfall: { label: 'Rainfall', icon: Droplet },
+  temperature: { label: 'Temperature', icon: Thermometer },
+  wind: { label: 'Wind Speed', icon: Wind },
 };
 
 /* ──────────────────── Main Exported Component ──────────────────── */
@@ -365,20 +366,24 @@ export function PerformanceMatrix3D() {
         <div className="flex flex-wrap items-center gap-2">
           {/* Variable selector */}
           <div className="flex items-center gap-0.5 p-0.5 rounded-md bg-secondary border border-border">
-            {(Object.keys(VARIABLE_CONFIG) as VariableKey[]).map((v) => (
-              <button
-                key={v}
-                onClick={() => setVariable(v)}
-                className={`px-2 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
-                  variable === v
-                    ? 'bg-card text-foreground font-bold border border-border shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-                type="button"
-              >
-                {VARIABLE_CONFIG[v].icon} {VARIABLE_CONFIG[v].label}
-              </button>
-            ))}
+            {(Object.keys(VARIABLE_CONFIG) as VariableKey[]).map((v) => {
+              const Icon = VARIABLE_CONFIG[v].icon;
+              return (
+                <button
+                  key={v}
+                  onClick={() => setVariable(v)}
+                  className={`inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono rounded-sm transition-colors duration-100 ${
+                    variable === v
+                      ? 'gradient-animated-ocean text-white font-bold shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  type="button"
+                >
+                  <Icon size={13} className="shrink-0" />
+                  <span>{VARIABLE_CONFIG[v].label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Color mode toggle */}
@@ -410,14 +415,15 @@ export function PerformanceMatrix3D() {
           {/* Auto-rotate toggle */}
           <button
             onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-2.5 py-1 text-xs font-mono border rounded-md transition-colors duration-100 ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono border rounded-md transition-colors duration-100 ${
               autoRotate
                 ? 'bg-accent text-accent-foreground border-primary/30'
                 : 'bg-card text-muted-foreground border-border hover:text-foreground'
             }`}
             type="button"
           >
-            {autoRotate ? '⟳ Rotating' : '⟳ Paused'}
+            <RotateCcw size={13} className={`shrink-0 ${autoRotate ? 'animate-spin' : ''}`} />
+            <span>{autoRotate ? 'Rotating' : 'Paused'}</span>
           </button>
         </div>
       }

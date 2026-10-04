@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { ChevronLeft, ChevronRight } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 import { getModelVerification } from '@/lib/api';
 import type { VerificationPayload, ContinuousVerificationRow, CategoricalVerificationRow } from '@/lib/api';
@@ -179,7 +180,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
       term="skillScore"
       collapsibleOnPhone
     >
-      {isLoading && <div className="h-[200px] animate-pulse rounded-lg bg-secondary/50" />}
+      {isLoading && <LoadingState label="Loading verification metrics" rows={4} className="h-[200px] border-0 bg-transparent" />}
 
       {!isLoading && !meta && (
         <div className="py-10 text-center text-xs font-mono text-muted-foreground">

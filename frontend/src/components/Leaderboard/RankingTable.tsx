@@ -1,6 +1,6 @@
 'use client';
 import { Fragment, useState } from 'react';
-import type { LeaderboardRow } from '@/lib/api';
+import type { BenchmarkCard, LeaderboardRow, ModelCard } from '@/lib/api';
 import type { LeaderboardMeasure } from './types';
 import { SERIES } from '@/lib/palette';
 import type { ModelName } from '@/lib/palette';
@@ -17,6 +17,8 @@ interface RankingTableProps {
   windowDays?: number | 'full' | null;
   threshold?: number | null;
   leadDays?: number | null;
+  cards?: Record<string, ModelCard> | null;
+  benchmarkCard?: BenchmarkCard | null;
 }
 
 const METHOD_LABELS: Record<string, string> = {
@@ -29,6 +31,21 @@ const METHOD_LABELS: Record<string, string> = {
   gem: 'CMC GEM',
 };
 
+/** Canonical benchmark ID for the current view's spec card (F-04 convention). */
+function benchSpecId(c: BenchmarkCard): string {
+  const board = c.board === 'accuracy' ? 'ACC' : c.board === 'extreme' ? 'EXT' : 'LD';
+  const vt = c.variable === 'rainfall' ? 'RAIN' : c.variable === 'temperature' ? 'TEMP' : 'WIND';
+  const dim =
+    c.board === 'accuracy'
+      ? c.window_days != null
+        ? `W${c.window_days}`
+        : 'WFULL'
+      : c.board === 'extreme'
+      ? `T${c.threshold}`
+      : `D${c.lead_days}`;
+  return `BM-${board}-${vt}-${dim}`;
+}
+
 export function RankingTable({
   rows,
   measure,
@@ -38,6 +55,8 @@ export function RankingTable({
   windowDays,
   threshold,
   leadDays,
+  cards,
+  benchmarkCard,
 }: RankingTableProps) {
   const [openRow, setOpenRow] = useState<string | null>(null);
   const [showMethod, setShowMethod] = useState(false);
@@ -108,7 +127,7 @@ export function RankingTable({
                     {row.tier}
                   </span>
                   {row.low_sample === 1 && (
-                    <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
                       low n
                     </span>
                   )}
@@ -171,6 +190,7 @@ export function RankingTable({
                 <ModelSourceCard
                   method={row.method}
                   label={METHOD_LABELS[row.method] || row.method}
+                  card={cards?.[row.method]}
                 />
               )}
             </div>
@@ -259,7 +279,7 @@ export function RankingTable({
                         {row.tier}
                       </span>
                       {row.low_sample === 1 && (
-                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
                           low n
                         </span>
                       )}
@@ -337,6 +357,7 @@ export function RankingTable({
                       <ModelSourceCard
                         method={row.method}
                         label={METHOD_LABELS[row.method] || row.method}
+                        card={cards?.[row.method]}
                       />
                     </td>
                   </tr>
@@ -374,6 +395,28 @@ export function RankingTable({
           </span>
         </div>
         <div className={`${showMethod ? 'block' : 'hidden'} space-y-1 pt-1 sm:block`}>
+          {benchmarkCard && (
+            <div className="rounded-md border border-border/60 bg-card p-2.5 space-y-1">
+              <div className="flex flex-wrap items-center justify-between gap-1">
+                <span className="font-mono text-[10px] uppercase text-primary">
+                  {benchSpecId(benchmarkCard)}
+                </span>
+                <span className="text-[11px]">
+                  {benchmarkCard.metric.primary} ({benchmarkCard.metric.direction})
+                </span>
+              </div>
+              <div className="text-[11px] leading-snug">
+                Truth: {benchmarkCard.truth_reference} · {benchmarkCard.sample_sizes.n_min?.toLocaleString() ?? '—'} pairs/method
+                {benchmarkCard.sample_sizes.cases !== null &&
+                  ` · ${benchmarkCard.sample_sizes.cases.toLocaleString()} events`}
+                {benchmarkCard.uncertainty && ` · CI: ${benchmarkCard.uncertainty}`}
+              </div>
+              <div className="text-[11px] leading-snug text-muted-foreground/80">
+                {benchmarkCard.evaluation_period.start} → {benchmarkCard.evaluation_period.end} ·{' '}
+                {benchmarkCard.geography} · {benchmarkCard.seasonal_scope}
+              </div>
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
             <span>no composite index — constituents only (PRD §10.5.A)</span>
             <span>Unconditioned dimensions: weather_regime, season, geographic_unit</span>

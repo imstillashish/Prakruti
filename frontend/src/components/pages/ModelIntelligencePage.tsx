@@ -11,27 +11,12 @@ import type { RegionModelDominance } from '@/types';
 import { MapPin, Sparkles } from '@/components/icons';
 export function ModelIntelligencePage() {
   const [dominance, setDominance] = useState<RegionModelDominance[]>(MOCK_REGION_DOMINANCE);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
+  // Warm the weights endpoint so the API is alive by the time the user
+  // reaches a panel that needs live data; MOCK dominance is the placeholder
+  // until then, so the page never waits behind a shell.
   useEffect(() => {
-    let mounted = true;
-    getWeights()
-      .then((records) => {
-        if (mounted && records && records.length > 0) {
-          // Live model weights successfully fetched
-          setIsLoading(false);
-        }
-      })
-      .catch(() => {
-        if (mounted) {
-          setIsError(true);
-          setIsLoading(false);
-        }
-      });
-    return () => {
-      mounted = false;
-    };
+    getWeights().catch(() => {});
   }, []);
   return (
     <div className="space-y-6">

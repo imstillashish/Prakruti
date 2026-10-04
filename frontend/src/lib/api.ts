@@ -861,6 +861,81 @@ export interface LeaderboardRow {
   rank_high: number | null;
 }
 
+/** F-04 model metadata profile — one per leaderboard method (ai/cards.py). */
+export interface ModelCard {
+  identity: {
+    name: string;
+    provider: string;
+    architecture: string;
+    feed_id: string | null;
+    grid: string;
+    domain: string;
+    run_cycle: string;
+    max_lead: string;
+    delivered_lead: string;
+    source_url: string;
+    data_license: string;
+  };
+  profile: {
+    best_variable: string | null;
+    mean_rank_accuracy_full_in: number | null;
+    board_firsts_in: number;
+    variables: Record<string, { rank: number; mae: number | null; bias: number | null }>;
+    primary_threshold_csi: Record<string, number | null>;
+  };
+  bias: {
+    convention: string;
+    per_variable: Record<string, { national?: { value: number; unit: string; reading: string } }>;
+    widest_city_gap: { variable: string; city: string; gap: number; unit: string } | null;
+  };
+  feed: {
+    status: string | null;
+    rows_last_cycle: number | null;
+    leaderboard_rows: number;
+  };
+  not_tracked: string[];
+}
+
+/** F-04 benchmark specification card — one per national leaderboard stratum. */
+export interface BenchmarkCard {
+  board: string;
+  variable: string;
+  unit: string;
+  window_days?: number | null;
+  lead_days?: number | null;
+  threshold?: number | null;
+  metric: { primary: string; direction: string };
+  secondary_metrics: string[];
+  geography: string;
+  seasonal_scope: string;
+  truth_reference: string;
+  sample_criteria: {
+    min_hourly_pairs: number | null;
+    min_observed_events: number | null;
+    low_sample_policy: string | null;
+  };
+  sample_sizes: { n_min: number | null; n_max: number | null; cases: number | null };
+  uncertainty: string | null;
+  evaluation_period: { start: string | null; end: string | null; days: number | null };
+  snapshot: { engine_version: string | null; generated_at: string | null };
+  not_tracked: string[];
+}
+
+export interface MetadataCards {
+  engine_version: string;
+  generated_at: string | null;
+  model_cards: Record<string, ModelCard>;
+  benchmark_cards: Record<string, BenchmarkCard>;
+}
+
+/** Fetch the F-04 card registries (null when the API is unreachable or the artifact is missing). */
+export async function getMetadataCards(): Promise<MetadataCards | null> {
+  return fetchFromApi<MetadataCards | null>('/api/models/cards', null, {
+    totalTimeoutMs: 2500,
+    retryIntervalMs: 500,
+  });
+}
+
 export interface LeaderboardSignal {
   id: 'lowest_error' | 'best_extreme' | 'best_lead' | 'blend_gain';
   variable: string;
@@ -1641,4 +1716,60 @@ export async function getRpiMapGeoJson(): Promise<RpiMapGeoJson | null> {
     }
   } catch {}
   return null;
+}
+
+// ============================================================================
+// Live observations (Open-Meteo via /api/live)
+// ============================================================================
+
+export type LiveConditionsCurrent = {
+  temperature: number | null;
+  feels_like: number | null;
+  humidity: number | null;
+  precipitation: number | null;
+  wind_speed: number | null;
+  condition: string;
+  icon: 'clear' | 'cloudy' | 'fog' | 'rain' | 'snow' | 'storm' | 'unknown';
+  is_day: boolean;
+};
+
+export type LiveConditionsPoint = {
+  time: string | null;
+  temperature: number | null;
+  precipitation: number | null;
+  wind_speed: number | null;
+};
+
+export type LiveConditions = {
+  city: string;
+  latitude: number;
+  longitude: number;
+  source: string;
+  observed_at: string;
+  observed_at_ist: string | null;
+  fetched_at: string;
+  /** True when the backend served its last good reading because upstream failed. */
+  stale: boolean;
+  current: LiveConditionsCurrent;
+  /** Optional: a feed can answer with the current reading and no history. */
+  recent?: LiveConditionsPoint[];
+};
+
+/**
+ * GET /api/live?city=
+ * Measured conditions at the station right now. Returns null — never mock
+ * numbers — when the feed is unavailable, so the UI can hide the live band
+ * instead of inventing a temperature.
+ */
+export async function getLiveConditions(city: string = 'Kanpur'): Promise<LiveConditions | null> {
+  try {
+    const data = await fetchFromApi<LiveConditions | null>(
+      `/api/live?city=${encodeURIComponent(city)}`,
+      null,
+      { totalTimeoutMs: 8000, retryIntervalMs: 1000 },
+    );
+    return data && data.current ? data : null;
+  } catch {
+    return null;
+  }
 }

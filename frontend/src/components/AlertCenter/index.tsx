@@ -137,7 +137,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   : 'text-destructive hover:bg-destructive/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
+              <AlertTriangle size={12} className={`shrink-0 ${severityFilter === 'danger' ? 'text-white' : 'text-destructive'}`} />
               <span>Red</span>
               <span className="text-[10px] px-1 rounded-sm font-mono">{redCount}</span>
             </button>
@@ -151,7 +151,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   : 'text-warning hover:bg-warning/10'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${severityFilter === 'warning' ? 'bg-card' : 'bg-warning'}`} />
+              <AlertTriangle size={12} className={`shrink-0 ${severityFilter === 'warning' ? 'text-foreground' : 'text-warning'}`} />
               <span>Orange</span>
               <span className="text-[10px] px-1 rounded-sm font-mono">{orangeCount}</span>
             </button>
@@ -221,8 +221,9 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                   }`}
                 >
                   <div className="flex items-start gap-2.5">
-                    <span
-                      className={`w-2 h-2 shrink-0 mt-1 rounded-full ${isRed ? 'bg-destructive' : 'bg-warning'}`}
+                    <AlertTriangle
+                      size={12}
+                      className={`shrink-0 mt-0.5 ${isRed ? 'text-destructive' : 'text-warning'}`}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">

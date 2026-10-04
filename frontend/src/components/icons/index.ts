@@ -7,65 +7,119 @@
  *   import { MapPin } from '@/components/icons';   // after
  *
  * Props match lucide's (`size`, `strokeWidth`, `color`, `className`), so the
- * JSX at every call site stays untouched. Each icon animates on hover via
- * `motion/react` and sits still otherwise.
+ * JSX at every call site stays untouched. Each icon animates on hover of the
+ * control, heading or row it belongs to — not only when the pointer finds the
+ * glyph itself — and sits still otherwise. See `hover-host.tsx`.
  */
-export { default as ArrowRight } from './arrow-narrow-right-icon';
-export { default as Activity } from './chart-line-icon';
-export { default as AlertTriangle } from './triangle-alert-icon';
-export { default as AlertOctagon } from './triangle-alert-icon';
-export { default as Award } from './trophy-icon';
-export { default as BarChart2 } from './chart-histogram-icon';
-export { default as BarChart3 } from './chart-bar-icon';
-export { default as Bell } from './filled-bell-icon';
-export { default as BrainCircuit } from './brain-circuit-icon';
-export { default as Check } from './simple-checked-icon';
-export { default as CheckCircle } from './filled-checked-icon';
-export { default as CheckCircle2 } from './checked-icon';
-export { default as ChevronDown } from './down-chevron';
-export { default as ChevronLeft } from './left-chevron';
-export { default as ChevronRight } from './right-chevron';
-export { default as ChevronUp } from './up-chevron';
-export { default as Clock } from './clock-icon';
-export { default as CloudRain } from './cloud-2-icon';
-export { default as Code2 } from './code-xml-icon';
-export { default as Copy } from './copy-icon';
-export { default as Cpu } from './cpu-icon';
-export { default as Droplet } from './droplet-icon';
-export { default as Droplets } from './droplet-icon';
-export { default as ExternalLink } from './external-link-icon';
-export { default as Flame } from './flame-icon';
-export { default as Gauge } from './gauge-icon';
-export { default as Globe2 } from './globe-icon';
-export { default as HeartPulse } from './scan-heart-icon';
-export { default as Building } from './building-icon';
-export { default as Info } from './info-circle-icon';
-export { default as Layers } from './layers-icon';
-export { default as LayoutDashboard } from './layout-dashboard-icon';
-export { default as LayoutSidebarCollapse } from './layout-sidebar-collapse-icon';
-export { default as Sidebar } from './layout-sidebar-collapse-icon';
-export { default as PanelLeftClose } from './layout-sidebar-collapse-icon';
-export { default as Lock } from './lock-icon';
-export { default as MapPin } from './map-pin-icon';
-export { default as Play } from './player-icon';
-export { default as Pointer } from './pointer-icon';
-export { default as RefreshCw } from './refresh-icon';
-export { default as RotateCcw } from './refresh-icon';
-export { default as Satellite } from './satellite-dish-icon';
-export { default as Search } from './magnifier-icon';
-export { default as Send } from './send-icon';
-export { default as ShieldCheck } from './shield-check';
-export { default as Sliders } from './sliders-horizontal-icon';
-export { default as Sparkles } from './sparkles-icon';
-export { default as Sun } from './sun-icon';
-export { default as Terminal } from './terminal-icon';
-export { default as Thermometer } from './thermometer-icon';
-export { default as Truck } from './truck-icon';
-export { default as Users } from './users-icon';
-export { default as Wind } from './wind-icon';
-export { default as X } from './x-icon';
-export { default as ZoomIn } from './zoom-in-icon';
-export { default as ZoomOut } from './zoom-out-icon';
+import { AnimatedIcon } from './hover-host';
+import ArrowRightIcon from './arrow-narrow-right-icon';
+import ChartLineIcon from './chart-line-icon';
+import TriangleAlertIcon from './triangle-alert-icon';
+import TrophyIcon from './trophy-icon';
+import ChartHistogramIcon from './chart-histogram-icon';
+import ChartBarIcon from './chart-bar-icon';
+import FilledBellIcon from './filled-bell-icon';
+import BrainCircuitIcon from './brain-circuit-icon';
+import SimpleCheckedIcon from './simple-checked-icon';
+import FilledCheckedIcon from './filled-checked-icon';
+import CheckedIcon from './checked-icon';
+import DownChevronIcon from './down-chevron';
+import LeftChevronIcon from './left-chevron';
+import RightChevronIcon from './right-chevron';
+import UpChevronIcon from './up-chevron';
+import ClockIcon from './clock-icon';
+import Cloud2Icon from './cloud-2-icon';
+import CodeXmlIcon from './code-xml-icon';
+import CopyIcon from './copy-icon';
+import CpuIcon from './cpu-icon';
+import DropletIcon from './droplet-icon';
+import ExternalLinkIcon from './external-link-icon';
+import FlameIcon from './flame-icon';
+import GaugeIcon from './gauge-icon';
+import GlobeIcon from './globe-icon';
+import ScanHeartIcon from './scan-heart-icon';
+import BuildingIcon from './building-icon';
+import InfoCircleIcon from './info-circle-icon';
+import LayersIcon from './layers-icon';
+import LayoutDashboardIcon from './layout-dashboard-icon';
+import LayoutSidebarCollapseIcon from './layout-sidebar-collapse-icon';
+import LockIcon from './lock-icon';
+import MapPinIcon from './map-pin-icon';
+import PlayerIcon from './player-icon';
+import PointerIcon from './pointer-icon';
+import RefreshIcon from './refresh-icon';
+import SatelliteDishIcon from './satellite-dish-icon';
+import MagnifierIcon from './magnifier-icon';
+import SendIcon from './send-icon';
+import ShieldCheckIcon from './shield-check';
+import SlidersHorizontalIcon from './sliders-horizontal-icon';
+import SparklesIcon from './sparkles-icon';
+import SunIcon from './sun-icon';
+import TerminalIcon from './terminal-icon';
+import ThermometerIcon from './thermometer-icon';
+import TruckIcon from './truck-icon';
+import UsersIcon from './users-icon';
+import WindIcon from './wind-icon';
+import XIcon from './x-icon';
+import ZoomInIcon from './zoom-in-icon';
+import ZoomOutIcon from './zoom-out-icon';
+
+export const ArrowRight = AnimatedIcon(ArrowRightIcon);
+export const Activity = AnimatedIcon(ChartLineIcon);
+export const AlertTriangle = AnimatedIcon(TriangleAlertIcon);
+export const AlertOctagon = AnimatedIcon(TriangleAlertIcon);
+export const Award = AnimatedIcon(TrophyIcon);
+export const BarChart2 = AnimatedIcon(ChartHistogramIcon);
+export const BarChart3 = AnimatedIcon(ChartBarIcon);
+export const Bell = AnimatedIcon(FilledBellIcon);
+export const BrainCircuit = AnimatedIcon(BrainCircuitIcon);
+export const Check = AnimatedIcon(SimpleCheckedIcon);
+export const CheckCircle = AnimatedIcon(FilledCheckedIcon);
+export const CheckCircle2 = AnimatedIcon(CheckedIcon);
+export const ChevronDown = AnimatedIcon(DownChevronIcon);
+export const ChevronLeft = AnimatedIcon(LeftChevronIcon);
+export const ChevronRight = AnimatedIcon(RightChevronIcon);
+export const ChevronUp = AnimatedIcon(UpChevronIcon);
+export const Clock = AnimatedIcon(ClockIcon);
+export const CloudRain = AnimatedIcon(Cloud2Icon);
+export const Code2 = AnimatedIcon(CodeXmlIcon);
+export const Copy = AnimatedIcon(CopyIcon);
+export const Cpu = AnimatedIcon(CpuIcon);
+export const Droplet = AnimatedIcon(DropletIcon);
+export const Droplets = AnimatedIcon(DropletIcon);
+export const ExternalLink = AnimatedIcon(ExternalLinkIcon);
+export const Flame = AnimatedIcon(FlameIcon);
+export const Gauge = AnimatedIcon(GaugeIcon);
+export const Globe2 = AnimatedIcon(GlobeIcon);
+export const HeartPulse = AnimatedIcon(ScanHeartIcon);
+export const Building = AnimatedIcon(BuildingIcon);
+export const Info = AnimatedIcon(InfoCircleIcon);
+export const Layers = AnimatedIcon(LayersIcon);
+export const LayoutDashboard = AnimatedIcon(LayoutDashboardIcon);
+export const LayoutSidebarCollapse = AnimatedIcon(LayoutSidebarCollapseIcon);
+export const Sidebar = AnimatedIcon(LayoutSidebarCollapseIcon);
+export const PanelLeftClose = AnimatedIcon(LayoutSidebarCollapseIcon);
+export const Lock = AnimatedIcon(LockIcon);
+export const MapPin = AnimatedIcon(MapPinIcon);
+export const Play = AnimatedIcon(PlayerIcon);
+export const Pointer = AnimatedIcon(PointerIcon);
+export const RefreshCw = AnimatedIcon(RefreshIcon);
+export const RotateCcw = AnimatedIcon(RefreshIcon);
+export const Satellite = AnimatedIcon(SatelliteDishIcon);
+export const Search = AnimatedIcon(MagnifierIcon);
+export const Send = AnimatedIcon(SendIcon);
+export const ShieldCheck = AnimatedIcon(ShieldCheckIcon);
+export const Sliders = AnimatedIcon(SlidersHorizontalIcon);
+export const Sparkles = AnimatedIcon(SparklesIcon);
+export const Sun = AnimatedIcon(SunIcon);
+export const Terminal = AnimatedIcon(TerminalIcon);
+export const Thermometer = AnimatedIcon(ThermometerIcon);
+export const Truck = AnimatedIcon(TruckIcon);
+export const Users = AnimatedIcon(UsersIcon);
+export const Wind = AnimatedIcon(WindIcon);
+export const X = AnimatedIcon(XIcon);
+export const ZoomIn = AnimatedIcon(ZoomInIcon);
+export const ZoomOut = AnimatedIcon(ZoomOutIcon);
 
 import type { ComponentType, CSSProperties } from 'react';
 
@@ -84,6 +138,6 @@ export type IconProps = {
  * Stands in for lucide's `LucideIcon` in props and lookup tables. Typed by
  * props rather than one concrete component, because these icons take a ref of
  * `AnimatedIconHandle` while lucide's take `SVGSVGElement` — the two are not
- * interchangeable, but a slot holding either one only needs the props above.
+ * interchangeable, and the host preserves the handle's shape.
  */
 export type IconComponent = ComponentType<IconProps>;

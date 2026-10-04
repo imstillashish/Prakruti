@@ -9,6 +9,21 @@ import { CATEGORY_VARIABLE, VARIABLE_UNIT } from './types';
 import { Award, ArrowRight, Activity, AlertTriangle, ChevronDown, Clock } from '@/components/icons';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
 
+// Inline board rows wait as their own shape — skeleton rows the height of the
+// data rows, not a text box asking the user to read while they wait.
+function BoardSkeleton() {
+  return (
+    <div className="space-y-2 py-1" aria-hidden>
+      {[38, 62, 50].map((w) => (
+        <div key={w} className="flex items-center justify-between">
+          <div className="skeleton-sheen h-3 rounded-xs bg-secondary" style={{ width: `${w}%` }} />
+          <div className="skeleton-sheen h-3 w-10 rounded-xs bg-secondary" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 interface SignalLeadersProps {
   category: LeaderboardCategory;
   meta: LeaderboardMeta | null;
@@ -147,11 +162,11 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
 
           if (sig.id === 'lowest_error') {
             sentence = `${leaderName} has the lowest average error — MAE ${sig.value.toFixed(2)} ${unit}${ciStr}`;
-            icon = <Activity size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />;
+            icon = <Activity size={18} className="text-success shrink-0" />;
           } else if (sig.id === 'best_extreme') {
             const phrase = EXTREME_PHRASES[sig.variable] || 'extremes';
             sentence = `${leaderName} catches ${phrase} best — CSI ${sig.value.toFixed(2)}${ciStr} across ${sig.cases ?? 0} events`;
-            icon = <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 shrink-0" />;
+            icon = <AlertTriangle size={18} className="text-warning shrink-0" />;
           } else if (sig.id === 'best_lead') {
             sentence = `${leaderName} holds up best at day 3 — MAE ${sig.value.toFixed(2)} ${unit}${ciStr}`;
             icon = <Clock size={18} className="text-primary shrink-0" />;
@@ -261,9 +276,7 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
             </div>
 
             {boardsLoading ? (
-              <div className="text-xs font-mono text-muted-foreground py-6 text-center animate-pulse">
-                Loading extreme detection scores…
-              </div>
+              <BoardSkeleton />
             ) : extremeBoard.length > 0 ? (
               <div className="space-y-2">
                 {extremeBoard.map((row) => {
@@ -329,9 +342,7 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
             </div>
 
             {boardsLoading ? (
-              <div className="text-xs font-mono text-muted-foreground py-6 text-center animate-pulse">
-                Loading lead day 3 scores…
-              </div>
+              <BoardSkeleton />
             ) : leadBoard.length > 0 ? (
               <div className="space-y-2">
                 {leadBoard.map((row) => {

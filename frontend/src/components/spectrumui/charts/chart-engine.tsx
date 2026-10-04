@@ -170,7 +170,9 @@ export function niceTicks(lo: number, hi: number, target = 5): number[] {
   const first = Math.ceil(lo / step) * step;
   const out: number[] = [];
   for (let v = first; v <= hi + step * 0.001; v += step) {
-  out.push(Math.round(v / step) * step);
+  // toPrecision, not a raw multiply: 3 * 0.1 is 0.30000000000000004 in binary
+  // floating point, and this value goes straight onto an axis label.
+  out.push(Number((Math.round(v / step) * step).toPrecision(12)));
   }
   return out;
 }

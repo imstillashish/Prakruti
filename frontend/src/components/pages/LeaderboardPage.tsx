@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState, useRef, useCallback } from 'react';
-import type { LeaderboardMeta, LeaderboardPayload, CityRecord } from '@/lib/api';
-import { getModelLeaderboard, getCities } from '@/lib/api';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import type { LeaderboardMeta, LeaderboardPayload, CityRecord, MetadataCards } from '@/lib/api';
+import { getModelLeaderboard, getCities, getMetadataCards } from '@/lib/api';
 import type { LeaderboardState, LeaderboardCategory } from '../Leaderboard/types';
 import { CATEGORY_VARIABLE } from '../Leaderboard/types';
 import { Hero } from '../Leaderboard/Hero';
@@ -30,6 +30,7 @@ export function LeaderboardPage() {
   });
 
   const [payload, setPayload] = useState<LeaderboardPayload | null>(null);
+  const [cards, setCards] = useState<MetadataCards | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -54,6 +55,12 @@ export function LeaderboardPage() {
             threshold: res.meta.primary_thresholds.rainfall,
           }));
         }
+      })
+      .catch(() => {});
+
+    getMetadataCards()
+      .then((c) => {
+        if (active) setCards(c);
       })
       .catch(() => {});
 
@@ -137,6 +144,23 @@ export function LeaderboardPage() {
     });
   };
 
+  // F-04: the benchmark spec card for the current national view (overall shows none —
+  // the matrix spans all variables).
+  const benchCard = useMemo(() => {
+    if (!cards || state.category === 'overall') return null;
+    const variable = CATEGORY_VARIABLE[state.category as 'temperature' | 'rainfall' | 'wind'];
+    const board = state.measure === 'extreme' ? 'extreme' : state.measure === 'lead' ? 'lead' : 'accuracy';
+    const vt = variable === 'rainfall' ? 'RAIN' : variable === 'temperature' ? 'TEMP' : 'WIND';
+    const dim =
+      board === 'accuracy'
+        ? state.window === 'full' ? 'WFULL' : `W${state.window}`
+        : board === 'extreme'
+        ? `T${state.threshold}`
+        : `D${state.lead}`;
+    const b = board === 'accuracy' ? 'ACC' : board === 'extreme' ? 'EXT' : 'LD';
+    return cards.benchmark_cards[`BM-${b}-${vt}-${dim}`] ?? null;
+  }, [cards, state]);
+
   return (
     <div className="space-y-3 sm:space-y-6">
       {/* 1. Hero Band with Atmospheric Sky-Blue wash & Cycle Rail */}
@@ -173,6 +197,8 @@ export function LeaderboardPage() {
         isError={isError}
         cities={cities}
         meta={meta}
+        cards={cards?.model_cards}
+        benchmarkCard={benchCard}
       />
 
       {/* 4. Signal Leaders & Findings Block */}

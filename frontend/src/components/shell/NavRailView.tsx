@@ -1,7 +1,8 @@
 'use client';
 import { NAV_ITEMS } from './NavRail';
-import { ChevronRight } from '@/components/icons';
+import { LayoutSidebarCollapse } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import type { ReactNode } from 'react';
 import type { NavPage } from '@/types';
 
 export function NavRail({
@@ -9,11 +10,15 @@ export function NavRail({
   onNavigate,
   expanded,
   onToggleExpanded,
+  mobileTrailing,
 }: {
   currentPage: NavPage;
   onNavigate: (page: NavPage) => void;
   expanded: boolean;
   onToggleExpanded: () => void;
+  /** Pinned to the right edge of the phone strip — the station chip lives here
+      now that the old docked thumb bar is gone. */
+  mobileTrailing?: ReactNode;
 }) {
   return (
     <>
@@ -71,23 +76,23 @@ export function NavRail({
           );
         })}
 
-        {/* Collapse/expand, pinned to the foot of the rail. The chevron points
-            the way the rail is about to move. */}
+        {/* Collapse/expand, pinned to the foot of the rail. Uses ItsHover animated
+            sidebar layout icon that indicates collapse/expand state with intent. */}
         <button
           type="button"
           onClick={onToggleExpanded}
           aria-expanded={expanded}
           aria-controls="desktop-sections"
           aria-label={expanded ? 'Collapse navigation' : 'Expand navigation'}
+          title={expanded ? 'Collapse navigation' : 'Expand navigation'}
           className={`mt-auto flex w-full items-center rounded-md py-2.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors duration-100 touch-manipulation ${
             expanded ? 'gap-3 px-3' : 'justify-center'
           }`}
         >
-          <ChevronRight
-            size={16}
-            className={`shrink-0 transition-transform duration-300 motion-reduce:transition-none ${
-              expanded ? 'rotate-180' : ''
-            }`}
+          <LayoutSidebarCollapse
+            size={18}
+            expanded={expanded}
+            className="shrink-0"
           />
           <span
             className={`overflow-hidden whitespace-nowrap text-xs transition-opacity duration-150 motion-reduce:transition-none ${
@@ -127,32 +132,37 @@ export function NavRail({
         })}
       </nav>
 
-      {/* Mobile: section strip docked at the thumb zone, above the thumb command bar
-          (<640px). Fixed to the viewport so section switching never needs a scroll back to top. */}
+      {/* Mobile: the phone's one and only bottom bar (<640px), in the thumb zone.
+          Sections scroll horizontally; the trailing slot stays pinned. */}
       <nav
         aria-label="Mobile Sections"
-        className="sm:hidden fixed bottom-[calc(3.25rem+max(0.5rem,env(safe-area-inset-bottom,0px)))] left-0 right-0 z-30 flex overflow-x-auto gap-1 border-t border-border bg-background/95 backdrop-blur-md px-2 py-1.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch]"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 flex items-stretch gap-2 border-t border-border bg-background/95 backdrop-blur-md px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
-        {NAV_ITEMS.map((item) => {
-          const Icon = item.icon;
-          const active = currentPage === item.page;
-          return (
-            <button
-              key={item.page}
-              type="button"
-              onClick={() => onNavigate(item.page)}
-              aria-current={active ? 'page' : undefined}
-              className={`flex flex-shrink-0 items-center gap-1.5 min-h-[44px] px-3 py-2 text-xs rounded-md transition-colors duration-100 touch-manipulation ${
-                active
-                  ? 'gradient-on-active font-semibold'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Icon size={14} strokeWidth={active ? 2 : 1.75} />
-              {item.label}
-            </button>
-          );
-        })}
+        <div className="flex min-w-0 flex-1 items-stretch gap-1 overflow-x-auto [scrollbar-width:none] [-webkit-overflow-scrolling:touch]">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const active = currentPage === item.page;
+            return (
+              <button
+                key={item.page}
+                type="button"
+                onClick={() => onNavigate(item.page)}
+                aria-current={active ? 'page' : undefined}
+                className={`flex flex-shrink-0 items-center gap-1.5 min-h-[44px] px-3 py-2 text-xs rounded-md transition-colors duration-100 touch-manipulation ${
+                  active
+                    ? 'gradient-on-active font-semibold'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Icon size={14} strokeWidth={active ? 2 : 1.75} />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+        {mobileTrailing ? (
+          <div className="flex shrink-0 items-stretch">{mobileTrailing}</div>
+        ) : null}
       </nav>
     </>
   );

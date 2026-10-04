@@ -23,7 +23,7 @@ import { DataHealthPage } from '@/components/pages/DataHealthPage';
 import { RpiPage } from '@/components/pages/RpiPage';
 import { ApiPage } from '@/components/pages/ApiPage';
 import { MinimalFooter } from '@/components/spectrumui/blocks/footers/minimal-footer';
-import { DockedThumbBar } from '@/components/shell/DockedThumbBar';
+import { PhoneStationPicker } from '@/components/shell/PhoneStationPicker';
 import { NavPage, CityForecast } from '@/types';
 
 export default function Home() {
@@ -65,7 +65,7 @@ export default function Home() {
       case 'overview':
       default:
         return (
-          <div className="space-y-5 md:space-y-6">
+          <div className="space-y-6 md:space-y-8">
             {/* Top Forecast Decision Hero */}
             <ForecastHero selectedCity={selectedCity} />
 
@@ -125,16 +125,21 @@ export default function Home() {
         onNavigate={setCurrentPage}
         expanded={railExpanded}
         onToggleExpanded={() => setRailExpanded((v) => !v)}
+        mobileTrailing={
+          <PhoneStationPicker selectedCity={selectedCity} onSelectCity={handleCitySelect} />
+        }
       />
-      <DockedThumbBar selectedCity={selectedCity} onSelectCity={handleCitySelect} />
 
       {/* Global Backend Connecting / Cold Start Indicator */}
       <BackendConnectingIndicator />
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] sm:pl-20 sm:pr-4 sm:pt-20 sm:pb-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] lg:pr-6 lg:pt-24 lg:pb-20 transition-[padding-left] duration-200 ease-out motion-reduce:transition-none">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-4 pt-16 sm:pt-20 sm:pl-20 sm:pr-4 sm:pt-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] lg:pr-6 lg:pt-24 transition-[padding-left] duration-200 ease-out motion-reduce:transition-none">
         <StatusStrip />
-        {renderContent()}
+        {/* Keyed on the page: a nav swap is a state change, so the surface
+            cross-fades instead of hard-cutting. One fade at the shared point,
+            not choreography per page. */}
+        <div key={currentPage} className="animate-fade-in">{renderContent()}</div>
       </main>
 
       {/* Footer */}
@@ -151,7 +156,7 @@ export default function Home() {
           },
         ]}
         status="45 stations · live"
-        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:pb-6 sm:pl-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] transition-[padding-left] duration-200 ease-out motion-reduce:transition-none"
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-6 sm:pl-20 lg:pl-[calc(var(--rail-w)_+_1.5rem)] transition-[padding-left] duration-200 ease-out motion-reduce:transition-none"
       />
     </div>
   );

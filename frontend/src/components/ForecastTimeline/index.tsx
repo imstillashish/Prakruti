@@ -1,55 +1,108 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from '@/components/icons';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as ReTooltip,
-  ResponsiveContainer, ReferenceLine
+  ResponsiveContainer, ReferenceLine, ReferenceDot
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
-import { ChartState } from '@/components/spectrumui/charts/chart-engine';
+import { Activity } from '@/components/icons';
+import { ChartState, niceTicks } from '@/components/spectrumui/charts/chart-engine';
 import { getTimelineData } from '@/lib/api';
+import { useLiveConditions, LIVE_POLL_MS } from '@/lib/useLiveConditions';
+import { useNow, mmss, istClock } from '@/lib/useNow';
 import type { TimelinePoint, Variable } from '@/types';
-const VARIABLE_CONFIG: Record<Variable, { label: string; unit: string; color: string; key: string; bandHigh?: string; bandLow?: string }> = {
-  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--data-rain)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10' },
-  temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature', bandHigh: 'temperatureP90', bandLow: 'temperatureP10' },
-  wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind', bandHigh: 'windP90', bandLow: 'windP10' },
+
+const VARIABLE_CONFIG: Record<
+  Variable,
+  {
+    label: string;
+    unit: string;
+    color: string;
+    key: string;
+    bandHigh?: string;
+    bandLow?: string;
+    /** Same quantity in the live observation payload — rainfall is 'precipitation' there. */
+    liveKey?: 'temperature' | 'precipitation' | 'wind_speed';
+  }
+> = {
+  rainfall: { label: 'Rainfall', unit: 'mm', color: 'var(--data-rain)', key: 'rainfall', bandHigh: 'rainfallP90', bandLow: 'rainfallP10', liveKey: 'precipitation' },
+  temperature: { label: 'Temperature', unit: '°C', color: '#171717', key: 'temperature', bandHigh: 'temperatureP90', bandLow: 'temperatureP10', liveKey: 'temperature' },
+  wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind', bandHigh: 'windP90', bandLow: 'windP10', liveKey: 'wind_speed' },
 };
 
 type ChartDatum = { time: string; label?: string; high?: number; low?: number; confidence: number };
 
-const CustomTooltip = ({ active, payload, label, dataList }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string; dataList?: ChartDatum[] }) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+  dataList,
+  config,
+}: {
+  active?: boolean;
+  payload?: Array<{ value: number; name: string }>;
+  label?: string;
+  dataList?: ChartDatum[];
+  config: (typeof VARIABLE_CONFIG)[Variable];
+}) => {
   if (!active || !payload?.length) return null;
   const list = dataList || [];
-  const data = list.find(t => t.time === label);
+  const data = list.find((t) => t.time === label);
+  const value = payload.find((p) => p.name === 'value')?.value ?? payload[0]?.value;
+  const isNow = label === 'NOW';
   return (
-    <div
-      className="p-3 bg-card border border-border shadow-xs rounded-md font-mono text-xs"
-      style={{
-        minWidth: 150,
-      }}
-    >
-      <div className="text-[11px] font-semibold text-muted-foreground mb-1 flex items-center justify-between">
-        <span>{label}</span>
-        {data?.label && <span className="text-muted-foreground font-normal">({data.label} IST)</span>}
+    <div className="min-w-[168px] rounded-md border border-border bg-card p-3 font-mono text-xs shadow-xs">
+      <div className="mb-1.5 flex items-baseline justify-between gap-3 text-[11px] text-muted-foreground">
+        <span className="font-semibold text-foreground">{label}</span>
+        {data?.label && <span>{data.label} IST</span>}
       </div>
-      {payload.map((p, i) => (
-        <div key={i} className="text-base font-bold text-foreground">
-          {typeof p.value === 'number' ? p.value.toFixed(1) : p.value}
-        </div>
-      ))}
+      <div className="flex items-baseline gap-1">
+        <span className="text-base font-bold tabular-nums text-foreground">
+          {typeof value === 'number' ? value.toFixed(1) : '—'}
+        </span>
+        <span className="text-[11px] text-muted-foreground">{config.unit}</span>
+        <span className="ml-1 text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
+          {config.label}
+        </span>
+      </div>
       {data && data.high != null && data.low != null && (
-        <div className="text-[11px] font-mono text-muted-foreground mt-1">
-          P10–P90: {data.low.toFixed(1)}–{data.high.toFixed(1)}
+        <div className="mt-1.5 text-[11px] text-muted-foreground">
+          P10–P90&nbsp; {data.low.toFixed(1)}–{data.high.toFixed(1)}
         </div>
       )}
       {data && (
-        <div className="text-[11px] text-data-ok-text font-medium mt-1">
-          Confidence: {data.confidence}%
+        <div className="mt-1 text-[11px] font-medium text-data-ok-text">
+          Confidence {data.confidence}%
         </div>
       )}
+      <div className="mt-1.5 border-t border-border pt-1.5 text-[10.5px] text-muted-foreground">
+        {isNow ? 'Measured at the station now' : 'Blended forecast from this hour'}
+      </div>
     </div>
   );
 };
+
+/**
+ * The chart's clock, and when the next reading is due.
+ *
+ * Ticks on its own so a per-second update redraws one line of mono text and
+ * never the recharts tree above it. The reading itself only changes when the
+ * feed actually publishes a new one.
+ */
+function LiveReadout({ receivedAt, isPolling }: { receivedAt: number | null; isPolling: boolean }) {
+  const now = useNow(1000);
+  const dueIn = receivedAt ? LIVE_POLL_MS - (now - receivedAt) : null;
+  return (
+    // The prerendered HTML carries the clock from build time; a wall clock can
+    // never match it, so this one text node opts out of the check.
+    <span className="tabular-nums" suppressHydrationWarning>
+      now {istClock(now)} IST
+      {isPolling ? ' · reading…' : dueIn != null && dueIn > 0 ? ` · next reading in ${mmss(dueIn)}` : ''}
+    </span>
+  );
+}
 
 interface ForecastTimelineProps {
   selectedCity?: string | null;
@@ -62,6 +115,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeDay, setActiveDay] = useState(0);
+  const { live, receivedAt, isPolling } = useLiveConditions(selectedCity || 'Kanpur');
   const deckRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -92,6 +146,29 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
     low: config.bandLow ? t[config.bandLow as keyof typeof t] as number | undefined : undefined,
     confidence: t.confidence,
   }));
+
+  // The measured value for this variable at the station right now. It joins the
+  // domain and the tick set so the dot can never sit outside the plot area, and
+  // it is shown only when the observation feed actually answered.
+  const measuredNow =
+    config.liveKey && live ? live.current[config.liveKey] : null;
+
+  // The blend's own now-cast for this variable, for the measured-vs-blended gap.
+  const nowBlend = typeof chartData[0]?.value === 'number' ? chartData[0].value : null;
+
+  const yValues = chartData
+    .flatMap((d) => [d.value, d.high, d.low])
+    .filter((n): n is number => typeof n === 'number');
+  const allValues = measuredNow != null ? [...yValues, measuredNow] : yValues;
+  const lo = allValues.length ? Math.min(...allValues) : 0;
+  const hi = allValues.length ? Math.max(...allValues) : 1;
+  const span = hi - lo;
+  const pad = span > 0 ? span * 0.12 : Math.max(Math.abs(lo) * 0.1, 1);
+  const yTicks = niceTicks(lo - pad, hi + pad, 4);
+  const yDomain: [number, number] = [
+    Math.min(lo - pad, yTicks[0] ?? lo - pad),
+    Math.max(hi + pad, yTicks[yTicks.length - 1] ?? hi + pad),
+  ];
 
   // ponytail: derive Day 1, 2, 3 aggregates directly from 72h sample points (0-24h, 24-48h, 48-72h)
   const d1Points = timeline.slice(0, 4);
@@ -192,18 +269,35 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       <div className="w-full h-[220px]">
         <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="line">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 10, right: 16, bottom: 0, left: -10 }}>
+          <AreaChart data={chartData} margin={{ top: 18, right: 14, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="uncertainty-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={config.color} stopOpacity={0.12} />
-                <stop offset="95%" stopColor={config.color} stopOpacity={0.02} />
+                <stop offset="5%" stopColor={config.color} stopOpacity={0.16} />
+                <stop offset="95%" stopColor={config.color} stopOpacity={0.03} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f3" />
-            <XAxis dataKey="time" tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }} axisLine={false} tickLine={false} unit={config.unit === 'mm' ? ' mm' : config.unit} />
-            <ReTooltip content={<CustomTooltip dataList={chartData} />} />
-            <ReferenceLine x="NOW" stroke={config.color} strokeDasharray="3 3" opacity={0.6} />
+            <CartesianGrid strokeDasharray="2 4" vertical={false} stroke="#f0f0f3" />
+            <XAxis
+              dataKey="time"
+              tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={8}
+              padding={{ left: 8, right: 8 }}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: '#60646c', fontFamily: 'JetBrains Mono' }}
+              axisLine={false}
+              tickLine={false}
+              width={46}
+              domain={yDomain}
+              ticks={yTicks}
+            />
+            <ReTooltip
+              cursor={{ stroke: '#dcdee0', strokeWidth: 1, strokeDasharray: '2 3' }}
+              content={<CustomTooltip dataList={chartData} config={config} />}
+            />
+            <ReferenceLine x="NOW" stroke={config.color} strokeDasharray="3 3" opacity={0.45} />
             {/* P10–P90 band: high area painted first, low area painted back
                 over it in card color so the envelope wraps the line instead of
                 stacking from zero. Hidden entirely when the decision feed is
@@ -212,7 +306,10 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
               <Area
                 type="monotone"
                 dataKey="high"
-                stroke="none"
+                stroke={config.color}
+                strokeOpacity={0.3}
+                strokeWidth={1}
+                strokeDasharray="2 3"
                 fill="url(#uncertainty-grad)"
                 fillOpacity={1}
                 isAnimationActive={false}
@@ -239,16 +336,55 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
               dot={false}
               activeDot={{ r: 4, stroke: config.color, strokeWidth: 2, fill: '#fff' }}
             />
+            {/* Where the blend starts: the instrument's own reading replaces the
+                synthetic NOW point, so the curve visibly leaves the measurement. */}
+            {measuredNow != null && (
+              <ReferenceDot
+                x="NOW"
+                y={measuredNow}
+                r={4.5}
+                fill={config.color}
+                stroke="#ffffff"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                label={{
+                  value: 'measured',
+                  position: 'top',
+                  fontSize: 10,
+                  fill: '#60646c',
+                  fontFamily: 'JetBrains Mono',
+                }}
+              />
+            )}
           </AreaChart>
         </ResponsiveContainer>
         </ChartState>
       </div>
 
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-border text-[11px] font-mono text-muted-foreground">
-        <span>Range: Next 72 Hours</span>
-        <span className="flex items-center gap-1 text-primary">
-          Calibrated P10–P90 band (spread-error model, holdout-verified)
-          <Explain term="confidence" />
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border pt-2 font-mono text-[11px] text-muted-foreground">
+        <span className="flex flex-wrap items-center gap-x-2">
+          <span>Range: Next 72 Hours · unit {config.unit}</span>
+          <span className="hidden sm:inline">·</span>
+          <LiveReadout receivedAt={receivedAt} isPolling={isPolling} />
+        </span>
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          {measuredNow != null && live && (
+            <span className="inline-flex items-center gap-1.5 text-data-ok-text">
+              <Activity size={11} />
+              Measured {measuredNow.toFixed(1)} {config.unit} at {live.observed_at_ist ?? '—'} IST
+              {live.stale ? ' (last reading)' : ''}
+              {nowBlend != null && Math.abs(nowBlend - measuredNow) >= 0.05 && (
+                <span className="text-muted-foreground">
+                  · blend said {nowBlend.toFixed(1)} ({measuredNow - nowBlend >= 0 ? '+' : ''}
+                  {(measuredNow - nowBlend).toFixed(1)})
+                </span>
+              )}
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1 text-primary">
+            Calibrated P10–P90 band (spread-error model, holdout-verified)
+            <Explain term="confidence" />
+          </span>
         </span>
       </div>
 
@@ -266,8 +402,8 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
               (D+1 to D+3)
             </span>
           </div>
-          <span className="text-[11px] font-mono text-muted-foreground block lg:hidden">
-            Swipe ↔
+          <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground lg:hidden select-none">
+            <ChevronLeft size={11} /><span>swipe</span><ChevronRight size={11} />
           </span>
         </div>
 

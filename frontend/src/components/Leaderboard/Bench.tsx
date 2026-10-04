@@ -1,10 +1,11 @@
 'use client';
-import type { LeaderboardPayload, LeaderboardMeta } from '@/lib/api';
+import type { LeaderboardPayload, LeaderboardMeta, ModelCard, BenchmarkCard } from '@/lib/api';
 import type { LeaderboardState, LeaderboardMeasure } from './types';
 import { CATEGORY_VARIABLE, VARIABLE_UNIT } from './types';
 import { RankingTable } from './RankingTable';
 import { ParetoView } from './ParetoView';
 import { PodiumMatrix } from './PodiumMatrix';
+import { LoadingState } from '@/components/ui/LoadingState';
 
 interface BenchProps {
   state: LeaderboardState;
@@ -14,6 +15,8 @@ interface BenchProps {
   isError: boolean;
   cities: Array<{ city: string }>;
   meta: LeaderboardMeta | null;
+  cards?: Record<string, ModelCard> | null;
+  benchmarkCard?: BenchmarkCard | null;
 }
 
 export function Bench({
@@ -24,6 +27,8 @@ export function Bench({
   isError,
   cities,
   meta,
+  cards,
+  benchmarkCard,
 }: BenchProps) {
   const isOverall = state.category === 'overall';
   const activeVariable = isOverall ? 'rainfall' : CATEGORY_VARIABLE[state.category as 'temperature' | 'rainfall' | 'wind'];
@@ -99,7 +104,7 @@ export function Bench({
                       key={days}
                       type="button"
                       onClick={() => onChange({ window: days })}
-                      className={`h-8 min-h-[44px] sm:min-h-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
+                      className={`h-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
                         state.window === days
                           ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                           : 'text-muted-foreground hover:text-foreground'
@@ -218,11 +223,9 @@ export function Bench({
 
       {/* Main Bench View Rendering */}
       {isOverall ? (
-        <PodiumMatrix onSelectCategory={(cat) => onChange({ category: cat })} />
+        <PodiumMatrix onSelectCategory={(cat) => onChange({ category: cat })} cards={cards} />
       ) : isLoading ? (
-        <div className="rounded-lg border border-border bg-card p-12 text-center text-sm font-mono text-muted-foreground animate-pulse">
-          Loading scorecard…
-        </div>
+        <LoadingState label="Loading scorecard" rows={4} className="min-h-[180px]" />
       ) : isError ? (
         <div className="rounded-lg border border-border bg-card p-8 text-center text-sm font-mono text-muted-foreground">
           Leaderboard unavailable — run ai/benchmark.py to publish outputs/leaderboard.csv.
@@ -243,6 +246,8 @@ export function Bench({
           windowDays={state.window}
           threshold={state.threshold}
           leadDays={state.lead}
+          cards={cards}
+          benchmarkCard={benchmarkCard}
         />
       )}
     </div>

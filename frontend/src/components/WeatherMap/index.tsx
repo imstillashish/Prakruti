@@ -3,6 +3,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { MapPin, Info, Lock, Pointer } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CityForecast } from '@/types';
 
@@ -10,10 +11,12 @@ import { CityForecast } from '@/types';
 const RealLeafletMap = dynamic(() => import('./RealLeafletMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[280px] sm:h-[360px] lg:h-[480px] bg-secondary animate-pulse flex flex-col items-center justify-center text-muted-foreground gap-3 font-mono rounded-md">
-      <div className="w-8 h-8 border-2 border-foreground border-t-transparent animate-spin" />
-      <span className="text-xs">Initializing GIS Synoptic Cartography Grid…</span>
-    </div>
+    <LoadingState
+      label="Loading synoptic map"
+      hint="CartoDB tiles · 45 station markers"
+      rows={4}
+      className="h-[280px] sm:h-[360px] lg:h-[480px]"
+    />
   ),
 });
 
