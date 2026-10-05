@@ -10,6 +10,7 @@ ACTUAL_MAP = {
 }
 
 from ai.model_registry import discover_models
+from ai.blending import renormalize_blend
 
 # Every model present in history: built-ins plus any BYOM model that POSTed.
 MODELS = discover_models()
@@ -51,9 +52,14 @@ for var in VARIABLES:
     for m in MODELS:
         merged[f"w_{m}"] = merged[f"w_{m}"] / w_sum
 
-    # Compute blend = sum(weight * forecast)
-    blend_series = sum(merged[f"w_{m}"] * merged[f"{var}_{m}"] for m in MODELS)
-    df_blend[f"blend_{var}"] = blend_series
+    # Blend with per-row renormalization: a model missing this row hands its
+    # weight to the models that reported, instead of NaN-ing the blend.
+    blended = renormalize_blend(
+        merged,
+        models=MODELS,
+        value_cols={m: f"{var}_{m}" for m in MODELS},
+    )
+    df_blend[f"blend_{var}"] = blended["blend"]
 
 # Keep original columns order and append the 3 blend columns at the end
 final_cols = original_cols + [f"blend_{v}" for v in VARIABLES]
