@@ -59,7 +59,7 @@ export function ModelSkillPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1.5 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation ${
+              className={`relative px-2.5 py-1.5 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${
                 period === p
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'

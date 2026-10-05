@@ -104,7 +104,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
               key={v}
               type="button"
               onClick={() => setVariable(v)}
-              className={`min-h-[32px] px-2.5 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
+              className={`relative min-h-[32px] px-2.5 text-xs font-mono font-medium rounded-sm transition-colors duration-100 after:absolute after:-inset-y-1.5 after:-inset-x-1 after:content-[''] ${
                 variable === v
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'

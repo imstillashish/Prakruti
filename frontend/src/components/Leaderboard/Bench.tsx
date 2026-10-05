@@ -66,7 +66,7 @@ export function Bench({
                 id="geo-select"
                 value={state.geo}
                 onChange={(e) => onChange({ geo: e.target.value })}
-                className="h-9 min-h-[44px] sm:min-h-0 rounded-md border border-border bg-background px-3 py-1 text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                className="h-9 min-h-[44px] lg:min-h-0 rounded-md border border-border bg-background px-3 py-1 text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
               >
                 <option value="IN">All India (National Pool)</option>
                 {cities.map((c) => (
@@ -91,7 +91,7 @@ export function Bench({
                   <button
                     type="button"
                     onClick={() => onChange({ window: 'full' })}
-                    className={`h-8 min-h-[44px] sm:min-h-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
+                    className={`h-8 min-h-[44px] lg:min-h-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
                       state.window === 'full'
                         ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                         : 'text-muted-foreground hover:text-foreground'
@@ -104,7 +104,7 @@ export function Bench({
                       key={days}
                       type="button"
                       onClick={() => onChange({ window: days })}
-                      className={`h-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
+                      className={`h-8 min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 px-2.5 rounded-sm text-xs font-mono transition-all cursor-pointer ${
                         state.window === days
                           ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                           : 'text-muted-foreground hover:text-foreground'
@@ -130,7 +130,7 @@ export function Bench({
                   <button
                     type="button"
                     onClick={() => onChange({ view: 'ranking' })}
-                    className={`h-8 min-h-[44px] sm:min-h-0 px-3 rounded-sm text-xs font-mono transition-all cursor-pointer ${
+                    className={`h-8 min-h-[44px] lg:min-h-0 px-3 rounded-sm text-xs font-mono transition-all cursor-pointer ${
                       state.view === 'ranking'
                         ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                         : 'text-muted-foreground hover:text-foreground'
@@ -141,7 +141,7 @@ export function Bench({
                   <button
                     type="button"
                     onClick={() => onChange({ view: 'pareto' })}
-                    className={`h-8 min-h-[44px] sm:min-h-0 px-3 rounded-sm text-xs font-mono transition-all cursor-pointer ${
+                    className={`h-8 min-h-[44px] lg:min-h-0 px-3 rounded-sm text-xs font-mono transition-all cursor-pointer ${
                       state.view === 'pareto'
                         ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                         : 'text-muted-foreground hover:text-foreground'
@@ -164,7 +164,7 @@ export function Bench({
                         key={m}
                         type="button"
                         onClick={() => onChange({ measure: m })}
-                        className={`h-8 min-h-[44px] sm:min-h-0 px-2.5 rounded-sm text-xs font-mono capitalize transition-all cursor-pointer ${
+                        className={`h-8 min-h-[44px] lg:min-h-0 px-2.5 rounded-sm text-xs font-mono capitalize transition-all cursor-pointer ${
                           state.measure === m
                             ? 'gradient-animated-ocean text-white shadow-2xs font-semibold'
                             : 'text-muted-foreground hover:text-foreground'
@@ -192,7 +192,7 @@ export function Bench({
                   key={t}
                   type="button"
                   onClick={() => onChange({ threshold: t })}
-                  className={`h-7 min-h-[44px] sm:min-h-0 px-2.5 rounded-md border transition-all cursor-pointer ${
+                  className={`h-7 min-h-[44px] lg:min-h-0 px-2.5 rounded-md border transition-all cursor-pointer ${
                     state.threshold === t
                       ? 'border-primary bg-primary/10 text-primary font-semibold'
                       : 'border-border bg-background text-muted-foreground hover:text-foreground'
@@ -208,7 +208,7 @@ export function Bench({
                   key={ld}
                   type="button"
                   onClick={() => onChange({ lead: ld })}
-                  className={`h-7 min-h-[44px] sm:min-h-0 px-2.5 rounded-md border transition-all cursor-pointer ${
+                  className={`h-7 min-h-[44px] lg:min-h-0 px-2.5 rounded-md border transition-all cursor-pointer ${
                     state.lead === ld
                       ? 'border-primary bg-primary/10 text-primary font-semibold'
                       : 'border-border bg-background text-muted-foreground hover:text-foreground'

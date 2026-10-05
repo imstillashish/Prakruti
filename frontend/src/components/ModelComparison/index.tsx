@@ -196,7 +196,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
             <button
               key={v}
               onClick={() => setVariable(v)}
-              className={`px-2.5 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
+              className={`relative px-2.5 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 after:absolute after:-inset-y-2.5 after:-inset-x-1 after:content-[''] ${
                 variable === v
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
@@ -219,7 +219,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                 <button
                   key={h.id}
                   onClick={() => setHorizon(h.id)}
-                  className={`px-2.5 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
+                  className={`relative px-2.5 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 after:absolute after:-inset-y-2.5 after:-inset-x-1 after:content-[''] ${
                     horizon === h.id
                       ? 'bg-card text-foreground font-semibold shadow-xs'
                       : 'text-muted-foreground hover:text-foreground'

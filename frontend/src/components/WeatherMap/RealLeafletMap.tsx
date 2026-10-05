@@ -138,7 +138,7 @@ export default function RealLeafletMap({
       const customIcon = L.divIcon({
         className: 'custom-weather-marker',
         html: `
-          <div class="relative flex items-center justify-center group cursor-pointer" style="width: ${isSelected ? '44px' : '36px'}; height: ${isSelected ? '44px' : '36px'};">
+          <div class="relative flex items-center justify-center group cursor-pointer" style="width: 44px; height: 44px;">
             <!-- Radar Beacon Pulse Animation -->
             <div class="absolute inset-0 rounded-full animate-ping ${isSelected ? 'opacity-70' : 'opacity-35'}" style="background-color: ${color};"></div>
             
@@ -162,8 +162,8 @@ export default function RealLeafletMap({
             </div>
           </div>
         `,
-        iconSize: isSelected ? [44, 44] : [36, 36],
-        iconAnchor: isSelected ? [22, 22] : [18, 18],
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
       });
 
       const marker = L.marker([city.lat, city.lon], { icon: customIcon }).addTo(map);
@@ -258,7 +258,7 @@ export default function RealLeafletMap({
         <div className="flex flex-col self-start bg-card p-1 shadow-md border border-border rounded-md">
           <button
             onClick={handleZoomIn}
-            className="flex items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
+            className="flex min-h-11 min-w-11 items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
             title="Zoom In"
             type="button"
           >
@@ -267,7 +267,7 @@ export default function RealLeafletMap({
           <div className="h-px bg-border" />
           <button
             onClick={handleZoomOut}
-            className="flex items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
+            className="flex min-h-11 min-w-11 items-center justify-center p-1.5 hover:bg-secondary text-foreground transition-colors rounded-md"
             title="Zoom Out"
             type="button"
           >
@@ -276,7 +276,7 @@ export default function RealLeafletMap({
           <div className="h-px bg-border" />
           <button
             onClick={handleReset}
-            className="flex items-center justify-center p-1.5 hover:bg-secondary text-muted-foreground hover:text-success transition-colors rounded-md"
+            className="flex min-h-11 min-w-11 items-center justify-center p-1.5 hover:bg-secondary text-muted-foreground hover:text-success transition-colors rounded-md"
             title="Reset to All-India View"
             type="button"
           >

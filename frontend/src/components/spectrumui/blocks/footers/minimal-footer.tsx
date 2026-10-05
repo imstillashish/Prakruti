@@ -81,7 +81,7 @@ export function MinimalFooter({
   <div
   className={cn('flex items-center gap-3', centered && 'order-2 w-full justify-center')}
   >
-  <a href="/" className="inline-flex items-center gap-2 rounded-md transition-opacity duration-150 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400">
+  <a href="/" className="relative inline-flex items-center gap-2 rounded-md transition-opacity duration-150 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 after:absolute after:-inset-y-2 after:-inset-x-2 after:content-['']">
   <MorMark className="size-7 shrink-0 text-foreground" />
   <span className="whitespace-nowrap text-[14.5px] font-semibold tracking-[-0.3px]">
   {brand}
@@ -124,7 +124,8 @@ export function MinimalFooter({
   if (event.pointerType === 'mouse') setOpen(cluster.title);
   }}
   className={cn(
-  'h-8 cursor-pointer rounded-lg px-2.5 text-[13px] transition-[color,background-color,scale] duration-150 ease-out active:scale-[0.97] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400',
+  'relative h-8 cursor-pointer rounded-lg px-2.5 text-[13px] transition-[color,background-color,scale] duration-150 ease-out active:scale-[0.97] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 after:absolute after:-inset-y-1.5 after:-inset-x-1',
+  "after:content-['']",
   isOpen
   ? 'bg-black/[0.05] text-foreground  '
   : 'text-muted-foreground hover:text-foreground  ',
@@ -160,15 +161,17 @@ export function MinimalFooter({
 
   <div className={cn('flex items-center gap-4', centered && 'order-3')}>
   {status && (
-  <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground ">
+  <span className="hidden sm:inline-flex items-center gap-1.5 text-[12px] text-muted-foreground ">
   <span aria-hidden className="size-1.5 rounded-full bg-success" />
   {status}
   </span>
-  )}
+  )}  {/* sm + a 8px tap expansion reaches 44x44; the stack's 14px gaps keep
+      neighbouring zones from claiming each other's tap points. The status
+      line yields on phone so five 42px slots fit without squeezing. */}
   <AvatarStack
   items={contributors}
   size="sm"
-  max={6}
+  max={5}
   onAvatarClick={(item) => window.open(`https://github.com/${item.name}`, '_blank', 'noopener')}
   />
   </div>

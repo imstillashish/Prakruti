@@ -30,10 +30,13 @@ export interface AvatarStackProps {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-/** Negative margin overlapping the resting stack, in px */
-const OVERLAP_MARGIN = -10
-/** Gap between avatars once the stack fans apart on hover, in px */
-const FAN_GAP = 4
+/** Resting gap between avatars, in px. 28px circles + 14px gap = 42px
+ *  pitch: each avatar's 44x44 tap zone (after:-inset-2) covers its own
+ *  centre +-22px, so the audit probe's +-21px offsets stay inside the
+ *  right avatar while zones only graze at the edges. */
+const OVERLAP_MARGIN = 14
+/** Gap between avatars once the stack fans apart on hover/focus, in px */
+const FAN_GAP = 12
 /** Vertical lift of a hovered/focused avatar, in px */
 const LIFT_Y = -4
 /** Scale of a hovered/focused avatar */
@@ -236,8 +239,9 @@ export function AvatarStack({
                 animate={isActive ? { y: LIFT_Y, scale: LIFT_SCALE } : { y: 0, scale: 1 }}
                 transition={shouldReduceMotion ? INSTANT : SPRING_SNAPPY}
                 className={cn(
-                  "flex select-none items-center justify-center overflow-hidden rounded-full bg-neutral-100 font-medium text-neutral-600 ring-2 ring-white dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-900",
+                  "relative flex select-none items-center justify-center overflow-hidden rounded-full bg-neutral-100 font-medium text-neutral-600 ring-2 ring-white dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-900",
                   "focus-visible:outline-hidden focus-visible:ring-neutral-950 dark:focus-visible:ring-neutral-300",
+                  "after:absolute after:-inset-2 after:content-['']",
                   text,
                 )}
                 style={{ width: px, height: px }}
