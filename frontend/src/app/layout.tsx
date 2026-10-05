@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Noto_Sans_Devanagari } from 'next/font/google';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MeshVisibility } from '@/components/shell/MeshVisibility';
-import { WelcomeScreen } from '@/components/welcome/WelcomeScreen';
 import { Agentation } from 'agentation';
 import './globals.css';
 
@@ -56,7 +55,6 @@ export default function RootLayout({
         <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         <MeshVisibility />
         {process.env.NODE_ENV === "development" && <Agentation />}
-        <WelcomeScreen />
       </body>
     </html>
   );
