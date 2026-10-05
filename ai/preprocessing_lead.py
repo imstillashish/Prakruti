@@ -9,12 +9,8 @@ actual_file = base_dir / "outputs" / "interim" / "actual_history_clean.csv"
 output_file = base_dir / "outputs" / "interim" / "forecast_history_lead_clean.csv"
 
 # Model mapping dictionary
-model_map = {
-    "ecmwf_ifs025": "ecmwf",
-    "gfs_seamless": "gfs",
-    "icon_seamless": "icon",
-    "gem_seamless": "gem"
-}
+# Full Open-Meteo id -> short id, pass-through for BYOM ids.
+from ai.model_registry import normalize_model
 
 # 1. Read input data
 print(f"Reading input data from {data_file}...")
@@ -29,10 +25,7 @@ input_cols = list(df.columns)
 df["datetime"] = pd.to_datetime(df["datetime"])
 
 # 3. Rename model values
-unknown_models = set(df["model"].unique()) - set(model_map.keys())
-if unknown_models:
-    raise ValueError(f"Unknown model names encountered: {unknown_models}")
-df["model"] = df["model"].map(model_map)
+df["model"] = df["model"].map(normalize_model)
 
 # 4. Sort by (city, model, lead_days, datetime) and reset index
 df = df.sort_values(by=["city", "model", "lead_days", "datetime"]).reset_index(drop=True)

@@ -9,7 +9,10 @@ ACTUAL_MAP = {
     "wind_speed": "actual_wind",
 }
 
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+from ai.model_registry import discover_models
+
+# Every model present in history: built-ins plus any BYOM model that POSTed.
+MODELS = discover_models()
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Resolve project directories

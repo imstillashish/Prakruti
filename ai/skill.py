@@ -11,7 +11,9 @@ ACTUAL_MAP = {
 }
 
 # Models and variables lists
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+from ai.model_registry import discover_models
+
+MODELS = discover_models()
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Resolve project directories

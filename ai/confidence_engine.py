@@ -18,12 +18,8 @@ from pathlib import Path
 
 
 # Model name mapping from raw source naming to standardized identifiers
-MODEL_MAP = {
-    'ecmwf_ifs025': 'ecmwf',
-    'gfs_seamless': 'gfs',
-    'icon_seamless': 'icon',
-    'gem_seamless': 'gem',
-}
+# Shared rename registry (full Open-Meteo id -> short id).
+from ai.model_registry import RENAME_MAP as MODEL_MAP
 
 # Lead day scoring lookup: Day 1 -> 100, Day 2 -> 80, Day 3 -> 60, Day 4 -> 50, Day 5 -> 40, Day 6 -> 30
 LEAD_SCORE_MAP = {

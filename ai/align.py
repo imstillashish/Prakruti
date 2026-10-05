@@ -43,10 +43,12 @@ df_pairs = pd.merge(df_pivot, df_ah, on=["city", "datetime"], how="inner")
 df_pairs["split"] = np.where(df_pairs["datetime"] < TRAIN_TEST_CUTOFF, "train", "test")
 
 # 5. Sort by (city, datetime) and order columns precisely
+# Forecast columns derive from the model registry so a newly discovered
+# model's columns are ordered and pivoted like any built-in's.
 forecast_cols = [
-    "temperature_ecmwf", "temperature_gfs", "temperature_icon", "temperature_gem",
-    "rainfall_ecmwf", "rainfall_gfs", "rainfall_icon", "rainfall_gem",
-    "wind_speed_ecmwf", "wind_speed_gfs", "wind_speed_icon", "wind_speed_gem"
+    f"{var}_{mod}"
+    for var in ("temperature", "rainfall", "wind_speed")
+    for mod in discover_models()
 ]
 actual_cols = ["actual_temperature", "actual_rainfall", "actual_wind"]
 ordered_cols = ["city", "datetime", "split"] + forecast_cols + actual_cols
@@ -87,7 +89,9 @@ if not (city_split_counts == 2).all():
 print("=" * 70)
 print("TEMPERATURE MAE CROSS-CHECK OVER ALL ROWS")
 print("=" * 70)
-models = ["ecmwf", "gem", "gfs", "icon"]
+from ai.model_registry import discover_models
+
+models = discover_models()
 for mod in models:
     comp_mae = (df_pairs[f"temperature_{mod}"] - df_pairs["actual_temperature"]).abs().mean()
     exp_mae = EXPECTED_MAE[mod]

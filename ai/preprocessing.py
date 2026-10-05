@@ -11,13 +11,9 @@ output_dir = base_dir / "outputs" / "interim"
 # Create outputs/interim directory if it does not exist
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Define target model mapping dictionary
-model_map = {
-    "ecmwf_ifs025": "ecmwf",
-    "gfs_seamless": "gfs",
-    "icon_seamless": "icon",
-    "gem_seamless": "gem"
-}
+# Full Open-Meteo id -> short id, with pass-through for BYOM ids
+# (registry is the single source of truth for the rename).
+from ai.model_registry import normalize_model
 
 # -----------------------------------------------------------------------------
 # Process File Function
@@ -38,10 +34,7 @@ def process_and_validate(filename, is_forecast=True):
 
     # 3. Model renaming for forecast files
     if is_forecast:
-        unknown_models = set(df["model"].unique()) - set(model_map.keys())
-        if unknown_models:
-            raise ValueError(f"Unknown model names encountered in {filename}: {unknown_models}")
-        df["model"] = df["model"].map(model_map)
+        df["model"] = df["model"].map(normalize_model)
 
     # 4. Sort and reset index
     sort_cols = ["city", "model", "datetime"] if is_forecast else ["city", "datetime"]
