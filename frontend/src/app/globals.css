@@ -374,6 +374,30 @@ body {
   animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
+/* Welcome splash: the blend diagram draws itself in, sources first, the merged
+   output last. `pathLength={1}` on each path normalises the dash so one
+   keyframe pair serves every line length. */
+@keyframes welcome-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.welcome-draw {
+  stroke-dashoffset: 0;
+  animation: welcome-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-draw {
+    animation: none;
+  }
+}
+
 /* Animated gradient interactive controls (buttons, multiswitches, tabs, toggles) */
 @keyframes gradient-flow {
   0% {
