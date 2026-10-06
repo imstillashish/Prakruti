@@ -1,6 +1,6 @@
 {
-  "cycle_id": "2026-10-04T22:27:14",
-  "previous_cycle_id": "2026-10-03T10:21:14",
+  "cycle_id": "2026-10-06T00:55:29",
+  "previous_cycle_id": "2026-10-04T22:27:14",
   "available": true,
   "quantile_shift": {
     "temperature": {
@@ -34,13 +34,12 @@
     }
   },
   "confidence_shifts": {
-    "upgraded": 3,
-    "downgraded": 4,
+    "upgraded": 4,
+    "downgraded": 3,
     "transitions": {
-      "High->Medium": 3,
-      "Very High->High": 1,
-      "Medium->High": 2,
-      "High->Very High": 1
+      "Medium->High": 4,
+      "Very High->High": 2,
+      "High->Medium": 1
     }
   },
   "models_recovered": [],
