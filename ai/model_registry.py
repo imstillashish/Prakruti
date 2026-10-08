@@ -17,16 +17,23 @@ if str(base_dir) not in sys.path:
 
 HISTORY_CSV = base_dir / "data" / "forecast_history.csv"
 
-BUILT_IN_MODELS = ["ecmwf", "gfs", "icon", "gem", "aifs", "ukmo"]
+BUILT_IN_MODELS = ["ecmwf", "gfs", "icon", "gem", "jma", "ukmo"]
 
+# Note: the spec's ecmwf_aifs025 was substituted for jma_gsm on 2026-10-05 —
+# AIFS serves all-null values on every free Open-Meteo endpoint (verified),
+# JMA GSM serves clean hourly data.
 RENAME_MAP = {
     "ecmwf_ifs025": "ecmwf",
     "gfs_seamless": "gfs",
     "icon_seamless": "icon",
     "gem_seamless": "gem",
-    "ecmwf_aifs025": "aifs",
+    "jma_gsm": "jma",
     "ukmo_seamless": "ukmo",
 }
+
+# Open-Meteo full ids the fetch layer requests, in registry order. The keys of
+# RENAME_MAP are exactly these, so the fetch list can never drift from the map.
+FULL_MODEL_IDS = list(RENAME_MAP)
 
 
 def normalize_model(full_id: str) -> str:

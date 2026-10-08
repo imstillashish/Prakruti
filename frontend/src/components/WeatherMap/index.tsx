@@ -38,7 +38,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
   return (
     <section className={`rounded-lg border border-border bg-card overflow-hidden${fillHeight ? ' flex flex-col h-full' : ''}`}>
       {/* Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 px-4 sm:px-5 py-3 border-b border-border">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 px-4 py-2.5 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
           <MapPin size={16} className="shrink-0 text-foreground" />
           <div className="min-w-0">

@@ -1,0 +1,49 @@
+name: Model Guard
+
+# The current 72-hour window and the history backfill are fetched by separate
+# scripts (api/fetch_current.py vs api/fetch_history*.py). A model added to one
+# fetcher and not the other half-applies the expansion: the new model gets
+# scored and weighted but never enters the live blend, and api/validate_data.py
+# is the only thing that notices. This guard fails the build when the model sets
+# diverge, so that drift cannot ship silently.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: History and current-window model sets must match
+        run: |
+          python3 - <<'EOF'
+          import csv
+          import sys
+
+
+          def models(path):
+              with open(path, newline="", encoding="utf-8") as fh:
+                  return {row["model"] for row in csv.DictReader(fh) if row.get("model")}
+
+
+          history = models("data/forecast_history.csv")
+          current = models("data/forecast_current.csv")
+          lead = models("data/forecast_history_lead.csv")
+
+          ok = True
+          for label, other in (("current window", current), ("lead history", lead)):
+              if history != other:
+                  only_hist = sorted(history - other)
+                  only_other = sorted(other - history)
+                  print(f"::error::model sets diverge from forecast_history.csv — "
+                        f"{label} is missing {only_hist}, has extra {only_other}")
+                  ok = False
+
+          if ok:
+              print(f"model sets consistent across history, lead history and current "
+                    f"window ({len(history)}): {sorted(history)}")
+          sys.exit(0 if ok else 1)
+          EOF

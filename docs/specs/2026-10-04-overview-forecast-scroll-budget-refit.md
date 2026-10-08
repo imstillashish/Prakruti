@@ -1,6 +1,6 @@
 # Overview & Forecast — Scroll Budget Refit
 
-**Status:** implemented 2026-10-04
+**Status:** implemented 2026-10-04 · **phone closed 2026-10-05, see addendum at the bottom**
 **Supersedes the tier numbers in:** `2026-10-01-multi-device-refit-plan.md` §1.0
 **Gate:** DESIGN.md §9.6 — phone 390×844 ≤ 3.0, tablet 768×1024 ≤ 3.0, desktop 1440×900 ≤ 3.6
 
@@ -73,3 +73,16 @@ Scripts used for this pass (`scratch/block_measure.py`, `scratch/final_audit.py`
 are local-only and not committed; they run against `next build` + `next start` on :3011 with the API
 on :5002. Touch targets are measured by hit area (`elementFromPoint` at ±22px), not by bounding box,
 so a control whose pseudo-element expands its tap zone counts as passing. `npx tsc --noEmit` is clean.
+
+## 7. Addendum 2026-10-05 — the phone tier closes
+
+The two remaining phone misses are fixed by the same snap-deck mechanism the hero metric
+cards already use, applied to the page's operational grid: below `sm` the cards become one
+horizontal `carousel-snap-deck` (evidence first: map, trend, hazards, then the deep
+panels); the two rail wrappers dissolve via `max-lg:contents` so at `lg:` the desktop
+global geometry is untouched (Overview desktop still measures exactly 3.60). Phone cuts beyond
+the deck: Forecast chart canvas 220→180px below `sm`, deck pagination dots are passive
+indicators on phone (cards already tap-scroll), and the deck's `(D+1–D+3)` legend shortens.
+Measured: Overview 3.77 → **2.60vh**, Forecast 3.62 → **2.99vh**; tablet and desktop rows
+unchanged. Ongoing verification is `scripts/audit_gate.py` (27 rows, one verdict, baseline
+of the known tap punch list in `audit_gate_baseline.json`).

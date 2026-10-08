@@ -35,12 +35,13 @@ import pandas as pd
 from scipy import stats
 
 from ai.thresholds import THRESHOLDS
+from ai.model_registry import discover_models
 
 ENGINE_VERSION = "unc-2026-10-01-v1"
 
 QUANTILES = (0.1, 0.5, 0.9)
 VARIABLES = ("temperature", "rainfall", "wind_speed")
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+MODELS = discover_models()
 
 # Thresholds per variable, from the shared operational table (single source of truth)
 VAR_THRESHOLDS = {

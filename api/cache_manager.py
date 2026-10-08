@@ -13,12 +13,16 @@ Rules:
 
 import os
 import json
+import sys
 import threading
 from datetime import datetime, date
 from pathlib import Path
 import requests
 import pandas as pd
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.model_registry import FULL_MODEL_IDS, RENAME_MAP
 
 # Base paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,13 +39,11 @@ HYBRID_CSV = OUTPUTS_DIR / "hybrid_forecast.csv"
 METADATA_JSON = OUTPUTS_DIR / "metadata.json"
 
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
-MODELS_API = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless"]
-MODEL_MAP = {
-    "ecmwf_ifs025": "ecmwf",
-    "gfs_seamless": "gfs",
-    "icon_seamless": "icon",
-    "gem_seamless": "gem",
-}
+# Full Open-Meteo ids for every registered built-in model (ai/model_registry.py);
+# MODEL_MAP is the shared full->short rename. Nothing model-count-specific lives
+# here, so growing the model set only touches the registry.
+MODELS_API = FULL_MODEL_IDS
+MODEL_MAP = RENAME_MAP
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Concurrency lock to prevent duplicate regeneration runs
@@ -111,9 +113,9 @@ def is_cache_fresh():
                     save_metadata({
                         "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
                         "cities": 45,
-                        "models": 4,
+                        "models": len(MODELS_API),
                         "city_count": 45,
-                        "model_count": 4
+                        "model_count": len(MODELS_API)
                     })
                     return True
                 else:
@@ -127,8 +129,8 @@ def is_cache_fresh():
 
 def fetch_open_meteo_forecasts(cities_df):
     """
-    Fetches 72-hour forecast from Open-Meteo for all 45 cities for all 4 NWP models:
-    ECMWF (ecmwf_ifs025), GFS (gfs_seamless), ICON (icon_seamless), GEM (gem_seamless).
+    Fetches 72-hour forecast from Open-Meteo for all 45 cities for every model in
+    MODELS_API (see ai/model_registry.py).
     Uses batch multi-location query with automatic fallback to single-city requests.
     """
     print(f"[CacheManager] Fetching fresh forecasts from Open-Meteo for {len(cities_df)} cities...")
@@ -479,24 +481,25 @@ def run_downstream_updates():
         print(f"[CacheManager] Downstream sync warning: {e}")
 
 
-def regenerate_forecast():
+def regenerate_forecast(force=False):
     """
     Complete regeneration pipeline:
     1. Fetch fresh Open-Meteo forecasts for all 45 cities.
-    2. Fetch all four models (ECMWF, GFS, ICON, GEM).
+    2. Fetch every registered model (ai/model_registry.py).
     3. Run existing preprocessing.
     4. Run existing adaptive weighting.
     5. Generate new blended_forecast.csv.
     6. Save metadata.json for caching.
     """
     with _refresh_lock:
-        # Check again inside lock
-        if is_cache_fresh():
+        # Check again inside lock — unless the caller explicitly forced a
+        # refetch, in which case a same-day cache must not short-circuit it.
+        if not force and is_cache_fresh():
             print("[CacheManager] Cache is already fresh (verified inside lock).")
             return load_metadata() or {
                 "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
                 "cities": 45,
-                "models": 4
+                "models": len(MODELS_API)
             }
 
         print("[CacheManager] Starting forecast regeneration pipeline...")
@@ -552,7 +555,7 @@ def ensure_fresh_forecast(force=False):
     """
     if force or not is_cache_fresh():
         print("[CacheManager] Forecast data needs refresh -> regenerating...")
-        return regenerate_forecast()
+        return regenerate_forecast(force=force)
     else:
         print("[CacheManager] Existing forecast is fresh for today. Using cached forecast.")
         meta = load_metadata()
@@ -560,9 +563,9 @@ def ensure_fresh_forecast(force=False):
             meta = {
                 "last_updated": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
                 "cities": 45,
-                "models": 4,
+                "models": len(MODELS_API),
                 "city_count": 45,
-                "model_count": 4
+                "model_count": len(MODELS_API)
             }
             save_metadata(meta)
         return meta

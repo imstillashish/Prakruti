@@ -22,7 +22,7 @@ ACTUAL_HIST_CSV = "data/actual_history.csv"
 HIST_FC_URL = "https://historical-forecast-api.open-meteo.com/v1/forecast"
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 
-MODELS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless"]
+MODELS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless", "jma_gsm", "ukmo_seamless"]
 
 
 def get_date_range():

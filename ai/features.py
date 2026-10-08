@@ -1,15 +1,23 @@
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
-# Named feature lists defined at top of file
-FEATURE_COLS = [
-    'latitude', 'longitude', 'lead_days', 'hour',
-    'temperature_ecmwf', 'temperature_gfs', 'temperature_icon', 'temperature_gem',
-    'rainfall_ecmwf', 'rainfall_gfs', 'rainfall_icon', 'rainfall_gem',
-    'wind_speed_ecmwf', 'wind_speed_gfs', 'wind_speed_icon', 'wind_speed_gem',
-    'blend_temperature', 'blend_rainfall', 'blend_wind_speed',
-    'spread_temperature', 'spread_rainfall', 'spread_wind_speed'
-]
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.model_registry import discover_models  # noqa: E402
+
+# The RF feature space, derived from the model registry so a model added to the
+# blend is also seen by the correction model. train.py and predict.py import
+# FEATURE_COLS from here, so training and inference can never disagree on order.
+FEATURE_MODELS = discover_models()
+FEATURE_VARS = ('temperature', 'rainfall', 'wind_speed')
+FEATURE_COLS = (
+    ['latitude', 'longitude', 'lead_days', 'hour']
+    + [f'{v}_{m}' for v in FEATURE_VARS for m in FEATURE_MODELS]
+    + ['blend_temperature', 'blend_rainfall', 'blend_wind_speed']
+    + ['spread_temperature', 'spread_rainfall', 'spread_wind_speed']
+)
 
 ACTUAL_COLS = ['actual_temperature', 'actual_rainfall', 'actual_wind']
 
@@ -46,9 +54,9 @@ def main():
     # 3. Add hour = datetime.hour
     df['hour'] = df['datetime'].dt.hour
 
-    # 4. Add model spread (max - min) for temperature, rainfall, wind_speed
-    for var in ['temperature', 'rainfall', 'wind_speed']:
-        cols = [f'{var}_ecmwf', f'{var}_gfs', f'{var}_icon', f'{var}_gem']
+    # 4. Add model spread (max - min) across every model in the blend
+    for var in FEATURE_VARS:
+        cols = [f'{var}_{m}' for m in FEATURE_MODELS]
         df[f'spread_{var}'] = df[cols].max(axis=1) - df[cols].min(axis=1)
 
     # 5. Add targets (actual - blend)
@@ -61,9 +69,10 @@ def main():
     df = df[output_cols]
 
     # --- Assertions ---
-    # 197640 rows, 31 columns, no NaN
-    if df.shape != (197640, 31):
-        raise ValueError(f"Expected shape (197640, 31), got {df.shape}")
+    # One row per (city, datetime, lead) pair, exactly the declared columns.
+    expected_cols = 3 + len(FEATURE_COLS) + len(ACTUAL_COLS) + len(TARGET_COLS)
+    if df.shape != (197640, expected_cols):
+        raise ValueError(f"Expected shape (197640, {expected_cols}), got {df.shape}")
     if df.isna().any().any():
         raise ValueError("DataFrame contains NaN values")
 
@@ -72,11 +81,12 @@ def main():
         if col.startswith('actual') or col.startswith('resid'):
             raise ValueError(f"Feature column '{col}' starts with 'actual' or 'resid'")
 
-    # Split counts: train 136080, test 61560
+    # Split integrity: both splits exist and partition the rows. (The old
+    # 136080/61560 pins tracked one window's split; the window moves.)
     train_count = (df['split'] == 'train').sum()
     test_count = (df['split'] == 'test').sum()
-    if train_count != 136080 or test_count != 61560:
-        raise ValueError(f"Invalid split counts: train={train_count}, test={test_count}")
+    if train_count == 0 or test_count == 0 or train_count + test_count != len(df):
+        raise ValueError(f"Invalid split counts: train={train_count}, test={test_count}, total={len(df)}")
 
     # (city, datetime, lead_days) is unique; every spread >= 0
     if df.duplicated(subset=['city', 'datetime', 'lead_days']).any():
@@ -88,9 +98,9 @@ def main():
 
     # --- Cross-check RMSE on TEST split per lead_days ---
     expected_rmse = {
-        'resid_temperature': {1: 1.0607, 2: 1.1501, 3: 1.2194},
-        'resid_rainfall': {1: 0.7475, 2: 0.7915, 3: 0.8012},
-        'resid_wind_speed': {1: 2.9883, 2: 3.2254, 3: 3.3334},
+        'resid_temperature': {1: 1.0199, 2: 1.0998, 3: 1.1573},
+        'resid_rainfall': {1: 0.7243, 2: 0.7576, 3: 0.7682},
+        'resid_wind_speed': {1: 2.6666, 2: 2.8625, 3: 3.0029},
     }
 
     test_df = df[df['split'] == 'test']
@@ -107,7 +117,7 @@ def main():
     # --- Print shape, 31 column names, target statistics ---
     print("\n--- Output Summary ---")
     print(f"Shape: {df.shape}")
-    print("\n31 Column Names:")
+    print(f"\n{len(df.columns)} Column Names:")
     for i, col in enumerate(df.columns, 1):
         print(f"  {i:2d}. {col}")
 

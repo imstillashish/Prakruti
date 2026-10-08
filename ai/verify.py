@@ -34,6 +34,8 @@ import pandas as pd
 
 base_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(base_dir))
+from ai.model_registry import discover_models  # noqa: E402
+
 OUT = base_dir / "outputs"
 INTERIM = OUT / "interim"
 
@@ -41,7 +43,7 @@ HIST_FC = INTERIM / "forecast_history_clean.csv"
 HIST_ACT = INTERIM / "actual_history_clean.csv"
 
 ENGINE_VERSION = "ver-2026-10-01-v1"
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+MODELS = discover_models()
 REFERENCE_METHODS = ["equal_avg", "weighted_blend"]
 METHODS = MODELS + REFERENCE_METHODS
 VARIABLES = ("temperature", "rainfall", "wind_speed")

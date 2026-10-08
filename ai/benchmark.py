@@ -56,11 +56,12 @@ INTERIM = OUT / "interim"
 
 from ai.verify import categorical_row  # shared contingency math (F-02)
 from ai.thresholds import THRESHOLDS
+from ai.model_registry import discover_models
 
 ENGINE_VERSION = "bench-2026-10-02-v1"
 GEO_NATIONAL = "IN"
 
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+MODELS = discover_models()
 TIERS = {
     "weighted_blend": "blend",
     "equal_avg": "baseline",
@@ -744,9 +745,10 @@ def verify() -> bool:
                           and (nat["rank_low"] <= nat["rank"]).all()
                           and (nat["rank"] <= nat["rank_high"]).all()),
                      "rank ranges contain the observed rank")
-        ok &= _check(set(pareto["method"]) == {"ecmwf", "gfs", "icon", "gem",
-                                               "equal_avg", "weighted_blend"},
-                     "Pareto covers exactly the six methods",
+        # Every scored method except persistence (a continuous-only baseline
+        # with no extreme-board rows) appears on the paired Pareto frontier.
+        ok &= _check(set(pareto["method"]) == set(TIERS) - {"persistence"},
+                     "Pareto covers every paired method",
                      str(sorted(set(pareto["method"]))))
         ok &= _check(bool(pareto[["mae", "csi", "mae_ci_low", "mae_ci_high",
                                   "csi_ci_low", "csi_ci_high"]].notna().all().all()),

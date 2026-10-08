@@ -1,5 +1,11 @@
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.features import FEATURE_MODELS  # noqa: E402
 
 # Named constants at top of file
 TRAIN = 'train'
@@ -14,9 +20,9 @@ ACTUAL_COLS = {
 # Published weighted-blend test RMSE per variable/lead — serves
 # /api/models/calibration as the blend baseline the hybrid is compared against.
 EXPECTED_BLEND_RMSE = {
-    'temperature': {1: 1.0607, 2: 1.1501, 3: 1.2194},
-    'rainfall': {1: 0.7475, 2: 0.7915, 3: 0.8012},
-    'wind_speed': {1: 2.9883, 2: 3.2254, 3: 3.3334},
+    'temperature': {1: 1.0199, 2: 1.0998, 3: 1.1573},
+    'rainfall': {1: 0.7243, 2: 0.7576, 3: 0.7682},
+    'wind_speed': {1: 2.6666, 2: 2.8625, 3: 3.0029},
 }
 
 
@@ -30,9 +36,9 @@ def main():
     test_df = df[df['split'] == TEST]
 
     # --- Assertions ---
-    # Assert row counts
-    if len(train_df) != 136080 or len(test_df) != 61560:
-        raise ValueError(f"Invalid split counts: TRAIN={len(train_df)}, TEST={len(test_df)}")
+    # Assert split integrity: both splits exist and partition the rows.
+    if len(train_df) == 0 or len(test_df) == 0 or len(train_df) + len(test_df) != len(df):
+        raise ValueError(f"Invalid split counts: TRAIN={len(train_df)}, TEST={len(test_df)}, TOTAL={len(df)}")
 
     # Assert max datetime in TRAIN is earlier than 2026-08-29
     max_train_dt = train_df['datetime'].max()
@@ -61,7 +67,7 @@ def main():
         actual_col = ACTUAL_COLS[var]
         blend_col = f'blend_{var}'
         resid_col = f'resid_{var}'
-        model_cols = [f'{var}_ecmwf', f'{var}_gfs', f'{var}_icon', f'{var}_gem']
+        model_cols = [f'{var}_{m}' for m in FEATURE_MODELS]
 
         # 3. Compute bias table on TRAIN rows only (mean of resid_<variable> by city, lead_days)
         bias_df = train_df.groupby(['city', 'lead_days'])[resid_col].mean().reset_index()

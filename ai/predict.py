@@ -1,17 +1,13 @@
 import os
+import sys
+from pathlib import Path
+
 import joblib
 import numpy as np
 import pandas as pd
 
-# Top-level named constants
-FEATURE_COLS = [
-    'latitude', 'longitude', 'lead_days', 'hour',
-    'temperature_ecmwf', 'temperature_gfs', 'temperature_icon', 'temperature_gem',
-    'rainfall_ecmwf', 'rainfall_gfs', 'rainfall_icon', 'rainfall_gem',
-    'wind_speed_ecmwf', 'wind_speed_gfs', 'wind_speed_icon', 'wind_speed_gem',
-    'blend_temperature', 'blend_rainfall', 'blend_wind_speed',
-    'spread_temperature', 'spread_rainfall', 'spread_wind_speed'
-]
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.features import FEATURE_COLS, FEATURE_MODELS  # noqa: E402
 
 VARIABLES = {
     'temperature': 'actual_temperature',
@@ -22,9 +18,9 @@ VARIABLES = {
 # Published hybrid-RF test RMSE per variable/lead (training-time cross-check
 # anchors) — serves /api/models/calibration as the measured correction delta.
 EXPECTED_HYBRID_RMSE = {
-    'temperature': {1: 0.8802, 2: 0.9609, 3: 1.0250},
-    'rainfall':    {1: 0.6760, 2: 0.6859, 3: 0.6942},
-    'wind_speed':  {1: 2.3376, 2: 2.4766, 3: 2.5819}
+    'temperature': {1: 0.9312, 2: 1.0022, 3: 1.0579},
+    'rainfall':    {1: 0.6997, 2: 0.7176, 3: 0.7354},
+    'wind_speed':  {1: 2.3553, 2: 2.5090, 3: 2.6340}
 }
 
 
@@ -125,9 +121,9 @@ def build_current_features():
     # 4. Extract hour
     df['hour'] = df['datetime'].dt.hour
 
-    # 5. Compute spread_<variable> = max - min of the 4 model forecasts
+    # 5. Compute spread_<variable> = max - min across every model in the blend
     for var in ['temperature', 'rainfall', 'wind_speed']:
-        mod_cols = [f'{var}_{m}' for m in ['ecmwf', 'gfs', 'icon', 'gem']]
+        mod_cols = [f'{var}_{m}' for m in FEATURE_MODELS]
         df[f'spread_{var}'] = df[mod_cols].max(axis=1) - df[mod_cols].min(axis=1)
 
     # 6. Merge blend_temperature, blend_rainfall, blend_wind_speed from outputs/blended_forecast.csv

@@ -1,44 +1,42 @@
 {
-  "cycle_id": "2026-10-03T10:21:14",
-  "previous_cycle_id": "2026-10-02T07:57:21",
+  "cycle_id": "2026-10-08T06:22:13",
+  "previous_cycle_id": "2026-10-01T12:00:00",
   "available": true,
   "quantile_shift": {
     "temperature": {
-      "p10": -0.09,
-      "p50": -0.0926,
-      "p90": -0.0952
+      "p10": -0.1796,
+      "p50": -0.1796,
+      "p90": -0.1796
     },
     "rainfall": {
-      "p10": 0.0048,
-      "p50": 0.0136,
-      "p90": 0.0298
+      "p10": -0.0167,
+      "p50": -0.0312,
+      "p90": -0.0476
     },
     "wind_speed": {
-      "p10": -0.0879,
-      "p50": -0.094,
-      "p90": -0.0794
+      "p10": -0.0805,
+      "p50": -0.0954,
+      "p90": -0.0805
     }
   },
   "biggest_p50_mover": {
     "temperature": {
-      "city": "Thane",
-      "delta": -1.5694
+      "city": "Ludhiana",
+      "delta": -0.6416
     },
     "rainfall": {
-      "city": "Bengaluru",
-      "delta": 0.4417
+      "city": "Bhubaneswar",
+      "delta": -0.3571
     },
     "wind_speed": {
-      "city": "Shillong",
-      "delta": -1.9422
+      "city": "Jodhpur",
+      "delta": 1.3807
     }
   },
   "confidence_shifts": {
     "upgraded": 0,
-    "downgraded": 3,
-    "transitions": {
-      "High->Medium": 3
-    }
+    "downgraded": 0,
+    "transitions": {}
   },
   "models_recovered": [],
   "models_newly_missing": []

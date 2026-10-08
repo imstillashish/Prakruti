@@ -16,6 +16,7 @@ import { RegionSelector } from '@/components/RegionSelector';
 import { ModelComparison } from '@/components/ModelComparison';
 import { ForecastPage } from '@/components/pages/ForecastPage';
 import { ModelIntelligencePage } from '@/components/pages/ModelIntelligencePage';
+import { ByomPage } from '@/components/pages/ByomPage';
 import { ExtremeWeatherPage } from '@/components/pages/ExtremeWeatherPage';
 import { ModelPerformancePage } from '@/components/pages/ModelPerformancePage';
 import { LeaderboardPage } from '@/components/pages/LeaderboardPage';
@@ -50,6 +51,8 @@ export default function Home() {
         return <ForecastPage />;
       case 'model-intelligence':
         return <ModelIntelligencePage />;
+      case 'byom':
+        return <ByomPage />;
       case 'extreme-weather':
         return <ExtremeWeatherPage />;
       case 'rpi':
@@ -65,41 +68,59 @@ export default function Home() {
       case 'overview':
       default:
         return (
-          <div className="space-y-6 md:space-y-8">
+          // One rhythm for the whole page, matching the other sections and the
+          // rail's own space-y-6. The md:space-y-8 step made the strip's 24px
+          // gap read as a tighter seam above a 32px stack below it.
+          <div className="space-y-6">
             {/* Top Forecast Decision Hero */}
             <ForecastHero selectedCity={selectedCity} />
 
-            {/* Core Operational Grid. Splits side-by-side from lg: at tablet
-                the 7/5 split left the collapsed right rail ~380px short of the
-                map+timeline stack — dead white — so tablet stacks instead. */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6 items-start">
-              {/* Left Column (Primary Visualizations) - 7 cols on desktop.
-                  The hazard advisory sits with the forecast evidence it warns
-                  about; it also brings this rail level with the right one. */}
-              <div className="lg:col-span-7 space-y-5 md:space-y-6">
-                <WeatherMap
-                  selectedCity={selectedCity}
-                  onSelectCity={handleCitySelect}
-                />
-                <ForecastTimeline selectedCity={selectedCity} phoneCompact />
-                <ExtremeWeatherPanel selectedCity={selectedCity} collapsibleOnPhone />
+            {/* Core Operational Grid. Below sm the cards become a horizontal
+                snap deck (same mechanism as the hero metric cards): the stacked
+                column was the page's whole budget overrun. From sm the plain
+                stack, from lg the 7/5 two-rail grid — one DOM for all three.
+                max-lg:contents dissolves the two rail wrappers so their cards
+                are the deck's slides; at lg the wrappers box up again and the
+                desktop geometry is byte-identical to the pre-deck layout. */}
+            <div className="carousel-snap-deck items-start -mx-3 px-3 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-1 sm:overflow-visible sm:gap-6 lg:grid-cols-12 lg:items-start">
+              {/* Left rail (7 cols on desktop): map, trend, hazard advisory —
+                  the hazard sits with the forecast evidence it warns about.
+                  On a phone this DOM order is the swipe order: evidence first. */}
+              <div className="max-lg:contents lg:col-span-7 lg:space-y-6">
+                <div className="w-[78vw] shrink-0 sm:w-auto sm:shrink">
+                  <WeatherMap
+                    selectedCity={selectedCity}
+                    onSelectCity={handleCitySelect}
+                  />
+                </div>
+                <div className="w-[88vw] shrink-0 sm:w-auto sm:shrink">
+                  <ForecastTimeline selectedCity={selectedCity} phoneCompact />
+                </div>
+                <div className="w-[78vw] shrink-0 sm:w-auto sm:shrink">
+                  <ExtremeWeatherPanel selectedCity={selectedCity} collapsibleOnPhone />
+                </div>
               </div>
 
-              {/* Right Column (Controls & Deep Intelligence) - 5 cols on desktop */}
-              <div className="lg:col-span-5 space-y-5 md:space-y-6">
-                {/* Station picker lives in the docked thumb bar only on phones (<640px),
-                    which is where the shell puts it; above that the RegionSelector card
-                    is the only station switcher, or 4 screens of content separate it. */}
-                <div className="hidden sm:block">
+              {/* Right rail (5 cols on desktop): controls & deep intelligence.
+                  Station picker lives in the docked thumb bar only on phones
+                  (<640px), which is where the shell puts it; above that the
+                  RegionSelector card is the only station switcher. */}
+              <div className="max-lg:contents lg:col-span-5 lg:space-y-6">
+                <div className="hidden w-[78vw] shrink-0 sm:block sm:w-auto sm:shrink">
                   <RegionSelector selectedCity={selectedCity} onSelectCity={handleCitySelect} />
                 </div>
-                {/* Measured at 768px: expanded these three make this column 1944px
-                    against the left column's 1440px, so they set the page height.
-                    Collapsed, the column is 603px and the page is bound by the
-                    evidence on the left. Secondary detail collapses below desktop. */}
-                <ModelContribution selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
-                <ModelSkillPanel collapsibleOnPhone collapsibleOnTablet />
-                <DataHealthPanel collapsibleOnPhone collapsibleOnTablet />
+                {/* Measured at 768px: expanded these three make this rail 1944px
+                    against the visualizations' 1440px, so they set the page height.
+                    Secondary detail collapses below desktop. */}
+                <div className="w-[78vw] shrink-0 sm:w-auto sm:shrink">
+                  <ModelContribution selectedCity={selectedCity} collapsibleOnPhone collapsibleOnTablet />
+                </div>
+                <div className="w-[78vw] shrink-0 sm:w-auto sm:shrink">
+                  <ModelSkillPanel collapsibleOnPhone collapsibleOnTablet />
+                </div>
+                <div className="w-[78vw] shrink-0 sm:w-auto sm:shrink">
+                  <DataHealthPanel collapsibleOnPhone collapsibleOnTablet />
+                </div>
               </div>
             </div>
 

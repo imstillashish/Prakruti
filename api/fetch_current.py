@@ -1,7 +1,8 @@
 """
 fetch_current.py - Fetch Current 72-Hour NWP Weather Forecasts from Open-Meteo
 
-Fetches next 72 hours forecast for 4 models (ecmwf_ifs025, gfs_seamless, icon_seamless, gem_seamless)
+Fetches the next 72 hours from every registered built-in model (see
+ai/model_registry.py — the fetch list is derived there, never pinned here).
 Timezone: Asia/Kolkata
 Output: data/forecast_current.csv
 """
@@ -13,12 +14,15 @@ from pathlib import Path
 import requests
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.model_registry import FULL_MODEL_IDS
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CITIES_CSV = BASE_DIR / "data" / "cities.csv"
 FORECAST_CURR_CSV = BASE_DIR / "data" / "forecast_current.csv"
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
-MODELS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless"]
+MODELS = FULL_MODEL_IDS
 
 
 def load_cities():

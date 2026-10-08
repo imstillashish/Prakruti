@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Terminal, Play, Copy, Check, Code2, Clock, Layers, Search, ExternalLink, ShieldCheck, CloudRain, Flame, Activity, AlertTriangle, RefreshCw } from '@/components/icons';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { ShaderButton } from '@/components/ui/ShaderButton';
-import { API } from '@/lib/api';
+import { API_BASE } from '@/lib/api';
+import { BYOM_SAMPLE_MODEL_ID, byomSampleBody } from '@/data/byomSample';
 
 interface ParamDef {
   name: string;
@@ -23,6 +24,8 @@ interface EndpointDef {
   title: string;
   description: string;
   params: ParamDef[];
+  /** Request body for POST endpoints; sent verbatim by Execute. */
+  body?: Record<string, unknown>;
   sampleResponse: Record<string, unknown>;
 }
 
@@ -265,6 +268,43 @@ const ENDPOINTS: EndpointDef[] = [
       database: 'connected',
     },
   },
+  {
+    id: 'byom',
+    category: 'ops',
+    method: 'POST',
+    path: `/api/models/${BYOM_SAMPLE_MODEL_ID}/forecasts`,
+    title: 'Bring Your Own Model',
+    description:
+      'Post a foreign model\'s hourly rows and the engine verifies it against observed weather, prices the weight inverse-RMSE weighting would give it, and reports what it does to the blend\'s own error — in one call.',
+    params: [],
+    // The sample lives in data/byomSample.ts so this entry and the BYOM tab
+    // cannot drift apart: the endpoint needs 24 hours matched to actuals before
+    // it will score a variable, and a shorter body would land unstored and
+    // unscored in both places.
+    body: byomSampleBody(),
+    // Captured from this exact body against the local engine — the scores and
+    // weights move with whatever the model posts, so re-run Execute to see live.
+    sampleResponse: {
+      status: 'accepted',
+      model: 'my_model_v1',
+      rows: 24,
+      stored_rows: 24,
+      cities: 1,
+      coverage: { matched_actuals: 24, share_of_actuals: 0.0004 },
+      scores: {
+        temperature: { rmse: 0.5958, mae: 0.55, bias: -0.1, n: 24, skill: 94.21 },
+        rainfall: { rmse: 0.1041, mae: 0.0583, bias: -0.0417, n: 24, skill: 100 },
+        wind_speed: { rmse: 0.7399, mae: 0.675, bias: -0.425, n: 24, skill: 100 },
+      },
+      weight: { temperature: 0.238799, rainfall: 0.690381, wind_speed: 0.421858 },
+      blend_preview: [
+        { variable: 'temperature', weight: 0.238799, rows: 24, blend_rmse: 0.3444, blend_rmse_with_model: 0.3099 },
+        { variable: 'rainfall', weight: 0.690381, rows: 24, blend_rmse: 0.0549, blend_rmse_with_model: 0.051 },
+        { variable: 'wind_speed', weight: 0.421858, rows: 24, blend_rmse: 1.5582, blend_rmse_with_model: 1.1564 },
+      ],
+      notes: [],
+    },
+  },
 ];
 
 export function ApiPage() {
@@ -286,6 +326,14 @@ export function ApiPage() {
   const [responseData, setResponseData] = useState<unknown>(ENDPOINTS[0].sampleResponse);
   const [copiedType, setCopiedType] = useState<string | null>(null);
 
+  const hostLabel = useMemo(() => {
+    try {
+      return new URL(API_BASE).host;
+    } catch {
+      return API_BASE;
+    }
+  }, []);
+
   // Filtered endpoint list
   const filteredEndpoints = useMemo(() => {
     if (!searchQuery.trim()) return ENDPOINTS;
@@ -300,7 +348,7 @@ export function ApiPage() {
 
   // Build current live URL
   const currentUrl = useMemo(() => {
-    const base = API.replace(/\/+$/, '');
+    const base = API_BASE.replace(/\/+$/, '');
     const cleanPath = selectedEndpoint.path.startsWith('/') ? selectedEndpoint.path : `/${selectedEndpoint.path}`;
     const queryParts: string[] = [];
 
@@ -320,8 +368,13 @@ export function ApiPage() {
     setIsExecuting(true);
     const startTime = performance.now();
     try {
+      const isPost = selectedEndpoint.method === 'POST';
       const res = await fetch(currentUrl, {
-        headers: { Accept: 'application/json' },
+        method: selectedEndpoint.method,
+        headers: isPost
+          ? { Accept: 'application/json', 'Content-Type': 'application/json' }
+          : { Accept: 'application/json' },
+        body: isPost && selectedEndpoint.body ? JSON.stringify(selectedEndpoint.body) : undefined,
       });
       const endTime = performance.now();
       setResponseLatency(Math.round(endTime - startTime));
@@ -374,15 +427,23 @@ export function ApiPage() {
 
   // Generate code snippet
   const snippetCode = useMemo(() => {
+    const isPost = selectedEndpoint.method === 'POST';
+    const body = selectedEndpoint.body ? JSON.stringify(selectedEndpoint.body) : '{}';
     switch (snippetLanguage) {
       case 'curl':
-        return `curl -X GET "${currentUrl}" \\\n  -H "Accept: application/json"`;
+        return isPost
+          ? `curl -X POST "${currentUrl}" \\\n  -H "Content-Type: application/json" \\\n  -d '${body}'`
+          : `curl -X GET "${currentUrl}" \\\n  -H "Accept: application/json"`;
       case 'python':
-        return `import requests\n\nurl = "${currentUrl}"\nresponse = requests.get(url, headers={"Accept": "application/json"})\ndata = response.json()\nprint(data)`;
+        return isPost
+          ? `import requests\n\nurl = "${currentUrl}"\npayload = ${body}\nresponse = requests.post(url, json=payload)\nprint(response.json())`
+          : `import requests\n\nurl = "${currentUrl}"\nresponse = requests.get(url, headers={"Accept": "application/json"})\ndata = response.json()\nprint(data)`;
       case 'ts':
-        return `// TypeScript / ES6\nconst res = await fetch("${currentUrl}", {\n  headers: { Accept: "application/json" },\n});\nconst data = await res.json();\nconsole.log(data);`;
+        return isPost
+          ? `// TypeScript / ES6\nconst res = await fetch("${currentUrl}", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify(${body}),\n});\nconsole.log(await res.json());`
+          : `// TypeScript / ES6\nconst res = await fetch("${currentUrl}", {\n  headers: { Accept: "application/json" },\n});\nconst data = await res.json();\nconsole.log(data);`;
     }
-  }, [snippetLanguage, currentUrl]);
+  }, [snippetLanguage, currentUrl, selectedEndpoint]);
 
   return (
     <div className="space-y-3.5">
@@ -394,7 +455,9 @@ export function ApiPage() {
         action={
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-card border border-border text-muted-foreground">
-              <span>Host: prakruti-api.onrender.com</span>
+              {/* The host is whatever the app itself talks to, so a local run
+                  does not advertise a Render host it is not querying. */}
+              <span>Host: {hostLabel}</span>
             </span>
           </div>
         }
@@ -518,7 +581,7 @@ export function ApiPage() {
               {isExecuting ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Querying Render API…</span>
+                  <span>Querying the engine…</span>
                 </>
               ) : (
                 <>

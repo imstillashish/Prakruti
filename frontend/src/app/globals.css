@@ -108,6 +108,8 @@
   --series-2: #4f46e5;          /* ICON */
   --series-3: #c2410c;          /* GFS */
   --series-4: #be185d;          /* GEM */
+  --series-5: #7e22ce;          /* JMA GSM */
+  --series-6: #0f766e;          /* UKMO Seamless */
   /* Gradient colorway deep bases — the fill text is measured against.
      One per colorway; the animated ramp rides on top of it. */
   --colorway-deep-ocean: #0d74ce;    /* action */
@@ -169,6 +171,8 @@
   --color-series-2: var(--series-2);
   --color-series-3: var(--series-3);
   --color-series-4: var(--series-4);
+  --color-series-5: var(--series-5);
+  --color-series-6: var(--series-6);
   --color-success: var(--semantic-success);
   --color-text-link: var(--color-text-link);
   --color-sky-light: var(--color-sky-light);
@@ -375,8 +379,11 @@ body {
 }
 
 /* Welcome splash: the blend diagram draws itself in, sources first, the merged
-   output last. `pathLength={1}` on each path normalises the dash so one
-   keyframe pair serves every line length. */
+   output last, then a pulse travels each feed into the junction. `pathLength={1}`
+   normalises every line, so one dash pattern serves all of them.
+
+   `stroke-dasharray` is what makes the draw visible. A dashoffset alone does
+   nothing to a solid stroke, which is why this entrance never actually played. */
 @keyframes welcome-draw {
   from {
     stroke-dashoffset: 1;
@@ -387,14 +394,37 @@ body {
 }
 
 .welcome-draw {
+  stroke-dasharray: 1;
   stroke-dashoffset: 0;
   animation: welcome-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: calc(var(--i, 0) * 90ms + 120ms);
 }
 
+/* The travelling pulse. Dash and gap are fractions of the normalised path, so
+   0.08 reads the same on a 110-unit feed and the 170-unit output. One period is
+   0.5, which is what the offset moves by — hence the seamless loop. The delay
+   clears the draw-in (the slowest line lands at 1.38s) so the sequence reads as
+   fill, then flow. */
+@keyframes welcome-flow {
+  to {
+    stroke-dashoffset: -0.5;
+  }
+}
+
+.welcome-flow {
+  stroke-dasharray: 0.08 0.42;
+  stroke-dashoffset: 0;
+  animation: welcome-flow 2.6s linear 1.5s infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .welcome-draw {
     animation: none;
+  }
+
+  .welcome-flow {
+    animation: none;
+    opacity: 0;
   }
 }
 

@@ -181,7 +181,9 @@ def check_8_lead_row_count(dfs):
     print("CHECK 8: forecast_history_lead.csv Row Count")
     print("=" * 60)
     lead_df = dfs["forecast_history_lead.csv"]
-    expected = 45 * 1464 * 4 * 3  # 790,560
+    # Grid completeness: 45 cities x 1464 hours x every model present x 3 leads.
+    # Deriving the model count keeps this honest as the model set grows.
+    expected = 45 * 1464 * lead_df["model"].nunique() * 3
     actual = len(lead_df)
     print(f"Expected rows: {expected}")
     print(f"Actual rows:   {actual}")
@@ -290,9 +292,10 @@ def check_12_lead_days_values(dfs):
     else:
         print(f"[FAIL] Expected [1, 2, 3], got {ld_vals}")
 
+    n_models = lead_df["model"].nunique()
     print(f"\nRows per lead_days:")
     for ld, count in lead_df.groupby("lead_days").size().items():
-        expected = 45 * 1464 * 4
+        expected = 45 * 1464 * n_models
         status = "PASS" if count == expected else "FAIL"
         print(f"  lead_days={ld}: {count} rows (expected {expected}) [{status}]")
 

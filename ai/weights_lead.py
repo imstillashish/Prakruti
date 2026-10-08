@@ -4,7 +4,9 @@ from pathlib import Path
 
 # Top-level named constant
 EPSILON = 1e-6
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+from ai.model_registry import discover_models
+
+MODELS = discover_models()
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Resolve project paths
@@ -29,17 +31,22 @@ df_weights = df_weights[ordered_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict Quality Control - raise clear error if violated)
 # -----------------------------------------------------------------------------
-# Assertion 1: Exactly 1620 rows: 45 cities, 3 variables, 3 lead_days, 4 models
-if len(df_weights) != 1620:
-    raise ValueError(f"Row count mismatch: expected 1620, got {len(df_weights)}")
-if df_weights["city"].nunique() != 45:
-    raise ValueError(f"City count mismatch: expected 45, got {df_weights['city'].nunique()}")
+# Assertion 1: complete grid — cities × variables × models × 3 leads
+n_cells = df_weights.groupby(["city", "variable", "model", "lead_days"]).ngroups
+expected_cells = (
+    df_weights["city"].nunique()
+    * df_weights["variable"].nunique()
+    * df_weights["model"].nunique()
+    * df_weights["lead_days"].nunique()
+)
+if len(df_weights) != n_cells or n_cells != expected_cells:
+    raise ValueError(
+        f"Weight grid incomplete: {n_cells} cells, expected {expected_cells} ({len(df_weights)} rows)"
+    )
 if df_weights["variable"].nunique() != 3:
     raise ValueError(f"Variable count mismatch: expected 3, got {df_weights['variable'].nunique()}")
 if df_weights["lead_days"].nunique() != 3:
     raise ValueError(f"Lead days count mismatch: expected 3, got {df_weights['lead_days'].nunique()}")
-if df_weights["model"].nunique() != 4:
-    raise ValueError(f"Model count mismatch: expected 4, got {df_weights['model'].nunique()}")
 
 # Assertion 2: No NaN, every weight > 0 and < 1
 if df_weights["weight"].isna().any():

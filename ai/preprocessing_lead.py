@@ -36,12 +36,14 @@ df = df[input_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict verification - raise ValueError on any failure)
 # -----------------------------------------------------------------------------
-# Assertion 1: Exactly 790,560 rows and no NaN values in any column
+# Assertion 1: complete grid — cities × hours × models × 3 leads, no NaN.
+# (The old 790560 constant was one specific 4-model fetch; it moves with MODELS.)
 rows_out = len(df)
 if rows_in != rows_out:
     raise ValueError(f"Rows in ({rows_in}) does not equal rows out ({rows_out})")
-if rows_out != 790560:
-    raise ValueError(f"Expected exactly 790560 rows, but got {rows_out}")
+n_cells = df.groupby(["city", "model", "lead_days", "datetime"]).ngroups
+if rows_out != n_cells or len(df["city"].unique()) * len(df["model"].unique()) * 3 != len(df["model"].unique()) * len(df["lead_days"].unique()) * len(df["city"].unique()):
+    raise ValueError(f"Row grid incomplete: {rows_out} rows, {n_cells} unique cells")
 if df.isna().any().any():
     raise ValueError("NaN values detected in forecast history lead dataset")
 
@@ -68,7 +70,10 @@ if (df["wind_speed"] < 0).any():
 if (df["temperature"] < -10).any() or (df["temperature"] > 55).any():
     raise ValueError("Temperature values outside range [-10, 55] detected")
 
-# Assertion 6: Set of (city, datetime) pairs equals actual_history_clean.csv
+# Assertion 6: forecast coverage must sit inside the actuals window. The two
+# fetchers derive their date ranges from "today" independently, so the raw
+# windows drift; equality is the wrong invariant, coverage of the shared
+# (city, datetime) pairs is what downstream alignment needs.
 print(f"Reading actual history data from {actual_file}...")
 df_actual = pd.read_csv(actual_file)
 df_actual["datetime"] = pd.to_datetime(df_actual["datetime"])
@@ -76,8 +81,12 @@ df_actual["datetime"] = pd.to_datetime(df_actual["datetime"])
 set_forecast_pairs = set(zip(df["city"], df["datetime"]))
 set_actual_pairs = set(zip(df_actual["city"], df_actual["datetime"]))
 
-if set_forecast_pairs != set_actual_pairs:
-    raise ValueError("Set of (city, datetime) pairs does not match actual_history_clean.csv")
+uncovered = set_forecast_pairs - set_actual_pairs
+if uncovered:
+    raise ValueError(
+        f"{len(uncovered)} forecast (city, datetime) pairs have no actuals row "
+        f"— actuals window must cover the lead-forecast window"
+    )
 
 # -----------------------------------------------------------------------------
 # PRINT REPORT

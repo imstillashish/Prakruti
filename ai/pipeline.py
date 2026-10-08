@@ -88,8 +88,12 @@ for step_num, script in enumerate(STEPS, 1):
     print(f"[{step_num}/{TOTAL}] Running {script}...")
 
     t_start = time.perf_counter()
-    # Run with the same interpreter; output streams directly to the terminal
-    proc = subprocess.run([sys.executable, script])
+    # Run with the same interpreter; output streams directly to the terminal.
+    # Stage scripts live in ai/ and import the ai. package, so the repo root
+    # must be importable regardless of where the pipeline itself was started.
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    env = dict(os.environ, PYTHONPATH=repo_root + os.pathsep + os.environ.get("PYTHONPATH", ""))
+    proc = subprocess.run([sys.executable, script], env=env)
     elapsed = time.perf_counter() - t_start
 
     if proc.returncode != 0:

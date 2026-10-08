@@ -16,7 +16,7 @@ import requests
 import pandas as pd
 
 
-MODELS = ["ecmwf_ifs04", "gfs_seamless", "icon_seamless", "gem_seamless"]
+MODELS = ["ecmwf_ifs04", "gfs_seamless", "icon_seamless", "gem_seamless", "jma_gsm", "ukmo_seamless"]
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
 RAW_FORECASTS_DIR = "data/raw_forecasts"
 
@@ -24,7 +24,9 @@ MODEL_FILE_MAP = {
     "ecmwf_ifs04": "data/raw_forecasts/ecmwf.csv",
     "gfs_seamless": "data/raw_forecasts/gfs.csv",
     "icon_seamless": "data/raw_forecasts/icon.csv",
-    "gem_seamless": "data/raw_forecasts/gem.csv"
+    "gem_seamless": "data/raw_forecasts/gem.csv",
+    "jma_gsm": "data/raw_forecasts/jma.csv",
+    "ukmo_seamless": "data/raw_forecasts/ukmo.csv",
 }
 
 

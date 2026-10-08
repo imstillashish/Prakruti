@@ -266,7 +266,9 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       }
     >
 
-      <div className="w-full h-[220px]">
+      {/* 190px canvas below sm: the 72h curve stays complete (pan/inspect
+          unaffected); the 30px went to the page budget, not the data. */}
+      <div className="w-full h-[180px] sm:h-[220px]">
         <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="line">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 18, right: 14, bottom: 0, left: 0 }}>
@@ -392,13 +394,14 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
           phoneCompact (Overview) hides it below lg: on that page the hero metric
           cards and the 72h chart carry the trend, and the D+1–3 detail this deck
           duplicates lives on the Forecast page. */}
-      <div className={`mt-5 pt-4 border-t border-border ${phoneCompact ? 'hidden lg:block' : ''}`}>
+      <div className={`mt-3 sm:mt-5 pt-3 sm:pt-4 border-t border-border ${phoneCompact ? 'hidden lg:block' : ''}`}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
               Day-Ahead Daily Horizons
             </span>
-            <span className="text-[11px] font-mono text-muted-foreground hidden sm:inline">
+            <span className="text-[11px] font-mono text-muted-foreground sm:hidden">(D+1–D+3)</span>
+            <span className="hidden sm:inline text-[11px] font-mono text-muted-foreground">
               (D+1 to D+3)
             </span>
           </div>
@@ -411,7 +414,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
         <div
           ref={deckRef}
           onScroll={handleScroll}
-          className="carousel-snap-deck lg:grid lg:grid-cols-3 lg:overflow-visible gap-3 pb-2 lg:pb-0 touch-pan-y -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0"
+          className="carousel-snap-deck lg:grid lg:grid-cols-3 lg:overflow-visible gap-3 pb-0 sm:pb-2 lg:pb-0 touch-pan-y -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0"
         >
           {dayCards.map((day, idx) => {
             const risk = getRiskTone(day.risk);
@@ -482,24 +485,25 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
           })}
         </div>
 
-        {/* Visual Dot Pagination Indicators (Mobile & Tablet <1024px) */}
-        <div className="flex lg:hidden items-center justify-center gap-1 mt-2 pb-1">
+        {/* Visual Dot Pagination Indicators (Mobile & Tablet <1024px).
+            Cards already scroll the deck on tap and the deck swipes, so below
+            lg the dots are display-only state (aria-hidden, no button box) —
+            the 44px button boxes here cost ~50px of page height per phone
+            screen for a gesture the deck already owns. */}
+        <div className="hidden sm:flex lg:hidden items-center justify-center gap-1 mt-2 pb-1" aria-hidden="true">
           {dayCards.map((day, idx) => (
-            <button
+            <span
               key={day.lead}
-              type="button"
-              onClick={() => scrollToDay(idx)}
-              aria-label={`Go to ${day.title}`}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center touch-target"
+              className="inline-flex h-6 w-6 items-center justify-center"
             >
               <span
                 className={`h-2 rounded-full transition-all duration-200 ${
                   activeDay === idx
                     ? 'w-6 bg-foreground'
-                    : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60'
+                    : 'w-2 bg-muted-foreground/30'
                 }`}
               />
-            </button>
+            </span>
           ))}
         </div>
       </div>

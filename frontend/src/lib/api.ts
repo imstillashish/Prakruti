@@ -576,6 +576,118 @@ export async function getSkillScores(city?: string, variable?: string): Promise<
   return fetchFromApi<SkillScoreRecord[]>(`/skill${query}`, []);
 }
 
+// ============================================================================
+// BYOM — Bring Your Own Model
+// ============================================================================
+
+export interface ByomScore {
+  rmse: number;
+  mae: number;
+  bias: number;
+  n: number;
+  skill?: number;
+}
+
+export interface ByomBlendSampleRow {
+  city: string;
+  datetime: string;
+  actual: number;
+  model: number;
+  blend_without: number;
+  blend_with: number;
+}
+
+export interface ByomBlendPreview {
+  variable: string;
+  weight: number;
+  rows: number;
+  blend_rmse: number | null;
+  blend_rmse_with_model: number | null;
+  sample: ByomBlendSampleRow[];
+}
+
+/** What POST /api/models/{id}/forecasts answers with. */
+export interface ByomIngestResult {
+  status: 'accepted' | 'staged';
+  model: string;
+  rows: number;
+  stored_rows: number;
+  cities: number;
+  coverage: { matched_actuals: number; share_of_actuals: number };
+  scores: Record<string, ByomScore> | null;
+  weight: Record<string, number> | null;
+  blend_preview: ByomBlendPreview[] | null;
+  notes: string[];
+}
+
+export interface ByomStagedModel {
+  model: string;
+  rows: number;
+  cities: number;
+  matched_actuals: number;
+  share_of_actuals: number;
+  from: string;
+  to: string;
+  scoreable: boolean;
+}
+
+/** The ingest limits the endpoint actually enforces, read from the server. */
+export interface ByomLimits {
+  model_id: string;
+  reserved_ids: string[];
+  row_cap: number;
+  min_rows_per_variable: number;
+  variables: string[];
+  built_in_models: string[];
+  /** The observed-weather window a post must fall inside to be scored. */
+  verification_window: { from: string | null; to: string | null };
+}
+
+export interface ByomRegistry {
+  models: ByomStagedModel[];
+  limits: ByomLimits;
+}
+
+/**
+ * GET /api/models/byom
+ * Staged foreign models plus the limits the ingest endpoint enforces.
+ */
+export async function getByomRegistry(): Promise<ByomRegistry> {
+  return fetchFromApi<ByomRegistry>('/models/byom', { models: [], limits: EMPTY_BYOM_LIMITS });
+}
+
+/**
+ * POST /api/models/{model_id}/forecasts
+ *
+ * Safe through the reconnect helper: the server upserts on (city, datetime), so
+ * a retried write replaces rows instead of duplicating them.
+ */
+export async function postByomForecasts(
+  modelId: string,
+  rows: unknown[]
+): Promise<ByomIngestResult> {
+  return fetchWithReconnect<ByomIngestResult>(
+    `/models/${encodeURIComponent(modelId)}/forecasts`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rows }),
+      totalTimeoutMs: 25000,
+    }
+  );
+}
+
+/** Mirrors api/byom.py's constants, for the first paint before the GET lands. */
+export const EMPTY_BYOM_LIMITS: ByomLimits = {
+  model_id: '^[a-z0-9_]{2,24}$',
+  reserved_ids: ['all', 'auto', 'byom', 'seamless'],
+  row_cap: 5000,
+  min_rows_per_variable: 24,
+  variables: ['temperature', 'rainfall', 'wind_speed'],
+  built_in_models: ['ecmwf', 'gfs', 'icon', 'gem', 'jma', 'ukmo'],
+  verification_window: { from: null, to: null },
+};
+
 /**
  * GET /api/alerts
  * Returns extreme_alerts.csv records
@@ -1100,6 +1212,8 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
       gfs: { name: 'GFS Seamless', color: SERIES.GFS },
       icon: { name: 'ICON Seamless', color: SERIES.ICON },
       gem: { name: 'GEM Seamless', color: SERIES.GEM },
+      jma: { name: 'JMA GSM', color: SERIES.JMA },
+      ukmo: { name: 'UKMO Seamless', color: SERIES.UKMO },
       ai: { name: 'AI Hybrid Model', color: '#000000' },
     };
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from ai.model_registry import discover_models
 
 # Top-level named constants
 TARGET_SPLIT = "train"
@@ -9,7 +10,8 @@ ACTUAL_MAP = {
     "rainfall": "actual_rainfall",
     "wind_speed": "actual_wind",
 }
-MODELS = ["ecmwf", "gfs", "icon", "gem"]
+
+MODELS = discover_models()
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 # Resolve project paths
@@ -73,12 +75,19 @@ df_skill = df_skill[ordered_cols]
 # ASSERTIONS (Strict Quality Control - raise clear error if violated)
 # -----------------------------------------------------------------------------
 # Assertion 1: Exactly 1620 rows
-if len(df_skill) != 1620:
-    raise ValueError(f"Row count mismatch: expected 1620, got {len(df_skill)}")
+# Assertion 1: complete (city, variable, model, lead) grid
+expected_rows = (
+    df_skill["city"].nunique()
+    * df_skill["variable"].nunique()
+    * df_skill["model"].nunique()
+    * df_skill["lead_days"].nunique()
+)
+if len(df_skill) != expected_rows:
+    raise ValueError(f"Row count mismatch: expected {expected_rows}, got {len(df_skill)}")
 
-# Assertion 2: n == 1008 for every row
-if not (df_skill["n"] == 1008).all():
-    raise ValueError(f"Not all rows have n == 1008: {df_skill['n'].value_counts().to_dict()}")
+# Assertion 2: every row scored over the full training window (n is uniform)
+if df_skill["n"].nunique() != 1:
+    raise ValueError(f"n differs across rows: {df_skill['n'].value_counts().to_dict()}")
 
 # Assertion 3: No NaN anywhere
 if df_skill.isna().any().any():

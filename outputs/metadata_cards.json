@@ -1,6 +1,6 @@
 {
   "engine_version": "cards-2026-10-03-v1",
-  "generated_at": "2026-10-03T11:55:59Z",
+  "generated_at": "2026-10-08T10:22:12Z",
   "model_cards": {
     "ecmwf": {
       "identity": {
@@ -23,24 +23,24 @@
         "variables": {
           "temperature": {
             "rank": 1,
-            "mae": 0.454356,
-            "bias": 0.061251
+            "mae": 0.465414,
+            "bias": 0.086987
           },
           "rainfall": {
             "rank": 1,
-            "mae": 0.237081,
-            "bias": -0.005077
+            "mae": 0.203614,
+            "bias": -0.004759
           },
           "wind_speed": {
             "rank": 1,
-            "mae": 1.592998,
-            "bias": -0.258405
+            "mae": 1.550249,
+            "bias": -0.198257
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.285714,
-          "rainfall": 0.221154,
-          "wind_speed": 0.214286
+          "temperature": 0.358108,
+          "rainfall": 0.208861,
+          "wind_speed": 0.333333
         }
       },
       "bias": {
@@ -48,7 +48,7 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": 0.061,
+              "value": 0.087,
               "unit": "°C",
               "reading": "under-forecast (runs low)"
             }
@@ -62,7 +62,7 @@
           },
           "wind_speed": {
             "national": {
-              "value": -0.258,
+              "value": -0.198,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -71,14 +71,14 @@
         "widest_city_gap": {
           "variable": "wind_speed",
           "city": "Mumbai",
-          "gap": 2.887,
+          "gap": 2.45,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": "RECEIVED",
-        "rows_last_cycle": 3240,
-        "leaderboard_rows": 1100
+        "rows_last_cycle": 2,
+        "leaderboard_rows": 1101
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -92,7 +92,7 @@
         "provider": "Prakruti — Team EXELION",
         "architecture": "Equal-weight multi-model ensemble mean",
         "feed_id": null,
-        "grid": "n/a — derived from the four model feeds on the 45-city pool",
+        "grid": "n/a — derived from the model feeds on the 45-city pool",
         "domain": "45 Indian cities",
         "run_cycle": "Rebuilt every pipeline cycle with the rolling 72-hour window",
         "max_lead": "72 h (3 lead days)",
@@ -103,28 +103,28 @@
       "profile": {
         "best_variable": "temperature",
         "mean_rank_accuracy_full_in": 3.0,
-        "board_firsts_in": 0,
+        "board_firsts_in": 1,
         "variables": {
           "temperature": {
             "rank": 3,
-            "mae": 0.676289,
-            "bias": -0.104742
+            "mae": 0.675722,
+            "bias": -0.164546
           },
           "rainfall": {
             "rank": 3,
-            "mae": 0.336093,
-            "bias": 0.008961
+            "mae": 0.293216,
+            "bias": -0.010398
           },
           "wind_speed": {
             "rank": 3,
-            "mae": 2.139463,
-            "bias": -1.082187
+            "mae": 1.875865,
+            "bias": -0.549371
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.260664,
-          "rainfall": 0.029268,
-          "wind_speed": 0.0
+          "temperature": 0.337748,
+          "rainfall": 0.057971,
+          "wind_speed": 0.36
         }
       },
       "bias": {
@@ -132,21 +132,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": -0.105,
+              "value": -0.165,
               "unit": "°C",
               "reading": "over-forecast (runs high)"
             }
           },
           "rainfall": {
             "national": {
-              "value": 0.009,
+              "value": -0.01,
               "unit": "mm/h",
-              "reading": "under-forecast (runs low)"
+              "reading": "over-forecast (runs high)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": -1.082,
+              "value": -0.549,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -154,15 +154,15 @@
         },
         "widest_city_gap": {
           "variable": "wind_speed",
-          "city": "Surat",
-          "gap": -3.011,
+          "city": "Chennai",
+          "gap": -2.735,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": null,
         "rows_last_cycle": null,
-        "leaderboard_rows": 695
+        "leaderboard_rows": 688
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -186,29 +186,29 @@
       },
       "profile": {
         "best_variable": "temperature",
-        "mean_rank_accuracy_full_in": 6.33,
+        "mean_rank_accuracy_full_in": 8.33,
         "board_firsts_in": 0,
         "variables": {
           "temperature": {
-            "rank": 6,
-            "mae": 1.179287,
-            "bias": 0.416321
+            "rank": 8,
+            "mae": 1.192571,
+            "bias": 0.397963
           },
           "rainfall": {
-            "rank": 7,
-            "mae": 0.505477,
-            "bias": 0.003597
+            "rank": 9,
+            "mae": 0.44184,
+            "bias": -0.010562
           },
           "wind_speed": {
-            "rank": 6,
-            "mae": 3.796114,
-            "bias": -2.125012
+            "rank": 8,
+            "mae": 3.706331,
+            "bias": -2.11345
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.208178,
-          "rainfall": 0.01378,
-          "wind_speed": 0.0
+          "temperature": 0.279167,
+          "rainfall": 0.022676,
+          "wind_speed": 0.078652
         }
       },
       "bias": {
@@ -216,21 +216,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": 0.416,
+              "value": 0.398,
               "unit": "°C",
               "reading": "under-forecast (runs low)"
             }
           },
           "rainfall": {
             "national": {
-              "value": 0.004,
+              "value": -0.011,
               "unit": "mm/h",
-              "reading": "under-forecast (runs low)"
+              "reading": "over-forecast (runs high)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": -2.125,
+              "value": -2.113,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -239,14 +239,14 @@
         "widest_city_gap": {
           "variable": "wind_speed",
           "city": "Surat",
-          "gap": -6.71,
+          "gap": -6.187,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": "RECEIVED",
-        "rows_last_cycle": 3240,
-        "leaderboard_rows": 1146
+        "rows_last_cycle": 2,
+        "leaderboard_rows": 1145
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -270,29 +270,29 @@
       },
       "profile": {
         "best_variable": "rainfall",
-        "mean_rank_accuracy_full_in": 6.0,
+        "mean_rank_accuracy_full_in": 7.33,
         "board_firsts_in": 2,
         "variables": {
           "temperature": {
-            "rank": 7,
-            "mae": 1.440311,
-            "bias": -0.578578
+            "rank": 9,
+            "mae": 1.403262,
+            "bias": -0.409501
           },
           "rainfall": {
             "rank": 4,
-            "mae": 0.413368,
-            "bias": 0.067679
+            "mae": 0.358752,
+            "bias": 0.046773
           },
           "wind_speed": {
-            "rank": 7,
-            "mae": 4.550914,
-            "bias": -3.615061
+            "rank": 9,
+            "mae": 4.25776,
+            "bias": -3.302201
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.048826,
-          "rainfall": 0.020492,
-          "wind_speed": 0.027431
+          "temperature": 0.052689,
+          "rainfall": 0.0181,
+          "wind_speed": 0.051075
         }
       },
       "bias": {
@@ -300,21 +300,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": -0.579,
+              "value": -0.41,
               "unit": "°C",
               "reading": "over-forecast (runs high)"
             }
           },
           "rainfall": {
             "national": {
-              "value": 0.068,
+              "value": 0.047,
               "unit": "mm/h",
               "reading": "under-forecast (runs low)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": -3.615,
+              "value": -3.302,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -323,14 +323,14 @@
         "widest_city_gap": {
           "variable": "wind_speed",
           "city": "Thiruvananthapuram",
-          "gap": 4.467,
+          "gap": 4.379,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": "RECEIVED",
-        "rows_last_cycle": 3240,
-        "leaderboard_rows": 1153
+        "rows_last_cycle": 2,
+        "leaderboard_rows": 1155
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -354,28 +354,28 @@
       },
       "profile": {
         "best_variable": "temperature",
-        "mean_rank_accuracy_full_in": 4.33,
+        "mean_rank_accuracy_full_in": 5.0,
         "board_firsts_in": 2,
         "variables": {
           "temperature": {
             "rank": 4,
-            "mae": 0.885733,
-            "bias": -0.317961
+            "mae": 0.878267,
+            "bias": -0.316263
           },
           "rainfall": {
-            "rank": 5,
-            "mae": 0.451025,
-            "bias": -0.030357
+            "rank": 6,
+            "mae": 0.38207,
+            "bias": -0.02592
           },
           "wind_speed": {
-            "rank": 4,
-            "mae": 2.792518,
-            "bias": 1.669728
+            "rank": 5,
+            "mae": 2.729654,
+            "bias": 1.604226
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.364,
-          "rainfall": 0.035484,
+          "temperature": 0.370044,
+          "rainfall": 0.039841,
           "wind_speed": 0.0
         }
       },
@@ -384,21 +384,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": -0.318,
+              "value": -0.316,
               "unit": "°C",
               "reading": "over-forecast (runs high)"
             }
           },
           "rainfall": {
             "national": {
-              "value": -0.03,
+              "value": -0.026,
               "unit": "mm/h",
               "reading": "over-forecast (runs high)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": 1.67,
+              "value": 1.604,
               "unit": "km/h",
               "reading": "under-forecast (runs low)"
             }
@@ -407,14 +407,98 @@
         "widest_city_gap": {
           "variable": "wind_speed",
           "city": "Vijayawada",
-          "gap": 3.707,
+          "gap": 3.4,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": "RECEIVED",
-        "rows_last_cycle": 3240,
-        "leaderboard_rows": 1111
+        "rows_last_cycle": 2,
+        "leaderboard_rows": 1112
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
+    "jma": {
+      "identity": {
+        "name": "JMA GSM",
+        "provider": "JMA — Japan Meteorological Agency",
+        "architecture": "Global spectral NWP (GSM)",
+        "feed_id": "jma_gsm",
+        "grid": "0.5° regular lat-lon (~20 km)",
+        "domain": "Global",
+        "run_cycle": "4 runs/day (00/06/12/18 UTC)",
+        "max_lead": "+11 days (264 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://www.jma.go.jp/jma/en/Activities/forecast.html",
+        "data_license": "JMA published open data (attribution)"
+      },
+      "profile": {
+        "best_variable": "rainfall",
+        "mean_rank_accuracy_full_in": 6.33,
+        "board_firsts_in": 0,
+        "variables": {
+          "temperature": {
+            "rank": 7,
+            "mae": 1.127177,
+            "bias": -0.262893
+          },
+          "rainfall": {
+            "rank": 5,
+            "mae": 0.366155,
+            "bias": -0.01658
+          },
+          "wind_speed": {
+            "rank": 7,
+            "mae": 3.452489,
+            "bias": 1.402999
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.275862,
+          "rainfall": 0.027778,
+          "wind_speed": 0.0
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.263,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": -0.017,
+              "unit": "mm/h",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": 1.403,
+              "unit": "km/h",
+              "reading": "under-forecast (runs low)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Chennai",
+          "gap": -9.577,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 2,
+        "leaderboard_rows": 1107
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -438,23 +522,23 @@
       },
       "profile": {
         "best_variable": "temperature",
-        "mean_rank_accuracy_full_in": 5.33,
+        "mean_rank_accuracy_full_in": 6.33,
         "board_firsts_in": 0,
         "variables": {
           "temperature": {
             "rank": 5,
-            "mae": 0.953599,
-            "bias": -0.01537
+            "mae": 0.955824,
+            "bias": -0.017281
           },
           "rainfall": {
-            "rank": 6,
-            "mae": 0.482205,
-            "bias": -0.003057
+            "rank": 8,
+            "mae": 0.414548,
+            "bias": -0.00435
           },
           "wind_speed": {
-            "rank": 5,
-            "mae": 2.836295,
-            "bias": -0.046918
+            "rank": 6,
+            "mae": 2.839429,
+            "bias": -0.092025
           }
         },
         "primary_threshold_csi": {
@@ -468,21 +552,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": -0.015,
+              "value": -0.017,
               "unit": "°C",
               "reading": "over-forecast (runs high)"
             }
           },
           "rainfall": {
             "national": {
-              "value": -0.003,
+              "value": -0.004,
               "unit": "mm/h",
               "reading": "over-forecast (runs high)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": -0.047,
+              "value": -0.092,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -501,13 +585,97 @@
         "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
       ]
     },
+    "ukmo": {
+      "identity": {
+        "name": "Met Office UM",
+        "provider": "Met Office — United Kingdom",
+        "architecture": "Unified Model (UM) global atmosphere",
+        "feed_id": "ukmo_seamless",
+        "grid": "10 km global (UM Global)",
+        "domain": "Global",
+        "run_cycle": "2 runs/day (00/12 UTC)",
+        "max_lead": "+7 days (168 h)",
+        "delivered_lead": "72 h (3-day Open-Meteo slice ingested)",
+        "source_url": "https://www.metoffice.gov.uk/research/approach/modelling-systems/unified-model",
+        "data_license": "Open Government Licence — UK (Met Office)"
+      },
+      "profile": {
+        "best_variable": "wind_speed",
+        "mean_rank_accuracy_full_in": 5.67,
+        "board_firsts_in": 0,
+        "variables": {
+          "temperature": {
+            "rank": 6,
+            "mae": 1.064794,
+            "bias": -0.483567
+          },
+          "rainfall": {
+            "rank": 7,
+            "mae": 0.397984,
+            "bias": -0.051339
+          },
+          "wind_speed": {
+            "rank": 4,
+            "mae": 2.504413,
+            "bias": -0.68954
+          }
+        },
+        "primary_threshold_csi": {
+          "temperature": 0.257009,
+          "rainfall": 0.061828,
+          "wind_speed": 0.195652
+        }
+      },
+      "bias": {
+        "convention": "bias = observed − forecast (ai/verify.py): positive = under-forecast",
+        "per_variable": {
+          "temperature": {
+            "national": {
+              "value": -0.484,
+              "unit": "°C",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "rainfall": {
+            "national": {
+              "value": -0.051,
+              "unit": "mm/h",
+              "reading": "over-forecast (runs high)"
+            }
+          },
+          "wind_speed": {
+            "national": {
+              "value": -0.69,
+              "unit": "km/h",
+              "reading": "over-forecast (runs high)"
+            }
+          }
+        },
+        "widest_city_gap": {
+          "variable": "wind_speed",
+          "city": "Srinagar",
+          "gap": -3.855,
+          "unit": "km/h"
+        }
+      },
+      "feed": {
+        "status": "RECEIVED",
+        "rows_last_cycle": 1,
+        "leaderboard_rows": 1125
+      },
+      "not_tracked": [
+        "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
+        "version_lifecycle_history — feeds expose a model id, not upstream version boundaries",
+        "curated_failure_modes — strengths/weaknesses below are derived from published ranks, not a curated registry"
+      ]
+    },
     "weighted_blend": {
       "identity": {
         "name": "Prakruti Blend",
         "provider": "Prakruti — Team EXELION",
         "architecture": "Inverse-error weighted multi-model blend (per city, lead day, variable)",
         "feed_id": null,
-        "grid": "n/a — derived from the four model feeds on the 45-city pool",
+        "grid": "n/a — derived from the model feeds on the 45-city pool",
         "domain": "45 Indian cities",
         "run_cycle": "Rebuilt every pipeline cycle with the rolling 72-hour window",
         "max_lead": "72 h (3 lead days)",
@@ -518,28 +686,28 @@
       "profile": {
         "best_variable": "temperature",
         "mean_rank_accuracy_full_in": 2.0,
-        "board_firsts_in": 2,
+        "board_firsts_in": 1,
         "variables": {
           "temperature": {
             "rank": 2,
-            "mae": 0.520353,
-            "bias": -0.024666
+            "mae": 0.552843,
+            "bias": -0.079676
           },
           "rainfall": {
             "rank": 2,
-            "mae": 0.300817,
-            "bias": 0.014461
+            "mae": 0.268847,
+            "bias": -0.000582
           },
           "wind_speed": {
             "rank": 2,
-            "mae": 1.633596,
-            "bias": -0.527645
+            "mae": 1.562313,
+            "bias": -0.255447
           }
         },
         "primary_threshold_csi": {
-          "temperature": 0.339506,
-          "rainfall": 0.032967,
-          "wind_speed": 0.076923
+          "temperature": 0.355556,
+          "rainfall": 0.083333,
+          "wind_speed": 0.25
         }
       },
       "bias": {
@@ -547,21 +715,21 @@
         "per_variable": {
           "temperature": {
             "national": {
-              "value": -0.025,
+              "value": -0.08,
               "unit": "°C",
               "reading": "over-forecast (runs high)"
             }
           },
           "rainfall": {
             "national": {
-              "value": 0.014,
+              "value": -0.001,
               "unit": "mm/h",
-              "reading": "under-forecast (runs low)"
+              "reading": "over-forecast (runs high)"
             }
           },
           "wind_speed": {
             "national": {
-              "value": -0.528,
+              "value": -0.255,
               "unit": "km/h",
               "reading": "over-forecast (runs high)"
             }
@@ -569,15 +737,15 @@
         },
         "widest_city_gap": {
           "variable": "wind_speed",
-          "city": "Goa",
-          "gap": -1.728,
+          "city": "Chennai",
+          "gap": -1.905,
           "unit": "km/h"
         }
       },
       "feed": {
         "status": null,
         "rows_last_cycle": null,
-        "leaderboard_rows": 690
+        "leaderboard_rows": 685
       },
       "not_tracked": [
         "ingestion_latency — per-model fetch timestamps are not recorded; cycle_state is cycle-level",
@@ -615,13 +783,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -656,13 +824,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -697,13 +865,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -738,13 +906,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -779,13 +947,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -820,54 +988,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
-      },
-      "not_tracked": [
-        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
-        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
-      ]
-    },
-    "BM-ACC-TEMP-W30": {
-      "board": "accuracy",
-      "variable": "temperature",
-      "unit": "°C",
-      "window_days": 30,
-      "metric": {
-        "primary": "MAE",
-        "direction": "lower is better"
-      },
-      "secondary_metrics": [
-        "rmse",
-        "bias"
-      ],
-      "geography": "45-city Indian pool + national aggregate (IN row)",
-      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
-      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
-      "sample_criteria": {
-        "min_hourly_pairs": 720,
-        "min_observed_events": 30,
-        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
-      },
-      "sample_sizes": {
-        "n_min": 32400,
-        "n_max": 32400,
-        "cases": null
-      },
-      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
-      "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
-        "days": 61
-      },
-      "snapshot": {
-        "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -902,24 +1029,24 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
         "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
       ]
     },
-    "BM-ACC-WIND-W7": {
+    "BM-ACC-TEMP-W30": {
       "board": "accuracy",
-      "variable": "wind_speed",
-      "unit": "km/h",
-      "window_days": 7,
+      "variable": "temperature",
+      "unit": "°C",
+      "window_days": 30,
       "metric": {
         "primary": "MAE",
         "direction": "lower is better"
@@ -937,19 +1064,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 7560,
-        "n_max": 7560,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -984,13 +1111,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1025,13 +1152,13 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1066,13 +1193,54 @@
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-ACC-WIND-W7": {
+      "board": "accuracy",
+      "variable": "wind_speed",
+      "unit": "km/h",
+      "window_days": 7,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 7560,
+        "n_max": 7560,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-30",
+        "end": "2026-09-28",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1104,17 +1272,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 164
+        "cases": 131
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1146,17 +1314,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 962
+        "cases": 760
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1188,17 +1356,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 151
+        "cases": 135
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1230,17 +1398,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 666
+        "cases": 610
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1272,17 +1440,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 13
+        "cases": 22
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1314,17 +1482,17 @@
       "sample_sizes": {
         "n_min": 65880,
         "n_max": 65880,
-        "cases": 172
+        "cases": 270
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1353,60 +1521,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
-      },
-      "not_tracked": [
-        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
-        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
-      ]
-    },
-    "BM-LD-RAIN-D2": {
-      "board": "lead",
-      "variable": "rainfall",
-      "unit": "mm/h",
-      "lead_days": 2,
-      "metric": {
-        "primary": "MAE",
-        "direction": "lower is better"
-      },
-      "secondary_metrics": [
-        "rmse",
-        "bias"
-      ],
-      "geography": "45-city Indian pool + national aggregate (IN row)",
-      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
-      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
-      "sample_criteria": {
-        "min_hourly_pairs": 720,
-        "min_observed_events": 30,
-        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
-      },
-      "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
-        "cases": null
-      },
-      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
-      "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
-        "days": 61
-      },
-      "snapshot": {
-        "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1435,19 +1562,60 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
+      },
+      "not_tracked": [
+        "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
+        "regime/season conditioning — unmet dimensions recorded in benchmark_meta.json (dims.not_conditioned)"
+      ]
+    },
+    "BM-LD-RAIN-D2": {
+      "board": "lead",
+      "variable": "rainfall",
+      "unit": "mm/h",
+      "lead_days": 2,
+      "metric": {
+        "primary": "MAE",
+        "direction": "lower is better"
+      },
+      "secondary_metrics": [
+        "rmse",
+        "bias"
+      ],
+      "geography": "45-city Indian pool + national aggregate (IN row)",
+      "seasonal_scope": "southwest monsoon 2026 (window constant; not a stratifier)",
+      "truth_reference": "actual_history_clean.csv (AWS/IMD-gridded ingest)",
+      "sample_criteria": {
+        "min_hourly_pairs": 720,
+        "min_observed_events": 30,
+        "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
+      },
+      "sample_sizes": {
+        "n_min": 32400,
+        "n_max": 32400,
+        "cases": null
+      },
+      "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
+      "evaluation_period": {
+        "start": "2026-07-30",
+        "end": "2026-09-28",
+        "days": 61
+      },
+      "snapshot": {
+        "engine_version": "bench-2026-10-02-v1",
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1476,19 +1644,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1517,19 +1685,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1558,19 +1726,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1599,19 +1767,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1640,19 +1808,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",
@@ -1681,19 +1849,19 @@
         "low_sample_policy": "strata under n_min publish low_sample=1; the IN row is the broader pool a low-sample city row falls back to. A context with no observed threshold exceedance publishes no extreme row."
       },
       "sample_sizes": {
-        "n_min": 45360,
-        "n_max": 45360,
+        "n_min": 32400,
+        "n_max": 32400,
         "cases": null
       },
       "uncertainty": "95% percentile (p2.5..p97.5), clamped to contain the observed value",
       "evaluation_period": {
-        "start": "2026-07-18",
-        "end": "2026-09-16",
+        "start": "2026-07-30",
+        "end": "2026-09-28",
         "days": 61
       },
       "snapshot": {
         "engine_version": "bench-2026-10-02-v1",
-        "generated_at": "2026-10-03T04:58:33Z"
+        "generated_at": "2026-10-08T10:22:12Z"
       },
       "not_tracked": [
         "per-stratum historical snapshots — the leaderboard is regenerated daily and no archive of past boards is retained",

@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+from ai.model_registry import discover_models
+
 # Named cutoff constant for train/test split
 TRAIN_TEST_CUTOFF = pd.Timestamp("2026-08-29 00:00:00")
 
@@ -47,10 +49,11 @@ df_pairs = pd.merge(df_pivot, df_ah, on=["city", "datetime"], how="inner")
 df_pairs["split"] = np.where(df_pairs["datetime"] < TRAIN_TEST_CUTOFF, "train", "test")
 
 # 5. Sort by (city, lead_days, datetime) and set explicit column ordering
+# Forecast columns derive from the model registry (see align.py).
 forecast_cols = [
-    "temperature_ecmwf", "temperature_gfs", "temperature_icon", "temperature_gem",
-    "rainfall_ecmwf", "rainfall_gfs", "rainfall_icon", "rainfall_gem",
-    "wind_speed_ecmwf", "wind_speed_gfs", "wind_speed_icon", "wind_speed_gem"
+    f"{var}_{mod}"
+    for var in ("temperature", "rainfall", "wind_speed")
+    for mod in discover_models()
 ]
 actual_cols = ["actual_temperature", "actual_rainfall", "actual_wind"]
 ordered_cols = ["city", "datetime", "lead_days", "split"] + forecast_cols + actual_cols
@@ -61,9 +64,11 @@ df_pairs = df_pairs[ordered_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict verification - raise clear ValueError on failure)
 # -----------------------------------------------------------------------------
-# Assertion 1: final rows == 197640 (65880 x 3), no NaN anywhere
-if len(df_pairs) != 197640:
-    raise ValueError(f"Final row count mismatch: expected 197640, got {len(df_pairs)}")
+# Assertion 1: final rows == unique (city, datetime) pairs x 3 leads.
+# (The old 197640 constant was one specific 4-model window's size.)
+expected_rows = df_pairs[["city", "datetime"]].drop_duplicates().shape[0] * 3
+if len(df_pairs) != expected_rows:
+    raise ValueError(f"Final row count mismatch: expected {expected_rows}, got {len(df_pairs)}")
 
 if df_pairs.isna().any().any():
     raise ValueError("NaN values detected in final pairs_lead DataFrame")
@@ -72,11 +77,11 @@ if df_pairs.isna().any().any():
 if df_pairs.duplicated(subset=["city", "datetime", "lead_days"]).any():
     raise ValueError("Duplicate entries found on (city, datetime, lead_days)")
 
-# Assertion 3: split counts: train == 136080, test == 61560
+# Assertion 3: split integrity, not a frozen window's counts.
 train_count = (df_pairs["split"] == "train").sum()
 test_count = (df_pairs["split"] == "test").sum()
-if train_count != 136080 or test_count != 61560:
-    raise ValueError(f"Split count mismatch: train={train_count} (expected 136080), test={test_count} (expected 61560)")
+if train_count == 0 or test_count == 0 or train_count + test_count != len(df_pairs):
+    raise ValueError(f"Split integrity failure: train={train_count}, test={test_count}")
 
 # Assertion 4: every city has train and test rows for every lead_days in {1, 2, 3}
 city_lead_split_counts = df_pairs.groupby(["city", "lead_days"])["split"].nunique()

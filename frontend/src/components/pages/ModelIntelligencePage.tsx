@@ -8,7 +8,7 @@ import { Panel } from '@/components/shell/Panel';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { getWeights, MOCK_REGION_DOMINANCE } from '@/lib/api';
 import type { RegionModelDominance } from '@/types';
-import { MapPin, Sparkles } from '@/components/icons';
+import { ArrowRight, MapPin, Sparkles } from '@/components/icons';
 export function ModelIntelligencePage() {
   const [dominance, setDominance] = useState<RegionModelDominance[]>(MOCK_REGION_DOMINANCE);
 
@@ -25,6 +25,36 @@ export function ModelIntelligencePage() {
         title="Model Intelligence"
         sub="Which forecast model is most accurate for your city, and by how much."
       />
+
+      {/* The one thing here a competitor cannot screenshot: the blend is open at
+          the write path. It sits at the top of the page because "any model can
+          join" is the claim the six-model table below is evidence for. */}
+      <Panel
+        title="Bring your own model"
+        subtitle="Any forecast model can earn a seat in the blend — and be told what that seat is worth"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <p className="max-w-[64ch] text-sm leading-relaxed text-muted-foreground">
+            POST a foreign model's hourly rows and Prakruti verifies it against observed weather
+            before it is admitted: RMSE and skill per variable, the weight inverse-RMSE weighting
+            would hand it, and what including it does to the blend's own error — all in the
+            response to that one request. Six models are blended today; a seventh is one call away.
+          </p>
+          <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
+            <code className="rounded-md border border-border bg-secondary/40 px-2 py-1 font-mono text-[11px] text-foreground">
+              POST /api/models/&#123;model_id&#125;/forecasts
+            </code>
+            <button
+              type="button"
+              data-nav="byom"
+              className="gradient-animated-ocean flex h-11 items-center gap-2 rounded-md px-4 text-sm font-semibold shadow-[0_8px_24px_rgba(13,116,206,0.18)] transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              Post a model
+              <ArrowRight size={15} />
+            </button>
+          </div>
+        </div>
+      </Panel>
 
       {/* Contribution (327px) and skill (386px) are the two short cards, so
           they pair evenly; the consensus card runs full width below — inside

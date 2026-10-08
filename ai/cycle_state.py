@@ -1,8 +1,8 @@
 """
 cycle_state.py — F-01.A Cycle Readiness (PRD §7.1.A, AC-03/25/30).
 
-Records per-model ingestion state for the current forecast cycle. All 4 models
-arrive in one Open-Meteo batch response, so "run detection" here is per-model
+Records per-model ingestion state for the current forecast cycle. Every model
+arrives in one Open-Meteo batch response, so "run detection" here is per-model
 presence in the ingested frame, plus a checksum of the raw source artifact.
 
 Reads:  outputs/interim/forecast_current_clean.csv (post-map, long format)
@@ -25,13 +25,17 @@ from pathlib import Path
 import pandas as pd
 
 base_dir = Path(__file__).resolve().parent.parent
+if str(base_dir) not in sys.path:
+    sys.path.insert(0, str(base_dir))
+
+from ai.model_registry import discover_models  # noqa: E402
 
 CLEAN_FC_CSV = base_dir / "outputs" / "interim" / "forecast_current_clean.csv"
 RAW_FC_CSV = base_dir / "data" / "forecast_current.csv"
 METADATA_JSON = base_dir / "outputs" / "metadata.json"
 CYCLE_STATE_JSON = base_dir / "outputs" / "cycle_state.json"
 
-EXPECTED_MODELS = ["ecmwf", "gfs", "icon", "gem"]
+EXPECTED_MODELS = discover_models()
 VARIABLES = ["temperature", "rainfall", "wind_speed"]
 
 
@@ -122,12 +126,14 @@ def verify() -> bool:
     ok = True
     now = datetime(2026, 10, 1, 12, 0, 0, tzinfo=timezone.utc)
 
-    # --- 1. synthetic frame: gem entirely missing -------------------------
+    # --- 1. synthetic frame: the last expected model entirely missing ------
+    n_expected = len(EXPECTED_MODELS)
+    dropped = EXPECTED_MODELS[-1]
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td)
         clean = tmp / "clean.csv"
         rows = []
-        for m in ["ecmwf", "gfs", "icon"]:
+        for m in EXPECTED_MODELS[:-1]:
             for c in ("A", "B"):
                 rows.append({"city": c, "model": m, "datetime": "2026-10-01 00:00:00",
                              "temperature": 25.0, "rainfall": 0.0, "wind_speed": 10.0})
@@ -136,18 +142,19 @@ def verify() -> bool:
         state = detect(clean_csv=clean, raw_csv=tmp / "none.csv",
                        metadata_path=tmp / "meta.json", outputs_dir=tmp, now=now)
         sc = state["source_completeness"]
-        if sc == {"expected": 4, "available": 3, "fallback": True} and state["missing_models"] == ["gem"]:
-            print("OK: 3/4 detected, gem MISSING, fallback true")
+        if (sc == {"expected": n_expected, "available": n_expected - 1, "fallback": True}
+                and state["missing_models"] == [dropped]):
+            print(f"OK: {n_expected - 1}/{n_expected} detected, {dropped} MISSING, fallback true")
         else:
             print(f"FAIL: subset detection {sc} missing={state['missing_models']}"); ok = False
 
         # --- 2. full frame → fallback false -------------------------------
-        rows.append({"city": "A", "model": "gem", "datetime": "2026-10-01 00:00:00",
+        rows.append({"city": "A", "model": dropped, "datetime": "2026-10-01 00:00:00",
                      "temperature": 24.0, "rainfall": 0.1, "wind_speed": 11.0})
         pd.DataFrame(rows).to_csv(clean, index=False)
         state2 = detect(clean_csv=clean, raw_csv=tmp / "none.csv", metadata_path=tmp / "meta.json",
                         outputs_dir=tmp, now=now)
-        if state2["source_completeness"] == {"expected": 4, "available": 4, "fallback": False}:
+        if state2["source_completeness"] == {"expected": n_expected, "available": n_expected, "fallback": False}:
             print("OK: full frame → fallback false")
         else:
             print(f"FAIL: full-frame completeness {state2['source_completeness']}"); ok = False

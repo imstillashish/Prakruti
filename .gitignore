@@ -24,6 +24,8 @@ secrets/
 .freebuff/
 .claude/
 .continue/
+# Local design-review critique output (agent artifacts, never published)
+.impeccable/
 # Downloaded agent skill caches and tool state (per-machine)
 .agents/
 agent/
@@ -153,6 +155,10 @@ desktop.ini
 # ------------------------------ Misc ------------------------------------------
 data/archive/
 .weather_cache/
+
+# BYOM rows POSTed at runtime. Foreign models are user data, not shipped CSVs:
+# the strict chain never reads them, and a Render redeploy drops them anyway.
+data/byom/
 
 # Throwaway worktree the §9.6 audit builds production in (never tracked)
 .verify-build/

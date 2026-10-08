@@ -83,6 +83,14 @@ const DotGrid: React.FC<DotGridProps> = ({
   // still measuring surface, and nothing needs to repaint under a pointer.
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  // Frame bookkeeping for the demand-driven paint below: `frameRef` holds the
+  // pending frame (0 when the field is at rest), `dirtyRef` marks a change the
+  // next frame still owes, `wakeRef` is the loop's restart hook and is assigned
+  // by the effect that owns it so the handlers do not have to chase it.
+  const frameRef = useRef(0);
+  const dirtyRef = useRef(false);
+  const wakeRef = useRef<() => void>(() => {});
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReduceMotion(mq.matches);
@@ -184,14 +192,38 @@ const DotGrid: React.FC<DotGridProps> = ({
       return;
     }
 
-    let rafId = 0;
-    const draw = () => {
+    // Painting is demand-driven. The field only changes while a pointer is
+    // moving across it or while displaced dots are still settling, so an idle
+    // grid is a still texture and has no reason to repaint. The unconditional
+    // loop this replaces asked for a frame every 16ms forever: on a phone,
+    // where there is no hover push to draw, that was a full-canvas clear and a
+    // few hundred fills per frame to render the same picture. Now an untouched
+    // field paints once per layout and once per tap.
+    const tick = () => {
+      frameRef.current = 0;
       paint();
-      rafId = requestAnimationFrame(draw);
+      const settling = dotsRef.current.some((d) => d._inertiaApplied);
+      if (!dirtyRef.current && !settling) return;
+      dirtyRef.current = false;
+      frameRef.current = requestAnimationFrame(tick);
     };
-    draw();
-    return () => cancelAnimationFrame(rafId);
+    wakeRef.current = () => {
+      if (!frameRef.current) frameRef.current = requestAnimationFrame(tick);
+    };
+
+    frameRef.current = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = 0;
+    };
   }, [paint, circlePath, reduceMotion]);
+
+  // Anything that moves a dot or recolours one on proximity asks for a frame;
+  // the loop above decides whether more follow it.
+  const requestPaint = useCallback(() => {
+    dirtyRef.current = true;
+    wakeRef.current();
+  }, []);
 
   // A resize resets the canvas, so relayout repaints as well as rebuilds —
   // under reduced motion that repaint is the only one it ever gets.
@@ -219,7 +251,7 @@ const DotGrid: React.FC<DotGridProps> = ({
     // move, and the listeners would only burn frames.
     if (reduceMotion) return;
 
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: MouseEvent | PointerEvent) => {
       const now = performance.now();
       const pr = pointerRef.current;
       const dt = pr.lastTime ? now - pr.lastTime : 16;
@@ -244,6 +276,9 @@ const DotGrid: React.FC<DotGridProps> = ({
       const rect = canvasRef.current!.getBoundingClientRect();
       pr.x = e.clientX - rect.left;
       pr.y = e.clientY - rect.top;
+      // Proximity recolouring alone changes the picture, so the frame is owed
+      // whether or not a dot was pushed hard enough to earn inertia.
+      requestPaint();
 
       for (const dot of dotsRef.current) {
         const dist = Math.hypot(dot.cx - pr.x, dot.cy - pr.y);
@@ -272,6 +307,7 @@ const DotGrid: React.FC<DotGridProps> = ({
       const rect = canvasRef.current!.getBoundingClientRect();
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
+      let pushed = false;
       for (const dot of dotsRef.current) {
         const dist = Math.hypot(dot.cx - cx, dot.cy - cy);
         if (dist < shockRadius && !dot._inertiaApplied) {
@@ -280,6 +316,7 @@ const DotGrid: React.FC<DotGridProps> = ({
           const falloff = Math.max(0, 1 - dist / shockRadius);
           const pushX = (dot.cx - cx) * shockStrength * falloff;
           const pushY = (dot.cy - cy) * shockStrength * falloff;
+          pushed = true;
           gsap.to(dot, {
             inertia: { xOffset: pushX, yOffset: pushY, resistance },
             onComplete: () => {
@@ -294,17 +331,29 @@ const DotGrid: React.FC<DotGridProps> = ({
           });
         }
       }
+      // A tap outside the shock radius moves nothing and owes no frame.
+      if (pushed) requestPaint();
     };
 
-    const throttledMove = throttle(onMove, 50);
-    window.addEventListener('mousemove', throttledMove, { passive: true });
+    // The field is a pointer affordance, and `mousemove` never fires on a phone
+    // or tablet — touch was getting a still texture and nothing else. Binding
+    // motion to touch would be worse than leaving it: this inertia work would run
+    // on every move of every scroll. So listen as a pointer, which also covers
+    // pens and precision trackpads `mousemove` misses, and drop touch outright.
+    // Touch keeps the tap shock wave below, which is the honest touch equivalent.
+    const anyFinePointer = window.matchMedia('(any-pointer: fine)').matches;
+    const throttledMove = throttle((e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
+      onMove(e);
+    }, 50);
+    if (anyFinePointer) window.addEventListener('pointermove', throttledMove, { passive: true });
     window.addEventListener('click', onClick);
 
     return () => {
-      window.removeEventListener('mousemove', throttledMove);
+      if (anyFinePointer) window.removeEventListener('pointermove', throttledMove);
       window.removeEventListener('click', onClick);
     };
-  }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength, reduceMotion]);
+  }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength, reduceMotion, requestPaint]);
 
   return (
     <section className={`p-4 flex items-center justify-center h-full w-full relative ${className}`} style={style}>

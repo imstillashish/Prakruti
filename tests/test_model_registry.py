@@ -15,12 +15,14 @@ from ai.model_registry import (  # noqa: E402
 
 
 def test_builtins_present():
-    for m in ("ecmwf", "gfs", "icon", "gem", "aifs", "ukmo"):
+    for m in ("ecmwf", "gfs", "icon", "gem", "jma", "ukmo"):
         assert m in BUILT_IN_MODELS
 
 
 def test_rename_map_covers_new_ids():
-    assert RENAME_MAP["ecmwf_aifs025"] == "aifs"
+    # AIFS was substituted for JMA on 2026-10-05: ecmwf_aifs025 serves all-null
+    # values on every Open-Meteo endpoint, jma_gsm serves clean data.
+    assert RENAME_MAP["jma_gsm"] == "jma"
     assert RENAME_MAP["ukmo_seamless"] == "ukmo"
     # the pre-existing four keep their mapping
     assert RENAME_MAP["ecmwf_ifs025"] == "ecmwf"
@@ -32,7 +34,7 @@ def test_rename_map_covers_new_ids():
 def test_normalize_identity_on_unknown():
     assert normalize_model("mymodel") == "mymodel"
     assert normalize_model("ecmwf_ifs025") == "ecmwf"
-    assert normalize_model("ecmwf_aifs025") == "aifs"
+    assert normalize_model("jma_gsm") == "jma"
 
 
 def test_discover_includes_builtin_and_byom(tmp_path, monkeypatch):
@@ -47,7 +49,7 @@ def test_discover_includes_builtin_and_byom(tmp_path, monkeypatch):
     )
     found = discover_models()
     assert found[:4] == ["ecmwf", "gfs", "icon", "gem"]
-    assert "aifs" in found and "ukmo" in found
+    assert "jma" in found and "ukmo" in found
     assert "my_model_v1" in found
     # no duplicates, builtin order preserved first
     assert len(found) == len(set(found))

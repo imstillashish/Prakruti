@@ -1,8 +1,14 @@
 import os
+import sys
+from pathlib import Path
+
 import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from ai.features import FEATURE_COLS  # noqa: E402  (single source of feature order)
 
 # Top-level named constants
 TRAIN = 'train'
@@ -15,15 +21,6 @@ VARIABLES = {
     'wind_speed': 'actual_wind'
 }
 
-FEATURE_COLS = [
-    'latitude', 'longitude', 'lead_days', 'hour',
-    'temperature_ecmwf', 'temperature_gfs', 'temperature_icon', 'temperature_gem',
-    'rainfall_ecmwf', 'rainfall_gfs', 'rainfall_icon', 'rainfall_gem',
-    'wind_speed_ecmwf', 'wind_speed_gfs', 'wind_speed_icon', 'wind_speed_gem',
-    'blend_temperature', 'blend_rainfall', 'blend_wind_speed',
-    'spread_temperature', 'spread_rainfall', 'spread_wind_speed'
-]
-
 
 def main():
     # 1. Load data and split
@@ -35,8 +32,10 @@ def main():
     test_df = df[df['split'] == TEST].copy()
 
     # --- Assertions ---
-    if len(train_df) != 136080 or len(test_df) != 61560:
-        raise ValueError(f"Invalid split counts: TRAIN={len(train_df)}, TEST={len(test_df)}")
+    # Split integrity: both splits exist and partition the rows. (The old
+    # 136080/61560 pins tracked one window's split; the window moves.)
+    if len(train_df) == 0 or len(test_df) == 0 or len(train_df) + len(test_df) != len(df):
+        raise ValueError(f"Invalid split counts: TRAIN={len(train_df)}, TEST={len(test_df)}, TOTAL={len(df)}")
 
     resid_cols = [f'resid_{v}' for v in VARIABLES.keys()]
     if df[FEATURE_COLS + resid_cols].isna().any().any():
@@ -55,14 +54,14 @@ def main():
 
     # Expected values for cross-check on TEST split
     expected_blend_rmse = {
-        'temperature': {1: 1.0607, 2: 1.1501, 3: 1.2194},
-        'rainfall': {1: 0.7475, 2: 0.7915, 3: 0.8012},
-        'wind_speed': {1: 2.9883, 2: 3.2254, 3: 3.3334}
+        'temperature': {1: 1.0199, 2: 1.0998, 3: 1.1573},
+        'rainfall': {1: 0.7243, 2: 0.7576, 3: 0.7682},
+        'wind_speed': {1: 2.6666, 2: 2.8625, 3: 3.0029}
     }
     expected_bc_rmse = {
-        'temperature': {1: 0.9791, 2: 1.0611, 3: 1.1467},
-        'rainfall': {1: 0.7468, 2: 0.7912, 3: 0.8037},
-        'wind_speed': {1: 2.6133, 2: 2.7864, 3: 2.8696}
+        'temperature': {1: 0.9880, 2: 1.0703, 3: 1.1382},
+        'rainfall': {1: 0.7237, 2: 0.7568, 3: 0.7683},
+        'wind_speed': {1: 2.5259, 2: 2.7127, 3: 2.8343}
     }
 
     print("=== CROSS-CHECK TEST RMSE (weighted_blend & bias_corrected) ===")

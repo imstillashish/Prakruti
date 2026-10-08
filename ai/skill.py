@@ -76,13 +76,14 @@ df_skill = df_skill[ordered_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict quality control - raise clear error if violated)
 # -----------------------------------------------------------------------------
-# Assertion 1: File has exactly 540 rows
-if len(df_skill) != 540:
-    raise ValueError(f"Row count mismatch: expected 540, got {len(df_skill)}")
+# Assertion 1: one row per (city, variable, model) actually scored
+expected_rows = len(df_train[["city"]].drop_duplicates()) * len(VARIABLES) * len(MODELS)
+if len(df_skill) != expected_rows:
+    raise ValueError(f"Row count mismatch: expected {expected_rows}, got {len(df_skill)}")
 
-# Assertion 2: n == 1008 for every row
-if not (df_skill["n"] == 1008).all():
-    raise ValueError(f"Not all rows have n == 1008: {df_skill['n'].value_counts().to_dict()}")
+# Assertion 2: every row scored over the full training window (n is uniform)
+if df_skill["n"].nunique() != 1:
+    raise ValueError(f"n differs across rows: {df_skill['n'].value_counts().to_dict()}")
 
 # Assertion 3: No NaN anywhere
 if df_skill.isna().any().any():

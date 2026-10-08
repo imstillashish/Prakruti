@@ -585,7 +585,7 @@ def _latest_overrides_for_city(city_lower):
     if not os.path.exists(DB_PATH):
         return {}
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = _override_conn()
         rows = conn.execute(
             "SELECT city, datetime, lead_days, variable, override_value, reason, user_id, created_at"
             " FROM decision_overrides ORDER BY id DESC").fetchall()
@@ -701,7 +701,7 @@ def list_decision_overrides():
     params.append(limit)
 
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = _override_conn()
         conn.row_factory = sqlite3.Row
         rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
         conn.close()
@@ -1098,6 +1098,39 @@ def get_model_cards():
         return jsonify({"error": "metadata_cards.json not found — run ai/cards.py"}), 404
     with open(path, encoding="utf-8") as f:
         return jsonify(json.load(f))
+
+
+@app.route('/api/models/byom', methods=['GET'])
+@app.route('/models/byom', methods=['GET'])
+def get_byom_models():
+    """Staged BYOM models plus the ingest limits the endpoint enforces."""
+    if not USE_PANDAS:
+        return jsonify({"error": "BYOM ingest requires pandas on this server"}), 503
+
+    from api.byom import list_staged
+
+    return jsonify(list_staged())
+
+
+@app.route('/api/models/<model_id>/forecasts', methods=['POST'])
+@app.route('/models/<model_id>/forecasts', methods=['POST'])
+def post_model_forecasts(model_id):
+    """BYOM ingest: score, weight and blend a foreign model in one call.
+
+    api/byom.py needs pandas, so it is imported here rather than at module level
+    to keep this app importable in environments where the pandas C extensions
+    are unavailable (see the guarded import at the top of this file).
+    """
+    if not USE_PANDAS:
+        return jsonify({"error": "BYOM ingest requires pandas on this server"}), 503
+
+    from api.byom import ingest
+
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "body must be JSON"}), 400
+    body, status = ingest(model_id, payload)
+    return jsonify(body), status
 
 
 @app.route('/api/cities', methods=['GET'])

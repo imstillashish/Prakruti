@@ -7,18 +7,22 @@ import { getBackendStatus, getMetadata, SERVER_WAKING_UP_MSG, type BackendStatus
 import { MorMark } from '@/components/brand/MorMark';
 import SplitFlapText from '@/components/SplitFlapText';
 import DotGrid from '@/components/DotGrid';
-import { AlertTriangle, ArrowRight, CheckCircle2, Gauge, Layers, RefreshCw, Satellite, ShieldCheck } from '@/components/icons';
+import { AlertTriangle, ArrowRight, CheckCircle2, Gauge, Layers, RefreshCw, Satellite, Send, ShieldCheck } from '@/components/icons';
 
 const SEEN_KEY = 'prakruti:welcome-seen';
 
 const STEPS = [
   {
     title: 'Every national weather model, one forecast.',
-    lede: 'Prakruti runs the world’s forecasting supercomputers side by side, then blends them into a single answer for each of India’s monitored stations.',
+    lede: 'Prakruti runs the world’s forecasting supercomputers side by side, then blends them into one answer for each monitored station.',
   },
   {
     title: 'Trust is measured, not assumed.',
-    lede: 'Each model is scored against observed weather, and the blend re-weights itself toward whichever model is winning for that variable, season and lead time.',
+    lede: 'Each model is scored against observed weather, so the blend re-weights toward whichever wins for that variable and lead time.',
+  },
+  {
+    title: 'Your own model can earn a seat here.',
+    lede: 'Post your model’s hourly rows: the engine scores them and prices the weight they would earn before admitting anything.',
   },
   {
     title: 'Warming the forecast engine.',
@@ -36,19 +40,23 @@ const FAILED_STEP = {
   lede: 'The last cycle timed out. Retrying usually gets through — and the dashboard keeps checking on its own either way.',
 } as const;
 
+// Each row carries a small instrument that plays its own claim once, then holds.
 const TRUST_ROWS = [
   {
     Icon: ShieldCheck,
+    Plot: ScoreBars,
     title: 'Scored against observations',
     body: 'Daily miss-rates per variable, kept as a running skill record.',
   },
   {
     Icon: Gauge,
+    Plot: WeightSplit,
     title: 'Weighted by verified skill',
     body: 'Influence follows the score — no model holds a permanent seat.',
   },
   {
     Icon: Layers,
+    Plot: SpreadBand,
     title: 'Merged with honest spread',
     body: 'The blend carries its uncertainty, so a confident number never hides disagreement.',
   },
@@ -190,7 +198,11 @@ export function WelcomeSplash() {
       // Named on the dialog itself: the heading swaps between steps, so a
       // labelledby pointing at it would name the dialog only some of the time.
       aria-label="Welcome to Prakruti"
-      className="fixed inset-0 z-50 flex flex-col bg-background outline-none"
+      // `h-[100dvh]` rather than a plain `inset-0`: the fixed overlay sizes to the
+      // layout viewport, which on iOS Safari includes the strip behind the
+      // toolbar, and the CTA sits in the footer at the very bottom of it. The
+      // dynamic viewport height keeps the button above the toolbar.
+      className="fixed inset-x-0 top-0 z-50 flex h-[100dvh] flex-col bg-background outline-none"
     >
       {/* The step heading swaps inside AnimatePresence, which announces
           nothing on its own — this stable region carries the step change. */}
@@ -211,7 +223,7 @@ export function WelcomeSplash() {
         />
       </div>
 
-      <header className="relative z-10 flex items-center justify-between gap-4 px-5 pt-5 sm:px-8 sm:pt-6">
+      <header className="relative z-10 flex items-center justify-between gap-4 px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-8 sm:pt-6">
         <div className="flex items-center gap-2.5">
           <MorMark className="h-7 w-7 shrink-0 text-foreground sm:h-8 sm:w-8" />
           <SplitFlapText
@@ -240,7 +252,14 @@ export function WelcomeSplash() {
         </button>
       </header>
 
-      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto">
+      {/* `overscroll-contain` keeps a flick at the end of the step from pulling
+          the dashboard behind the splash with it.
+          ponytail: measured at 844x390 (phone on its side) this scroller gets
+          245px for a ~470px step, so the figure there sits below the fold and
+          the step has to be swiped. Every tier in the §9.6 budget table is
+          portrait and clears it; the upgrade path is a height-scoped compact
+          mode once landscape phones join that table. */}
+      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={`${step}-${lastStep && engineLive ? 'live' : 'wait'}`}
@@ -248,10 +267,18 @@ export function WelcomeSplash() {
             animate={body.settled}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: dir === 1 ? -14 : 14, filter: 'blur(6px)' }}
             transition={reduce ? { duration: 0 } : { duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
-            className="grid min-h-full content-center gap-8 px-5 py-8 sm:px-8 sm:py-10 lg:grid-cols-12 lg:gap-14"
+            className="grid min-h-full content-center gap-6 px-5 py-6 sm:px-8 sm:py-10 lg:grid-cols-12 lg:gap-14"
           >
-            <section className="min-w-0 lg:col-span-5">
-              <h1 className="text-3xl font-semibold leading-[1.08] tracking-[-0.02em] text-foreground sm:text-4xl">
+            {/* Two things scale with the device rather than the viewport label:
+                the measure and the column split. The copy takes its cap from
+                `sm`, not `md`: between 640 and 768 there is no other stop, and
+                an uncapped heading there runs the full 700px of a fold.
+                The split is 6/6 from `lg` on. The 5/7 asymmetry this used to
+                carry at `xl` needed the copy to stay at 36px; at the display-xl
+                headline below it squeezes the column to three lines, so the
+                even split holds all the way up. */}
+            <section className="min-w-0 sm:max-w-[36rem] lg:col-span-6">
+              <h1 className="text-3xl font-semibold leading-[1.08] tracking-[-0.03em] text-foreground sm:text-4xl xl:text-5xl">
                 {copy.title}
               </h1>
               <p className="mt-4 max-w-[46ch] text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -259,10 +286,15 @@ export function WelcomeSplash() {
               </p>
             </section>
 
-            <aside className="flex min-w-0 items-center justify-center lg:col-span-7 lg:justify-start">
+            {/* Left-flush, not centred. From 640px the figure is narrower than
+                the column, and a centred box under a left-aligned heading reads
+                as two alignment systems stacked on each other. On a phone the
+                step fills the width, so the two are the same thing there. */}
+            <aside className="flex min-w-0 items-center justify-start lg:col-span-6">
               {step === 0 && <BlendDiagram />}
               {step === 1 && <TrustRows />}
-              {step === 2 && (
+              {step === 2 && <SeatsDiagram />}
+              {step === 3 && (
                 <EngineState
                   state={engineFailed ? 'failed' : engineLive ? 'live' : 'starting'}
                   message={statusMessage || SERVER_WAKING_UP_MSG}
@@ -275,7 +307,7 @@ export function WelcomeSplash() {
         </AnimatePresence>
       </div>
 
-      <footer className="relative z-10 border-t border-border bg-background/85 px-5 py-4 backdrop-blur-sm sm:px-8">
+      <footer className="relative z-10 border-t border-border bg-background/85 px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm sm:px-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-1.5" role="group" aria-label="Welcome steps">
             {STEPS.map((s, i) => (
@@ -285,12 +317,23 @@ export function WelcomeSplash() {
                 onClick={() => go(i)}
                 aria-label={`Step ${i + 1} of ${STEPS.length}`}
                 aria-current={i === step ? 'step' : undefined}
-                className="group relative flex h-11 w-11 items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring lg:h-8 lg:w-12"
+                // The tier that shrinks this pip is a *pointer* tier, not a wide
+                // one: `lg` also covers every tablet in landscape, where a 32px
+                // tall pip is under the 44px touch floor. So the shrink asks the
+                // pointer what it is instead of asking the viewport how wide it
+                // is — a mouse gets the tighter pip at 1024px, an iPad keeps 44.
+                className="group relative flex h-11 w-11 items-center rounded-md transition-transform active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring lg:any-pointer-fine:h-8 lg:any-pointer-fine:w-12"
               >
                 <span className="relative h-1 w-full overflow-hidden rounded-full bg-secondary">
                   <span
                     className="absolute inset-y-0 left-0 bg-[var(--colorway-deep-ocean)] transition-[width] duration-500 ease-out"
-                    style={{ width: i <= step ? '100%' : '0%' }}
+                    style={{
+                      width: i <= step ? '100%' : '0%',
+                      // The step you are on carries the moving ramp; the ones
+                      // behind it hold the flat base, so the track reads as a
+                      // route rather than four identical fills.
+                      backgroundImage: i === step ? 'var(--colorway-ramp-ocean)' : undefined,
+                    }}
                   />
                 </span>
               </button>
@@ -324,62 +367,187 @@ export function WelcomeSplash() {
 }
 
 /**
- * Four model feeds converging on one blended line. The sources draw first, the
- * merged output last — the picture is the product's whole argument, so it gets
- * the one authored entrance animation on this surface.
+ * Four named model feeds converging on one blended line.
+ *
+ * The sources are stroked in their own categorical series token, so the picture
+ * names the models instead of showing four anonymous curves, and the legend
+ * below reads straight off the same tokens. Ocean stays on the merged output
+ * alone — that line is the product's answer, not a fourth data series.
+ *
+ * Two passes per line: a muted base that draws in, and a pulse that travels the
+ * same path afterwards. `pathLength={1}` lets one dash pattern serve a 110-unit
+ * feed and the 170-unit output alike.
  */
 function BlendDiagram() {
-  const sources = [
-    'M6 22 C 74 22, 108 84, 168 84',
-    'M6 63 C 74 63, 108 84, 168 84',
-    'M6 105 C 74 105, 108 84, 168 84',
-    'M6 146 C 74 146, 108 84, 168 84',
-  ];
-  const starts = [22, 63, 105, 146];
+  const feeds = [
+    { model: 'ECMWF', token: '--series-1', y: 22 },
+    { model: 'ICON', token: '--series-2', y: 63 },
+    { model: 'GFS', token: '--series-3', y: 105 },
+    { model: 'GEM', token: '--series-4', y: 146 },
+  ] as const;
+  const feedPath = (y: number) => `M6 ${y} C 74 ${y}, 108 84, 168 84`;
+  const OUTPUT_PATH = 'M172 84 H 342';
 
   return (
     <figure className="w-full max-w-[520px]">
-      <svg viewBox="0 0 348 168" className="h-auto w-full" role="img" aria-label="Several weather models blending into one forecast">
-        {starts.map((y, i) => (
-          <rect key={y} x={2} y={y - 4} width={8} height={8} rx={1.5} className="fill-muted-foreground/45" />
-        ))}
-        {sources.map((d, i) => (
-          <path
-            key={d}
-            d={d}
-            pathLength={1}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.25}
-            strokeLinecap="round"
-            className="welcome-draw text-muted-foreground/55"
-            style={{ '--i': i } as CSSProperties}
-          />
+      <svg
+        viewBox="0 0 348 168"
+        className="h-auto w-full"
+        role="img"
+        aria-label="ECMWF, ICON, GFS and GEM feeding one blended forecast"
+      >
+        {feeds.map(({ model, token, y }, i) => (
+          <g key={model}>
+            <rect x={2} y={y - 4} width={8} height={8} rx={1.5} fill={`var(${token})`} />
+            <path
+              d={feedPath(y)}
+              pathLength={1}
+              fill="none"
+              stroke={`var(${token})`}
+              strokeOpacity={0.55}
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              className="welcome-draw"
+              style={{ '--i': i } as CSSProperties}
+            />
+            <path
+              d={feedPath(y)}
+              pathLength={1}
+              fill="none"
+              stroke={`var(${token})`}
+              strokeWidth={2}
+              strokeLinecap="round"
+              className="welcome-flow"
+            />
+          </g>
         ))}
         <rect x={164} y={80} width={8} height={8} rx={1.5} className="fill-foreground/70" />
         <path
-          d="M172 84 H 342"
+          d={OUTPUT_PATH}
           pathLength={1}
           fill="none"
           stroke="var(--colorway-deep-ocean)"
           strokeWidth={2.5}
           strokeLinecap="round"
           className="welcome-draw"
-          style={{ '--i': 4 } as CSSProperties}
+          style={{ '--i': feeds.length } as CSSProperties}
+        />
+        <path
+          d={OUTPUT_PATH}
+          pathLength={1}
+          fill="none"
+          stroke="var(--colorway-deep-ocean)"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          className="welcome-flow"
         />
       </svg>
-      <figcaption className="mt-4 flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-        <span>National models</span>
-        {/* Out-of-flow: the two ends stay put while plain-text readers get a
-            verb between the labels instead of one run-on string. */}
-        <span className="sr-only">converged into one</span>
-        <span>Blended answer</span>
+      <figcaption className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+        {feeds.map(({ model, token }) => (
+          <span key={model} className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden
+              className="h-1.5 w-3 shrink-0 rounded-xs border border-border/60 shadow-2xs"
+              style={{ backgroundColor: `var(${token})` }}
+            />
+            {model}
+          </span>
+        ))}
+        {/* Decorative in the visual flow, spelled out for plain-text readers
+            underneath so the legend is not four names then one. */}
+        <span aria-hidden className="text-input">
+          →
+        </span>
+        <span className="sr-only">converge into one</span>
+        <span className="inline-flex items-center gap-1.5 text-foreground">
+          <span
+            aria-hidden
+            className="h-1.5 w-3 shrink-0 rounded-xs border border-border/60 shadow-2xs"
+            style={{ backgroundColor: 'var(--colorway-deep-ocean)' }}
+          />
+          Blended answer
+        </span>
       </figcaption>
     </figure>
   );
 }
 
-/** The three claims the engine can actually back up, cascading in behind the copy. */
+/**
+ * The six models the blend runs today, plus the open seat a reader's own model
+ * posts into.
+ *
+ * Each seat carries its series token as a rail down the left edge rather than a
+ * swatch beside the name — at this size a 12x6 chip read as decoration, and the
+ * rail makes the row of seats scan as one rack held together by identity. The
+ * empty place stays an outline, because an unclaimed seat is not a model yet.
+ *
+ * The seventh seat then arrives: it slides in from outside the rack and a ring
+ * flares off its edge once, which is the whole invitation. One shot, no loop —
+ * a seat that keeps pulsing is decoration, and this step already has the
+ * reader's attention.
+ */
+function SeatsDiagram() {
+  const reduce = useReducedMotion();
+  const seats = [
+    { name: 'ECMWF', token: '--series-1' },
+    { name: 'ICON', token: '--series-2' },
+    { name: 'GFS', token: '--series-3' },
+    { name: 'GEM', token: '--series-4' },
+    { name: 'JMA', token: '--series-5' },
+    { name: 'UKMO', token: '--series-6' },
+  ];
+  const arrive = reduce ? { duration: 0 } : { delay: 0.45, duration: 0.55, ease: [0.16, 1, 0.3, 1] as const };
+
+  return (
+    <figure className="w-full max-w-[520px]">
+      <ul
+        role="img"
+        aria-label="Six blended models, with the seventh seat open for your own model"
+        // Two columns on a phone: three squeezed `your_model` down to an
+        // ellipsis at 390px, and the plate is the point of the step.
+        className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+      >
+        {seats.map(({ name, token }) => (
+          <li
+            key={name}
+            className="relative flex items-center overflow-hidden rounded-md border border-border bg-card py-2.5 pl-3.5 pr-3"
+          >
+            <span
+              aria-hidden
+              className="absolute inset-y-0 left-0 w-[3px]"
+              style={{ backgroundColor: `var(${token})` }}
+            />
+            <span className="truncate font-mono text-[11px] font-semibold text-foreground">{name}</span>
+          </li>
+        ))}
+        <motion.li
+          initial={reduce ? { opacity: 0 } : { opacity: 0, x: 28 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={arrive}
+          className="relative flex items-center gap-2.5 rounded-md border border-dashed border-input py-2.5 pl-3.5 pr-3"
+        >
+          <Send size={13} className="shrink-0 text-action" />
+          <span className="truncate font-mono text-[11px] text-muted-foreground">your_model</span>
+          {!reduce && (
+            <motion.span
+              aria-hidden
+              initial={{ opacity: 0.55, scale: 1 }}
+              animate={{ opacity: 0, scale: 1.07 }}
+              transition={{ delay: 0.45, duration: 0.9, ease: 'easeOut' }}
+              className="pointer-events-none absolute inset-0 rounded-md ring-2 ring-[var(--action)]"
+            />
+          )}
+        </motion.li>
+      </ul>
+      <figcaption className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+        Six seats filled · the seventh is yours to post
+      </figcaption>
+    </figure>
+  );
+}
+
+/** The three claims the engine can actually back up, cascading in behind the copy.
+ *  Each one carries the small instrument that plays its own claim. */
 function TrustRows() {
   const reduce = useReducedMotion();
   const item = {
@@ -394,16 +562,101 @@ function TrustRows() {
       variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.09 } } }}
       className="w-full max-w-[560px] divide-y divide-border border-y border-border"
     >
-      {TRUST_ROWS.map(({ Icon, title, body }) => (
-        <motion.li key={title} variants={item} className="group flex items-start gap-4 py-4">
-          <Icon size={18} className="mt-0.5 shrink-0 text-action" />
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-foreground">{title}</div>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{body}</p>
+      {TRUST_ROWS.map(({ Icon, Plot, title, body }) => (
+        <motion.li key={title} variants={item} className="py-4">
+          {/* The instrument rides the title line and `flex-1` pushes it to the
+              row's far edge. Stacking it under the copy instead cost 36px a row
+              and put step 2 past the phone scroller — the claim and its evidence
+              share a line here at every width. */}
+          <div className="flex items-center gap-4">
+            <Icon size={18} className="shrink-0 text-action" />
+            <div className="min-w-0 flex-1 text-sm font-semibold text-foreground">{title}</div>
+            <Plot />
           </div>
+          <p className="mt-1 pl-[34px] text-sm leading-relaxed text-muted-foreground">{body}</p>
         </motion.li>
       ))}
     </motion.ul>
+  );
+}
+
+/**
+ * Row 1: a miss-rate record filling in. Bars are ink at two weights — error
+ * magnitude is not a hazard, so it gets no semantic hue, and the newest day
+ * simply sits darker than the days behind it.
+ */
+function ScoreBars() {
+  const reduce = useReducedMotion();
+  const heights = [14, 10, 16, 8, 12, 6, 9, 5];
+
+  return (
+    <svg viewBox="0 0 80 24" aria-hidden className="h-6 w-20 shrink-0">
+      {heights.map((h, i) => (
+        <motion.rect
+          key={i}
+          x={i * 10}
+          width={6}
+          rx={1}
+          initial={{ height: 0, y: 22 }}
+          animate={{ height: h, y: 22 - h }}
+          transition={reduce ? { duration: 0 } : { delay: 0.12 + i * 0.06, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className={i === heights.length - 1 ? 'fill-foreground/70' : 'fill-foreground/25'}
+        />
+      ))}
+      <line x1={0} y1={23} x2={80} y2={23} className="stroke-border" strokeWidth={1} />
+    </svg>
+  );
+}
+
+/**
+ * Row 2: the influence bar re-settling out of an even split. Deliberately
+ * unlabelled — the widths show the mechanism, and a number here would claim a
+ * precision the splash has not fetched yet. Identity rides the series tokens,
+ * which is what those colours are for.
+ */
+function WeightSplit() {
+  const reduce = useReducedMotion();
+  const tokens = ['--series-1', '--series-2', '--series-3', '--series-4'];
+  const settled = [34, 28, 21, 17];
+
+  return (
+    <div aria-hidden className="flex h-6 w-20 shrink-0 flex-col justify-center gap-1.5">
+      <div className="flex h-2.5 w-full overflow-hidden rounded-xs">
+        {tokens.map((token, i) => (
+          <motion.span
+            key={token}
+            initial={{ width: '25%' }}
+            animate={{ width: `${settled[i]}%` }}
+            transition={reduce ? { duration: 0 } : { delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="h-full shrink-0"
+            style={{ backgroundColor: `var(${token})` }}
+          />
+        ))}
+      </div>
+      <div className="h-px w-full bg-border" />
+    </div>
+  );
+}
+
+/**
+ * Row 3: a P10–P90 band narrowing as the models agree. Ink again, not ocean —
+ * the accent owns action, and a spread band is data.
+ */
+function SpreadBand() {
+  const reduce = useReducedMotion();
+
+  return (
+    <svg viewBox="0 0 80 24" aria-hidden className="h-6 w-20 shrink-0">
+      <motion.rect
+        x={0}
+        width={80}
+        initial={{ height: 18, y: 3 }}
+        animate={{ height: 6, y: 9 }}
+        transition={reduce ? { duration: 0 } : { delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="fill-foreground/15"
+      />
+      <line x1={0} y1={12} x2={80} y2={12} className="stroke-foreground/35" strokeWidth={1.5} />
+    </svg>
   );
 }
 
@@ -420,33 +673,47 @@ function EngineState({
   retrying: boolean;
   onRetry: () => void;
 }) {
+  const reduce = useReducedMotion();
+
   return (
     <div className="w-full max-w-[520px] overflow-hidden rounded-lg border border-border bg-card">
-      <div className="flex items-start gap-3 px-4 py-3.5">
-        {state === 'live' ? (
-          <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-success" />
-        ) : state === 'failed' ? (
-          <AlertTriangle size={18} className="mt-0.5 shrink-0 text-destructive" />
-        ) : (
-          <Satellite size={18} className="mt-0.5 shrink-0 text-action" />
-        )}
-        <div className="min-w-0">
-          <div className="text-sm font-semibold text-foreground">
-            {state === 'live'
-              ? 'Forecast engine connected'
-              : state === 'failed'
-              ? 'Forecast engine unreachable'
-              : 'Forecast engine starting'}
+      {/* Keyed on the state so the flip from starting to live is visible: the
+          engine arriving is the one thing this step exists to show, and a
+          silent string swap hid it. */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={state}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -5 }}
+          transition={reduce ? { duration: 0 } : { duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-start gap-3 px-4 py-3.5"
+        >
+          {state === 'live' ? (
+            <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-success" />
+          ) : state === 'failed' ? (
+            <AlertTriangle size={18} className="mt-0.5 shrink-0 text-destructive" />
+          ) : (
+            <Satellite size={18} className="mt-0.5 shrink-0 text-action" />
+          )}
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground">
+              {state === 'live'
+                ? 'Forecast engine connected'
+                : state === 'failed'
+                ? 'Forecast engine unreachable'
+                : 'Forecast engine starting'}
+            </div>
+            <div className="mt-1 font-mono text-xs text-muted-foreground">
+              {state === 'live'
+                ? 'Latest verified cycle loaded'
+                : state === 'failed'
+                ? message
+                : 'Cold start — up to 60 seconds'}
+            </div>
           </div>
-          <div className="mt-1 font-mono text-xs text-muted-foreground">
-            {state === 'live'
-              ? 'Latest verified cycle loaded'
-              : state === 'failed'
-              ? message
-              : 'Cold start — up to 60 seconds'}
-          </div>
-        </div>
-      </div>
+        </motion.div>
+      </AnimatePresence>
       {state === 'starting' && (
         <span aria-hidden className="loading-sweep block h-0.5 overflow-hidden bg-secondary">
           <span

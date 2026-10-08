@@ -24,12 +24,20 @@ OUTPUT_CSV = "data/forecast_history_lead.csv"
 
 PREV_RUNS_URL = "https://previous-runs-api.open-meteo.com/v1/forecast"
 
-MODELS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless"]
+MODELS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless", "jma_gsm", "ukmo_seamless"]
 LEAD_DAYS = [1, 2, 3]
 
-# Fixed date range matching forecast_history.csv
-START_DATE = "2026-07-18"
-END_DATE = "2026-09-16"
+# Moving window, derived the same way as fetch_history.py so the lead-forecast
+# window always sits inside the actuals window (preprocessing_lead asserts it).
+def get_date_range():
+    from datetime import datetime, timedelta
+    today = datetime.now().date()
+    end_date = today - timedelta(days=7)
+    start_date = end_date - timedelta(days=60)
+    return start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+
+
+START_DATE, END_DATE = get_date_range()
 
 
 def load_cities():
@@ -153,13 +161,16 @@ def fetch_city_data(city, lat, lon):
 
             for i in range(len(times)):
                 dt_str = times[i][:16]  # YYYY-MM-DDTHH:MM
+                # Some providers (JMA) emit tiny negative precipitation from
+                # numerical post-processing; precipitation is physically >= 0.
+                rainfall = max(precips[i], 0.0) if precips[i] is not None else None
                 records.append({
                     "city": city,
                     "model": model,
                     "datetime": dt_str,
                     "lead_days": lead,
                     "temperature": temps[i],
-                    "rainfall": precips[i],
+                    "rainfall": rainfall,
                     "wind_speed": winds[i],
                 })
 
@@ -209,7 +220,7 @@ def main():
 
     df.to_csv(OUTPUT_CSV, index=False)
     print(f"\nSuccessfully saved {len(df)} records to {OUTPUT_CSV}")
-    print(f"  Expected: {total_cities} cities x 1464 hours x 4 models x 3 leads = {total_cities * 1464 * 4 * 3}")
+    print(f"  Expected: {total_cities} cities x 1464 hours x {len(MODELS)} models x 3 leads = {total_cities * 1464 * len(MODELS) * 3}")
     print(f"  Actual:   {len(df)}")
 
 

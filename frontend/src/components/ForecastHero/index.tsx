@@ -186,7 +186,7 @@ function MetricCell({
   const caption = `${verb.charAt(0).toUpperCase()}${verb.slice(1)} over the next 72h`;
 
   return (
-    <div className="p-4 sm:p-5 bg-card min-w-0 h-full flex flex-col">
+    <div className="p-4 bg-card min-w-0 h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
         {icon}
@@ -331,7 +331,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
   return (
     <>
       {/* Hero band: sky-blue atmospheric wash — hero only (DESIGN.md v3) */}
-      {/* No mb-6: the page's own block rhythm (space-y-5/6) already spaces this
+      {/* No mb-6: the page's own block rhythm (space-y-6) already spaces this
           band from the grid below, so the extra 24px was a double gap. */}
       <div className="hero-sky rounded-xl border border-border p-2">
         {/* The verdict, the four numbers, the measured reading, the citizen brief
@@ -343,7 +343,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               at 768px — a whole screen of hero before any evidence. */}
           <div className="grid grid-cols-1 md:grid-cols-12">
             {/* Left: the plain-language answer */}
-            <div className="md:col-span-5 p-4 sm:p-6 border-b md:border-b-0 md:border-r border-border flex flex-col">
+            <div className="md:col-span-5 p-4 border-b md:border-b-0 md:border-r border-border flex flex-col">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   Station: {city}
@@ -463,7 +463,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
           <CitizenWeatherBrief metrics={forecast} city={city} advisories={advisories} />
 
           {/* Tier 3: Scientific Proof Progressive Disclosure */}
-          <div className="border-t border-border p-3">
+          <div className="border-t border-border p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-xs font-semibold text-foreground">
                 Scientific Verification & Model Accuracy

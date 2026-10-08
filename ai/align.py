@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+from ai.model_registry import discover_models
+
 # Hard-coded cutoff constant as requested
 TRAIN_TEST_CUTOFF = pd.Timestamp("2026-08-29 00:00:00")
 
@@ -59,9 +61,11 @@ df_pairs = df_pairs[ordered_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict quality control - raise clear error if violated)
 # -----------------------------------------------------------------------------
-# Assertion 1: Final row count == 65880
-if len(df_pairs) != 65880:
-    raise ValueError(f"Final row count mismatch: expected 65880, got {len(df_pairs)}")
+# Assertion 1: one row per (city, datetime) — inner join against actuals is
+# the row-count authority, not a hardcoded total from an earlier backfill.
+expected_rows = df_ah[["city", "datetime"]].drop_duplicates().shape[0]
+if len(df_pairs) != expected_rows:
+    raise ValueError(f"Final row count mismatch: expected {expected_rows}, got {len(df_pairs)}")
 
 # Assertion 2: No NaN anywhere
 if df_pairs.isna().any().any():
@@ -71,11 +75,13 @@ if df_pairs.isna().any().any():
 if df_pairs.duplicated(subset=["city", "datetime"]).any():
     raise ValueError("Duplicate (city, datetime) keys detected in final pairs DataFrame.")
 
-# Assertion 4: Split counts: train == 45360, test == 20520
+# Assertion 4: split integrity. The old row-count pins (45360/20520) were
+# constants of one specific backfill window and broke on every refetch; what
+# actually matters is that the cutoff splits the data and both splits exist.
 train_count = (df_pairs["split"] == "train").sum()
 test_count = (df_pairs["split"] == "test").sum()
-if train_count != 45360 or test_count != 20520:
-    raise ValueError(f"Split counts mismatch: train={train_count} (expected 45360), test={test_count} (expected 20520)")
+if train_count + test_count != len(df_pairs) or train_count == 0 or test_count == 0:
+    raise ValueError(f"Split integrity failure: train={train_count}, test={test_count}, total={len(df_pairs)}")
 
 # Assertion 5: Every city has both train and test rows
 city_split_counts = df_pairs.groupby("city")["split"].nunique()
@@ -89,10 +95,10 @@ if not (city_split_counts == 2).all():
 print("=" * 70)
 print("TEMPERATURE MAE CROSS-CHECK OVER ALL ROWS")
 print("=" * 70)
-from ai.model_registry import discover_models
 
-models = discover_models()
-for mod in models:
+# The cross-check guards the calibrated models against known EDA MAEs;
+# newly discovered models (JMA, UKMO, BYOM) have no historical expectation.
+for mod in EXPECTED_MAE:
     comp_mae = (df_pairs[f"temperature_{mod}"] - df_pairs["actual_temperature"]).abs().mean()
     exp_mae = EXPECTED_MAE[mod]
     status = "MATCH" if abs(comp_mae - exp_mae) <= 0.001 else "MISMATCH"

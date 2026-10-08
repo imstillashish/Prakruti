@@ -6,7 +6,7 @@
  * matching frontend/src/app/globals.css tokens.
  */
 
-export type ModelName = 'ECMWF' | 'ICON' | 'GFS' | 'GEM';
+export type ModelName = 'ECMWF' | 'ICON' | 'GFS' | 'GEM' | 'JMA' | 'UKMO';
 
 export const ACCENT = {
   base: '#0d74ce',
@@ -34,9 +34,11 @@ export const SERIES: Record<ModelName, string> = {
   ICON: '#4f46e5',
   GFS: '#c2410c',
   GEM: '#be185d',
+  JMA: '#7e22ce',
+  UKMO: '#0f766e',
 };
 
-export const SERIES_ORDER: readonly ModelName[] = ['ECMWF', 'ICON', 'GFS', 'GEM'] as const;
+export const SERIES_ORDER: readonly ModelName[] = ['ECMWF', 'ICON', 'GFS', 'GEM', 'JMA', 'UKMO'] as const;
 
 /**
  * Gradient colorway deep bases (spec 2026-10-02 §3.2). The opaque fill a label
@@ -68,8 +70,6 @@ export const SHADER_FILL = {
 
 export function seriesColor(model: string): string {
   const m = model.toUpperCase();
-  if (m === 'ICON') return SERIES.ICON;
-  if (m === 'GFS') return SERIES.GFS;
-  if (m === 'GEM') return SERIES.GEM;
+  if (m in SERIES) return SERIES[m as ModelName];
   return SERIES.ECMWF;
 }

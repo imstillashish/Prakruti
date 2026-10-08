@@ -145,7 +145,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       </div>
 
       {/* Main Geographic Selectors Bar */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-border bg-card px-3 py-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-border bg-card px-4 py-2.5">
         <span className="inline-flex items-center rounded-md bg-secondary px-2.5 py-1.5 text-xs font-semibold text-foreground border border-border">
           <MapPin size={13} className="mr-1.5 text-action" />
           India

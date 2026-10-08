@@ -74,13 +74,18 @@ df_blend = df_blend[final_cols]
 # -----------------------------------------------------------------------------
 # ASSERTIONS (Strict Quality Control - raise clear error if violated)
 # -----------------------------------------------------------------------------
-# Assertion 1: Output shape == (197640, 22), no NaN
-if df_blend.shape != (197640, 22):
-    raise ValueError(f"Output shape mismatch: expected (197640, 22), got {df_blend.shape}")
+# Assertion 1: one row per lead pair, columns = pairs_lead + 3 blend columns,
+# no NaN. (The old (197640, 22) pin was one specific 4-model window; it moves
+# with MODELS.)
+if df_blend.shape != (len(df_orig_order), len(final_cols)):
+    raise ValueError(
+        f"Output shape mismatch: expected ({len(df_orig_order)}, {len(final_cols)}), got {df_blend.shape}"
+    )
 if df_blend.isna().any().any():
     raise ValueError("NaN values detected in pairs_lead_blend.csv")
 
-# Assertion 2: For every row and variable, blend lies between min and max of 4 model forecasts
+# Assertion 2: For every row and variable, blend lies between the min and max
+# of all model forecasts
 for var in VARIABLES:
     fc_cols = [f"{var}_{m}" for m in MODELS]
     min_fc = df_blend[fc_cols].min(axis=1)
@@ -94,12 +99,14 @@ for var in VARIABLES:
             f"Blend values for {var} fall outside [min_forecast, max_forecast] bounds in {num_violations} rows."
         )
 
-# Assertion 3: Split counts unchanged: train 136080, test 61560
+# Assertion 3: split integrity — both splits exist and partition the rows.
+# (The old 136080/61560 pins were one specific window's split; the moving
+# window shifts it, and that shift is not a defect.)
 train_count = (df_blend["split"] == "train").sum()
 test_count = (df_blend["split"] == "test").sum()
-if train_count != 136080 or test_count != 61560:
+if train_count == 0 or test_count == 0 or train_count + test_count != len(df_blend):
     raise ValueError(
-        f"Split counts mismatch: train={train_count} (expected 136080), test={test_count} (expected 61560)"
+        f"Split integrity failure: train={train_count}, test={test_count}, total={len(df_blend)}"
     )
 
 # Assertion 4: Output row order identical to pairs_lead.csv

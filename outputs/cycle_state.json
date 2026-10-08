@@ -1,10 +1,12 @@
 {
-  "cycle_id": "2026-10-03T10:21:14",
+  "cycle_id": "2026-10-08T06:22:13",
   "expected_models": [
     "ecmwf",
     "gfs",
     "icon",
-    "gem"
+    "gem",
+    "jma",
+    "ukmo"
   ],
   "models": {
     "ecmwf": {
@@ -22,20 +24,30 @@
     "gem": {
       "status": "RECEIVED",
       "rows": 3240
+    },
+    "jma": {
+      "status": "RECEIVED",
+      "rows": 3240
+    },
+    "ukmo": {
+      "status": "RECEIVED",
+      "rows": 3240
     }
   },
   "received_models": [
     "ecmwf",
     "gfs",
     "icon",
-    "gem"
+    "gem",
+    "jma",
+    "ukmo"
   ],
   "missing_models": [],
   "source_completeness": {
-    "expected": 4,
-    "available": 4,
+    "expected": 6,
+    "available": 6,
     "fallback": false
   },
-  "forecast_checksum": "sha256:94cd190d2c1b2526dddfdfe66c496cc999cc2d6861e400fd01c61af1d1d379aa",
+  "forecast_checksum": "sha256:a4c2163ca193d5d4eb83163ef34ac09514d051ddd2063ec2edb5cdabd2fdbfa5",
   "stale": false
 }

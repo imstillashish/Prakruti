@@ -1,5 +1,5 @@
 'use client';
-import { AlertTriangle, Sparkles, CloudRain, Gauge, Globe2, HeartPulse, LayoutDashboard, Terminal, BarChart3 } from '@/components/icons';
+import { AlertTriangle, Sparkles, CloudRain, Cpu, Gauge, Globe2, HeartPulse, LayoutDashboard, Terminal, BarChart3 } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
 import type { NavPage } from '@/types';
 
@@ -12,6 +12,7 @@ export const NAV_ITEMS: { page: NavPage; label: string; subtitle: string; icon: 
   // a second icon language into the list.
   { page: 'rpi', label: 'RPI & Trust Atlas', subtitle: 'City risk map and which weather model to trust in your region', icon: Globe2 },
   { page: 'model-intelligence', label: 'Model Intelligence', subtitle: 'Which supercomputer predicts your city best and by how much', icon: Sparkles },
+  { page: 'byom', label: 'BYOM', subtitle: 'Post a foreign forecast model and see the weight it earns', icon: Cpu },
   { page: 'extreme-weather', label: 'Extreme Weather', subtitle: 'Early alerts for cloudbursts, severe heat, and storms', icon: AlertTriangle },
   { page: 'model-performance', label: 'Performance', subtitle: 'How much error the AI blend removes compared to any single model', icon: Gauge },
   { page: 'leaderboard', label: 'Leaderboard', subtitle: 'Who forecasts best, and on what evidence', icon: BarChart3 },
