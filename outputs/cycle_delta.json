@@ -1,36 +1,36 @@
 {
-  "cycle_id": "2026-10-08T06:22:13",
-  "previous_cycle_id": "2026-10-01T12:00:00",
+  "cycle_id": "2026-10-08T23:52:15",
+  "previous_cycle_id": "2026-10-08T06:22:13",
   "available": true,
   "quantile_shift": {
     "temperature": {
-      "p10": -0.1796,
-      "p50": -0.1796,
-      "p90": -0.1796
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "rainfall": {
-      "p10": -0.0167,
-      "p50": -0.0312,
-      "p90": -0.0476
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     },
     "wind_speed": {
-      "p10": -0.0805,
-      "p50": -0.0954,
-      "p90": -0.0805
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.0
     }
   },
   "biggest_p50_mover": {
     "temperature": {
-      "city": "Ludhiana",
-      "delta": -0.6416
+      "city": "Agartala",
+      "delta": 0.0
     },
     "rainfall": {
-      "city": "Bhubaneswar",
-      "delta": -0.3571
+      "city": "Agartala",
+      "delta": 0.0
     },
     "wind_speed": {
-      "city": "Jodhpur",
-      "delta": 1.3807
+      "city": "Agartala",
+      "delta": 0.0
     }
   },
   "confidence_shifts": {
