@@ -1,2 +1,12 @@
 city,datetime,event,severity,forecast_value,threshold
-Vijayawada,2026-11-03 09:00:00,High Wind,Moderate,25.88,25
+Vijayawada,2026-11-03 05:00:00,Heavy Rain,Moderate,4.35,4
+Vijayawada,2026-11-03 08:00:00,Heavy Rain,Moderate,4.18,4
+Vijayawada,2026-11-03 11:00:00,Heavy Rain,Moderate,5.38,4
+Vijayawada,2026-11-03 12:00:00,Heavy Rain,Moderate,4.81,4
+Vijayawada,2026-11-03 13:00:00,Heavy Rain,Moderate,7.24,4
+Vijayawada,2026-11-03 14:00:00,Heavy Rain,High,10.59,4
+Vijayawada,2026-11-03 15:00:00,Heavy Rain,High,9.33,4
+Vijayawada,2026-11-03 16:00:00,Heavy Rain,Moderate,6.57,4
+Vijayawada,2026-11-03 20:00:00,Heavy Rain,High,9.81,4
+Vijayawada,2026-11-03 21:00:00,Heavy Rain,High,15.63,4
+Vijayawada,2026-11-03 22:00:00,Heavy Rain,Moderate,6.07,4
