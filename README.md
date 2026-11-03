@@ -8,7 +8,7 @@
 [![Smart India Hackathon 2026](https://img.shields.io/badge/SIH-2026-orange.svg)](https://sih.gov.in/)
 [![Ministry](https://img.shields.io/badge/Ministry-Earth%20Sciences%20(MoES)-green.svg)](https://moes.gov.in/)
 
-![Prakruti overview]( screenshots/01_overview.png)
+![Prakruti overview](screenshots/01_overview.png)
 
 > **[→ Try the live demo](https://prakruti-ten.vercel.app)**
 
