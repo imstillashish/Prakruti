@@ -1,0 +1,53 @@
+name: Bug report
+description: Something is broken
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: check the [live demo](https://prakruti-ten.vercel.app) and confirm the bug is reproducible there or locally.
+
+  - type: input
+    id: summary
+    attributes:
+      label: What happened?
+      placeholder: "e.g. Confidence score shows 0% for all cities after midnight IST"
+    validations:
+      required: true
+
+  - type: input
+    id: expected
+    attributes:
+      label: What did you expect?
+      placeholder: "e.g. Confidence score shows the correct value"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      options:
+        - Live site (prakruti-ten.vercel.app)
+        - Local frontend (localhost:3000)
+        - Local API (localhost:5000)
+        - GitHub Actions / CI
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Select city …
+        3. See …
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Logs, screenshots, browser console errors

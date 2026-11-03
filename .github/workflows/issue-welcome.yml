@@ -1,0 +1,22 @@
+name: Issue Welcome
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "Thanks for filing this! 👋 We aim to respond within 24 hours.\n\nWhile you wait:\n- Check the [live demo](https://prakruti-ten.vercel.app) to reproduce\n- If it's a data question, the `/api/metadata` endpoint shows the current data cycle\n- For setup issues, `make dev` starts both services from one command"
+            })
