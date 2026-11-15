@@ -1,5 +1,5 @@
 {
-  "cycle_id": "2026-11-14T23:17:39",
+  "cycle_id": "2026-11-15T23:29:29",
   "expected_models": [
     "ecmwf",
     "gfs",
@@ -48,6 +48,6 @@
     "available": 6,
     "fallback": false
   },
-  "forecast_checksum": "sha256:1a3500db22095a5f13320e431379a2bb67e5c56462fb6517d0f09a424cdcd611",
+  "forecast_checksum": "sha256:aafdbeb3d6f551faae1b9e632454dc0f533ccc5038ef01935269eefd090301fa",
   "stale": false
 }
