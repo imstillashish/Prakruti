@@ -10,6 +10,7 @@ const VAR_SHORT: Record<string, string> = { temperature: 'Temp', rainfall: 'Rain
 const VAR_UNIT: Record<string, string> = { temperature: '°C', rainfall: 'mm/h', wind_speed: 'km/h' };
 const MODEL_DISPLAY: Record<string, string> = {
   ecmwf: 'ECMWF', gfs: 'GFS', icon: 'ICON', gem: 'GEM',
+  jma: 'JMA', ukmo: 'UKMO',
 };
 
 function fmt(v: number | null | undefined, digits = 3): string {
@@ -41,7 +42,7 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
 
   return (
     <Panel
-      title="Raw vs calibrated"
+      title="Before and after correction"
       subtitle={`What the correction layers actually change for ${selectedCity} — measured out-of-sample, not promised`}
       term="calibration"
       collapsibleOnPhone
@@ -61,21 +62,21 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
             {data.calibration_layers.map((layer, i) => (
               <div key={layer.name} className="flex-1 p-3 rounded-lg bg-card border border-border">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono font-bold text-muted-foreground bg-secondary rounded-sm px-1.5 py-0.5">
+                  <span className="text-[11.5px] font-mono font-bold text-muted-foreground bg-secondary rounded-sm px-1.5 py-0.5">
                     {i + 1}
                   </span>
-                  <span className="text-xs font-semibold font-mono uppercase tracking-wider text-foreground">
+                  <span className="text-xs font-semibold font-mono tracking-[0.01em] text-foreground">
                     {layer.name.replace(/_/g, ' ')}
                   </span>
                 </div>
-                <p className="text-[11px] font-mono text-muted-foreground leading-relaxed">{layer.description}</p>
+                <p className="text-[12px] font-mono text-muted-foreground leading-relaxed">{layer.description}</p>
               </div>
             ))}
           </div>
 
           {/* Hybrid correction effect — the operational layer */}
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono mb-2">
+            <div className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-mono mb-2">
               RF residual correction effect (test split RMSE)
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -85,11 +86,11 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
                     <span className="text-xs font-mono font-semibold text-foreground">
                       {VAR_SHORT[h.variable]} · day {h.lead_days}
                     </span>
-                    <span className="text-[11px] font-mono font-bold text-data-ok-text">
+                    <span className="text-[12px] font-mono font-bold text-data-ok-text">
                       −{h.rmse_reduction_pct.toFixed(1)}%
                     </span>
                   </div>
-                  <div className="text-[11px] font-mono text-muted-foreground">
+                  <div className="text-[12px] font-mono text-muted-foreground">
                     blend {h.blend_test_rmse.toFixed(3)} → hybrid <span className="text-foreground font-semibold">{h.hybrid_test_rmse.toFixed(3)}</span> {VAR_UNIT[h.variable]}
                   </div>
                 </div>
@@ -101,19 +102,19 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
               devices — 12 rows fits a phone without scrolling the page; the
               table itself scrolls horizontally where needed) */}
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono mb-2">
+            <div className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-mono mb-2">
               Additive bias correction, out-of-sample ({selectedCity})
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono border-collapse">
                 <thead>
                   <tr className="border-b border-border text-muted-foreground">
-                    <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Model</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">Var</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">Bias raw</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">Corrected</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">MAE Δ</th>
-                    <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">Bias cut</th>
+                    <th className="text-left pb-2 font-semibold tracking-[0.01em] text-[12px]">Model</th>
+                    <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">Var</th>
+                    <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">Bias raw</th>
+                    <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">Corrected</th>
+                    <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">MAE Δ</th>
+                    <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">Bias cut</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -142,7 +143,7 @@ export function ModelCalibration({ selectedCity = 'Kanpur' }: { selectedCity?: s
                 </tbody>
               </table>
             </div>
-            <p className="text-[11px] font-mono text-muted-foreground mt-2">
+            <p className="text-[12px] font-mono text-muted-foreground mt-2">
               Bias fitted on the train split, applied to unseen test days. MAE Δ green when the correction helps on
               unseen data; a negative bias cut means the correction overshot. Null = raw bias too small to score (&lt; 0.1 {rows[0]?.variable === 'rainfall' ? 'mm/h' : rows[0]?.variable === 'wind_speed' ? 'km/h' : '°C'}).
             </p>

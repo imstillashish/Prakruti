@@ -33,7 +33,7 @@ export function LoadingState({
           <span className="text-xs font-mono font-semibold text-foreground">{label}</span>
         </div>
         {hint ? (
-          <p className="mt-1 pl-[26px] text-[11px] font-mono text-muted-foreground">{hint}</p>
+          <p className="mt-1 pl-[26px] text-[12px] font-mono text-muted-foreground">{hint}</p>
         ) : null}
         <div className="mt-4 flex-1 space-y-2.5" aria-hidden>
           {Array.from({ length: rows }).map((_, i) => (

@@ -32,34 +32,32 @@ export function Hero({ meta }: HeroProps) {
     };
   }, []);
 
-  const models = ['ecmwf', 'gfs', 'icon', 'gem'];
+  const models = ['ecmwf', 'gfs', 'icon', 'gem', 'jma', 'ukmo'];
 
   return (
     <header className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-b from-sky-500/10 via-background to-background p-3 sm:p-6 md:p-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
         {/* Left: Editorial Heading & Context */}
         <div className="lg:col-span-8 space-y-3 sm:space-y-4">
-          <div className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-foreground/70 uppercase">
-            Model benchmark · verified against observations
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-medium leading-[1.3] tracking-[-0.015em] text-foreground sm:text-[28px]">
             Ranked against the weather that actually happened
           </h1>
-          <p className="hidden sm:block max-w-2xl text-sm md:text-base text-muted-foreground leading-relaxed">
-            Every rank is scored against station observations — stratified by variable, window and lead, never blended into one number.
+          <p className="max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
+            Every rank is scored against station observations, kept separate by variable, window and
+            lead time. The tables below never collapse those into one number.
           </p>
 
           {/* Stat chips row */}
           {meta ? (
             <div className="flex flex-wrap items-center gap-2 pt-2 text-xs font-mono text-foreground/80">
               <span className="rounded-md border border-border bg-card px-2.5 py-1 shadow-2xs">
-                {meta.window?.start ?? '—'} → {meta.window?.end ?? '—'}
+                {meta.window?.start ?? '—'} to {meta.window?.end ?? '—'}
               </span>
               <span className="rounded-md border border-border bg-card px-2.5 py-1 shadow-2xs">
                 {meta.stations_scored ?? 45} stations
               </span>
               <span className="rounded-md border border-border bg-card px-2.5 py-1 shadow-2xs">
-                {meta.row_count?.toLocaleString() ?? '—'} scorecard rows
+                {meta.row_count?.toLocaleString() ?? '—'} scored hours
               </span>
               <span className="rounded-md border border-border bg-card px-2.5 py-1 shadow-2xs">
                 {meta.methods_ranked ?? 7} methods
@@ -74,7 +72,7 @@ export function Hero({ meta }: HeroProps) {
 
         {/* Right: Live Cycle Rail */}
         <div className="lg:col-span-4 w-full">
-          <div className="rounded-lg border border-border/80 bg-card/80 p-2 backdrop-blur-xs shadow-2xs space-y-3 sm:p-4">
+          <div className="rounded-lg border border-border/80 bg-card p-2 shadow-2xs space-y-3 sm:p-4">
             {cycleError ? (
               <div className="text-xs text-muted-foreground font-mono">
                 Cycle state unavailable — run the forecast pipeline
@@ -84,7 +82,7 @@ export function Hero({ meta }: HeroProps) {
                 <div className="flex items-center justify-between text-xs font-mono text-foreground/90 border-b border-border/60 pb-2">
                   <span>Cycle {cycle.cycle_id}</span>
                   <span className="text-muted-foreground">
-                    {cycle.source_completeness?.available ?? 0}/{cycle.source_completeness?.expected ?? 4} sources
+                    {cycle.source_completeness?.available ?? 0}/{cycle.source_completeness?.expected ?? 6} sources
                   </span>
                 </div>
                 {/* Per-model receipt rows are a desktop detail; the phone hero keeps
@@ -124,7 +122,7 @@ export function Hero({ meta }: HeroProps) {
                   })}
                 </div>
                 {cycle.source_completeness?.fallback && (
-                  <div className="pt-1 text-[11px] font-mono text-warning border-t border-border/60">
+                  <div className="pt-1 text-[12px] font-mono text-warning border-t border-border/60">
                     fallback blending in effect
                   </div>
                 )}

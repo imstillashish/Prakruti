@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { ChevronDown } from '@/components/icons';
 import { Explain } from '@/components/explain/Explain';
 import type { GlossaryKey } from '@/components/explain/glossary';
@@ -10,6 +10,7 @@ export function Panel({ title, subtitle, term, actions, children, className, bod
   collapsibleOnTablet?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const bodyId = useId();
   const collapsible = collapsibleOnPhone || collapsibleOnTablet;
   const collapsed = collapsible && !open;
   // Literal class strings on purpose — Tailwind cannot see interpolated names.
@@ -25,8 +26,12 @@ export function Panel({ title, subtitle, term, actions, children, className, bod
             ten-line column: a collapsed panel measured 261-357px tall. From sm
             the rows share one line again. */}
         <div className="min-w-0 max-w-full basis-full sm:basis-0 sm:flex-1">
-          <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-            {title}{term && <Explain term={term} />}
+          {/* The title text sits in its own span: as a bare flex item it
+              shrank to min-content, so a narrow column broke "Model skill
+              score" into one word per line. */}
+          <h2 className="flex items-start gap-1.5 text-sm font-semibold text-foreground">
+            <span className="min-w-0">{title}</span>
+            {term && <Explain term={term} />}
           </h2>
           {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
         </div>
@@ -39,15 +44,17 @@ export function Panel({ title, subtitle, term, actions, children, className, bod
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              aria-label={`Toggle ${title} details`}
-              className={`${toggleVisibility} flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground hover:text-foreground active:scale-95 transition-all touch-manipulation`}
+              aria-controls={bodyId}
+              aria-label={`${open ? 'Hide' : 'Show'} ${title} details`}
+              className={`${toggleVisibility} flex h-11 items-center justify-center gap-1.5 rounded-md px-2 text-muted-foreground hover:text-foreground active:scale-95 transition-all touch-manipulation`}
             >
+              <span className="text-[12px] font-semibold">Details</span>
               <ChevronDown size={18} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
             </button>
           )}
         </div>
       </header>
-      <div className={`${bodyClassName ?? 'p-4'} ${collapsed ? `hidden ${bodyVisibility}` : ''}`}>{children}</div>
+      <div id={bodyId} className={`${bodyClassName ?? 'p-4'} ${collapsed ? `hidden ${bodyVisibility}` : ''}`}>{children}</div>
     </section>
   );
 }

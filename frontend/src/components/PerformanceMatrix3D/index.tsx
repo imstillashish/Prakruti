@@ -49,11 +49,8 @@ interface BarProps {
 
 function PerformanceBar({ cell, maxRmse, spacing, onHover, isHovered, colorMode }: BarProps) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const targetHeight = useRef(0);
   const currentHeight = useRef(0.01);
-
-  const normalizedHeight = (cell.rmse / maxRmse) * 4; // max height = 4 units
-  targetHeight.current = normalizedHeight;
+  const targetHeight = (cell.rmse / maxRmse) * 4; // max height = 4 units
 
   const baseColor = colorMode === 'model'
     ? MODEL_COLORS[cell.model] || '#171717'
@@ -63,7 +60,7 @@ function PerformanceBar({ cell, maxRmse, spacing, onHover, isHovered, colorMode 
     if (!meshRef.current) return;
 
     // Smooth animation
-    currentHeight.current += (targetHeight.current - currentHeight.current) * Math.min(delta * 4, 1);
+    currentHeight.current += (targetHeight - currentHeight.current) * Math.min(delta * 4, 1);
     const h = Math.max(0.02, currentHeight.current);
     meshRef.current.scale.y = h;
     meshRef.current.position.y = h / 2;
@@ -260,7 +257,7 @@ function FloatingTooltip({ cell, matrix }: { cell: PerformanceCell; matrix: Perf
             <span className="font-bold text-primary">{(cell.skillScore * 100).toFixed(0)}%</span>
           </div>
         </div>
-        <div className="mt-1.5 pt-1.5 border-t border-border text-[10px] text-muted-foreground leading-snug max-w-[170px] whitespace-normal">
+        <div className="mt-1.5 pt-1.5 border-t border-border text-[11.5px] text-muted-foreground leading-snug max-w-[170px] whitespace-normal">
           How far off this model is on average at this lead time — shorter bar is better.
         </div>
       </div>
@@ -357,8 +354,8 @@ export function PerformanceMatrix3D() {
 
   return (
     <Panel
-      title="3D performance matrix"
-      subtitle="How accurate each model is at each lead time — drag to rotate, scroll to zoom"
+      title="Accuracy at every lead time"
+      subtitle="Each model's accuracy at each day ahead — drag to rotate, scroll to zoom"
       term="rmse"
       collapsibleOnPhone
       collapsibleOnTablet
@@ -475,11 +472,11 @@ export function PerformanceMatrix3D() {
 
         {/* Best model at each lead time */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Lowest Error:</span>
+          <span className="text-[11.5px] font-bold text-muted-foreground tracking-[0.01em]">Lowest Error:</span>
           {LEAD_TIMES.map(lt => (
             <span
               key={lt}
-              className="px-1.5 py-0.5 text-[10px] font-bold border border-border rounded-sm bg-secondary text-foreground"
+              className="px-1.5 py-0.5 text-[11.5px] font-bold border border-border rounded-sm bg-secondary text-foreground"
             >
               {lt}: {bestModels[lt]}
             </span>
@@ -489,7 +486,9 @@ export function PerformanceMatrix3D() {
 
       {/* Insight footer */}
       <div className="mt-3 p-3 bg-accent border border-primary/30 font-mono text-xs text-accent-foreground leading-relaxed">
-        <span className="font-bold">Blended Hybrid AI–NWP</span> delivers lowest RMSE across all forecast horizons for {matrix.variable.toLowerCase()}, with superior error stability compared to raw individual physics models.
+        <span className="font-medium">The blend</span> carries the smallest average error at every lead
+        time for {matrix.variable.toLowerCase()} — and its error moves less from day to day than any
+        single model's.
       </div>
     </Panel>
   );

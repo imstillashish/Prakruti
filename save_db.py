@@ -60,11 +60,8 @@ def main():
     # 3. Ensure database directory exists
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
-    # 4. Remove old database to start fresh
-    if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
-        print(f"\n[Info] Removed old {DB_PATH}")
-
+    # 4. Replace only the CSV-derived tables. The decision_overrides audit table
+    # is intentionally kept in the same database and must survive rebuilds.
     # 5. Write to SQLite
     conn = sqlite3.connect(DB_PATH)
     try:

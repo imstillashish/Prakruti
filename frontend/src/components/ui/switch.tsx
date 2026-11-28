@@ -3,7 +3,7 @@
 import * as React from "react"
 import { ShaderSwitch, type ShaderSwitchProps } from "@/components/ui/ShaderSwitch"
 
-export interface SwitchProps extends ShaderSwitchProps {}
+export type SwitchProps = ShaderSwitchProps;
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof ShaderSwitch>,

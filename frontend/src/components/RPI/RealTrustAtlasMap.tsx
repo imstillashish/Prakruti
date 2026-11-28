@@ -25,6 +25,8 @@ const MODEL_STYLE_MAP: Record<string, { hex: string; label: string }> = {
   ICON: { hex: SERIES.ICON, label: 'ICON Seamless (DWD Germany)' },
   GFS: { hex: SERIES.GFS, label: 'GFS Global (NOAA / NCEP)' },
   GEM: { hex: SERIES.GEM, label: 'GEM Global (ECCC Canada)' },
+  JMA: { hex: SERIES.JMA, label: 'JMA GSM (Japan)' },
+  UKMO: { hex: SERIES.UKMO, label: 'UKMO Seamless (Met Office)' },
 };
 
 export default function RealTrustAtlasMap({
@@ -118,9 +120,9 @@ export default function RealTrustAtlasMap({
         rainRisk: Math.min(100, Math.round((f.properties.rainfall / 80) * 100)),
         heatRisk: Math.min(100, Math.max(0, Math.round(((f.properties.temperature - 25) / 20) * 100))),
         windRisk: Math.min(100, Math.round((f.properties.wind / 65) * 100)),
-        modelWeights: { ecmwf: 45, icon: 25, gfs: 18, gem: 12 },
+        modelWeights: f.properties.modelWeights,
         recommendations: [],
-        updatedAt: '2026-09-26T18:30:00Z',
+        updatedAt: geoJsonData.metadata.generatedAt,
       }));
     }
     if (activeModelFilter && activeModelFilter !== 'ALL') {
@@ -171,7 +173,7 @@ export default function RealTrustAtlasMap({
           </div>
 
           <!-- Station Tag -->
-          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded text-[9.5px] font-bold shadow-xs border pointer-events-none transition-all ${
+          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 rounded text-[12px] font-bold shadow-xs border pointer-events-none transition-all ${
             isSelected
               ? 'bg-foreground text-white border-foreground z-30 scale-105'
               : isDarkBg
@@ -197,15 +199,15 @@ export default function RealTrustAtlasMap({
       const popupHtml = `
         <div style="font-family: inherit; min-width: 195px; padding: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f0f0f3; padding-bottom: 4px;">
-            <strong style="font-size: 13px; color: #171717; text-transform: uppercase;">${st.city}</strong>
+            <strong style="font-size: 13px; color: #171717; ">${st.city}</strong>
             <span style="font-size: 10px; font-weight: 700; color: #0a5594; background: rgba(13,116,206,0.08); padding: 2px 6px; border-radius: 9999px;">${st.state}</span>
           </div>
           <div style="margin-bottom: 6px;">
-            <span style="font-size: 10px; color: #60646c; display: block;">Dominant NWP Model:</span>
+            <span style="font-size: 10px; color: #60646c; display: block;">Most-trusted model here:</span>
             <span style="font-size: 12px; font-weight: 800; color: ${color};">${dom} (${modelStyle.label.split(' ')[0]})</span>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 11px; background: #ffffff; padding: 6px; border-radius: 8px; border: 1px solid #f0f0f3;">
-            <div><span style="color: #60646c; font-size: 9.5px; display: block;">RPI Score</span><strong style="font-size: 12px; color: #171717;">${st.rpiScore}/100</strong></div>
+            <div><span style="color: #60646c; font-size: 11px; display: block;">Risk score</span><strong style="font-size: 12px; color: #171717;">${st.rpiScore}/100</strong></div>
             <div><span style="color: #60646c; font-size: 9.5px; display: block;">Confidence</span><strong style="font-size: 12px; color: #15803d;">${st.confidence}%</strong></div>
             <div><span style="color: #60646c; font-size: 9.5px; display: block;">Rainfall</span><strong style="font-size: 11px; color: ${DATA.rain};">${st.rainfall} mm</strong></div>
             <div><span style="color: #60646c; font-size: 9.5px; display: block;">Temp</span><strong style="font-size: 11px; color: #ab6400;">${st.temperature}°C</strong></div>
@@ -271,7 +273,7 @@ export default function RealTrustAtlasMap({
           <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
         </form>
 
-        <div className="px-2 py-1 rounded-full bg-card border border-border flex items-center gap-1.5 text-[10px] font-mono font-semibold text-muted-foreground">
+        <div className="px-2 py-1 rounded-full bg-card border border-border flex items-center gap-1.5 text-[11.5px] font-mono font-semibold text-muted-foreground">
           <span
             className={`w-1.5 h-1.5 ${
               apiConnected ? 'bg-success' : 'bg-warning'
@@ -319,7 +321,7 @@ export default function RealTrustAtlasMap({
 
       {/* Bottom Floating Legend Bar */}
       <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-md bg-card border border-border flex flex-wrap items-center gap-3 text-xs font-mono">
-        <div className="flex items-center gap-1.5 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">
+        <div className="flex items-center gap-1.5 text-muted-foreground font-bold tracking-[0.01em] text-[11.5px]">
           <ShieldCheck className="w-3.5 h-3.5 text-success" />
           <span>Dominant Model:</span>
         </div>
@@ -327,25 +329,25 @@ export default function RealTrustAtlasMap({
           <div className="flex items-center gap-1">
             <ModelEmblem method="ecmwf" size={13} />
             <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} />
-            <span className="text-foreground text-[11px]">ECMWF</span>
+            <span className="text-foreground text-[12px]">ECMWF</span>
           </div>
           <div className="flex items-center gap-1">
             <ModelEmblem method="icon" size={13} />
             <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} />
-            <span className="text-foreground text-[11px]">ICON</span>
+            <span className="text-foreground text-[12px]">ICON</span>
           </div>
           <div className="flex items-center gap-1">
             <ModelEmblem method="gfs" size={13} />
             <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} />
-            <span className="text-foreground text-[11px]">GFS</span>
+            <span className="text-foreground text-[12px]">GFS</span>
           </div>
           <div className="flex items-center gap-1">
             <ModelEmblem method="gem" size={13} />
             <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} />
-            <span className="text-foreground text-[11px]">GEM</span>
+            <span className="text-foreground text-[12px]">GEM</span>
           </div>
         </div>
-        <span className="text-[10px] text-muted-foreground normal-case">
+        <span className="text-[11.5px] text-muted-foreground normal-case">
           Each dot is a station, tinted by the model that forecasts it best
         </span>
       </div>

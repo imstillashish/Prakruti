@@ -115,7 +115,13 @@ def main():
     failures = []
     all_findings = []
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        # PLAYWRIGHT_CHROMIUM_PATH lets a host point at an installed Chromium
+        # when the Playwright-managed download does not match the pinned version.
+        launch_kwargs = {}
+        chromium_path = os.environ.get("PLAYWRIGHT_CHROMIUM_PATH")
+        if chromium_path:
+            launch_kwargs["executable_path"] = chromium_path
+        browser = p.chromium.launch(**launch_kwargs)
         for w, h, budget, tap_scan in TIERS:
             ctx = browser.new_context(
                 viewport={"width": w, "height": h},

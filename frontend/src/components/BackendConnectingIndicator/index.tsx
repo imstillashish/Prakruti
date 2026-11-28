@@ -140,7 +140,7 @@ export function BackendConnectingIndicator() {
               <div className="text-xs font-semibold leading-tight text-foreground">
                 Waking the forecast engine
               </div>
-              <div className="text-[10.5px] font-mono text-muted-foreground">
+              <div className="text-[11.5px] font-mono text-muted-foreground">
                 Live backend is starting up · up to 60s
               </div>
             </div>

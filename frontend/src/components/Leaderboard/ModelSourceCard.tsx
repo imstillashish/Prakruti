@@ -26,7 +26,7 @@ export function SourceToggle({
         onClick={onToggle}
         aria-expanded={open}
         aria-label={`Source for ${label ?? 'this model'}`}
-        title="Model source & provenance"
+        title="Where this model comes from"
         className="relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary after:absolute after:-inset-3 after:content-['']"
       >
         <Info size={13} />
@@ -39,7 +39,7 @@ export function SourceToggle({
       type="button"
       onClick={onToggle}
       aria-expanded={open}
-      className="relative flex touch-manipulation items-center gap-1 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-[10px] font-mono uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary after:absolute after:-inset-y-3 after:-inset-x-2 after:content-['']"
+      className="relative flex touch-manipulation items-center gap-1 rounded-md border border-border/60 bg-muted/30 px-2 py-1 text-[11.5px] font-mono uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary after:absolute after:-inset-y-3 after:-inset-x-2 after:content-['']"
     >
       <span className="inline-flex items-center gap-1.5">
         <Info size={12} className="shrink-0" />
@@ -63,8 +63,8 @@ function Field({
   wide?: boolean;
 }) {
   return (
-    <div className={`flex gap-2 text-[11px] leading-snug ${wide ? 'sm:col-span-2' : ''}`}>
-      <dt className="w-[104px] shrink-0 font-mono text-[10px] uppercase text-muted-foreground pt-px">
+    <div className={`flex gap-2 text-[12px] leading-snug ${wide ? 'sm:col-span-2' : ''}`}>
+      <dt className="w-[104px] shrink-0 font-mono text-[11.5px] uppercase text-muted-foreground pt-px">
         {label}
       </dt>
       <dd className="min-w-0 text-foreground">{value}</dd>
@@ -91,8 +91,8 @@ function FullModelCard({ method, label, card }: { method: string; label: string;
     <div className="rounded-md border border-border/60 bg-muted/25 p-3 space-y-2">
       <div className="flex items-center gap-2">
         <ModelEmblem method={method} size={14} />
-        <span className="text-[11px] font-semibold text-foreground">{identity.name || label}</span>
-        <span className="font-mono text-[10px] uppercase text-muted-foreground">model card</span>
+        <span className="text-[12px] font-semibold text-foreground">{identity.name || label}</span>
+        <span className="font-mono text-[11.5px] uppercase text-muted-foreground">model card</span>
       </div>
 
       <dl className="grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
@@ -120,10 +120,10 @@ function FullModelCard({ method, label, card }: { method: string; label: string;
       </dl>
 
       <div className="border-t border-border/40 pt-2">
-        <p className="font-mono text-[10px] uppercase text-muted-foreground mb-1">
+        <p className="font-mono text-[11.5px] uppercase text-muted-foreground mb-1">
           Full-window national profile (rank · MAE)
         </p>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-mono">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] font-mono">
           {vars.map((v) => (
             <span key={v}>
               <span className="text-muted-foreground">{VARIABLE_LABELS[v] || v}</span>{' '}
@@ -137,10 +137,10 @@ function FullModelCard({ method, label, card }: { method: string; label: string;
 
       {Object.keys(bias.per_variable).length > 0 && (
         <div className="border-t border-border/40 pt-2">
-          <p className="font-mono text-[10px] uppercase text-muted-foreground mb-1">
+          <p className="font-mono text-[11.5px] uppercase text-muted-foreground mb-1">
             Bias ({bias.convention.split(':')[1]?.trim() || bias.convention})
           </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-mono">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] font-mono">
             {Object.entries(bias.per_variable).map(([v, b]) =>
               b.national ? (
                 <span key={v}>
@@ -164,7 +164,7 @@ function FullModelCard({ method, label, card }: { method: string; label: string;
         </div>
       )}
 
-      <p className="text-[10px] leading-snug text-muted-foreground border-t border-border/40 pt-2">
+      <p className="text-[11.5px] leading-snug text-muted-foreground border-t border-border/40 pt-2">
         Last cycle: {feed.status ?? '—'}
         {feed.rows_last_cycle !== null && ` · ${feed.rows_last_cycle.toLocaleString()} rows ingested`}
         . Not tracked: {card.not_tracked.length} fields, listed in{' '}
@@ -183,8 +183,8 @@ function CompactSourceCard({ method, label }: { method: string; label: string })
     <div className="rounded-md border border-border/60 bg-muted/25 p-3 space-y-2">
       <div className="flex items-center gap-2">
         <ModelEmblem method={method} size={14} />
-        <span className="text-[11px] font-semibold text-foreground">{label}</span>
-        <span className="font-mono text-[10px] uppercase text-muted-foreground">
+        <span className="text-[12px] font-semibold text-foreground">{label}</span>
+        <span className="font-mono text-[11.5px] uppercase text-muted-foreground">
           model source
         </span>
       </div>
@@ -211,7 +211,7 @@ function CompactSourceCard({ method, label }: { method: string; label: string })
       </dl>
 
       {prov.mark && prov.markSource && (
-        <p className="text-[10px] leading-snug text-muted-foreground">
+        <p className="text-[11.5px] leading-snug text-muted-foreground">
           Mark: <span className="font-mono">{prov.mark}</span> — {prov.markSource}. Shown for
           identification only; no endorsement implied.
         </p>

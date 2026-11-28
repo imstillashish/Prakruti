@@ -113,13 +113,13 @@ export function CohortChart({
   <p className="font-mono text-[12px] font-medium tracking-wide text-foreground ">
   {label}
   </p>
-  <p className="mt-0.5 font-mono text-[11px] tabular-nums text-muted-foreground ">
+  <p className="mt-0.5 font-mono text-[12px] tabular-nums text-muted-foreground ">
   <Stat ready={status === 'ready'}>
   {data.length} cohorts · {formatCount(totalUsers)} users
   </Stat>
   </p>
   </div>
-  <p className="font-mono text-[11px] tabular-nums text-muted-foreground ">
+  <p className="font-mono text-[12px] tabular-nums text-muted-foreground ">
   <Stat ready={status === 'ready'}>
   {period} 1 avg{' '}
   <span className="font-medium text-foreground ">
@@ -147,7 +147,7 @@ export function CohortChart({
   aria-label={`${label}. ${data.length} cohorts over ${periods} periods. ${period} 1 average ${averages[1] == null ? 'unavailable' : formatPct(averages[1])}.`}
   onPointerLeave={() => setHovered(null)}
   >
-  <g className="font-mono uppercase tracking-wider" fontSize={9} fill="currentColor">
+  <g className="font-mono tracking-[0.01em]" fontSize={9} fill="currentColor">
   <text x={0} y={HEAD_H - 10}>Cohort</text>
   <text x={LABEL_W} y={HEAD_H - 10}>Users</text>
   {Array.from({ length: periods }, (_, col) => (
@@ -298,7 +298,7 @@ export function CohortChart({
   ])}
   />
   <p
-  className="mt-2 h-4 font-mono text-[11px] tabular-nums text-muted-foreground transition-opacity duration-150 "
+  className="mt-2 h-4 font-mono text-[12px] tabular-nums text-muted-foreground transition-opacity duration-150 "
   style={{ opacity: hovered ? 1 : 0 }}
   aria-live="polite"
   >

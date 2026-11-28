@@ -166,6 +166,11 @@ export function LeaderboardPage() {
       {/* 1. Hero Band with Atmospheric Sky-Blue wash & Cycle Rail */}
       <Hero meta={meta} />
 
+      <p className="max-w-[68ch] text-[13.5px] leading-relaxed text-muted-foreground">
+        Read one column at a time. The blend is one of the rows, not a separate section — it competes
+        on the same hours as every other method, and it loses sometimes.
+      </p>
+
       {/* 2. Category Navigation Pills */}
       <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none snap-x sm:pb-1">
         {CATEGORIES.map((cat) => {
@@ -209,10 +214,9 @@ export function LeaderboardPage() {
       />
 
       {/* 5. Mark attribution — logos are the owners' published files, identification only */}
-      <p className="text-[10px] leading-snug text-muted-foreground">
-        Model marks are published logos owned by ECMWF, DWD, NOAA (a registered trademark of
-        the U.S. Department of Commerce) and ECCC — shown for identification only. No
-        endorsement implied.
+      <p className="max-w-[68ch] text-[12px] leading-relaxed text-muted-foreground">
+        Model marks are published logos owned by ECMWF, DWD, NOAA (a registered trademark of the U.S.
+        Department of Commerce) and ECCC, shown for identification only. No endorsement is implied.
       </p>
     </div>
   );

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 // DESIGN.md v3 signal badges: pill geometry, tinted backgrounds, dark AA text.
 // success = OK/active, warning = watch, destructive = hazard, water = rainfall data.
 const badgeVariants = cva(
-  "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
+  "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[12px] font-semibold tracking-[0.01em]",
   {
     variants: {
       variant: {

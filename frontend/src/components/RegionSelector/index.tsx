@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { MapPin } from '@/components/icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
+import { getCityForecastsData } from '@/lib/api';
 import type { CityForecast } from '@/types';
 
 const POPULAR_STATIONS = [
@@ -24,7 +24,7 @@ interface RegionSelectorProps {
 }
 
 export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorProps) {
-  const [cities, setCities] = useState<CityForecast[]>(MOCK_CITIES);
+  const [cities, setCities] = useState<CityForecast[]>([]);
   const [state, setState] = useState('Uttar Pradesh');
   const [district, setDistrict] = useState('Kanpur');
   const [, setIsLoading] = useState(true);
@@ -34,7 +34,7 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
     let mounted = true;
     getCityForecastsData()
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setCities(data);
           setIsLoading(false);
         }
@@ -115,10 +115,10 @@ export function RegionSelector({ selectedCity, onSelectCity }: RegionSelectorPro
       {/* Quick Mobile Station Ribbon (<640px) */}
       <div className="block sm:hidden">
         <div className="flex items-center justify-between mb-1.5 px-0.5">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+          <span className="text-[12px] font-mono tracking-[0.01em] text-muted-foreground">
             Quick Stations
           </span>
-          <span className="text-[10px] text-muted-foreground font-mono">Swipe &rarr;</span>
+          <span className="text-[11.5px] text-muted-foreground font-mono">Swipe &rarr;</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none snap-x snap-mandatory touch-pan-x -mx-1 px-1">
           {POPULAR_STATIONS.map((station) => {

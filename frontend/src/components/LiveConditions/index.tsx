@@ -35,11 +35,11 @@ function Reading({
   return (
     <span className={cn('inline-flex items-baseline gap-1.5 whitespace-nowrap', className)}>
       <span className="inline-flex translate-y-0.5">{icon}</span>
-      <span className="text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground font-sans">{label}</span>
+      <span className="text-[11.5px] text-muted-foreground font-sans">{label}</span>
       <span className={cn('font-semibold text-foreground tabular-nums', big ? 'text-sm' : 'text-xs')}>
         {value}
       </span>
-      <span className="text-[10.5px] text-muted-foreground">{unit}</span>
+      <span className="text-[11.5px] text-muted-foreground">{unit}</span>
     </span>
   );
 }
@@ -99,10 +99,10 @@ export function LiveConditionsBand({ city }: { city: string }) {
     >
       <div className="flex items-center gap-2">
         <Activity size={13} className="text-data-ok-text" />
-        <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.08em] text-data-ok-text">
+        <span className="text-[12px] font-mono font-semibold tracking-[0.01em] text-data-ok-text">
           {live.stale ? 'Last reading' : 'Measured now'}
         </span>
-        <span className="text-[11px] text-muted-foreground">{live.current.condition}</span>
+        <span className="text-[12px] text-muted-foreground">{live.current.condition}</span>
       </div>
 
       <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1.5">
@@ -147,7 +147,7 @@ export function LiveConditionsBand({ city }: { city: string }) {
         {/* Freshness rides on the readings' line. As its own full-width row the
             ml-auto above pushed it onto a new one, so the band grew a whole row
             of micro-text just to say when this reading landed. */}
-        <div className="font-mono text-[10.5px] text-muted-foreground tabular-nums">
+        <div className="font-mono text-[11.5px] text-muted-foreground tabular-nums">
           <span className={live.stale ? 'text-warning' : undefined}>
             Observed {live.observed_at_ist ?? '—'} IST · refreshed {agoLabel(seconds)}
           </span>

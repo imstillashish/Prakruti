@@ -6,7 +6,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { Panel } from '@/components/shell/Panel';
-import { getModelComparisonData, getForecast, MOCK_MODEL_COMPARISON } from '@/lib/api';
+import { LoadingState } from '@/components/ui/LoadingState';
+import { getModelComparisonData } from '@/lib/api';
 import { useMediaQuery, DESKTOP_QUERY } from '@/lib/useMediaQuery';
 import type { ModelComparison as ModelComparisonType, Variable } from '@/types';
 import { DATA } from '@/lib/palette';
@@ -56,7 +57,7 @@ interface ModelComparisonProps {
 export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, collapsibleOnTablet }: ModelComparisonProps) {
   const [variable, setVariable] = useState<Variable>('rainfall');
   const [horizon, setHorizon] = useState<number>(1);
-  const [comparison, setComparison] = useState<ModelComparisonType[]>(MOCK_MODEL_COMPARISON);
+  const [comparison, setComparison] = useState<ModelComparisonType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeModelIdx, setActiveModelIdx] = useState(0);
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -66,50 +67,19 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
   useEffect(() => {
     let mounted = true;
     setIsLoading(true);
-    getForecast(selectedCity || 'Kanpur', horizon)
-      .then((records) => {
-        if (!mounted) return;
-        if (records && records.length > 0) {
-          const target = records.find((r) => r.lead_days === horizon) || records[0];
-          const blendedRain = target.blend_rainfall ?? 15;
-          const blendedTemp = target.blend_temperature ?? 30;
-          const blendedWind = target.blend_wind_speed ?? 12;
-
-          const hybridRain = target.rainfall ?? blendedRain;
-          const hybridTemp = target.temperature ?? blendedTemp;
-          const hybridWind = target.wind_speed ?? blendedWind;
-
-          const factor = horizon === 1 ? 1 : horizon === 2 ? 1.06 : 1.14;
-
-          setComparison([
-            { model: 'AI Hybrid', rainfall: Math.round(hybridRain * 10) / 10, temperature: Math.round(hybridTemp * 10) / 10, wind: Math.round(hybridWind * 10) / 10 },
-            { model: 'ECMWF IFS', rainfall: Math.round(blendedRain * 1.08 * factor * 10) / 10, temperature: Math.round((blendedTemp + 0.4) * 10) / 10, wind: Math.round((blendedWind + 1.5) * 10) / 10 },
-            { model: 'GFS Seamless', rainfall: Math.round(blendedRain * 0.92 * 10) / 10, temperature: Math.round((blendedTemp - 0.3) * 10) / 10, wind: Math.round((blendedWind - 1.2) * 10) / 10 },
-            { model: 'ICON Seamless', rainfall: Math.round(blendedRain * 1.02 * 10) / 10, temperature: Math.round((blendedTemp + 0.1) * 10) / 10, wind: Math.round(blendedWind * 10) / 10 },
-            { model: 'Optimized Blend', rainfall: Math.round(blendedRain * 10) / 10, temperature: Math.round(blendedTemp * 10) / 10, wind: Math.round(blendedWind * 10) / 10, isBlended: true },
-          ]);
+    // The adapter publishes only engine numbers (hybrid + blend); the per-model
+    // trajectory strip lives in ModelTrajectories (/api/models/compare).
+    getModelComparisonData(selectedCity || 'Kanpur')
+      .then((data) => {
+        if (mounted) {
+          setComparison(data);
           setIsLoading(false);
-        } else {
-          getModelComparisonData(selectedCity || 'Kanpur')
-            .then((data) => {
-              if (mounted && data && data.length > 0) {
-                setComparison(data);
-                setIsLoading(false);
-              }
-            })
-            .catch(() => { if (mounted) setIsLoading(false); });
         }
       })
       .catch(() => {
         if (mounted) {
-          getModelComparisonData(selectedCity || 'Kanpur')
-            .then((data) => {
-              if (mounted && data && data.length > 0) {
-                setComparison(data);
-                setIsLoading(false);
-              }
-            })
-            .catch(() => { if (mounted) setIsLoading(false); });
+          setComparison([]);
+          setIsLoading(false);
         }
       });
     return () => {
@@ -119,34 +89,11 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
 
   const config = VARIABLE_CONFIG[variable];
 
-  // ponytail: ensure ECMWF, GFS, ICON, and GEM + Blend are present for side-by-side comparison
   const blendRecord = comparison.find(m => m.isBlended) || comparison[comparison.length - 1];
-  const blendRain = blendRecord ? blendRecord.rainfall : 72;
-  const blendTemp = blendRecord ? blendRecord.temperature : 31.4;
-  const blendWind = blendRecord ? blendRecord.wind : 18;
 
-  const hasGem = comparison.some(m => m.model.toLowerCase().includes('gem'));
-  const hasIcon = comparison.some(m => m.model.toLowerCase().includes('icon'));
-
-  const normalizedModels: ModelComparisonType[] = [...comparison];
-
-  if (!hasIcon && !comparison.some(m => m.model === 'ICON Seamless')) {
-    normalizedModels.push({
-      model: 'ICON Seamless',
-      rainfall: Math.round(blendRain * 1.02 * 10) / 10,
-      temperature: Math.round((blendTemp + 0.1) * 10) / 10,
-      wind: Math.round(blendWind * 10) / 10,
-    });
-  }
-
-  if (!hasGem) {
-    normalizedModels.push({
-      model: 'GEM Seamless',
-      rainfall: Math.round(blendRain * 0.95 * 10) / 10,
-      temperature: Math.round((blendTemp - 0.1) * 10) / 10,
-      wind: Math.round((blendWind + 0.8) * 10) / 10,
-    });
-  }
+  // The adapter already returns exactly what the engine publishes (hybrid +
+  // blend); synthesizing ICON/GEM rows from the blend would fabricate data.
+  const normalizedModels: ModelComparisonType[] = comparison;
 
   const ORDER = ['ECMWF IFS', 'GFS Seamless', 'ICON Seamless', 'GEM Seamless', 'AI Hybrid', 'Optimized Blend', 'Blended'];
   normalizedModels.sort((a, b) => {
@@ -184,8 +131,8 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
 
   return (
     <Panel
-      title="Weather Model Agreement"
-      subtitle="See how top weather models compare for your city across lead days. Closer values mean higher confidence."
+      title="What each model says"
+      subtitle="The same forecast, from each model separately. Where they agree, the answer is safe."
       term="models"
       collapsibleOnPhone={collapsibleOnPhone}
       collapsibleOnTablet={collapsibleOnTablet}
@@ -231,10 +178,21 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
               ))}
             </div>
           </div>
-          <div className="text-[11px] font-mono text-muted-foreground">
+          <div className="text-[12px] font-mono text-muted-foreground">
             Leading forecast models compared side-by-side
           </div>
         </div>
+        {/* Loading and empty states: no fabricated stand-in rows. */}
+        {isLoading && (
+          <LoadingState label="Loading model comparison" rows={3} className="h-[180px] border-0 bg-transparent" />
+        )}
+        {!isLoading && normalizedModels.length === 0 && (
+          <div className="py-10 text-center text-xs font-mono text-muted-foreground">
+            Model comparison unavailable — the forecast engine has not published this cycle.
+          </div>
+        )}
+        {!isLoading && normalizedModels.length > 0 && (
+        <>
         {/* Desktop View (>1024px): Multi-Column Comparison Grid & Chart */}
         <div className="hidden lg:block">
           <div className="w-full h-[180px]">
@@ -298,14 +256,14 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                     {/* Name and provider stack instead of sharing a line: in auto-fit
                         tracks (as narrow as 144px) the resolution text squeezed
                         "AI Blend" down to 12px and clipped it. */}
-                    <div className="mb-1 text-[11px]">
+                    <div className="mb-1 text-[12px]">
                       <span className="block font-semibold text-foreground truncate">{info.short}</span>
-                      <span className="block text-[10px] font-mono text-muted-foreground truncate">{info.resolution}</span>
+                      <span className="block text-[11.5px] font-mono text-muted-foreground truncate">{info.resolution}</span>
                     </div>
                     <div className="text-base font-bold font-mono text-foreground">
-                      {val.toFixed(1)} <span className="text-[11px] font-normal text-muted-foreground">{config.unit}</span>
+                      {val.toFixed(1)} <span className="text-[12px] font-normal text-muted-foreground">{config.unit}</span>
                     </div>
-                    <div className="mt-1 text-[10px] font-mono">
+                    <div className="mt-1 text-[11.5px] font-mono">
                       {isBlended ? (
                         <span className="text-foreground font-semibold">Consensus Blend</span>
                       ) : (
@@ -315,7 +273,7 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                       )}
                     </div>
                   </div>
-                  <div className="mt-2 pt-1.5 border-t border-border/60 text-[10px] font-mono text-muted-foreground flex justify-between">
+                  <div className="mt-2 pt-1.5 border-t border-border/60 text-[11.5px] font-mono text-muted-foreground flex justify-between">
                     <span>{m.temperature.toFixed(0)}°C</span>
                     <span>{m.wind.toFixed(0)} km/h</span>
                   </div>
@@ -340,10 +298,10 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
         {/* Mobile & Tablet View (<1024px): Horizontal Snap Deck */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between mb-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
+            <span className="text-xs font-semibold tracking-[0.01em] text-muted-foreground font-mono">
               Model Forecast Spread
             </span>
-            <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground select-none">
+            <span className="flex items-center gap-0.5 text-[12px] font-mono text-muted-foreground select-none">
               <ChevronLeft size={11} /><span>swipe models</span><ChevronRight size={11} />
             </span>
           </div>
@@ -380,16 +338,16 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                       <div className="flex items-center gap-2">
                         <ModelEmblem method={m.model} size={22} />
                         <div>
-                          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
+                          <span className="text-xs font-mono font-semibold tracking-[0.01em] text-foreground">
                             {info.label}
                           </span>
-                          <div className="text-[11px] font-mono text-muted-foreground">
+                          <div className="text-[12px] font-mono text-muted-foreground">
                             {info.provider} · {info.resolution}
                           </div>
                         </div>
                       </div>
                       <span
-                        className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                        className={`text-[11.5px] font-semibold tracking-[0.01em] px-2 py-0.5 rounded-full border ${
                           isBlended
                             ? 'bg-foreground text-background border-foreground'
                             : 'bg-secondary text-muted-foreground border-border'
@@ -401,14 +359,14 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
 
                     {/* Primary Metric Readout */}
                     <div className="mt-3 p-3 rounded-md bg-secondary/50 border border-border">
-                      <div className="text-[10px] font-mono uppercase text-muted-foreground mb-0.5">
+                      <div className="text-[11.5px] font-mono text-muted-foreground mb-0.5">
                         {config.label} ({HORIZONS.find((h) => h.id === horizon)?.label ?? 'Tomorrow (D+1)'})
                       </div>
                       <div className="text-2xl font-bold font-mono text-foreground flex items-baseline gap-1.5">
                         {val.toFixed(1)}
                         <span className="text-sm font-normal text-muted-foreground">{config.unit}</span>
                       </div>
-                      <div className="mt-1 text-[11px] font-mono">
+                      <div className="mt-1 text-[12px] font-mono">
                         {isBlended ? (
                           <span className="text-foreground font-semibold inline-flex items-center gap-1.5">
                             <Sparkles size={12} className="text-primary shrink-0" />
@@ -425,17 +383,17 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
                     {/* Atmospheric Metrics Grid */}
                     <div className="grid grid-cols-2 gap-2 mt-3 text-xs font-mono">
                       <div className="p-2 rounded bg-card border border-border">
-                        <span className="text-[10px] text-muted-foreground block uppercase">Temperature</span>
+                        <span className="text-[11.5px] text-muted-foreground block">Temperature</span>
                         <span className="font-semibold text-foreground">{m.temperature.toFixed(1)} °C</span>
                       </div>
                       <div className="p-2 rounded bg-card border border-border">
-                        <span className="text-[10px] text-muted-foreground block uppercase">Wind Speed</span>
+                        <span className="text-[11.5px] text-muted-foreground block">Wind speed</span>
                         <span className="font-semibold text-foreground">{m.wind.toFixed(1)} km/h</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-2.5 border-t border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+                  <div className="mt-4 pt-2.5 border-t border-border flex items-center justify-between text-[12px] font-mono text-muted-foreground">
                     <span>Agreement Level</span>
                     <span className={Math.abs(delta) < 5 ? 'text-data-ok-text font-medium' : 'text-[#ab6400] font-medium'}>
                       {Math.abs(delta) < 5 ? 'Strong Agreement' : 'Higher Spread'}
@@ -467,6 +425,8 @@ export function ModelComparison({ selectedCity = 'Kanpur', collapsibleOnPhone, c
             ))}
           </div>
         </div>
+        </>
+        )}
       </div>
     </Panel>
   );

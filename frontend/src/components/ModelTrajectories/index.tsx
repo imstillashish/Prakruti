@@ -18,9 +18,10 @@ const VAR_LABEL: Record<VarKey, { label: string; unit: string }> = {
   wind_speed: { label: 'Wind', unit: 'km/h' },
 };
 
-const MODEL_ORDER = ['ecmwf', 'gfs', 'icon', 'gem'];
+const MODEL_ORDER = ['ecmwf', 'gfs', 'icon', 'gem', 'jma', 'ukmo'];
 const MODEL_DISPLAY: Record<string, string> = {
   ecmwf: 'ECMWF', gfs: 'GFS', icon: 'ICON', gem: 'GEM',
+  jma: 'JMA', ukmo: 'UKMO',
 };
 
 const CLUSTER_BADGE: Record<string, string> = {
@@ -104,7 +105,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
               key={v}
               type="button"
               onClick={() => setVariable(v)}
-              className={`relative min-h-[32px] px-2.5 text-xs font-mono font-medium rounded-sm transition-colors duration-100 after:absolute after:-inset-y-1.5 after:-inset-x-1 after:content-[''] ${
+              className={`relative min-h-[44px] sm:min-h-[32px] px-2.5 text-xs font-mono font-medium rounded-sm transition-colors duration-100 after:absolute after:-inset-y-1.5 after:-inset-x-1 after:content-[''] ${
                 variable === v
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
@@ -132,7 +133,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
           <div>
             {/* Desktop (>1024px): analytical multi-line chart + diagnostics strip */}
             <div className="hidden lg:block">
-              <div className="flex items-center gap-3 mb-2 text-[11px] font-mono">
+              <div className="flex items-center gap-3 mb-2 text-[12px] font-mono">
                 <span className="text-muted-foreground">Lead day {current.lead_days} · next 24h</span>
                 {growth != null && (
                   <span className="text-muted-foreground">
@@ -185,13 +186,13 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
             {/* Mobile & tablet (<1024px): swipeable lead-day deck */}
             <div className="block lg:hidden">
               <div className="flex items-center justify-between mb-2.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono flex items-center gap-1.5">
+                <span className="text-xs font-semibold tracking-[0.01em] text-muted-foreground font-mono flex items-center gap-1.5">
                   {cfg.label} ·{' '}
                   <span className="flex items-center gap-0.5 normal-case tracking-normal select-none">
                     <ChevronLeft size={11} /><span>swipe lead days</span><ChevronRight size={11} />
                   </span>
                 </span>
-                <span className="text-[11px] font-mono text-muted-foreground">Day {current.lead_days}/3</span>
+                <span className="text-[12px] font-mono text-muted-foreground">Day {current.lead_days}/3</span>
               </div>
               <div
                 onScroll={handleScroll}
@@ -207,7 +208,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-mono font-semibold text-foreground">Day {s.lead_days}</span>
-                        <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border ${CLUSTER_BADGE[s.cluster_summary] ?? ''}`}>
+                        <span className={`text-[11.5px] font-semibold uppercase px-2 py-0.5 rounded-full border ${CLUSTER_BADGE[s.cluster_summary] ?? ''}`}>
                           {s.cluster_summary.replace('_', ' ')}
                         </span>
                       </div>
@@ -232,7 +233,7 @@ export function ModelTrajectories({ selectedCity = 'Kanpur' }: { selectedCity?: 
                             <div key={m} className="flex items-center justify-between">
                               <span className="text-muted-foreground">{MODEL_DISPLAY[m] ?? m}</span>
                               <span className="flex items-center gap-2">
-                                {flagged > 0 && <span className="text-[10px] text-[#ab6400]">{flagged} outlier</span>}
+                                {flagged > 0 && <span className="text-[11.5px] text-[#ab6400]">{flagged} outlier</span>}
                                 <span className="text-foreground font-semibold">
                                   {(s.models[m]?.[0] ?? 0).toFixed(1)} {cfg.unit}
                                 </span>

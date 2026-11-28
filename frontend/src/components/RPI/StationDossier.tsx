@@ -39,6 +39,16 @@ const MODEL_INFO: Record<
     hex: SERIES.GEM,
     desc: 'Environment Canada (Surface Temperature & Dewpoint)',
   },
+  JMA: {
+    label: 'JMA GSM',
+    hex: SERIES.JMA,
+    desc: 'Japan Meteorological Agency global model',
+  },
+  UKMO: {
+    label: 'UKMO Seamless',
+    hex: SERIES.UKMO,
+    desc: 'UK Met Office global model',
+  },
 };
 
 const PRIORITY_BADGE_STYLE: Record<
@@ -127,7 +137,7 @@ export function StationDossier({
             </div>
             {/* No truncate: at tablet this card is ~266px and the coordinate
                 pair ellipsized to "Coordinates: 2…". It wraps instead. */}
-            <p className="text-[11px] text-muted-foreground font-mono">
+            <p className="text-[12px] text-muted-foreground font-mono">
               Coordinates: {rpiData?.lat?.toFixed(2) || '26.45'}°N, {rpiData?.lon?.toFixed(2) || '80.33'}°E
             </p>
           </div>
@@ -135,12 +145,12 @@ export function StationDossier({
           {rpiData && (
             <div className="text-right shrink-0">
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${badgeStyle.bg} ${badgeStyle.text} ${badgeStyle.border}`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11.5px] font-mono font-bold border ${badgeStyle.bg} ${badgeStyle.text} ${badgeStyle.border}`}
               >
                 {badgeStyle.label}
               </span>
               <div className="text-xs font-mono font-bold text-foreground mt-0.5">
-                RPI {rpiData.rpiScore}/100
+                Risk {rpiData.rpiScore}/100
               </div>
             </div>
           )}
@@ -157,7 +167,7 @@ export function StationDossier({
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Risk & Trust
+            Risk
           </button>
           <button
             type="button"
@@ -168,7 +178,7 @@ export function StationDossier({
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            NDMA Protocols ({rpiData?.recommendations?.length || 0})
+            Official advice ({rpiData?.recommendations?.length || 0})
           </button>
           <button
             type="button"
@@ -188,7 +198,7 @@ export function StationDossier({
       <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5">
         {isLoading && !rpiData ? (
           <LoadingState
-            label="Synchronizing station telemetry"
+            label="Loading the station"
             hint={`Loading the ${activeTab} view`}
             rows={4}
             className="h-64 border-0 bg-transparent"
@@ -200,17 +210,17 @@ export function StationDossier({
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 text-foreground" />
-                  RPI Synoptic Evaluation
+                  What&rsquo;s driving the risk
                 </span>
-                <span className="text-[11px] font-mono text-muted-foreground">
-                  Confidence: <strong className="text-data-ok-text">{rpiData.confidence}%</strong>
+                <span className="text-[12px] font-mono text-muted-foreground">
+                  Reliability: <strong className="text-data-ok-text">{rpiData.confidence}%</strong>
                 </span>
               </div>
 
               {/* Factors grid */}
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="p-2 rounded bg-card border border-border">
-                  <div className="text-[10px] font-mono text-muted-foreground flex items-center justify-center gap-1">
+                  <div className="text-[11.5px] font-mono text-muted-foreground flex items-center justify-center gap-1">
                     <CloudRain className="w-2.5 h-2.5 text-data-rain" /> Rain Risk
                   </div>
                   <div className="text-xs font-mono font-bold text-foreground mt-0.5">
@@ -218,7 +228,7 @@ export function StationDossier({
                   </div>
                 </div>
                 <div className="p-2 rounded bg-card border border-border">
-                  <div className="text-[10px] font-mono text-muted-foreground flex items-center justify-center gap-1">
+                  <div className="text-[11.5px] font-mono text-muted-foreground flex items-center justify-center gap-1">
                     <Flame className="w-2.5 h-2.5 text-destructive" /> Heat Risk
                   </div>
                   <div className="text-xs font-mono font-bold text-foreground mt-0.5">
@@ -226,7 +236,7 @@ export function StationDossier({
                   </div>
                 </div>
                 <div className="p-2 rounded bg-card border border-border">
-                  <div className="text-[10px] font-mono text-muted-foreground flex items-center justify-center gap-1">
+                  <div className="text-[11.5px] font-mono text-muted-foreground flex items-center justify-center gap-1">
                     <Wind className="w-2.5 h-2.5 text-foreground" /> Wind Risk
                   </div>
                   <div className="text-xs font-mono font-bold text-foreground mt-0.5">
@@ -241,10 +251,10 @@ export function StationDossier({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-foreground" />
-                  <span className="text-xs font-semibold text-foreground">Dominant Model in Grid</span>
+                  <span className="text-xs font-semibold text-foreground">Which model to trust most</span>
                 </div>
                 <span
-                  className="px-2 py-0.5 rounded text-[10px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
+                  className="px-2 py-0.5 rounded text-[11.5px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
                   style={{ backgroundColor: modelMeta.hex }}
                 >
                   <ModelEmblem method={domModel} size={14} />
@@ -252,7 +262,7 @@ export function StationDossier({
                 </span>
               </div>
               <div className="text-xs text-muted-foreground leading-relaxed">
-                <strong>{modelMeta.label}</strong> holds the highest historical skill score for {rpiData.city}, receiving the largest Kalman weight assignment ({weights[domModel.toLowerCase() as keyof typeof weights] || 45}%).
+                <strong>{modelMeta.label}</strong> has been most accurate for {rpiData.city} over the scored period, so it counts for most in this answer ({weights[domModel.toLowerCase() as keyof typeof weights] || 45}%).
               </div>
             </div>
 
@@ -261,63 +271,29 @@ export function StationDossier({
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-foreground flex items-center gap-1.5">
                   <Sliders className="w-3.5 h-3.5 text-foreground" />
-                  Lead-Time Adaptive Weights
+                  How much each model counts
                 </span>
-                <span className="text-[10px] font-mono text-muted-foreground">Normalized</span>
+                <span className="text-[11.5px] font-mono text-muted-foreground">Share of the answer</span>
               </div>
 
               <div className="space-y-2 text-xs font-mono">
-                <div>
-                  <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
-                      <ModelEmblem method="ecmwf" size={14} />
-                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} /> ECMWF IFS
-                    </span>
-                    <span className="font-bold text-foreground">{weights.ecmwf}%</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full" style={{ backgroundColor: SERIES.ECMWF, width: `${weights.ecmwf}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
-                      <ModelEmblem method="icon" size={14} />
-                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} /> ICON Seamless
-                    </span>
-                    <span className="font-bold text-foreground">{weights.icon}%</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full" style={{ backgroundColor: SERIES.ICON, width: `${weights.icon}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
-                      <ModelEmblem method="gfs" size={14} />
-                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} /> GFS Global
-                    </span>
-                    <span className="font-bold text-foreground">{weights.gfs}%</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full" style={{ backgroundColor: SERIES.GFS, width: `${weights.gfs}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-0.5">
-                    <span className="flex items-center gap-1.5 text-[11px] text-foreground">
-                      <ModelEmblem method="gem" size={14} />
-                      <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} /> GEM Canada
-                    </span>
-                    <span className="font-bold text-foreground">{weights.gem}%</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full" style={{ backgroundColor: SERIES.GEM, width: `${weights.gem}%` }} />
-                  </div>
-                </div>
+                {Object.entries(weights).map(([model, value]) => {
+                  const meta = MODEL_INFO[model.toUpperCase()] || MODEL_INFO.ECMWF;
+                  return (
+                    <div key={model}>
+                      <div className="flex justify-between items-center mb-0.5">
+                        <span className="flex items-center gap-1.5 text-[12px] text-foreground">
+                          <ModelEmblem method={model} size={14} />
+                          <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: meta.hex }} /> {meta.label}
+                        </span>
+                        <span className="font-bold text-foreground">{value.toFixed(1)}%</span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
+                        <div className="h-full" style={{ backgroundColor: meta.hex, width: `${value}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </>
@@ -330,7 +306,7 @@ export function StationDossier({
                   key={cat}
                   type="button"
                   onClick={() => setNdmaCategory(cat)}
-                  className={`px-2 py-0.5 rounded text-[11px] font-mono capitalize transition-colors cursor-pointer ${
+                  className={`px-2 py-0.5 rounded text-[12px] font-mono capitalize transition-colors cursor-pointer ${
                     ndmaCategory === cat
                       ? 'bg-action-soft text-action-pressed font-bold border border-action/30'
                       : 'bg-secondary text-muted-foreground hover:text-foreground'
@@ -360,7 +336,7 @@ export function StationDossier({
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span
-                            className={`px-1.5 py-0.2 rounded text-[9.5px] font-mono font-bold uppercase ${
+                            className={`px-1.5 py-0.2 rounded text-[12px] font-mono font-bold uppercase ${
                               rec.priority === 'critical'
                                 ? 'bg-destructive/10 text-destructive border border-destructive/20'
                                 : rec.priority === 'high'
@@ -374,7 +350,7 @@ export function StationDossier({
                             {rec.title}
                           </span>
                         </div>
-                        <div className="text-[10px] font-mono text-muted-foreground mt-0.5">
+                        <div className="text-[11.5px] font-mono text-muted-foreground mt-0.5">
                           Dept: {rec.department} · Code: {rec.actionCode}
                         </div>
                       </div>
@@ -385,7 +361,7 @@ export function StationDossier({
                           variant="amber"
                           size="sm"
                           onClick={() => toggleAcknowledge(rec.id)}
-                          className="shrink-0 h-6 px-2 py-0.5 text-[10px] font-mono cursor-pointer inline-flex items-center gap-1"
+                          className="shrink-0 h-6 px-2 py-0.5 text-[11.5px] font-mono cursor-pointer inline-flex items-center gap-1"
                         >
                           <Check size={11} className="shrink-0" />
                           <span>Standby Active</span>
@@ -394,14 +370,14 @@ export function StationDossier({
                         <button
                           type="button"
                           onClick={() => toggleAcknowledge(rec.id)}
-                          className="shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-transform duration-100 active:translate-y-px cursor-pointer border bg-card hover:bg-secondary text-muted-foreground border-border"
+                          className="shrink-0 px-2 py-1 rounded text-[11.5px] font-mono transition-transform duration-100 active:translate-y-px cursor-pointer border bg-card hover:bg-secondary text-muted-foreground border-border"
                         >
                           Standby
                         </button>
                       )}
                     </div>
 
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="text-[12px] text-muted-foreground leading-relaxed">
                       {rec.description}
                     </p>
                   </div>
@@ -411,7 +387,7 @@ export function StationDossier({
           </div>
         ) : activeTab === 'hotspots' ? (
           <div className="space-y-1.5">
-            <div className="text-[11px] font-mono text-muted-foreground px-1 pb-1">
+            <div className="text-[12px] font-mono text-muted-foreground px-1 pb-1">
               Top 10 High-Risk Districts (Click to inspect):
             </div>
             {sortedHotspots.slice(0, 10).map((st, idx) => {
@@ -436,7 +412,7 @@ export function StationDossier({
                       <div className="text-xs font-semibold text-foreground truncate">
                         {st.city}
                       </div>
-                      <div className="text-[10px] font-mono text-muted-foreground truncate">
+                      <div className="text-[11.5px] font-mono text-muted-foreground truncate">
                         {st.state} · Model: {st.dominantModel}
                       </div>
                     </div>
@@ -446,7 +422,7 @@ export function StationDossier({
                     <span className="text-xs font-mono font-bold text-foreground">
                       {st.rpiScore}
                     </span>
-                    <span className="text-[10px] font-mono text-muted-foreground">/100</span>
+                    <span className="text-[11.5px] font-mono text-muted-foreground">/100</span>
                     <div
                       className={`text-[9px] font-mono font-semibold uppercase px-1 rounded ${pStyle.text}`}
                     >

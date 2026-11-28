@@ -28,7 +28,7 @@ export function SectionBanner({
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <h2 className="text-base font-semibold text-foreground tracking-tight">{title}</h2>
             {pill && (
-              <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] bg-secondary text-muted-foreground border border-border">
+              <span className="rounded-full px-2 py-0.5 text-[11.5px] font-semibold tracking-[0.01em] bg-secondary text-muted-foreground border border-border">
                 {pill}
               </span>
             )}

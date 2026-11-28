@@ -44,11 +44,11 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-foreground tracking-tight">
-                Synoptic Geospatial Map
+                Weather map
               </span>
-              <Badge variant="rain">45 Stations</Badge>
+              <Badge variant="rain">45 stations</Badge>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Real CartoDB Topographic Grid · Live Station Telemetry</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">Live readings from 45 stations across India</p>
           </div>
         </div>
 
@@ -60,7 +60,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
                 key={t}
                 onClick={() => setLeadTime(t)}
                 aria-pressed={leadTime === t}
-                className={`relative px-4 py-2 min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${
+                className={`relative px-4 py-2 min-h-[44px] sm:min-h-[36px] flex items-center text-xs font-mono rounded-sm transition-colors duration-100 touch-manipulation after:absolute after:-inset-y-1 after:inset-x-0 after:content-[''] ${
                   leadTime === t
                     ? 'gradient-on-active font-semibold'
                     : 'text-muted-foreground hover:text-foreground'
@@ -123,7 +123,7 @@ export function WeatherMap({ selectedCity, onSelectCity, fillHeight }: WeatherMa
               <Pointer size={16} className="text-action" />
               <span>Tap to interact with map</span>
             </button>
-            <span className="mt-2 text-[10px] sm:text-[11px] font-mono text-muted-foreground bg-card/90 px-2.5 py-1 rounded-full border border-border shadow-xs">
+            <span className="mt-2 text-[11.5px] sm:text-[12px] font-mono text-muted-foreground bg-card/90 px-2.5 py-1 rounded-full border border-border shadow-xs">
               Use 2 fingers to pan/zoom · Tap to unlock
             </span>
           </div>

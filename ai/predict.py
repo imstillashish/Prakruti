@@ -9,6 +9,9 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from ai.features import FEATURE_COLS, FEATURE_MODELS  # noqa: E402
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_DIR = BASE_DIR / "outputs" / "models"
+
 VARIABLES = {
     'temperature': 'actual_temperature',
     'rainfall': 'actual_rainfall',
@@ -32,8 +35,8 @@ def predict_hybrid(df):
     hybrids = {}
     residuals = {}
     for var in VARIABLES.keys():
-        model_path = f'outputs/models/rf_{var}.joblib'
-        if not os.path.exists(model_path):
+        model_path = MODEL_DIR / f'rf_{var}.joblib'
+        if not model_path.exists():
             raise FileNotFoundError(f"Model file not found: {model_path}")
         model = joblib.load(model_path)
 
@@ -82,7 +85,7 @@ def build_current_features():
     data/cities.csv, and outputs/blended_forecast.csv.
     """
     # 1. Read & parse forecast_current_clean
-    fc_path = 'outputs/interim/forecast_current_clean.csv'
+    fc_path = BASE_DIR / 'outputs' / 'interim' / 'forecast_current_clean.csv'
     fc_df = pd.read_csv(fc_path)
     fc_df['datetime'] = pd.to_datetime(fc_df['datetime'])
 
@@ -110,7 +113,7 @@ def build_current_features():
         raise ValueError(f"Expected lead_days set {{1, 2, 3}}, got {lead_days_set}")
 
     # 3. Merge latitude, longitude from data/cities.csv
-    cities_df = pd.read_csv('data/cities.csv')
+    cities_df = pd.read_csv(BASE_DIR / 'data' / 'cities.csv')
     df = pd.merge(df, cities_df[['city', 'latitude', 'longitude']], on='city', how='left')
 
     if df['latitude'].isna().any() or df['longitude'].isna().any():
@@ -127,7 +130,7 @@ def build_current_features():
         df[f'spread_{var}'] = df[mod_cols].max(axis=1) - df[mod_cols].min(axis=1)
 
     # 6. Merge blend_temperature, blend_rainfall, blend_wind_speed from outputs/blended_forecast.csv
-    blended_path = 'outputs/blended_forecast.csv'
+    blended_path = BASE_DIR / 'outputs' / 'blended_forecast.csv'
     blended_df = pd.read_csv(blended_path)
     blended_df['datetime'] = pd.to_datetime(blended_df['datetime'])
     blended_df = blended_df.rename(columns={
@@ -162,7 +165,7 @@ def main():
             raise ValueError(f"Feature column '{col}' starts with 'actual' or 'resid'")
 
     # 2. Step 3: Cross-check first
-    cross_check_test('outputs/interim/ml_table.csv')
+    cross_check_test(str(BASE_DIR / 'outputs' / 'interim' / 'ml_table.csv'))
 
     # 3. Step 4: Build features for current forecast
     curr_df, min_datetime_clean = build_current_features()
@@ -205,8 +208,8 @@ def main():
     out_df['datetime'] = out_df['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
 
     # 6. Save output file
-    os.makedirs('outputs', exist_ok=True)
-    out_path = 'outputs/hybrid_forecast.csv'
+    out_path = BASE_DIR / 'outputs' / 'hybrid_forecast.csv'
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_df.to_csv(out_path, index=False)
 
     # 7. Print summary statistics: (hybrid - blend) per variable & lead_days

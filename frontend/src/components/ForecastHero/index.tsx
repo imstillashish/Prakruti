@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { CloudRain, RefreshCw, ShieldCheck, Activity, Thermometer, Wind, Sun, Search, ChevronDown } from '@/components/icons';
+import { CloudRain, RefreshCw, ShieldCheck, Activity, Thermometer, Wind, Sun, Search, ChevronDown, ArrowRight } from '@/components/icons';
 import { ShaderButton } from '@/components/ui/ShaderButton';
 import { motion, AnimatePresence } from 'motion/react';
 import { Explain } from '@/components/explain/Explain';
 import { WhyForecastModal } from '@/components/WhyForecast';
 import { CitizenWeatherBrief } from './CitizenWeatherBrief';
 import { LiveConditionsBand } from '@/components/LiveConditions';
-import { MOCK_FORECAST, getAdvisories, getDecision, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
+import { getAdvisories, getDecision, getForecastMetrics, getMetadata, getTimelineData, formatLastUpdated } from '@/lib/api';
 import type { AdvisoryRecord, DecisionPayload } from '@/lib/api';
 import { monotonePath, EASE, usePrefersReducedMotion } from '@/components/spectrumui/charts/chart-engine';
 import type { ForecastMetrics, TimelinePoint } from '@/types';
@@ -103,7 +103,7 @@ function MetricSpark({
     <div>
       <div
         ref={ref}
-        className="relative h-11 w-full cursor-crosshair touch-pan-y select-none"
+        className="relative h-11 w-full cursor-crosshair touch-pan-y select-none rounded-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-accent"
         tabIndex={0}
         role="img"
         aria-label={`${timeLabels[0]} to ${timeLabels[n - 1]} trend`}
@@ -111,6 +111,24 @@ function MetricSpark({
         onPointerDown={(e) => onMove(e.clientX)}
         onPointerLeave={() => setHover(null)}
         onBlur={() => setHover(null)}
+        onKeyDown={(e) => {
+          if (n < 2) return;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            setHover((h) => (h == null ? 0 : Math.min(n - 1, h + 1)));
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            setHover((h) => (h == null ? n - 1 : Math.max(0, h - 1)));
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            setHover(0);
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            setHover(n - 1);
+          } else if (e.key === 'Escape') {
+            setHover(null);
+          }
+        }}
       >
         {geom ? (
           <svg width={box.w} height={box.h} viewBox={`0 0 ${box.w} ${box.h}`} className="block h-full w-full overflow-visible" aria-hidden>
@@ -123,7 +141,7 @@ function MetricSpark({
           </svg>
         ) : null}
       </div>
-      <div className="mt-1 h-4 text-[11px] font-mono text-muted-foreground">
+      <div className="mt-1 h-4 text-[12px] font-mono text-muted-foreground">
         {hover != null && scrub ? (
           <span className="text-foreground">
             {timeLabels[hover]}: {series[hover].toFixed(decimals)} {unit}
@@ -188,7 +206,7 @@ function MetricCell({
   return (
     <div className="p-4 bg-card min-w-0 h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="text-xs font-medium tracking-[0.01em] text-muted-foreground">{label}</span>
         {icon}
       </div>
       <div className="flex items-baseline gap-1 font-mono">
@@ -197,20 +215,20 @@ function MetricCell({
         </span>
         <span className={`text-sm font-medium ${tone === 'success' ? 'text-data-ok-text' : 'text-muted-foreground'}`}>{unit}</span>
       </div>
-      <div className="mt-1.5 flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
+      <div className="mt-1.5 flex items-center gap-1 text-[12px] font-mono text-muted-foreground">
         {explain === 'confidence' ? (
           <>
-            {dominantModel ? `Dominant: ${dominantModel}` : 'Multi-Model Consensus'}
+            {dominantModel ? `${dominantModel} leads` : 'Six models agree'}
             <Explain term="confidence" />
           </>
         ) : band ? (
           <>
-            P10–P90: <span className="font-semibold text-foreground">{band.p10.toFixed(1)}–{band.p90.toFixed(1)} {unit}</span>
+            <span className="font-semibold text-foreground">{band.p10.toFixed(1)}–{band.p90.toFixed(1)} {unit}</span>
             <Explain term={explain} />
           </>
         ) : (
           <>
-            Calibrated band pending…
+            Range pending…
             <Explain term={explain} />
           </>
         )}
@@ -244,16 +262,21 @@ const BADGE_TONE_CLASS: Record<AdvisoryRecord['tone'], string> = {
 
 interface ForecastHeroProps {
   selectedCity?: string | null;
+  /**
+   * false when the page header already states the verdict. The hero then drops
+   * its own headline column and becomes the evidence block under it — two
+   * verdicts on one screen is one too many.
+   */
+  showVerdict?: boolean;
 }
 
-export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
+export function ForecastHero({ selectedCity = 'Kanpur', showVerdict = true }: ForecastHeroProps) {
   const city = selectedCity || 'Kanpur';
   const [whyOpen, setWhyOpen] = useState(false);
   const [showTechProof, setShowTechProof] = useState(false);
-  const [forecast, setForecast] = useState<ForecastMetrics>(MOCK_FORECAST);
+  const [forecast, setForecast] = useState<ForecastMetrics | null>(null);
   const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<string>('2026-09-26T23:45:12');
-  const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string>('');
   const [advisories, setAdvisories] = useState<AdvisoryRecord[]>([]);
   const [advisoriesLoaded, setAdvisoriesLoaded] = useState(false);
   const [decision, setDecision] = useState<DecisionPayload | null>(null);
@@ -296,18 +319,39 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
 
   const lastUpdatedDisplay = formatLastUpdated(lastUpdated);
 
-  // Advice content — from the advisories pipeline; falls back to a calm
-  // placeholder while loading or if the feed is unavailable.
-  const headline = advisories[0]?.headline ?? 'Reading the latest blend…';
-  const badgeLabel = advisories[0]?.badge ?? 'Standby';
-  const badgeColor = advisories[0] ? BADGE_TONE_CLASS[advisories[0].tone] : 'text-muted-foreground';
+  // Advice content — from the advisories pipeline; falls back to an honest
+  // operational summary when advisories are empty on calm days.
+  const hasAdvisory = advisories.length > 0 && Boolean(advisories[0]);
+  const headline = hasAdvisory
+    ? advisories[0].headline
+    : !advisoriesLoaded
+    ? 'Retrieving latest forecast blend…'
+    : !forecast
+    ? 'Forecast unavailable — the engine has not published this cycle'
+    : forecast.rainfall >= 1
+    ? `Passing rainfall expected (${forecast.rainfall.toFixed(1)} mm)`
+    : forecast.temperature >= 38
+    ? `Elevated heat expected (${forecast.temperature.toFixed(1)} °C)`
+    : 'Stable atmospheric conditions forecast';
+
+  const badgeLabel = hasAdvisory
+    ? advisories[0].badge
+    : !advisoriesLoaded
+    ? 'Syncing'
+    : 'Operational';
+
+  const badgeColor = hasAdvisory
+    ? BADGE_TONE_CLASS[advisories[0].tone]
+    : !advisoriesLoaded
+    ? 'text-muted-foreground'
+    : 'text-data-ok-text';
   // Probabilistic core: first decision record anchors the chips and bands.
   const nowRec = decision?.records?.[0];
   const agreementMeta: Record<string, { label: string; cls: string }> = {
-    STRONG_AGREEMENT: { label: 'Strong agreement', cls: 'text-data-ok-text border-success/30' },
-    MIXED_SPLIT: { label: 'Mixed split', cls: 'text-warning border-warning/30' },
+    STRONG_AGREEMENT: { label: 'Models agree', cls: 'text-data-ok-text border-success/30' },
+    MIXED_SPLIT: { label: 'Models partly disagree', cls: 'text-warning border-warning/30' },
     HIGH_DISAGREEMENT_LOW_SIGNAL: { label: 'Models disagree', cls: 'text-muted-foreground border-border' },
-    HIGH_TAIL_RISK_TIMING_UNCERTAIN: { label: 'High tail risk', cls: 'text-destructive border-destructive/30' },
+    HIGH_TAIL_RISK_TIMING_UNCERTAIN: { label: 'Rare but possible', cls: 'text-destructive border-destructive/30' },
   };
   const agreement = nowRec ? agreementMeta[nowRec.disagreement_class] : undefined;
   const probChips: string[] = [];
@@ -317,16 +361,16 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
       const p = tp?.[key]?.[t];
       if (p != null) probChips.push(`${label} · ${Math.round(p * 100)}%`);
     };
-    chip('Rain ≥4 mm/h', 'rainfall', '4');
-    chip('Heat ≥35 °C', 'temperature', '35');
-    chip('Wind ≥25 km/h', 'wind_speed', '25');
+    chip('Rain 4mm+', 'rainfall', '4');
+    chip('Heat 35°C+', 'temperature', '35');
+    chip('Wind 25km/h+', 'wind_speed', '25');
   }
 
   const timeLabels = timeline.length >= 2 ? timeline.map((p) => p.time) : ['NOW', '+6h', '+12h', '+24h', '+48h', '+72h'];
-  const rainSeries = timeline.length >= 2 ? timeline.map((p) => p.rainfall) : [forecast.rainfall, forecast.rainfall];
-  const tempSeries = timeline.length >= 2 ? timeline.map((p) => p.temperature) : [forecast.temperature, forecast.temperature];
-  const windSeries = timeline.length >= 2 ? timeline.map((p) => p.wind) : [forecast.wind, forecast.wind];
-  const confSeries = timeline.length >= 2 ? timeline.map((p) => p.confidence) : [forecast.confidence, forecast.confidence];
+  const rainSeries = timeline.length >= 2 ? timeline.map((p) => p.rainfall) : forecast ? [forecast.rainfall, forecast.rainfall] : [];
+  const tempSeries = timeline.length >= 2 ? timeline.map((p) => p.temperature) : forecast ? [forecast.temperature, forecast.temperature] : [];
+  const windSeries = timeline.length >= 2 ? timeline.map((p) => p.wind) : forecast ? [forecast.wind, forecast.wind] : [];
+  const confSeries = timeline.length >= 2 ? timeline.map((p) => p.confidence) : forecast ? [forecast.confidence, forecast.confidence] : [];
 
   return (
     <>
@@ -341,34 +385,42 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
         <div className="rounded-lg border border-border bg-card shadow-none overflow-hidden">
           {/* Splits at md: below xl the stacked halves made the card 943px tall
               at 768px — a whole screen of hero before any evidence. */}
-          <div className="grid grid-cols-1 md:grid-cols-12">
+          <div className={`grid grid-cols-1 ${showVerdict ? 'md:grid-cols-12' : ''}`}>
             {/* Left: the plain-language answer */}
-            <div className="md:col-span-5 p-4 border-b md:border-b-0 md:border-r border-border flex flex-col">
+            <div className={`p-4 border-b border-border flex flex-col ${showVerdict ? 'md:col-span-5 md:border-b-0 md:border-r' : ''}`}>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                  Station: {city}
+                <span className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground">
+                  {city}
                 </span>
-                <span className="text-border">|</span>
-                <span className={`text-[11px] font-semibold uppercase tracking-wide ${badgeColor}`}>
+                <span className={`text-[12px] font-semibold tracking-[0.01em] ${badgeColor}`}>
                   {badgeLabel}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-semibold text-foreground tracking-tight leading-[1.15]">
-                {headline}
-              </h1>
-              <p className="text-sm text-muted-foreground mt-2">
-                Blended from 4 international weather supercomputers (ECMWF, GFS, ICON, GEM).
-              </p>
+              {showVerdict ? (
+                <>
+                  <h1 className="text-2xl sm:text-4xl font-semibold text-foreground tracking-tight leading-[1.15]">
+                    {headline}
+                  </h1>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Blended from six independent models, so one model having a bad day does not move the answer.
+                  </p>
+                </>
+              ) : (
+                <p className="text-[13px] leading-relaxed text-muted-foreground">
+                  Blended from six independent forecast models — ECMWF, GFS, ICON, GEM, JMA and the UK
+                  Met Office — so one model having a bad day does not move the answer.
+                </p>
+              )}
 
               {(agreement || probChips.length > 0) && (
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
                   {agreement && (
-                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${agreement.cls}`}>
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[12px] font-semibold ${agreement.cls}`}>
                       {agreement.label}
                     </span>
                   )}
                   {probChips.map((chip) => (
-                    <span key={chip} className="inline-flex items-center rounded-md border border-border bg-secondary px-2 py-0.5 text-[11px] font-mono text-muted-foreground">
+                    <span key={chip} className="inline-flex items-center rounded-md border border-border bg-secondary px-2 py-0.5 text-[12px] font-mono text-muted-foreground">
                       {chip}
                     </span>
                   ))}
@@ -380,32 +432,25 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                   its evidence line, and it was the tallest thing in this column:
                   it set the hero row height, which the 2x2 metric grid then
                   stretched into, at 611px desktop / 643px tablet. */}
-              {advisoriesLoaded && advisories.length === 0 ? (
-                <p className="mt-3 text-[11px] font-mono text-muted-foreground">
-                  Advisory feed unavailable — see Data Health.
-                </p>
-              ) : null}
-
               {/* Provenance sits with the verdict. The StatusStrip at the top of
                   the page already carries the cycle time, so a whole strip of it
                   under the metrics repeated it; mt-auto pins the line to the
                   column floor instead. */}
-              <div className="mt-auto pt-3 flex items-center gap-2 text-[11px] font-mono text-muted-foreground">
+              <div className="mt-auto pt-3 flex items-center gap-2 text-[12px] font-mono text-muted-foreground">
                 <RefreshCw size={12} className="shrink-0 text-success" />
                 <span>
-                  Cycle {lastUpdatedDisplay}
-                  <span className="hidden sm:inline">
-                    {' '}
-                    · verified against ERA5 (MoES / NCMRWF)
-                  </span>
+                  Updated {lastUpdatedDisplay}
+                  <span className="hidden sm:inline"> · checked against measured weather</span>
                 </span>
               </div>
             </div>
 
-            {/* Right: the 4-metric readout composite — 2-up on phone, divider grid on desktop */}
-            <div className="md:col-span-7 grid grid-cols-2 sm:divide-x divide-border">
+            {/* Right: the 4-metric readout composite — 2-up quadrant with hairline borders */}
+            <div className={`${showVerdict ? 'md:col-span-7' : ''} grid grid-cols-2 bg-border gap-px`}>
+              {forecast ? (
+              <>
               <MetricCell
-                label="Air Temperature"
+                label="Temperature"
                 icon={<Thermometer size={16} className="text-muted-foreground" />}
                 value={forecast.temperature}
                 decimals={1}
@@ -416,7 +461,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 color="#171717"
               />
               <MetricCell
-                label="Precipitation"
+                label="Rain"
                 icon={<CloudRain size={16} className="text-data-rain" />}
                 value={forecast.rainfall}
                 decimals={0}
@@ -429,7 +474,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 tone="plain"
               />
               <MetricCell
-                label="Wind (10m)"
+                label="Wind"
                 icon={<Wind size={16} className="text-muted-foreground" />}
                 value={forecast.wind}
                 decimals={0}
@@ -440,7 +485,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 color="#60646c"
               />
               <MetricCell
-                label="Forecast Certainty"
+                label="How sure"
                 icon={<ShieldCheck size={16} className="text-success" />}
                 value={forecast.confidence}
                 decimals={0}
@@ -452,6 +497,12 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                 explain="confidence"
                 dominantModel={forecast.dominantModel}
               />
+              </>
+              ) : (
+                <div className="col-span-2 flex items-center justify-center py-10 text-xs font-mono text-muted-foreground">
+                  Forecast metrics unavailable — the engine has not published this cycle.
+                </div>
+              )}
             </div>
           </div>
 
@@ -466,7 +517,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
           <div className="border-t border-border p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-xs font-semibold text-foreground">
-                Scientific Verification & Model Accuracy
+                How the forecast was checked
               </div>
               <ShaderButton
                 variant="ocean"
@@ -478,7 +529,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               >
                 <Search size={14} />
                 <span className="hidden sm:inline">Inspect Model Evidence &amp; Technical Data</span>
-                <span className="sm:hidden">Inspect Model Evidence</span>
+                <span className="sm:hidden">See the evidence</span>
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-300 ease-out"
@@ -499,28 +550,30 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
               className="overflow-hidden"
             >
             <div className="mt-3 pt-3 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-3">
-              {/* Card 1: EXPECTED ACCURACY RANGE (raw model divergence & ensemble uncertainty) */}
-              <div className="p-3 rounded-md border border-border bg-secondary/50 flex flex-col justify-between">
+              {/* Column 1: Model Spread & Quantiles */}
+              <div className="p-3.5 rounded-md border border-border bg-card flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono">
-                      EXPECTED ACCURACY RANGE
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Activity size={14} className="text-muted-foreground" />
+                      <span className="text-xs font-semibold text-foreground">
+                        Model Spread &amp; Quantiles
+                      </span>
+                    </div>
+                    <span className="text-[11.5px] font-mono px-1.5 py-0.5 rounded-sm border border-border bg-secondary text-muted-foreground">
+                      P10–P90
                     </span>
-                    <Activity size={14} className="text-muted-foreground" />
                   </div>
-                  <div className="text-sm font-semibold text-foreground">
-                    Model Spread & Quantiles
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground">
                     72-hour variation window calculated from ECMWF, GFS, ICON, and GEM divergence.
                   </p>
-                  <div className="mt-2.5 space-y-1 font-mono text-xs">
+                  <div className="mt-2.5 space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between text-muted-foreground">
                       <span>Temp (P10–P90):</span>
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.temperature
                           ? `${nowRec.value.temperature.p10.toFixed(1)}–${nowRec.value.temperature.p90.toFixed(1)} °C`
-                          : `±${forecast.temperatureUncertainty || 1.2} °C`}
+                          : forecast ? `±${forecast.temperatureUncertainty} °C` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -528,7 +581,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.rainfall
                           ? `${nowRec.value.rainfall.p10.toFixed(1)}–${nowRec.value.rainfall.p90.toFixed(1)} mm`
-                          : `±${forecast.rainfallUncertainty || 2} mm`}
+                          : forecast ? `±${forecast.rainfallUncertainty} mm` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -536,42 +589,44 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.wind_speed
                           ? `${nowRec.value.wind_speed.p10.toFixed(0)}–${nowRec.value.wind_speed.p90.toFixed(0)} km/h`
-                          : `±${forecast.windUncertainty || 3} km/h`}
+                          : forecast ? `±${forecast.windUncertainty} km/h` : '—'}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 pt-2 border-t border-border/60 text-[11px] font-mono text-muted-foreground">
-                  Status: {agreement?.label ?? 'Multi-Model Consensus'}
+                <div className="mt-3 pt-2 border-t border-border/60 text-[12px] font-mono text-muted-foreground">
+                  Status: <span className="text-foreground">{agreement?.label ?? 'Multi-Model Consensus'}</span>
                 </div>
               </div>
 
-              {/* Card 2: HISTORICAL RELIABILITY (ERA5 error breakdown & blend accuracy) */}
-              <div className="p-3 rounded-md border border-border bg-secondary/50 flex flex-col justify-between">
+              {/* Column 2: Historical Benchmark Skill */}
+              <div className="p-3.5 rounded-md border border-border bg-card flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono">
-                      HISTORICAL RELIABILITY
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <ShieldCheck size={14} className="text-success" />
+                      <span className="text-xs font-semibold text-foreground">
+                        How accurate it has been
+                      </span>
+                    </div>
+                    <span className="text-[11.5px] font-mono px-1.5 py-0.5 rounded-sm border border-success/30 bg-success/5 text-data-ok-text">
+                      ERA5
                     </span>
-                    <ShieldCheck size={14} className="text-success" />
                   </div>
-                  <div className="text-sm font-semibold text-foreground">
-                    ERA5 Benchmark Skill
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Calibrated against official MoES / NCMRWF reanalysis archives to correct local bias.
+                  <p className="text-xs text-muted-foreground">
+                    Checked against measured weather from India&rsquo;s official weather service, to correct local bias.
                   </p>
-                  <div className="mt-2.5 space-y-1 font-mono text-xs">
+                  <div className="mt-2.5 space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between text-muted-foreground">
-                      <span>Certainty Index:</span>
+                      <span>How sure:</span>
                       <span className="font-semibold text-data-ok-text">
-                        {forecast.confidence}% match
+                        {forecast?.confidence ?? 0}% match
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
                       <span>Dominant Model:</span>
                       <span className="font-semibold text-foreground">
-                        {forecast.dominantModel || 'ECMWF IFS'}
+                        {forecast?.dominantModel || 'ECMWF IFS'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -582,33 +637,35 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 pt-2 border-t border-border/60 text-[11px] font-mono text-muted-foreground">
+                <div className="mt-3 pt-2 border-t border-border/60 text-[12px] font-mono text-muted-foreground">
                   Verified with ERA5 Synoptic Ground Truth
                 </div>
               </div>
 
-              {/* Card 3: CITY SAFETY READINESS (decision context & weight distributions) */}
-              <div className="p-3 rounded-md border border-border bg-secondary/50 flex flex-col justify-between">
+              {/* Column 3: Decision Thresholds */}
+              <div className="p-3.5 rounded-md border border-border bg-card flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono">
-                      CITY SAFETY READINESS
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Sun size={14} className="text-warning" />
+                      <span className="text-xs font-semibold text-foreground">
+                        Decision Thresholds
+                      </span>
+                    </div>
+                    <span className="text-[11.5px] font-mono px-1.5 py-0.5 rounded-sm border border-border bg-secondary text-muted-foreground">
+                      {city}
                     </span>
-                    <Sun size={14} className="text-warning" />
                   </div>
-                  <div className="text-sm font-semibold text-foreground">
-                    Decision Thresholds for {city}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground">
                     Early action triggers calibrated for municipal emergency management protocols.
                   </p>
-                  <div className="mt-2.5 space-y-1 font-mono text-xs">
+                  <div className="mt-2.5 space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between text-muted-foreground">
                       <span>Rain Hazard (≥4 mm/h):</span>
                       <span className="font-semibold text-foreground">
                         {nowRec?.threshold_probabilities?.rainfall?.['4'] != null
                           ? `${Math.round(nowRec.threshold_probabilities.rainfall['4'] * 100)}%`
-                          : '15%'}
+                          : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -616,7 +673,7 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                       <span className="font-semibold text-foreground">
                         {nowRec?.threshold_probabilities?.temperature?.['35'] != null
                           ? `${Math.round(nowRec.threshold_probabilities.temperature['35'] * 100)}%`
-                          : '10%'}
+                          : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -628,15 +685,16 @@ export function ForecastHero({ selectedCity = 'Kanpur' }: ForecastHeroProps) {
                   </div>
                 </div>
                 <div className="mt-3 pt-2 border-t border-border/60 flex items-center justify-between">
-                  <span className="text-[11px] font-mono text-muted-foreground">
+                  <span className="text-[12px] font-mono text-muted-foreground">
                     Weights active
                   </span>
                   <button
                     type="button"
                     onClick={() => setWhyOpen(true)}
-                    className="text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[12px] font-medium text-accent hover:underline focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-accent rounded-xs"
                   >
-                    View Weights Modal →
+                    <span>Inspect model weights</span>
+                    <ArrowRight size={12} />
                   </button>
                 </div>
               </div>

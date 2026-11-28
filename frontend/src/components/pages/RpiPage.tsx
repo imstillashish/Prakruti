@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { ShieldCheck, RefreshCw, Layers, MapPin } from '@/components/icons';
+import { ShieldCheck, RefreshCw, Layers } from '@/components/icons';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { StationDossier } from '@/components/RPI/StationDossier';
 import { getRpiData, getAllRpiData, SERVER_WAKING_UP_MSG } from '@/lib/api';
@@ -38,20 +38,15 @@ const MODEL_FILTERS = [
 ];
 
 export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps) {
-  const [currentCity, setCurrentCity] = useState<string>(selectedCity || 'Kanpur');
+  // The shell owns the station; reading the prop directly keeps a pick made on
+  // the overview map or the phone picker authoritative here too.
+  const currentCity = selectedCity || 'Kanpur';
   const [rpiData, setRpiData] = useState<RpiData | null>(null);
   const [stations, setStations] = useState<RpiData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [activeModelFilter, setActiveModelFilter] = useState<string>('ALL');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Sync with prop when parent updates selectedCity
-  useEffect(() => {
-    if (selectedCity && selectedCity !== currentCity) {
-      setCurrentCity(selectedCity);
-    }
-  }, [selectedCity]);
 
   // Load all stations once for spatial markers and leaderboard
   useEffect(() => {
@@ -96,8 +91,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
   }, [currentCity]);
 
   const handleCitySelect = (city: string) => {
-    setCurrentCity(city);
-    if (onSelectCity) onSelectCity(city);
+    onSelectCity?.(city);
   };
 
   const handleRefresh = () => {
@@ -116,12 +110,17 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
   };
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-4">
       {/* Compact Page Header with Station Quick Switcher & Refresh */}
       <PageHeader
         icon={ShieldCheck}
-        title="Risk Priority Index & Model Trust Atlas"
-        sub="Synoptic hazard severity ranking and lead-aware NWP model dominance across India."
+        title="Risk map"
+        answer={
+          rpiData
+            ? `${rpiData.city} is at ${rpiData.priority.toLowerCase()} priority this cycle, and ${rpiData.dominantModel} is the model doing most of the work.`
+            : 'Ranked by how many people a hazard would put at risk, not by how dramatic the number looks.'
+        }
+        sub="Score combines hazard severity with the population exposed to it. Ties break toward the district with the weaker station network."
         action={
           <div className="flex items-center gap-2">
             {stations.length > 0 && (
@@ -133,7 +132,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               >
                 {stations.map((st) => (
                   <option key={st.city} value={st.city}>
-                    {st.city} ({st.state}) — RPI {st.rpiScore}
+                    {st.city} ({st.state}) — risk {st.rpiScore}
                   </option>
                 ))}
               </select>
@@ -145,7 +144,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
               size="sm"
               onClick={handleRefresh}
               className="h-8 px-3 text-xs font-mono cursor-pointer"
-              title="Refresh Synoptic RPI Run"
+              title="Recalculate the risk index for this cycle"
             >
               <RefreshCw
                 className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
@@ -164,8 +163,8 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
         <div className="md:col-span-7 flex flex-col gap-2 min-h-0 h-full">
           {/* Quick Model Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 shrink-0">
-            <span className="text-[11px] font-mono font-bold text-muted-foreground mr-1 flex items-center gap-1">
-              <Layers size={12} /> Model:
+            <span className="text-[11.5px] text-muted-foreground mr-1 flex items-center gap-1">
+              <Layers size={12} /> Show model
             </span>
             {MODEL_FILTERS.map((mf) => (
               <button

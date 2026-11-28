@@ -1,19 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  /* Colors from DESIGN.md v3 — white editorial system */
-  --color-primary-50: #fafafa;
-  --color-primary-100: #f0f0f3;
-  --color-primary-200: #dcdee0;
-  --color-primary-300: #9e9e9e;
-  --color-primary-400: #60646c;
-  --color-primary-500: #171717;
-  --color-primary-600: #171717;
-  --color-primary-700: #171717;
-  --color-primary-800: #121212;
-  --color-primary-900: #0d0d0d;
-  --color-primary-950: #080808;
-
+  /* Grays from DESIGN.md v3 — white editorial system. This ramp is load-bearing:
+     spectrumui uses bg-neutral-* / text-neutral-* utilities, which resolve to
+     these values (unlayered :root beats Tailwind's default theme emission). */
   --color-neutral-50: #f7f7f7;
   --color-neutral-100: #f0f0f3;
   --color-neutral-200: #dcdee0;
@@ -26,41 +16,16 @@
   --color-neutral-900: #333333;
   --color-neutral-950: #171717;
 
-  --color-success: #16a34a;
-  --color-warning: #ab6400;
-  --color-error: #b42318;
-  --color-text-link: #0d74ce;
-  --color-sky-light: #cfe7ff;
-  --color-sky-mid: #a8c8e8;
   --color-ink: #171717;
 
   /* Typography — Inter via next/font, JetBrains Mono via next/font (layout.tsx) */
-  --font-family-sans: var(--font-inter), -apple-system, system-ui, sans-serif;
-  --font-family-display: var(--font-inter), system-ui, sans-serif;
+  --font-family-sans: var(--font-inter), var(--font-devanagari), -apple-system, system-ui, sans-serif;
+  --font-family-display: var(--font-inter), var(--font-devanagari), system-ui, sans-serif;
   --font-family-mono: var(--font-jetbrains-mono), monospace;
-  --font-family-devanagari: var(--font-devanagari), 'Noto Sans Devanagari', 'Nirmala UI', system-ui, sans-serif;
-
-  /* Radii from DESIGN.md v3 — 8px CTAs, 12px panels, pill badges only */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
 
   /* Shadows from DESIGN.md v3 */
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
   --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.08);
-
-  /* Legacy aliases for backward compatibility */
-  --bg-primary: var(--background);
-  --bg-secondary: var(--color-neutral-100);
-  --glass-bg: #ffffff;
-  --glass-border: var(--color-neutral-200);
-  --glass-shadow: var(--shadow-card);
-  --accent-blue: var(--color-text-link);
-  --accent-cyan: var(--color-text-link);
-  --text-primary: var(--color-neutral-950);
-  --text-secondary: var(--color-neutral-600);
-  --text-muted: var(--color-neutral-500);
 
   /* ===== White editorial theme (DESIGN.md v3) ===== */
   --background: #ffffff;
@@ -132,10 +97,15 @@
   --input: #dcdee0;
   --ring: var(--action);        /* focus follows the accent */
   --radius: 0.75rem;            /* 12px — panels & floating layers */
+  --duration-fast: 150ms;       /* functional fades/accordions */
+  --duration-loop: 6s;          /* gradient ramp periods */
 }
 
 /* Tailwind v4 theme mapping — generates bg-card, text-muted-foreground, rounded-md, etc. */
 @theme inline {
+  --font-sans: var(--font-family-sans);
+  --font-display: var(--font-family-display);
+  --font-mono: var(--font-family-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -174,9 +144,9 @@
   --color-series-5: var(--series-5);
   --color-series-6: var(--series-6);
   --color-success: var(--semantic-success);
-  --color-text-link: var(--color-text-link);
-  --color-sky-light: var(--color-sky-light);
-  --color-sky-mid: var(--color-sky-mid);
+  --color-text-link: var(--action);
+  --color-sky-light: #cfe7ff;
+  --color-sky-mid: #a8c8e8;
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -192,8 +162,10 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -206,12 +178,33 @@ body {
   line-height: 1.5;
 }
 
-.font-display {
-  font-family: var(--font-family-display);
+/* Reading rhythm ---------------------------------------------------------
+   Panels default to a tight, instrument-panel line-height. Pages that lead
+   with sentences need air, so prose blocks opt in rather than every panel
+   getting looser. Anything in .prose gets a real measure and a readable
+   leading; the UI's own 10-11px mono stays where it belongs, in data. */
+.prose,
+.reading {
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.65;
+  text-wrap: pretty;
 }
 
-.font-mono {
-  font-family: var(--font-family-mono);
+.prose p + p,
+.reading p + p {
+  margin-top: 0.85em;
+}
+
+/* Section rhythm: pages breathe between ideas, not between cards. */
+.page-stack > * + * {
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .page-stack > * + * {
+    margin-top: 1.75rem;
+  }
 }
 
 /* Panel card (DESIGN.md v3: white, 12px, hairline-strong, soft drop on hover) */
@@ -267,7 +260,7 @@ body {
    mount animation, not a transition — there is no exit to animate). */
 .modal-backdrop {
   background: rgba(23, 23, 23, 0.32);
-  animation: fade-in 150ms ease-out;
+  animation: fade-in var(--duration-fast) ease-out;
 }
 
 /* Functional motion only — popover/tooltip fades, accordion open/close. Nothing ambient. */
@@ -286,9 +279,9 @@ body {
   to { height: 0; }
 }
 
-.animate-fade-in { animation: fade-in 120ms ease-out; }
-.animate-accordion-down { animation: accordion-down 150ms ease-out; }
-.animate-accordion-up { animation: accordion-up 150ms ease-out; }
+.animate-fade-in { animation: fade-in var(--duration-fast) ease-out; }
+.animate-accordion-down { animation: accordion-down var(--duration-fast) ease-out; }
+.animate-accordion-up { animation: accordion-up var(--duration-fast) ease-out; }
 
 /* Waiting surfaces: a panel never waits behind a spinner. The placeholder is the
    panel shape — hairline rows with a sheen crossing them — plus one action-ramp
@@ -329,16 +322,8 @@ body {
   }
 }
 
-/* Minimal ambient animated gradient drift for status and severity panels */
-@keyframes ambient-drift {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
-  }
-}
-
+/* Status-tinted panel washes — static gradient tints, one per severity. No
+   drift: a status panel is a signal, not a screen saver. */
 .ambient-gradient-success {
   background-color: #ffffff;
   background-image: linear-gradient(
@@ -348,8 +333,6 @@ body {
     rgba(22, 163, 74, 0.05) 75%,
     rgba(34, 197, 94, 0.11) 100%
   );
-  background-size: 200% 200%;
-  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 .ambient-gradient-warning {
@@ -361,8 +344,6 @@ body {
     rgba(171, 100, 0, 0.05) 75%,
     rgba(217, 119, 6, 0.11) 100%
   );
-  background-size: 200% 200%;
-  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 .ambient-gradient-destructive {
@@ -374,8 +355,6 @@ body {
     rgba(180, 35, 24, 0.05) 75%,
     rgba(225, 29, 72, 0.11) 100%
   );
-  background-size: 200% 200%;
-  animation: ambient-drift 8s ease-in-out infinite alternate;
 }
 
 /* Welcome splash: the blend diagram draws itself in, sources first, the merged
@@ -450,7 +429,7 @@ body {
   background-color: var(--colorway-deep-ocean);
   background-image: var(--colorway-ramp-ocean);
   background-size: 250% 250%;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
   color: #ffffff;
 }
 
@@ -458,7 +437,7 @@ body {
   background-color: var(--colorway-deep-emerald);
   background-image: var(--colorway-ramp-emerald);
   background-size: 250% 250%;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
   color: #ffffff;
 }
 
@@ -466,7 +445,7 @@ body {
   background-color: var(--colorway-deep-amber);
   background-image: var(--colorway-ramp-amber);
   background-size: 250% 250%;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
   color: #ffffff;
 }
 
@@ -474,7 +453,7 @@ body {
   background-color: var(--colorway-deep-neutral);
   background-image: var(--colorway-ramp-neutral);
   background-size: 250% 250%;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
   color: #ffffff;
 }
 
@@ -487,7 +466,7 @@ body {
   background-color: var(--colorway-deep-ocean);
   background-image: var(--colorway-ramp-ocean);
   color: #ffffff;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
 }
 
 /* On/off controls claim no semantic role, so their on state is the hue-less one. */
@@ -495,7 +474,7 @@ body {
   background-color: var(--colorway-deep-neutral);
   background-image: var(--colorway-ramp-neutral);
   color: #ffffff;
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
 }
 
 /* Engagement-only motion: an action button sits still on its deep base and the
@@ -508,7 +487,7 @@ body {
 .gradient-state:hover,
 .gradient-state:focus-visible,
 .gradient-state:active {
-  animation: gradient-flow 6s ease infinite;
+  animation: gradient-flow var(--duration-loop) ease infinite;
 }
 
 /* One loop off screen is one loop not painting: MeshVisibility marks what has
@@ -532,9 +511,6 @@ body {
   .modal-backdrop,
   .animate-accordion-down,
   .animate-accordion-up,
-  .ambient-gradient-success,
-  .ambient-gradient-warning,
-  .ambient-gradient-destructive,
   .gradient-animated-ocean,
   .gradient-animated-emerald,
   .gradient-animated-amber,
@@ -549,6 +525,16 @@ body {
   .gradient-state:active {
     animation: none;
     background-size: 100% 100%;
+  }
+}
+
+/* One keyboard-focus idiom for everything that doesn't style focus itself.
+   Lives in @layer base so component utilities (outline-*, ring-*, outline-none)
+   still win when they're present. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 

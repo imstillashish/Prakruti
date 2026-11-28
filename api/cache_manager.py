@@ -15,6 +15,7 @@ import os
 import json
 import sys
 import threading
+import csv
 from datetime import datetime, date
 from pathlib import Path
 import requests
@@ -92,18 +93,14 @@ def is_cache_fresh():
     meta = load_metadata()
     today_str = get_today_date_str()
 
-    # Also inspect actual date inside blended_forecast.csv
+    # Also inspect the named datetime column inside blended_forecast.csv.
     try:
-        # Read just first 2 lines to quickly get first datetime without loading entire file
         with open(BLENDED_CSV, "r", encoding="utf-8") as f:
-            header = f.readline()
-            first_row = f.readline()
-            if not first_row:
+            row = next(csv.DictReader(f), None)
+            if not row:
                 return False
-            parts = first_row.strip().split(",")
-            if len(parts) >= 2:
-                # datetime is the second column e.g. "2026-09-26 00:00:00"
-                fc_dt_str = parts[1].strip()
+            fc_dt_str = row.get("datetime")
+            if fc_dt_str:
                 fc_date_str = fc_dt_str[:10]
                 if fc_date_str == today_str:
                     # File is from today's date!
@@ -348,13 +345,8 @@ def run_adaptive_weighting():
         print("[CacheManager] Generating hybrid_forecast.csv with Random Forest residual corrections...")
         from ai.predict import build_current_features, predict_hybrid, FEATURE_COLS
 
-        orig_cwd = os.getcwd()
-        try:
-            os.chdir(str(BASE_DIR))
-            curr_df, _ = build_current_features()
-            hybrids, _ = predict_hybrid(curr_df)
-        finally:
-            os.chdir(orig_cwd)
+        curr_df, _ = build_current_features()
+        hybrids, _ = predict_hybrid(curr_df)
 
         curr_df["temperature"] = hybrids["temperature"]
         curr_df["rainfall"] = hybrids["rainfall"]
@@ -429,9 +421,13 @@ def run_downstream_updates():
     try:
         import sys
         import subprocess
-        # Check if venv python exists
-        venv_py = BASE_DIR / "venv" / "bin" / "python"
-        py_exec = str(venv_py) if venv_py.exists() else sys.executable
+        # Prefer a virtualenv python so downstream scripts see the same deps
+        # as the API process (system python may lack e.g. scikit-learn).
+        py_exec = sys.executable
+        for candidate in (BASE_DIR / "venv" / "bin" / "python", BASE_DIR / ".venv" / "bin" / "python"):
+            if candidate.exists():
+                py_exec = str(candidate)
+                break
 
         # Snapshot previous cycle artifacts for inter-cycle delta (F-01.C) —
         # must happen BEFORE downstream scripts overwrite outputs/*.csv
@@ -444,41 +440,56 @@ def run_downstream_updates():
         # Run alerts.py
         alerts_script = BASE_DIR / "ai" / "alerts.py"
         if alerts_script.exists():
-            subprocess.run([py_exec, str(alerts_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(alerts_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run advisories.py (hero advice, threshold-coupled to alerts)
         adv_script = BASE_DIR / "ai" / "advisories.py"
         if adv_script.exists():
-            subprocess.run([py_exec, str(adv_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(adv_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run uncertainty.py (P10/P50/P90, exceedance, agreement — feeds /api/decision)
         unc_script = BASE_DIR / "ai" / "uncertainty.py"
         if unc_script.exists():
-            subprocess.run([py_exec, str(unc_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(unc_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run verify.py (F-02: model-vs-truth verification metrics)
         ver_script = BASE_DIR / "ai" / "verify.py"
         if ver_script.exists():
-            subprocess.run([py_exec, str(ver_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(ver_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run benchmark.py (F-03: leaderboard boards — reads verify's artifacts)
         bench_script = BASE_DIR / "ai" / "benchmark.py"
         if bench_script.exists():
-            subprocess.run([py_exec, str(bench_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(bench_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run cards.py (F-04: model/benchmark cards — read the leaderboard artifacts)
         cards_script = BASE_DIR / "ai" / "cards.py"
         if cards_script.exists():
-            subprocess.run([py_exec, str(cards_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(cards_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
 
         # Run confidence_engine.py
         conf_script = BASE_DIR / "ai" / "confidence_engine.py"
         if conf_script.exists():
-            subprocess.run([py_exec, str(conf_script)], cwd=str(BASE_DIR), capture_output=True)
+            subprocess.run([py_exec, str(conf_script)], cwd=str(BASE_DIR), check=True,
+                           capture_output=True, text=True)
         # NOTE: cycle delta is computed in regenerate_forecast AFTER detect(),
         # so it sees this cycle's state, not the previous one.
+    except subprocess.CalledProcessError as e:
+        print(f"[CacheManager] Downstream stage failed: {e}")
+        if e.stdout:
+            print(e.stdout)
+        if e.stderr:
+            print(e.stderr)
+        raise
     except Exception as e:
-        print(f"[CacheManager] Downstream sync warning: {e}")
+        print(f"[CacheManager] Downstream sync failed: {e}")
+        raise
 
 
 def regenerate_forecast(force=False):

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getCityForecastsData, MOCK_CITIES } from '@/lib/api';
+import { getCityForecastsData } from '@/lib/api';
 import { CityForecast } from '@/types';
 import { MAP_CONFIG, MAPBOX_ACCESS_TOKEN } from '@/lib/mapConfig';
 import { RotateCcw, ZoomIn, ZoomOut } from '@/components/icons';
@@ -29,7 +29,7 @@ export default function RealLeafletMap({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [key: string]: L.Marker }>({});
   const [activeHoverCity, setActiveHoverCity] = useState<CityForecast | null>(null);
-  const [cities, setCities] = useState<CityForecast[]>(MOCK_CITIES);
+  const [cities, setCities] = useState<CityForecast[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
@@ -37,7 +37,7 @@ export default function RealLeafletMap({
     let mounted = true;
     getCityForecastsData()
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setCities(data);
           setIsLoading(false);
         }
@@ -150,7 +150,7 @@ export default function RealLeafletMap({
             </div>
 
             <!-- Crisp Weather Badge Label -->
-            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight shadow-md border pointer-events-none transition-all duration-200 group-hover:scale-110 ${
+            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded-md text-[11.5px] font-bold tracking-tight shadow-md border pointer-events-none transition-all duration-200 group-hover:scale-110 ${
               isSelected
                 ? 'bg-foreground text-white border-white ring-2 ring-foreground/30 z-30 scale-105'
                 : isDarkBg
@@ -182,7 +182,7 @@ export default function RealLeafletMap({
             <div><span style="color: #60646c; font-size: 10px; display: block;">Reliability</span><strong style="color: #15803d; font-size: 12px;">${city.confidence}% ${city.confidenceLabel ? '(' + city.confidenceLabel + ')' : ''}</strong></div>
           </div>
           <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid #f0f0f3; font-size: 10px; color: #60646c; display: flex; justify-content: space-between;">
-            <span>Dominant Model:</span>
+            <span>Lead model:</span>
             <strong style="color: ${seriesColor(city.dominantModel)};">${city.dominantModel}</strong>
           </div>
           ${city.explanation ? `
@@ -299,7 +299,7 @@ export default function RealLeafletMap({
                 {activeCardCity.city}
               </span>
               <span
-                className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground border border-border font-sans"
+                className="text-[11.5px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground border border-border font-sans"
               >
                 {activeCardCity.state}
               </span>
@@ -307,28 +307,28 @@ export default function RealLeafletMap({
 
             <div className="grid grid-cols-2 gap-1.5 text-xs">
               <div className="bg-secondary p-1.5 rounded-md">
-                <span className="text-muted-foreground block text-[10px]">Rainfall</span>
+                <span className="text-muted-foreground block text-[11.5px]">Rainfall</span>
                 <span className="font-semibold text-data-rain text-sm">{activeCardCity.rainfall} mm</span>
               </div>
               <div className="bg-secondary p-1.5 rounded-md">
-                <span className="text-muted-foreground block text-[10px]">Temperature</span>
+                <span className="text-muted-foreground block text-[11.5px]">Temperature</span>
                 <span className="font-semibold text-foreground text-sm">{activeCardCity.temperature}°C</span>
               </div>
               <div className="hidden sm:block bg-secondary p-1.5 rounded-md">
-                <span className="text-muted-foreground block text-[10px]">Wind</span>
+                <span className="text-muted-foreground block text-[11.5px]">Wind</span>
                 <span className="font-semibold text-foreground text-sm">{activeCardCity.wind} km/h</span>
               </div>
               <div className="hidden sm:block bg-secondary p-1.5 rounded-md">
-                <span className="text-muted-foreground block text-[10px]">Confidence</span>
+                <span className="text-muted-foreground block text-[11.5px]">Reliability</span>
                 <span className="font-semibold text-foreground text-sm">{activeCardCity.confidence}%</span>
               </div>
             </div>
-            <div className="hidden sm:flex mt-2 pt-1.5 border-t border-border text-[11px] text-muted-foreground items-center justify-between">
-              <span>Dominant:</span>
+            <div className="hidden sm:flex mt-2 pt-1.5 border-t border-border text-[12px] text-muted-foreground items-center justify-between">
+              <span>Lead model:</span>
               <span className="font-semibold text-foreground">{activeCardCity.dominantModel}</span>
             </div>
             {activeCardCity.explanation && (
-              <div className="hidden sm:block mt-1 pt-1 border-t border-border text-[10px] text-muted-foreground leading-snug">
+              <div className="hidden sm:block mt-1 pt-1 border-t border-border text-[11.5px] text-muted-foreground leading-snug">
                 {activeCardCity.explanation}
               </div>
             )}

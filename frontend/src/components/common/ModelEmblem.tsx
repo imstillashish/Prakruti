@@ -12,6 +12,8 @@ type MarkId =
   | 'dwd'
   | 'gfs'
   | 'gem'
+  | 'jma'
+  | 'ukmo'
   | 'weighted_blend'
   | 'equal_avg'
   | 'persistence'
@@ -78,6 +80,20 @@ const MARK_PROVENANCE: Record<MarkId, MarkProvenance> = {
     markSource:
       'ECCC bilingual signature — Wikimedia Commons; rows show its flag portion through a crop window',
   },
+  jma: {
+    owner: 'JMA — Japan Meteorological Agency',
+    resolution: 'Global Spectral Model',
+    cadence: '4 runs a day (00/06/12/18 UTC)',
+    license: 'JMA published open data — identification only',
+    source: 'https://www.jma.go.jp/jma/indexe.html',
+  },
+  ukmo: {
+    owner: 'Met Office — United Kingdom',
+    resolution: 'Global Unified Model',
+    cadence: '4 runs a day (00/06/12/18 UTC)',
+    license: 'Met Office published open data — identification only',
+    source: 'https://www.metoffice.gov.uk/weather/guides/what-we-do',
+  },
   weighted_blend: {
     owner: 'Prakruti — Team EXELION',
     resolution: 'Weighted blend of the four model grids, 45 cities',
@@ -114,6 +130,8 @@ function normalizeMethod(method: string): MarkId {
   if (raw.includes('gfs') || raw === 'nwpb' || raw === 'nwp_b') return 'gfs';
   if (raw.includes('icon') || raw.includes('dwd')) return 'dwd';
   if (raw.includes('gem') || raw.includes('cmc') || raw.includes('eccc')) return 'gem';
+  if (raw === 'jma' || raw.includes('jma')) return 'jma';
+  if (raw === 'ukmo' || raw.includes('ukmo') || raw.includes('met office')) return 'ukmo';
   if (
     raw.includes('blend') ||
     raw.includes('hybrid') ||
@@ -145,6 +163,10 @@ function markTitle(norm: MarkId, method: string): string {
       return 'ICON (Deutscher Wetterdienst, Germany)';
     case 'gem':
       return 'GEM (Meteorological Service of Canada / ECCC)';
+    case 'jma':
+      return 'JMA (Japan Meteorological Agency GSM)';
+    case 'ukmo':
+      return 'UKMO (UK Met Office Global Model)';
     case 'weighted_blend':
       return 'Prakruti AI Neural Hybrid Blend';
     case 'equal_avg':

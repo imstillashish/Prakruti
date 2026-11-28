@@ -173,7 +173,7 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
                       x={cx + 8}
                       y={cy - 6}
                       fill="currentColor"
-                      className="text-[11px] font-mono font-medium text-foreground"
+                      className="text-[12px] font-mono font-medium text-foreground"
                     >
                       {pt.method.toUpperCase()}
                       {isFrontier ? '*' : ''}
@@ -203,7 +203,7 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
             </svg>
           </div>
 
-          <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground pt-1 border-t border-border/40">
+          <div className="flex items-center justify-between text-[12px] font-mono text-muted-foreground pt-1 border-t border-border/40">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-xs bg-foreground shrink-0" />
@@ -222,10 +222,10 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
         <div className="lg:col-span-5 space-y-4">
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-3">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">
-              <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+              <h3 className="font-mono text-xs font-semibold tracking-[0.01em] text-foreground">
                 Pareto Frontier Models ({frontierPoints.length})
               </h3>
-              <span className="text-[11px] font-mono text-muted-foreground">
+              <span className="text-[12px] font-mono text-muted-foreground">
                 No method beats them on both axes
               </span>
             </div>
@@ -260,25 +260,25 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
                           {METHOD_LABELS[pt.method] || pt.method}
                         </span>
                         {pt.tier === 'blend' && (
-                          <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
+                          <span className="text-[11.5px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
                             ours
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-success/10 text-data-ok-text border border-success/20">
+                      <span className="text-[11.5px] font-mono px-1.5 py-0.5 rounded-xs bg-success/10 text-data-ok-text border border-success/20">
                         Frontier
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border/40 font-mono text-xs">
                       <div>
-                        <span className="text-muted-foreground text-[10px] block">MAE (lower better)</span>
+                        <span className="text-muted-foreground text-[11.5px] block">MAE (lower better)</span>
                         <span className="font-semibold text-foreground">
                           {pt.mae.toFixed(2)} {unit}
                         </span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground text-[10px] block">CSI (higher better)</span>
+                        <span className="text-muted-foreground text-[11.5px] block">CSI (higher better)</span>
                         <span className="font-semibold text-foreground">
                           {pt.csi.toFixed(3)}
                         </span>
@@ -295,7 +295,7 @@ export function ParetoView({ points, threshold, unit }: ParetoViewProps) {
             <div>
               Method A dominates B if A has lower or equal MAE and higher or equal CSI, with strict improvement on at least one axis.
             </div>
-            <div className="text-[11px] pt-1 border-t border-border/40">
+            <div className="text-[12px] pt-1 border-t border-border/40">
               Evaluated over 6 operational methods. Persistence is excluded because it does not evaluate categorical extremes.
             </div>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
-import { getModelWeightsData, getConfidence, MOCK_MODEL_WEIGHTS } from '@/lib/api';
+import { getModelWeightsData, getConfidence } from '@/lib/api';
 import type { ModelWeight, ConfidenceRecord } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
@@ -14,7 +14,7 @@ interface WhyForecastModalProps {
 }
 
 export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: WhyForecastModalProps) {
-  const [weights, setWeights] = useState<ModelWeight[]>(MOCK_MODEL_WEIGHTS);
+  const [weights, setWeights] = useState<ModelWeight[]>([]);
   const [conf, setConf] = useState<ConfidenceRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -50,7 +50,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
         {/* Context grid */}
         <div className="grid grid-cols-2 gap-2 font-mono">
           {[
-            { label: 'Dominant NWP Model', value: conf?.dominant_model || 'ECMWF IFS', highlight: true },
+            { label: 'Model doing most of the work', value: conf?.dominant_model || 'ECMWF IFS', highlight: true },
             { label: 'Forecast Horizon', value: '24–72 hours', highlight: false },
             { label: 'Regional Model Skill', value: conf ? `${Math.round(conf.skill_score)}% Skill` : '91% Skill', highlight: false },
             { label: 'Ensemble Agreement', value: conf ? `${Math.round(conf.agreement_score)}% Consensus` : '88% Consensus', highlight: false },
@@ -59,7 +59,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
               key={item.label}
               className="p-3 rounded-md bg-secondary border border-border"
             >
-              <div className="text-[11px] text-muted-foreground mb-0.5">{item.label}</div>
+              <div className="text-[12px] text-muted-foreground mb-0.5">{item.label}</div>
               <div className={`text-sm font-semibold flex items-center gap-1.5 ${item.highlight ? 'text-data-ok-text' : 'text-foreground'}`}>
                 {item.highlight && <ModelEmblem method={conf?.dominant_model || 'ECMWF'} size={15} />}
                 <span>{item.value}</span>
@@ -93,7 +93,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
           <div className="flex items-center justify-between mb-1.5 font-mono">
             <h3 className="text-xs font-semibold text-foreground">Explainable AI Confidence (ECE)</h3>
             {conf && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-success/20">
+              <span className="text-[11.5px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-success/20">
                 {conf.confidence}% · {conf.confidence_label}
               </span>
             )}
@@ -105,7 +105,7 @@ export function WhyForecastModal({ open, onClose, selectedCity = 'Kanpur' }: Why
         </div>
 
         {/* Note */}
-        <p className="text-[11px] text-muted-foreground leading-normal font-mono">
+        <p className="text-[12px] text-muted-foreground leading-normal font-mono">
           Data synchronized with MoES/NCMRWF synoptic observational ground stations.
         </p>
       </div>

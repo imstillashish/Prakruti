@@ -11,9 +11,11 @@ export function Explain({ term, className }: { term: GlossaryKey; className?: st
     return null;
   }
   const trigger = (
+    // 44x44 hit area (WCAG AAA / HIG), 13px glyph. The invisible padding keeps
+    // the visual weight of a small info dot without a small tap target.
     <button type="button" aria-label={`What is ${entry.title}?`}
-      className={`relative inline-flex items-center align-middle text-muted-foreground hover:text-foreground cursor-help after:absolute after:-inset-4 after:content-[''] ${className ?? ''}`}>
-      <Info size={13} strokeWidth={1.75} />
+      className={`relative inline-flex h-11 w-11 items-center justify-center align-middle text-muted-foreground hover:text-foreground cursor-help ${className ?? ''}`}>
+      <Info size={13} strokeWidth={1.75} className="pointer-events-none" />
     </button>
   );
   const content = (

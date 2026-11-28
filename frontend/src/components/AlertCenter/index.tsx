@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, AlertTriangle, Info, MapPin, RotateCcw, CheckCircle2, ChevronDown } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
-import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
+import { getAlertsData, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
 interface AlertDrawerProps {
@@ -20,7 +20,7 @@ const alertStyles: Record<Alert['type'], { icon: IconComponent; dot: string; bad
 };
 
 export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
-  const [alerts, setAlerts] = useState<Alert[]>(MOCK_ALERTS);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
@@ -30,7 +30,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
     let mounted = true;
     getAlertsData()
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setAlerts(data);
           setIsLoading(false);
         }
@@ -93,11 +93,11 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-base font-semibold tracking-tight text-foreground">Alert Center</span>
-                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full bg-secondary border border-border text-muted-foreground">
+                <span className="text-[11.5px] font-mono font-semibold px-1.5 py-0.5 rounded-full bg-secondary border border-border text-muted-foreground">
                   {alerts.length} total
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground truncate">
+              <p className="text-[12px] text-muted-foreground truncate">
                 Active hazard advisories from IMD / NCMRWF bulletins
               </p>
             </div>
@@ -125,7 +125,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
               }`}
             >
               <span>All</span>
-              <span className="text-[10px] px-1 rounded-sm bg-secondary font-mono">{alerts.length}</span>
+              <span className="text-[11.5px] px-1 rounded-sm bg-secondary font-mono">{alerts.length}</span>
             </button>
 
             <button
@@ -139,7 +139,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             >
               <AlertTriangle size={12} className={`shrink-0 ${severityFilter === 'danger' ? 'text-white' : 'text-destructive'}`} />
               <span>Red</span>
-              <span className="text-[10px] px-1 rounded-sm font-mono">{redCount}</span>
+              <span className="text-[11.5px] px-1 rounded-sm font-mono">{redCount}</span>
             </button>
 
             <button
@@ -153,7 +153,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
             >
               <AlertTriangle size={12} className={`shrink-0 ${severityFilter === 'warning' ? 'text-foreground' : 'text-warning'}`} />
               <span>Orange</span>
-              <span className="text-[10px] px-1 rounded-sm font-mono">{orangeCount}</span>
+              <span className="text-[11.5px] px-1 rounded-sm font-mono">{orangeCount}</span>
             </button>
           </div>
 
@@ -242,7 +242,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
                         <MapPin size={10} className="shrink-0" />
                         <span className="truncate">{alert.location}</span>
                       </div>
-                      <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-border/70 font-mono text-[11px]">
+                      <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-border/70 font-mono text-[12px]">
                         <span className="text-muted-foreground">{alert.window}</span>
                         <span className="font-semibold text-foreground">{alert.timestamp}</span>
                       </div>
@@ -256,7 +256,7 @@ export function AlertDrawer({ open, onClose }: AlertDrawerProps) {
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-border bg-secondary/60">
-          <p className="text-[10px] font-mono text-muted-foreground text-center">
+          <p className="text-[11.5px] font-mono text-muted-foreground text-center">
             Multi-model blending engine · Cross-referenced with IMD/NCMRWF bulletins
           </p>
         </div>

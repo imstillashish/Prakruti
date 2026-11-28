@@ -60,7 +60,7 @@ const VARIANTS: Record<
   },
   rain: {
     shadow: 'shadow-[0_4px_12px_rgba(14,116,144,0.25)]',
-    focusOutline: 'focus-visible:outline-[#0e7490]',
+    focusOutline: 'focus-visible:outline-data-rain',
     fill: SHADER_FILL.rain,
   },
 };

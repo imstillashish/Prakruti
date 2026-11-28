@@ -59,7 +59,7 @@ const REVEAL_EASE = [0.22, 1, 0.36, 1] as const
 const INSTANT = { duration: 0 } as const
 
 const SIZES = {
-  sm: { px: 28, text: "text-[10px]" },
+  sm: { px: 28, text: "text-[11.5px]" },
   md: { px: 36, text: "text-xs" },
   lg: { px: 44, text: "text-sm" },
 } as const

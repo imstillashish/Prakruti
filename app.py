@@ -22,12 +22,32 @@ except (ImportError, ValueError, Exception):
 app = Flask(__name__)
 
 # Production CORS configuration for Vercel and local environments
+_cors_origins = [origin.strip() for origin in os.environ.get(
+    "CORS_ORIGINS",
+    "https://prakruti-ten.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
+).split(",") if origin.strip()]
+
+
+def _origin_allowed(origin: str | None) -> bool:
+    """Allow the explicit production list, or any localhost port in local dev."""
+    if not origin:
+        return False
+    if origin in _cors_origins:
+        return True
+    # Local-only origin (any port) — safe because browsers never send a
+    # cross-site Origin header with a localhost/127.0.0.1 scheme host.
+    try:
+        from urllib.parse import urlparse
+        host = urlparse(origin).hostname or ""
+        return host in ("localhost", "127.0.0.1", "::1")
+    except Exception:
+        return False
 try:
     from flask_cors import CORS
     CORS(
         app,
         resources={r"/*": {
-            "origins": "*",
+            "origins": _cors_origins,
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
             "allow_headers": ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Accept", "X-Requested-With", "Origin"],
             "max_age": 86400
@@ -84,20 +104,29 @@ import time
 import threading
 
 _last_freshness_check = 0
+_freshness_lock = threading.Lock()
+_freshness_in_flight = False
 
 def check_forecast_freshness_async():
     """Runs forecast freshness check asynchronously in the background so HTTP requests never block."""
-    global _last_freshness_check
+    global _last_freshness_check, _freshness_in_flight
     now = time.time()
-    if now - _last_freshness_check < 3600:  # Check at most once per hour
-        return
-    _last_freshness_check = now
+    with _freshness_lock:
+        if _freshness_in_flight or now - _last_freshness_check < 3600:
+            return
+        _freshness_in_flight = True
 
     def _worker():
         try:
             ensure_fresh_forecast()
+            global _last_freshness_check
+            _last_freshness_check = time.time()
         except Exception as _e:
             print(f"[CacheManager] Background refresh notice: {_e}")
+        finally:
+            global _freshness_in_flight
+            with _freshness_lock:
+                _freshness_in_flight = False
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -143,7 +172,9 @@ def handle_options_preflight():
     """Explicitly handle OPTIONS preflight requests for cross-origin browser clients."""
     if request.method == 'OPTIONS':
         res = app.make_default_options_response()
-        res.headers['Access-Control-Allow-Origin'] = '*'
+        origin = request.headers.get('Origin')
+        if _origin_allowed(origin):
+            res.headers['Access-Control-Allow-Origin'] = origin
         res.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
         res.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Cache-Control, Pragma, Accept, X-Requested-With, Origin'
         res.headers['Access-Control-Max-Age'] = '86400'
@@ -153,7 +184,10 @@ def handle_options_preflight():
 @app.after_request
 def add_cors_headers(response):
     """Enable CORS for Vercel, Render, and local frontend origins."""
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    origin = request.headers.get('Origin')
+    if _origin_allowed(origin):
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Vary'] = 'Origin'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Cache-Control, Pragma, Accept, X-Requested-With, Origin'
     response.headers['Access-Control-Max-Age'] = '86400'
@@ -207,12 +241,20 @@ def get_metadata():
             check_forecast_freshness_async()
         except Exception:
             pass
+        forecast = load_csv_records(os.path.join(OUTPUTS_DIR, "hybrid_forecast.csv")) or []
+        cities = {str(row.get("city")) for row in forecast if row.get("city")}
+        models = load_csv_records(os.path.join(OUTPUTS_DIR, "model_weights_lead.csv")) or []
+        model_ids = {str(row.get("model")) for row in models if row.get("model")}
+        if not forecast:
+            return jsonify({"error": "forecast metadata is not available yet"}), 404
         meta = {
-            "last_updated": "2026-09-27T10:25:33",
-            "cities": 45,
-            "models": 4,
-            "city_count": 45,
-            "model_count": 4
+            "last_updated": datetime.fromtimestamp(
+                os.path.getmtime(os.path.join(OUTPUTS_DIR, "hybrid_forecast.csv")), timezone.utc
+            ).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "cities": len(cities),
+            "models": len(model_ids),
+            "city_count": len(cities),
+            "model_count": len(model_ids),
         }
     return jsonify(meta)
 
@@ -616,7 +658,6 @@ def create_decision_override():
     value = body.get('override_value')
     reason = str(body.get('reason') or '').strip()
     user_id = str(body.get('user_id') or '').strip()
-    original = body.get('original_value')
 
     try:
         lead = int(body.get('lead_days'))
@@ -641,8 +682,8 @@ def create_decision_override():
     if errors:
         return jsonify({"error": "; ".join(errors)}), 400
 
-    if original is None:
-        original = _lookup_original_value(city, dt_str, lead, variable)
+    # Never accept the published value from the client: it is audit evidence.
+    original = _lookup_original_value(city, dt_str, lead, variable)
     try:
         original = float(original) if original is not None else None
     except (TypeError, ValueError):
@@ -738,6 +779,33 @@ def get_cycle_delta():
 # F-02: Multi-model comparative analytics (PRD §7.2)
 # ---------------------------------------------------------------------------
 VARIABLE_UNITS = {"temperature": "°C", "rainfall": "mm/h", "wind_speed": "km/h"}
+
+
+def _rpi_number(value, default=0.0):
+    """Keep valid zero measurements; only missing or malformed values use default."""
+    try:
+        return float(value) if value is not None and value != "" else default
+    except (TypeError, ValueError):
+        return default
+
+
+def _rpi_weights(city_key):
+    """Return the published lead-1 rainfall weights as percentages."""
+    rows = load_csv_records(os.path.join(OUTPUTS_DIR, "model_weights_lead.csv")) or []
+    selected = [
+        row for row in rows
+        if str(row.get("city", "")).lower() == city_key
+        and str(row.get("variable", "")).lower() == "rainfall"
+        and str(row.get("lead_days")) == "1"
+    ]
+    weights = {
+        str(row.get("model", "")).lower(): round(_rpi_number(row.get("weight")) * 100, 1)
+        for row in selected if row.get("model")
+    }
+    if weights:
+        last_model = next(reversed(weights))
+        weights[last_model] = round(weights[last_model] + 100.0 - sum(weights.values()), 1)
+    return weights
 
 
 def _num(v):
@@ -1247,10 +1315,10 @@ def get_rpi():
 
         c_display = f.get('city') or c.get('city') or c_key.capitalize()
 
-        rain = float(f.get('rainfall') or f.get('blend_rainfall') or 0.0)
-        temp = float(f.get('temperature') or f.get('blend_temperature') or 30.0)
-        wind = float(f.get('wind_speed') or f.get('blend_wind_speed') or 15.0)
-        conf = float(c.get('confidence') or 85.0)
+        rain = _rpi_number(f.get('rainfall', f.get('blend_rainfall')), 0.0)
+        temp = _rpi_number(f.get('temperature', f.get('blend_temperature')), 0.0)
+        wind = _rpi_number(f.get('wind_speed', f.get('blend_wind_speed')), 0.0)
+        conf = _rpi_number(c.get('confidence'), 0.0)
 
         rain_risk = min(100.0, max(0.0, round((rain / 80.0) * 100.0, 1)))
         heat_risk = min(100.0, max(0.0, round(((temp - 25.0) / 20.0) * 100.0, 1)))
@@ -1272,14 +1340,7 @@ def get_rpi():
         if dom_model == 'AI':
             dom_model = 'ECMWF'
 
-        if dom_model == 'ECMWF':
-            weights = {'ecmwf': 45, 'icon': 25, 'gfs': 18, 'gem': 12}
-        elif dom_model == 'ICON':
-            weights = {'ecmwf': 25, 'icon': 45, 'gfs': 18, 'gem': 12}
-        elif dom_model == 'GFS':
-            weights = {'ecmwf': 20, 'icon': 22, 'gfs': 46, 'gem': 12}
-        else:
-            weights = {'ecmwf': 22, 'icon': 20, 'gfs': 18, 'gem': 40}
+        weights = _rpi_weights(c_key)
 
         recommendations = []
         if rain > 45 or rain_risk > 50:
@@ -1397,7 +1458,7 @@ def get_rpi():
             'dominantModel': dom_model,
             'modelWeights': weights,
             'recommendations': recommendations,
-            'updatedAt': '2026-09-26T18:30:00'
+            'updatedAt': (load_metadata() or {}).get('last_updated')
         })
 
     if target_city:
@@ -1461,10 +1522,10 @@ def get_rpi_map():
         lat = meta.get('lat') or 20.5937
         lon = meta.get('lon') or 78.9629
 
-        rain = float(f.get('rainfall') or f.get('blend_rainfall') or 0.0)
-        temp = float(f.get('temperature') or f.get('blend_temperature') or 30.0)
-        wind = float(f.get('wind_speed') or f.get('blend_wind_speed') or 15.0)
-        conf = float(c.get('confidence') or 85.0)
+        rain = _rpi_number(f.get('rainfall', f.get('blend_rainfall')), 0.0)
+        temp = _rpi_number(f.get('temperature', f.get('blend_temperature')), 0.0)
+        wind = _rpi_number(f.get('wind_speed', f.get('blend_wind_speed')), 0.0)
+        conf = _rpi_number(c.get('confidence'), 0.0)
 
         rain_risk = min(100.0, max(0.0, round((rain / 80.0) * 100.0, 1)))
         heat_risk = min(100.0, max(0.0, round(((temp - 25.0) / 20.0) * 100.0, 1)))
@@ -1491,7 +1552,8 @@ def get_rpi_map():
                 "rainfall": round(rain, 1),
                 "temperature": round(temp, 1),
                 "wind": round(wind, 1),
-                "confidence": round(conf, 1)
+                "confidence": round(conf, 1),
+                "modelWeights": _rpi_weights(c_key)
             }
         })
 
@@ -1500,7 +1562,7 @@ def get_rpi_map():
         "features": features,
         "metadata": {
             "totalStations": len(features),
-            "generatedAt": "2026-09-26T18:30:00Z",
+            "generatedAt": (load_metadata() or {}).get("last_updated"),
             "crs": "EPSG:4326"
         }
     })

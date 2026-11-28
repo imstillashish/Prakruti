@@ -17,7 +17,7 @@ export const glossary = {
   },
   confidence: {
     title: "Forecast Certainty",
-    body: "How sure our system is (0–100%). When all 4 international models agree, certainty is high.",
+    body: "How sure our system is (0–100%). When all 6 international models agree, certainty is high.",
   },
   rpi: {
     title: "Weather Danger Score (0–100)",
@@ -32,12 +32,12 @@ export const glossary = {
     body: "A gold-standard weather archive combining satellite and station data, used as an answer key to check model accuracy.",
   },
   models: {
-    title: "The 4 Supercomputers",
-    body: "European ECMWF, American GFS, German ICON, and Canadian GEM, blended into one reliable answer.",
+    title: "The 6 Supercomputers",
+    body: "European ECMWF, American GFS, German ICON, Canadian GEM, Japan's JMA GSM and the UK Met Office Seamless, blended into one reliable answer.",
   },
   ensembleAgreement: {
     title: "Model Consensus",
-    body: "How closely the 4 supercomputers agree with one another. When all 4 show similar numbers, the forecast is much more reliable.",
+    body: "How closely the 6 supercomputers agree with one another. When all 6 show similar numbers, the forecast is much more reliable.",
   },
   nwp: {
     title: "Atmospheric Simulation (NWP)",

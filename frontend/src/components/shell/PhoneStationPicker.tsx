@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { MapPin, ChevronDown, Check, Search } from '@/components/icons';
 import { Modal } from '@/components/ui/Modal';
-import { MOCK_CITIES, getCityForecastsData } from '@/lib/api';
+import { getCityForecastsData } from '@/lib/api';
 import type { CityForecast } from '@/types';
 
 /**
@@ -19,7 +19,7 @@ export function PhoneStationPicker({
 }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [cities, setCities] = useState<CityForecast[]>(MOCK_CITIES);
+  const [cities, setCities] = useState<CityForecast[]>([]);
 
   const city = selectedCity || 'Kanpur';
 

@@ -4,7 +4,8 @@ import { AlertTriangle, CloudRain, ChevronRight, Flame, Wind, Thermometer } from
 import type { IconComponent } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
-import { getExtremeEventsData, MOCK_EXTREME_EVENTS } from '@/lib/api';
+import { LoadingState } from '@/components/ui/LoadingState';
+import { getExtremeEventsData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import type { ExtremeEvent } from '@/types';
 
@@ -32,13 +33,13 @@ const SEVERITY_STYLES: Record<
   },
   warning: {
     badge: 'warning',
-    color: 'var(--color-warning)',
+    color: 'var(--warning)',
     borderClass: 'border-warning/30',
     bgClass: 'ambient-gradient-warning',
   },
   watch: {
     badge: 'success',
-    color: 'var(--color-success)',
+    color: 'var(--semantic-success)',
     borderClass: 'border-success/30',
     bgClass: 'ambient-gradient-success',
   },
@@ -51,7 +52,7 @@ function ProbabilityArc({ value, color }: { value: number; color: string }) {
   return (
     <div
       className="relative flex items-center justify-center shrink-0 font-mono"
-      title={`Risk Probability: ${value}%`}
+      title={`Chance of severe weather: ${value}%`}
       aria-label={`Risk Probability: ${value}%`}
     >
       <svg width="60" height="60" viewBox="0 0 60 60" role="img" aria-label={`Risk Probability ${value}%`}>
@@ -78,14 +79,14 @@ interface ExtremeWeatherPanelProps {
 }
 
 export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhone }: ExtremeWeatherPanelProps) {
-  const [events, setEvents] = useState<ExtremeEvent[]>(MOCK_EXTREME_EVENTS);
+  const [events, setEvents] = useState<ExtremeEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     getExtremeEventsData(selectedCity || 'Kanpur')
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setEvents(data);
           setIsLoading(false);
         }
@@ -100,8 +101,8 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
 
   return (
     <Panel
-      title="Severe Weather Risk"
-      subtitle="Severe Storm Chance and early warnings based on IMD & NDMA criteria"
+      title="What could go wrong here"
+      subtitle="Severe weather this cycle, against the official IMD and NDMA thresholds"
       term="rpi"
       collapsibleOnPhone={collapsibleOnPhone}
       actions={<Badge variant="warning">Active Bulletins</Badge>}
@@ -109,7 +110,15 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
       <div>
 
         <div className="space-y-2.5">
-          {events.map((event, idx) => {
+          {isLoading && (
+            <LoadingState label="Loading hazard bulletins" rows={3} className="border-0 bg-transparent" />
+          )}
+          {!isLoading && events.length === 0 && (
+            <div className="py-8 text-center text-xs font-mono text-muted-foreground">
+              Hazard bulletin unavailable — the engine has not published this cycle.
+            </div>
+          )}
+          {!isLoading && events.map((event, idx) => {
             const Icon = EVENT_ICONS[event.type];
             const style = SEVERITY_STYLES[event.severity];
             const color = style.color;
@@ -127,7 +136,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
                   {/* Risk Probability meter */}
                   <div className="flex flex-col items-center shrink-0" title={`Risk Probability: ${event.probability}%`}>
                     <ProbabilityArc value={event.probability} color={color} />
-                    <span className="text-[9px] font-mono font-medium text-muted-foreground uppercase tracking-tight mt-0.5">
+                    <span className="text-[9px] font-mono font-medium text-muted-foreground tracking-[0.01em] mt-0.5">
                       Risk Prob.
                     </span>
                   </div>
@@ -139,9 +148,9 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
                       <span className="text-xs font-bold text-foreground">{event.label}</span>
                       <Badge variant={style.badge}>{event.severity.toUpperCase()}</Badge>
                     </div>
-                    <div className="text-[11px] font-mono font-semibold text-muted-foreground mb-0.5">{event.window}</div>
-                    <div className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{event.description}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground mt-1">
+                    <div className="text-[12px] font-mono font-semibold text-muted-foreground mb-0.5">{event.window}</div>
+                    <div className="text-[12px] text-muted-foreground leading-snug line-clamp-2">{event.description}</div>
+                    <div className="text-[11.5px] font-mono text-muted-foreground mt-1">
                       Model Agreement: <span className="font-bold text-foreground">{event.confidence}%</span>
                     </div>
                   </div>

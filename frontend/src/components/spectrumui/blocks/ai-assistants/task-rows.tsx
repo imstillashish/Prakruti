@@ -95,13 +95,13 @@ export function TaskRows({ tasks, variant = 'Default', className }: TaskRowsProp
   </span>
   </span>
   {task.detail && (
-  <span className="shrink-0 font-mono text-[10.5px] tabular-nums text-muted-foreground ">
+  <span className="shrink-0 font-mono text-[11.5px] tabular-nums text-muted-foreground ">
   {task.detail}
   </span>
   )}
   <span
   className={cn(
-  'shrink-0 rounded-full px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-wide',
+  'shrink-0 rounded-full px-2 py-0.5 font-mono text-[12px] font-medium tracking-[0.01em]',
   BADGE[task.status],
   )}
   >

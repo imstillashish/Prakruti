@@ -159,7 +159,7 @@ export function PodiumMatrix({ onSelectCategory, cards }: PodiumMatrixProps) {
                 >
                   <div className="flex items-center gap-1.5">
                     <span>{v.label}</span>
-                    <span className="text-[10px] text-muted-foreground/70 font-normal">
+                    <span className="text-[11.5px] text-muted-foreground/70 font-normal">
                       ({v.unit})
                     </span>
                   </div>
@@ -193,11 +193,11 @@ export function PodiumMatrix({ onSelectCategory, cards }: PodiumMatrixProps) {
                         {METHOD_LABELS[row.method] || row.method}
                       </span>
                       {row.tier === 'blend' && (
-                        <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
+                        <span className="text-[11.5px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
                           ours
                         </span>
                       )}
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
+                      <span className="text-[11.5px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                         {row.tier}
                       </span>
                       <SourceToggle
@@ -263,7 +263,7 @@ export function PodiumMatrix({ onSelectCategory, cards }: PodiumMatrixProps) {
                               {cell.mae.toFixed(2)}
                             </div>
                             {cell.rank_low !== null && cell.rank_high !== null && (
-                              <div className="text-[10px] text-muted-foreground">
+                              <div className="text-[11.5px] text-muted-foreground">
                                 {cell.rank_low}↔{cell.rank_high}
                               </div>
                             )}
@@ -298,7 +298,7 @@ export function PodiumMatrix({ onSelectCategory, cards }: PodiumMatrixProps) {
           </span>
           <span>Full window · All India</span>
         </div>
-        <div className="text-[11px] text-muted-foreground/80">
+        <div className="text-[12px] text-muted-foreground/80">
           Each cell shows the rank and mean absolute error (MAE) evaluated against station observations. Click any column or cell to inspect its full scorecard.
         </div>
       </div>

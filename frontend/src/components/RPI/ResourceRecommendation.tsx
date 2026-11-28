@@ -122,8 +122,8 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] text-muted-foreground">Mobilized:</span>
-          <span className="font-bold text-data-ok-text bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20 text-[11px]">
+          <span className="text-[12px] text-muted-foreground">Mobilized:</span>
+          <span className="font-bold text-data-ok-text bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20 text-[12px]">
             {dispatchedIds.size} / {rpiData.recommendations.length} Orders
           </span>
         </div>
@@ -149,7 +149,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                     {rec.title}
                   </span>
                 </span>
-                <span className="hidden lg:block shrink-0 font-mono text-[10.5px] tabular-nums text-muted-foreground">
+                <span className="hidden lg:block shrink-0 font-mono text-[11.5px] tabular-nums text-muted-foreground">
                   {rec.actionCode} · {rec.department}
                 </span>
                 <Badge variant={priorityVariant(rec.priority)}>{rec.priority.toUpperCase()}</Badge>
@@ -179,7 +179,7 @@ export function ResourceRecommendation({ rpiData }: ResourceRecommendationProps)
                         </>
                       )}
                     </ShaderButton>
-                    <span className="lg:hidden text-[11px] font-mono text-muted-foreground">
+                    <span className="lg:hidden text-[12px] font-mono text-muted-foreground">
                       {rec.actionCode} · {rec.department}
                     </span>
                   </div>

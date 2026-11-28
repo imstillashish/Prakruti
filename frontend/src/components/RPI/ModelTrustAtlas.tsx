@@ -62,6 +62,20 @@ const MODEL_COLOR_CONFIG: Record<
     hex: SERIES.GEM,
     desc: 'Environment and Climate Change Canada (Surface Temperature & Dewpoint)',
   },
+  JMA: {
+    label: 'JMA GSM',
+    bg: 'bg-series-5',
+    text: 'text-foreground',
+    hex: SERIES.JMA,
+    desc: 'Japan Meteorological Agency global model',
+  },
+  UKMO: {
+    label: 'UKMO Seamless',
+    bg: 'bg-series-6',
+    text: 'text-foreground',
+    hex: SERIES.UKMO,
+    desc: 'UK Met Office global model',
+  },
 };
 
 export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustAtlasProps) {
@@ -74,9 +88,9 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
       {/* Header bar */}
       <SectionBanner
         icon={Layers}
-        title="Model Trust Atlas"
-        pill="AI Adaptive NWP Blending"
-        subline="Station markers color-coded by the historically best-performing model in each zone"
+        title="Which model to trust, where"
+        pill="Six models, weighted by past accuracy"
+        subline="Each marker shows the model that has been most accurate in that area"
         chip={
           <span className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-secondary px-2.5 py-1 rounded-full border border-border">
             <MapPin size={12} className="text-success" />
@@ -110,7 +124,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                 </span>
               </div>
               <span
-                className="rounded-sm px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
+                className="rounded-sm px-2 py-0.5 text-[11.5px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
                 style={{ backgroundColor: modelInfo.hex }}
               >
                 <ModelEmblem method={domModel} size={14} />
@@ -125,7 +139,7 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                   {weights[domModel.toLowerCase() as keyof typeof weights] || 45}% Weight
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">{modelInfo.desc}</p>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">{modelInfo.desc}</p>
             </div>
 
             <div className="flex items-center justify-between text-xs font-mono pt-1 text-muted-foreground">
@@ -145,84 +159,32 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                   Adaptive blend weights
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-muted-foreground">Kalman Filtered</span>
+              <span className="text-[11.5px] text-muted-foreground" title="Corrected against observed weather each cycle">Corrected live</span>
             </div>
 
-            <div className="space-y-3">
-              {/* ECMWF Bar */}
-              <div>
-                <div className="flex justify-between items-center text-xs mb-1 font-mono">
-                  <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <ModelEmblem method="ecmwf" size={15} />
-                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ECMWF }} />
-                    ECMWF IFS (Europe)
-                  </span>
-                  <span className="font-bold text-foreground">{weights.ecmwf}%</span>
-                </div>
-                <div className="w-full h-1 rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: SERIES.ECMWF, width: `${weights.ecmwf}%` }}
-                  />
-                </div>
-              </div>
+             <div className="space-y-3">
+               {Object.entries(weights).map(([model, value]) => {
+                 const key = model.toUpperCase();
+                 const meta = MODEL_COLOR_CONFIG[key] || MODEL_COLOR_CONFIG.ECMWF;
+                 return (
+                   <div key={model}>
+                     <div className="flex justify-between items-center text-xs mb-1 font-mono">
+                       <span className="font-semibold text-foreground flex items-center gap-1.5">
+                         <ModelEmblem method={model} size={15} />
+                         <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: meta.hex }} />
+                         {meta.label}
+                       </span>
+                       <span className="font-bold text-foreground">{value.toFixed(1)}%</span>
+                     </div>
+                     <div className="w-full h-1 rounded-full bg-secondary">
+                       <div className="h-full rounded-full" style={{ backgroundColor: meta.hex, width: `${value}%` }} />
+                     </div>
+                   </div>
+                 );
+               })}
+             </div>
 
-              {/* ICON Bar */}
-              <div>
-                <div className="flex justify-between items-center text-xs mb-1 font-mono">
-                  <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <ModelEmblem method="icon" size={15} />
-                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.ICON }} />
-                    ICON Seamless (Germany)
-                  </span>
-                  <span className="font-bold text-foreground">{weights.icon}%</span>
-                </div>
-                <div className="w-full h-1 rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: SERIES.ICON, width: `${weights.icon}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* GFS Bar */}
-              <div>
-                <div className="flex justify-between items-center text-xs mb-1 font-mono">
-                  <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <ModelEmblem method="gfs" size={15} />
-                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GFS }} />
-                    GFS Global (NOAA USA)
-                  </span>
-                  <span className="font-bold text-foreground">{weights.gfs}%</span>
-                </div>
-                <div className="w-full h-1 rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: SERIES.GFS, width: `${weights.gfs}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* GEM Bar */}
-              <div>
-                <div className="flex justify-between items-center text-xs mb-1 font-mono">
-                  <span className="font-semibold text-foreground flex items-center gap-1.5">
-                    <ModelEmblem method="gem" size={15} />
-                    <span className="w-3 h-1.5 rounded-xs border border-border/60 shadow-2xs shrink-0" style={{ backgroundColor: SERIES.GEM }} />
-                    GEM Seamless (Canada)
-                  </span>
-                  <span className="font-bold text-foreground">{weights.gem}%</span>
-                </div>
-                <div className="w-full h-1 rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: SERIES.GEM, width: `${weights.gem}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+            <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-[12px] font-mono text-muted-foreground">
               <span>Weights Total:</span>
               <strong className="text-foreground font-bold">100% Normalized</strong>
             </div>
@@ -230,11 +192,11 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
 
           {/* Operational Verification Checklist */}
           <div className="p-3 rounded-md bg-secondary border border-border text-xs font-mono text-muted-foreground space-y-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-foreground text-[10px] uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 font-bold text-foreground text-[11.5px] tracking-[0.01em]">
               <CheckCircle className="w-3.5 h-3.5 text-success" />
               <span>Multi-Model Verification Status</span>
             </div>
-            <p className="text-[10px] leading-relaxed text-muted-foreground">
+            <p className="text-[11.5px] leading-relaxed text-muted-foreground">
               Weights dynamically reallocated each synoptic cycle. Station weights automatically sync with selected map markers.
             </p>
           </div>

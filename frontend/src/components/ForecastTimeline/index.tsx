@@ -54,7 +54,7 @@ const CustomTooltip = ({
   const isNow = label === 'NOW';
   return (
     <div className="min-w-[168px] rounded-md border border-border bg-card p-3 font-mono text-xs shadow-xs">
-      <div className="mb-1.5 flex items-baseline justify-between gap-3 text-[11px] text-muted-foreground">
+      <div className="mb-1.5 flex items-baseline justify-between gap-3 text-[12px] text-muted-foreground">
         <span className="font-semibold text-foreground">{label}</span>
         {data?.label && <span>{data.label} IST</span>}
       </div>
@@ -62,22 +62,22 @@ const CustomTooltip = ({
         <span className="text-base font-bold tabular-nums text-foreground">
           {typeof value === 'number' ? value.toFixed(1) : '—'}
         </span>
-        <span className="text-[11px] text-muted-foreground">{config.unit}</span>
-        <span className="ml-1 text-[10.5px] uppercase tracking-[0.06em] text-muted-foreground">
+        <span className="text-[12px] text-muted-foreground">{config.unit}</span>
+        <span className="ml-1 text-[11.5px] text-muted-foreground">
           {config.label}
         </span>
       </div>
       {data && data.high != null && data.low != null && (
-        <div className="mt-1.5 text-[11px] text-muted-foreground">
+        <div className="mt-1.5 text-[12px] text-muted-foreground">
           P10–P90&nbsp; {data.low.toFixed(1)}–{data.high.toFixed(1)}
         </div>
       )}
       {data && (
-        <div className="mt-1 text-[11px] font-medium text-data-ok-text">
+        <div className="mt-1 text-[12px] font-medium text-data-ok-text">
           Confidence {data.confidence}%
         </div>
       )}
-      <div className="mt-1.5 border-t border-border pt-1.5 text-[10.5px] text-muted-foreground">
+      <div className="mt-1.5 border-t border-border pt-1.5 text-[11.5px] text-muted-foreground">
         {isNow ? 'Measured at the station now' : 'Blended forecast from this hour'}
       </div>
     </div>
@@ -123,13 +123,16 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
     let mounted = true;
     getTimelineData(selectedCity || 'Kanpur')
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setTimeline(data);
           setIsLoading(false);
         }
       })
       .catch(() => {
-        if (mounted) setIsLoading(false);
+        if (mounted) {
+          setTimeline([]);
+          setIsLoading(false);
+        }
       });
     return () => {
       mounted = false;
@@ -244,15 +247,15 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
 
   return (
     <Panel
-      title="Hourly prediction horizon"
-      subtitle="72-Hour Continuous Outlook with Adaptive AI Uncertainty Bands"
+      title="Next 72 hours"
+      subtitle="Each step shows the forecast and the range the models are confident about"
       actions={
         <div className="flex items-center gap-1 border border-border p-0.5 bg-secondary rounded-md">
           {(Object.keys(VARIABLE_CONFIG) as Variable[]).map((v) => (
             <button
               key={v}
               onClick={() => setVariable(v)}
-              className={`px-3 py-1 text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
+              className={`px-3 py-1 min-h-[44px] sm:min-h-[32px] text-xs font-mono font-medium rounded-sm transition-colors duration-100 ${
                 variable === v
                   ? 'bg-card text-foreground font-semibold shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
@@ -269,7 +272,12 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       {/* 190px canvas below sm: the 72h curve stays complete (pan/inspect
           unaffected); the 30px went to the page budget, not the data. */}
       <div className="w-full h-[180px] sm:h-[220px]">
-        <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="line">
+        <ChartState
+          status={isLoading ? 'loading' : timeline.length === 0 ? 'empty' : 'ready'}
+          height={220}
+          variant="line"
+          empty={{ title: 'Timeline unavailable', description: 'The engine has not published this cycle.' }}
+        >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 18, right: 14, bottom: 0, left: 0 }}>
             <defs>
@@ -363,7 +371,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
         </ChartState>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border pt-2 font-mono text-[11px] text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border pt-2 font-mono text-[12px] text-muted-foreground">
         <span className="flex flex-wrap items-center gap-x-2">
           <span>Range: Next 72 Hours · unit {config.unit}</span>
           <span className="hidden sm:inline">·</span>
@@ -397,15 +405,15 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       <div className={`mt-3 sm:mt-5 pt-3 sm:pt-4 border-t border-border ${phoneCompact ? 'hidden lg:block' : ''}`}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
+            <span className="text-xs font-semibold tracking-[0.01em] text-muted-foreground font-mono">
               Day-Ahead Daily Horizons
             </span>
-            <span className="text-[11px] font-mono text-muted-foreground sm:hidden">(D+1–D+3)</span>
-            <span className="hidden sm:inline text-[11px] font-mono text-muted-foreground">
+            <span className="text-[12px] font-mono text-muted-foreground sm:hidden">(D+1–D+3)</span>
+            <span className="hidden sm:inline text-[12px] font-mono text-muted-foreground">
               (D+1 to D+3)
             </span>
           </div>
-          <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground lg:hidden select-none">
+          <span className="flex items-center gap-0.5 text-[12px] font-mono text-muted-foreground lg:hidden select-none">
             <ChevronLeft size={11} /><span>swipe</span><ChevronRight size={11} />
           </span>
         </div>
@@ -431,10 +439,10 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                       (~200px inner) all three on one line squeezed the pill until
                       "Low Risk" broke across two lines. */}
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border">
+                    <span className="text-[12px] font-mono font-semibold tracking-[0.01em] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border">
                       {day.lead}
                     </span>
-                    <span className={`shrink-0 whitespace-nowrap text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${risk.cls}`}>
+                    <span className={`shrink-0 whitespace-nowrap text-[11.5px] font-semibold tracking-[0.01em] px-2 py-0.5 rounded-full border ${risk.cls}`}>
                       {risk.label}
                     </span>
                   </div>
@@ -443,30 +451,30 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                     {day.title}
                   </div>
 
-                  <div className="text-[11px] font-mono text-muted-foreground mb-3">
+                  <div className="text-[12px] font-mono text-muted-foreground mb-3">
                     {day.window}
                   </div>
 
                   {/* 3 Atmospheric Summary Readouts */}
                   <div className="grid grid-cols-3 gap-2 py-2 px-2.5 rounded-md bg-secondary/50 border border-border mb-3 font-mono text-xs">
                     <div>
-                      <div className="text-[10px] uppercase text-muted-foreground">Rain</div>
-                      <div className="font-bold text-data-rain">{day.rain.toFixed(1)} <span className="text-[10px] font-normal text-muted-foreground">mm</span></div>
+                      <div className="text-[11.5px] text-muted-foreground">Rain</div>
+                      <div className="font-bold text-data-rain">{day.rain.toFixed(1)} <span className="text-[11.5px] font-normal text-muted-foreground">mm</span></div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase text-muted-foreground">Temp</div>
-                      <div className="font-bold text-foreground">{day.temp.toFixed(1)} <span className="text-[10px] font-normal text-muted-foreground">°C</span></div>
+                      <div className="text-[11.5px] text-muted-foreground">Temp</div>
+                      <div className="font-bold text-foreground">{day.temp.toFixed(1)} <span className="text-[11.5px] font-normal text-muted-foreground">°C</span></div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase text-muted-foreground">Wind</div>
-                      <div className="font-bold text-muted-foreground">{day.wind.toFixed(0)} <span className="text-[10px] font-normal">km/h</span></div>
+                      <div className="text-[11.5px] text-muted-foreground">Wind</div>
+                      <div className="font-bold text-muted-foreground">{day.wind.toFixed(0)} <span className="text-[11.5px] font-normal">km/h</span></div>
                     </div>
                   </div>
                 </div>
 
                 {/* Confidence Bar & Synopsis */}
                 <div className="space-y-1.5 mt-auto pt-1">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+                  <div className="flex items-center justify-between text-[12px] font-mono text-muted-foreground">
                     <span>AI Confidence</span>
                     <span className="text-foreground font-semibold">{day.confidence}%</span>
                   </div>
@@ -476,7 +484,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                       style={{ width: `${day.confidence}%` }}
                     />
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed pt-1 line-clamp-1">
+                  <p className="text-[12px] text-muted-foreground leading-relaxed pt-1 line-clamp-1">
                     {day.note}
                   </p>
                 </div>

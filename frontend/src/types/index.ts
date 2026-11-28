@@ -22,8 +22,8 @@ export interface ModelWeight {
   id: string;
   weight: number;
   color: string;
-  rmse: number;
-  mae: number;
+  rmse?: number;
+  mae?: number;
 }
 
 export interface TimelinePoint {
@@ -152,12 +152,7 @@ export interface RpiData {
   rpiScore: number;
   priority: RpiPriority;
   dominantModel: string;
-  modelWeights: {
-    ecmwf: number;
-    icon: number;
-    gfs: number;
-    gem: number;
-  };
+  modelWeights: Record<string, number>;
   recommendations: ResourceAction[];
   updatedAt: string;
 }

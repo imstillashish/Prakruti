@@ -6,16 +6,16 @@ import { getMetadata, MetadataRecord } from '@/lib/api';
 import { Explain } from '@/components/explain/Explain';
 
 function formatCycle(isoString?: string): string {
-  if (!isoString) return '26 Sep 2026 · 23:45 IST';
+  if (!isoString) return 'Cycle time unavailable';
   try {
     const d = new Date(isoString);
-    if (isNaN(d.getTime())) return '26 Sep 2026 · 23:45 IST';
+    if (isNaN(d.getTime())) return 'Cycle time unavailable';
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const hours = String(d.getHours()).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
     return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} · ${hours}:${minutes} IST`;
   } catch {
-    return '26 Sep 2026 · 23:45 IST';
+    return 'Cycle time unavailable';
   }
 }
 
@@ -30,29 +30,29 @@ function EngineChip({
     return (
       <span className="inline-flex items-center gap-1.5">
         <Satellite size={13} className="text-warning" />
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-warning">Connecting</span>
+        <span className="text-[12px] font-semibold tracking-[0.01em] text-warning">Connecting</span>
       </span>
     );
   }
   if (isError) {
     return (
       <span className="inline-flex items-center gap-1.5">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-destructive">Standby</span>
+        <span className="text-[12px] font-semibold tracking-[0.01em] text-destructive">Standby</span>
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground">Operational</span>
+      <span className="text-[12px] font-semibold tracking-[0.01em] text-foreground">Operational</span>
     </span>
   );
 }
 
 export function StatusStrip() {
   const [metadata, setMetadata] = useState<MetadataRecord>({
-    last_updated: '2026-09-26T23:45:12',
-    cities: 45,
-    models: 4,
+    last_updated: '',
+    cities: 0,
+    models: 0,
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isWakingUp, setIsWakingUp] = useState(false);
@@ -117,8 +117,8 @@ export function StatusStrip() {
       });
   };
 
-  const cityCount = metadata.cities || metadata.city_count || 45;
-  const modelCount = metadata.models || metadata.model_count || 4;
+  const cityCount = metadata.cities ?? metadata.city_count ?? 0;
+  const modelCount = metadata.models ?? metadata.model_count ?? 0;
 
   return (
     <div className="mb-6 border-b border-border bg-card">
@@ -139,18 +139,18 @@ export function StatusStrip() {
 
         <div className="ml-auto flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono">
           <span className="flex items-center gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">
+            <span className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-sans">
               Stations
             </span>
-            <span className="text-foreground">{cityCount}</span>
+            <span className="text-foreground">{cityCount || '—'}</span>
           </span>
 
           <span className="flex items-center gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">
+            <span className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-sans">
               Models
             </span>
             <span className="text-foreground flex items-center gap-1">
-              {modelCount}
+              {modelCount || '—'}
               {/* The strip sits directly under the fixed TopBar, so a pseudo-element
                   tap zone is clipped on its top edge; the phone-only 44px box keeps
                   the glyph a real touch target. */}
@@ -159,7 +159,7 @@ export function StatusStrip() {
           </span>
 
           <span className="hidden sm:flex items-center gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground font-sans">
+            <span className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-sans">
               Cycle
             </span>
             <span className="text-foreground">{formatCycle(metadata.last_updated)}</span>

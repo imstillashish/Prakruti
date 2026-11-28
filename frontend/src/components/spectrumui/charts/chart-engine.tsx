@@ -444,7 +444,7 @@ export function RangeSelector({
   aria-selected={active}
   onClick={() => onChange(range.label)}
   className={cn(
-  'relative z-10 rounded-full px-2.5 py-1 font-mono text-[11px] leading-none tracking-wide transition-colors duration-200',
+  'relative z-10 rounded-full px-2.5 py-1 font-mono text-[12px] leading-none tracking-wide transition-colors duration-200',
   'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black/20 ',
   active
   ? 'text-white '

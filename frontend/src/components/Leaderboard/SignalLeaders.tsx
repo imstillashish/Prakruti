@@ -216,14 +216,14 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
                   </span>
                   <ModelEmblem method={sig.leader} size={22} />
                 </div>
-                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
+                <span className="text-[11.5px] font-mono px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                   {sig.variable}
                 </span>
               </div>
               <p className="text-sm font-medium text-foreground leading-snug">
                 {sentence}
               </p>
-              <div className="flex items-center gap-1 text-[11px] font-mono text-primary group-hover:underline pt-2 border-t border-border/40">
+              <div className="flex items-center gap-1 text-[12px] font-mono text-primary group-hover:underline pt-2 border-t border-border/40">
                 <span>Inspect in scorecard</span>
                 <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
               </div>
@@ -252,10 +252,10 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
           <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">
               <div>
-                <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+                <h3 className="font-mono text-xs font-semibold tracking-[0.01em] text-foreground">
                   Extreme Detection (CSI)
                 </h3>
-                <p className="text-[11px] text-muted-foreground font-mono">
+                <p className="text-[12px] text-muted-foreground font-mono">
                   Operational threshold ≥ {meta?.primary_thresholds?.[activeVariable]} {unit} · All India
                 </p>
               </div>
@@ -318,10 +318,10 @@ export function SignalLeaders({ category, meta, onSelectContext }: SignalLeaders
           <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">
               <div>
-                <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+                <h3 className="font-mono text-xs font-semibold tracking-[0.01em] text-foreground">
                   At Range — Day 3 (MAE)
                 </h3>
-                <p className="text-[11px] text-muted-foreground font-mono">
+                <p className="text-[12px] text-muted-foreground font-mono">
                   72-hour lead time accuracy · lower is better
                 </p>
               </div>

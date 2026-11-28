@@ -5,7 +5,7 @@ import { Panel } from '@/components/shell/Panel';
 import { Explain } from '@/components/explain/Explain';
 import { ChartState } from '@/components/spectrumui/charts/chart-engine';
 import { ModelEmblem } from '@/components/common/ModelEmblem';
-import { getModelWeightsData, MOCK_MODEL_WEIGHTS } from '@/lib/api';
+import { getModelWeightsData } from '@/lib/api';
 import type { ModelWeight } from '@/types';
 
 interface ModelContributionProps {
@@ -16,20 +16,23 @@ interface ModelContributionProps {
 
 export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone, collapsibleOnTablet }: ModelContributionProps) {
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
-  const [weights, setWeights] = useState<ModelWeight[]>(MOCK_MODEL_WEIGHTS);
+  const [weights, setWeights] = useState<ModelWeight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     getModelWeightsData(selectedCity || 'Kanpur', 'temperature')
       .then((data) => {
-        if (mounted && data && data.length > 0) {
+        if (mounted) {
           setWeights(data);
           setIsLoading(false);
         }
       })
       .catch(() => {
-        if (mounted) setIsLoading(false);
+        if (mounted) {
+          setWeights([]);
+          setIsLoading(false);
+        }
       });
     return () => {
       mounted = false;
@@ -40,8 +43,8 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
 
   return (
     <Panel
-      title="Model contribution"
-      subtitle="How much say each model has in your city's answer"
+      title="Who is doing the work"
+      subtitle="How much each model counts for in your city's answer"
       term="weight"
       collapsibleOnPhone={collapsibleOnPhone}
       collapsibleOnTablet={collapsibleOnTablet}
@@ -54,7 +57,12 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
     >
 
       {/* Stacked bar with pill edges */}
-      <ChartState status={isLoading ? 'loading' : 'ready'} height={220} variant="bars">
+      <ChartState
+        status={isLoading ? 'loading' : weights.length === 0 ? 'empty' : 'ready'}
+        height={220}
+        variant="bars"
+        empty={{ title: 'Model weights unavailable', description: 'The engine has not published weights for this cycle.' }}
+      >
         <div
           className="h-2.5 overflow-hidden flex mb-4 border border-border rounded-full bg-secondary"
           role="img"
@@ -91,9 +99,12 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
                   <span className="text-foreground font-medium">{w.name}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                    RMSE {w.rmse}
-                    <Explain term="rmse" />
+                  <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                    {w.rmse != null ? (
+                      <>RMSE {w.rmse}<Explain term="rmse" /></>
+                    ) : (
+                      <>RMSE —</>
+                    )}
                   </span>
                   <span className="font-bold text-foreground">{w.weight}%</span>
                 </div>
@@ -119,7 +130,9 @@ export function ModelContribution({ selectedCity = 'Kanpur', collapsibleOnPhone,
       <div
         className="mt-4 p-3 bg-secondary border border-border rounded-md text-xs font-sans text-foreground"
       >
-        <span className="font-bold">Inverse-RMSE Layer 1:</span> Weights dynamically favor models with the lowest localized prediction error over historical 61-day verification windows.
+        <span className="font-medium">How weights are set:</span> a model that has been wrong about
+        this district lately gets a smaller share of the answer. The score comes from the last 61 days
+        of verified forecasts, not from how famous the model is.
       </div>
     </Panel>
   );

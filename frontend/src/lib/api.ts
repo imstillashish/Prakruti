@@ -19,7 +19,6 @@ import type {
   TimelinePoint,
   ExtremeEvent,
   Alert,
-  DataSource,
   ModelComparison,
   CityForecast,
   SkillMetric,
@@ -28,36 +27,7 @@ import type {
   ResourceAction,
 } from '@/types';
 
-import {
-  MOCK_FORECAST,
-  MOCK_MODEL_WEIGHTS,
-  MOCK_TIMELINE,
-  MOCK_EXTREME_EVENTS,
-  MOCK_ALERTS,
-  MOCK_DATA_SOURCES,
-  MOCK_MODEL_COMPARISON,
-  MOCK_CITIES,
-  MOCK_SKILL_METRICS,
-  MOCK_STATES,
-  MOCK_REGION_DOMINANCE,
-  ENGINE_STATUS,
-} from '@/data/mockData';
 import { SERIES } from '@/lib/palette';
-
-export {
-  MOCK_FORECAST,
-  MOCK_MODEL_WEIGHTS,
-  MOCK_TIMELINE,
-  MOCK_EXTREME_EVENTS,
-  MOCK_ALERTS,
-  MOCK_DATA_SOURCES,
-  MOCK_MODEL_COMPARISON,
-  MOCK_CITIES,
-  MOCK_SKILL_METRICS,
-  MOCK_STATES,
-  MOCK_REGION_DOMINANCE,
-  ENGINE_STATUS,
-};
 
 /**
  * Centralized API Base Configuration
@@ -170,7 +140,7 @@ export interface FetchOptions extends RequestInit {
 let coldStartLogged = false;
 let coldStartExhaustedLogged = false;
 
-const inFlightRequests = new Map<string, Promise<any>>();
+const inFlightRequests = new Map<string, Promise<unknown>>();
 
 /**
  * Reusable fetch helper with Render cold start auto-reconnect:
@@ -181,7 +151,7 @@ const inFlightRequests = new Map<string, Promise<any>>();
  * - As soon as one request succeeds, returns the response normally
  * - If all retries fail, throws a clean error: "Server is waking up. Please try again."
  */
-export async function fetchWithReconnect<T = any>(
+export async function fetchWithReconnect<T = unknown>(
   endpoint: string,
   options?: FetchOptions
 ): Promise<T> {
@@ -432,7 +402,7 @@ export type { ConfidenceRecord };
  */
 export function formatLastUpdated(isoString?: string): string {
   if (!isoString) {
-    return '26 Sep 2026 • 11:45 PM';
+    return 'Update time unavailable';
   }
   try {
     const d = new Date(isoString);
@@ -451,7 +421,7 @@ export function formatLastUpdated(isoString?: string): string {
 
     return `${day} ${month} ${year} • ${hours}:${minutes} ${ampm}`;
   } catch {
-    return '26 Sep 2026 • 11:45 PM';
+    return 'Update time unavailable';
   }
 }
 
@@ -461,11 +431,11 @@ export function formatLastUpdated(isoString?: string): string {
  */
 export async function getMetadata(): Promise<MetadataRecord> {
   return fetchFromApi<MetadataRecord>('/metadata', {
-    last_updated: '2026-09-26T23:45:12',
-    cities: 45,
-    models: 4,
-    city_count: 45,
-    model_count: 4,
+    last_updated: '',
+    cities: 0,
+    models: 0,
+    city_count: 0,
+    model_count: 0,
   });
 }
 
@@ -721,24 +691,24 @@ export async function getForecastMetrics(city: string = 'Kanpur'): Promise<Forec
       getConfidence(city, 1),
     ]);
     if (!records || records.length === 0) {
-      return MOCK_FORECAST;
+      throw new Error(`No forecast data available for ${city}`);
     }
 
     // Take the 24h lead point or nearest step
     const target = records.find(r => r.lead_days === 1) || records[0];
     const confItem = confRecords && confRecords.length > 0 ? confRecords[0] : null;
 
-    const tempDiff = Math.abs((target.temperature ?? 30) - (target.blend_temperature ?? 30));
-    const rainDiff = Math.abs((target.rainfall ?? 0) - (target.blend_rainfall ?? 0));
-    const windDiff = Math.abs((target.wind_speed ?? 10) - (target.blend_wind_speed ?? 10));
+    const tempDiff = Math.abs((target.temperature ?? target.blend_temperature ?? 0) - (target.blend_temperature ?? 0));
+    const rainDiff = Math.abs((target.rainfall ?? target.blend_rainfall ?? 0) - (target.blend_rainfall ?? 0));
+    const windDiff = Math.abs((target.wind_speed ?? target.blend_wind_speed ?? 0) - (target.blend_wind_speed ?? 0));
 
     return {
       rainfall: Math.round((target.rainfall ?? 0) * 10) / 10,
-      temperature: Math.round((target.temperature ?? 30) * 10) / 10,
-      wind: Math.round((target.wind_speed ?? 15) * 10) / 10,
-      confidence: confItem?.confidence != null ? Math.round(confItem.confidence) : 88,
-      confidenceLabel: confItem?.confidence_label || 'High',
-      dominantModel: confItem?.dominant_model || 'ECMWF',
+      temperature: Math.round((target.temperature ?? 0) * 10) / 10,
+      wind: Math.round((target.wind_speed ?? 0) * 10) / 10,
+      confidence: confItem?.confidence != null ? Math.round(confItem.confidence) : 0,
+      confidenceLabel: confItem?.confidence_label,
+      dominantModel: confItem?.dominant_model,
       explanation: confItem?.explanation,
       rainfallUncertainty: Math.max(2, Math.round(rainDiff * 2 + 5)),
       temperatureUncertainty: Math.max(0.5, Math.round((tempDiff + 0.8) * 10) / 10),
@@ -746,7 +716,7 @@ export async function getForecastMetrics(city: string = 'Kanpur'): Promise<Forec
       updatedMinutesAgo: 4,
     };
   } catch {
-    return MOCK_FORECAST;
+    throw new Error(`No forecast data available for ${city}`);
   }
 }
 
@@ -1144,7 +1114,7 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
   try {
     const [records, decision] = await Promise.all([getForecast(city), getDecision(city)]);
     if (!records || records.length < 6) {
-      return MOCK_TIMELINE;
+      throw new Error(`No forecast data available for ${city}`);
     }
 
     // Sample across key steps: NOW (0h), +6h, +12h, +24h, +48h, +72h
@@ -1189,7 +1159,9 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
       };
     });
   } catch {
-    return MOCK_TIMELINE;
+    // Surface the failure: the timeline shows its empty state rather than a
+    // fabricated week of weather.
+    throw new Error(`No forecast data available for ${city}`);
   }
 }
 
@@ -1204,7 +1176,7 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
     ]);
 
     if (!weights || weights.length === 0) {
-      return MOCK_MODEL_WEIGHTS;
+      throw new Error(`No model weights available for ${city}`);
     }
 
     const modelDisplayNames: Record<string, { name: string; color: string }> = {
@@ -1231,12 +1203,12 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
         name: info.name,
         weight: Math.round(((w.weight || 0) / totalWeight) * 100),
         color: info.color,
-        rmse: skill?.rmse ? Math.round(skill.rmse * 100) / 100 : 1.25,
-        mae: skill?.mae ? Math.round(skill.mae * 100) / 100 : 0.95,
+        rmse: skill?.rmse != null ? Math.round(skill.rmse * 100) / 100 : undefined,
+        mae: skill?.mae != null ? Math.round(skill.mae * 100) / 100 : undefined,
       };
     });
   } catch {
-    return MOCK_MODEL_WEIGHTS;
+    throw new Error(`No model weights available for ${city}`);
   }
 }
 
@@ -1244,57 +1216,59 @@ export async function getModelWeightsData(city: string = 'Kanpur', variable: str
  * Helper to get ModelComparison[] for ModelComparison component.
  */
 export async function getModelComparisonData(city: string = 'Kanpur'): Promise<ModelComparison[]> {
-  try {
-    const records = await getForecast(city, 1);
-    if (!records || records.length === 0) {
-      return MOCK_MODEL_COMPARISON;
-    }
-
-    const latest = records[0];
-    const blendedRain = latest.blend_rainfall ?? 15;
-    const blendedTemp = latest.blend_temperature ?? 30;
-    const blendedWind = latest.blend_wind_speed ?? 12;
-
-    const hybridRain = latest.rainfall ?? blendedRain;
-    const hybridTemp = latest.temperature ?? blendedTemp;
-    const hybridWind = latest.wind_speed ?? blendedWind;
-
-    return [
-      { model: 'AI Hybrid', rainfall: Math.round(hybridRain * 10) / 10, temperature: Math.round(hybridTemp * 10) / 10, wind: Math.round(hybridWind * 10) / 10 },
-      { model: 'ECMWF IFS', rainfall: Math.round((blendedRain * 1.08) * 10) / 10, temperature: Math.round((blendedTemp + 0.4) * 10) / 10, wind: Math.round((blendedWind + 1.5) * 10) / 10 },
-      { model: 'GFS Seamless', rainfall: Math.round((blendedRain * 0.92) * 10) / 10, temperature: Math.round((blendedTemp - 0.3) * 10) / 10, wind: Math.round((blendedWind - 1.2) * 10) / 10 },
-      { model: 'ICON Seamless', rainfall: Math.round((blendedRain * 1.02) * 10) / 10, temperature: Math.round((blendedTemp + 0.1) * 10) / 10, wind: Math.round(blendedWind * 10) / 10 },
-      { model: 'Optimized Blend', rainfall: Math.round(blendedRain * 10) / 10, temperature: Math.round(blendedTemp * 10) / 10, wind: Math.round(blendedWind * 10) / 10, isBlended: true },
-    ];
-  } catch {
-    return MOCK_MODEL_COMPARISON;
+  const records = await getForecast(city, 1);
+  if (!records || records.length === 0) {
+    throw new Error(`No forecast data available for ${city}`);
   }
+
+  const latest = records[0];
+  const blendedRain = latest.blend_rainfall ?? 0;
+  const blendedTemp = latest.blend_temperature ?? 0;
+  const blendedWind = latest.blend_wind_speed ?? 0;
+
+  const hybridRain = latest.rainfall ?? blendedRain;
+  const hybridTemp = latest.temperature ?? blendedTemp;
+  const hybridWind = latest.wind_speed ?? blendedWind;
+
+  // Only the engine's own published numbers: the hybrid and the blend. Per-model
+  // readings come from /api/models/compare (see ModelTrajectories) — fabricating
+  // them here as blend*factors would invent data, so this adapter stays honest.
+  return [
+    { model: 'AI Hybrid', rainfall: Math.round(hybridRain * 10) / 10, temperature: Math.round(hybridTemp * 10) / 10, wind: Math.round(hybridWind * 10) / 10 },
+    { model: 'Optimized Blend', rainfall: Math.round(blendedRain * 10) / 10, temperature: Math.round(blendedTemp * 10) / 10, wind: Math.round(blendedWind * 10) / 10, isBlended: true },
+  ];
 }
 
 /**
  * Helper to get CityForecast[] for WeatherMap component.
+ *
+ * Station geometry comes from the engine's /api/cities (city, latitude,
+ * longitude — no states, so CITY_TO_STATE fills those in); live readings come
+ * from the forecast/weights/confidence feeds. No mock geometry anywhere.
  */
 export async function getCityForecastsData(): Promise<CityForecast[]> {
-  try {
-    const [cities, forecastRecords, weightsRecords, confidenceRecords] = await Promise.all([
-      getCities().catch(() => []),
-      getForecast().catch(() => []),
-      getWeights(undefined, 'temperature', 1).catch(() => []),
-      getConfidence(undefined, 1).catch(() => []),
-    ]);
+  const [cityRecords, forecastRecords, weightsRecords, confidenceRecords] = await Promise.all([
+    getCities(),
+    getForecast().catch(() => []),
+    getWeights(undefined, 'temperature', 1).catch(() => []),
+    getConfidence(undefined, 1).catch(() => []),
+  ]);
 
-    if (!forecastRecords || forecastRecords.length === 0) {
-      return MOCK_CITIES;
-    }
+  if (!cityRecords || cityRecords.length === 0) {
+    throw new Error('No city registry available');
+  }
+  if (!forecastRecords || forecastRecords.length === 0) {
+    throw new Error('No forecast data available');
+  }
 
-    // Index latest record per city (case-insensitive)
-    const latestPerCity: Record<string, ForecastRecord> = {};
-    for (const rec of forecastRecords) {
-      const key = rec.city?.toLowerCase();
-      if (key && (!latestPerCity[key] || rec.lead_days === 1)) {
-        latestPerCity[key] = rec;
-      }
+  // Index latest record per city (case-insensitive)
+  const latestPerCity: Record<string, ForecastRecord> = {};
+  for (const rec of forecastRecords) {
+    const key = rec.city?.toLowerCase();
+    if (key && (!latestPerCity[key] || rec.lead_days === 1)) {
+      latestPerCity[key] = rec;
     }
+  }
 
     // Index confidence records by city
     const confPerCity: Record<string, ConfidenceRecord> = {};
@@ -1316,18 +1290,32 @@ export async function getCityForecastsData(): Promise<CityForecast[]> {
       }
     }
 
-    // Merge with known coordinates and states
-    return MOCK_CITIES.map((mockCity) => {
-      const live = latestPerCity[mockCity.city.toLowerCase()];
-      if (!live) return mockCity;
+    // Merge live readings onto the engine's station registry
+    return cityRecords.map((cityRecord) => {
+      const name = cityRecord.city;
+      const live = latestPerCity[name.toLowerCase()];
+      if (!live) {
+        return {
+          city: name,
+          state: CITY_TO_STATE[name] || 'India',
+          lat: cityRecord.latitude ?? cityRecord.lat ?? 0,
+          lon: cityRecord.longitude ?? cityRecord.lon ?? 0,
+          rainfall: 0,
+          temperature: 0,
+          wind: 0,
+          confidence: 0,
+          dominantModel: 'ECMWF',
+          risk: 'low' as const,
+        };
+      }
 
-      const rain = Math.round((live.rainfall ?? mockCity.rainfall) * 10) / 10;
-      const temp = Math.round((live.temperature ?? mockCity.temperature) * 10) / 10;
-      const wind = Math.round((live.wind_speed ?? mockCity.wind) * 10) / 10;
-      
-      const conf = confPerCity[mockCity.city.toLowerCase()];
-      const dominant = conf?.dominant_model || dominantModelPerCity[mockCity.city.toLowerCase()] || mockCity.dominantModel;
-      const confidence = conf?.confidence != null ? Math.round(conf.confidence) : mockCity.confidence;
+      const rain = Math.round((live.rainfall ?? 0) * 10) / 10;
+      const temp = Math.round((live.temperature ?? 0) * 10) / 10;
+      const wind = Math.round((live.wind_speed ?? 0) * 10) / 10;
+
+      const conf = confPerCity[name.toLowerCase()];
+      const dominant = conf?.dominant_model || dominantModelPerCity[name.toLowerCase()] || 'ECMWF';
+      const confidence = conf?.confidence != null ? Math.round(conf.confidence) : 0;
       const confidenceLabel = conf?.confidence_label;
       const explanation = conf?.explanation;
 
@@ -1337,7 +1325,10 @@ export async function getCityForecastsData(): Promise<CityForecast[]> {
       else if (rain > 10 || wind > 15) risk = 'moderate';
 
       return {
-        ...mockCity,
+        city: name,
+        state: CITY_TO_STATE[name] || 'India',
+        lat: cityRecord.latitude ?? cityRecord.lat ?? 0,
+        lon: cityRecord.longitude ?? cityRecord.lon ?? 0,
         rainfall: rain,
         temperature: temp,
         wind: wind,
@@ -1348,9 +1339,6 @@ export async function getCityForecastsData(): Promise<CityForecast[]> {
         risk,
       };
     });
-  } catch {
-    return MOCK_CITIES;
-  }
 }
 
 export const CITY_TO_STATE: Record<string, string> = {
@@ -1426,14 +1414,11 @@ export function getAlertState(location?: string): string {
  * Helper to get Alert[] for AlertCenter and ExtremeWeatherPage.
  */
 export async function getAlertsData(city?: string): Promise<Alert[]> {
-  try {
-    const rawAlerts = await getAlerts(city);
-    if (!rawAlerts || rawAlerts.length === 0) {
-      if (city) {
-        return [];
-      }
-      return MOCK_ALERTS;
-    }
+  const rawAlerts = await getAlerts(city);
+  if (!rawAlerts || rawAlerts.length === 0) {
+    // No active alerts is a real state — return empty, never a stand-in list.
+    return [];
+  }
 
     return rawAlerts.map((a, i) => {
       const isRain = a.event.toLowerCase().includes('rain');
@@ -1453,30 +1438,31 @@ export async function getAlertsData(city?: string): Promise<Alert[]> {
         timestamp: `${a.forecast_value} ${unit}`,
       };
     });
-  } catch {
-    return MOCK_ALERTS;
-  }
 }
 
 /**
  * Helper to get ExtremeEvent[] for ExtremeWeather component.
  */
 export async function getExtremeEventsData(city?: string): Promise<ExtremeEvent[]> {
-  try {
-    const rawAlerts = await getAlerts(city);
-    if (!rawAlerts || rawAlerts.length === 0) {
-      return [
-        {
-          type: 'heavy_rainfall',
-          label: 'Safe Conditions',
-          probability: 5,
-          window: 'Next 72 Hours',
-          confidence: 94,
-          severity: 'watch',
-          description: `All forecast parameters for ${city || 'this station'} remain safely below severe hazard thresholds.`,
-        }
-      ];
-    }
+  // Alerts carry the threshold-crossing rows; exceedance probabilities come from
+  // the engine's calibrated P(X >= t), not an invented constant.
+  const [rawAlerts, decision] = await Promise.all([
+    getAlerts(city),
+    city ? getDecision(city).catch(() => null) : Promise.resolve(null),
+  ]);
+  if (!rawAlerts || rawAlerts.length === 0) {
+    return [
+      {
+        type: 'heavy_rainfall',
+        label: 'Safe Conditions',
+        probability: 5,
+        window: 'Next 72 Hours',
+        confidence: 94,
+        severity: 'watch',
+        description: `All forecast parameters for ${city || 'this station'} remain safely below severe hazard thresholds.`,
+      }
+    ];
+  }
 
     return rawAlerts.slice(0, 4).map((a) => {
       const isRain = a.event.toLowerCase().includes('rain');
@@ -1486,52 +1472,82 @@ export async function getExtremeEventsData(city?: string): Promise<ExtremeEvent[
       const type = isRain ? 'heavy_rainfall' : isTemp ? 'heatwave' : 'high_wind';
       const isHigh = a.severity.toLowerCase() === 'high';
       const timeStr = a.datetime ? a.datetime.slice(11, 16) : '00:00';
+      const varKey = isRain ? 'rainfall' : isTemp ? 'temperature' : 'wind_speed';
+
+      // Engine-published P(value >= threshold) for this event's variable; the
+      // step matching the alert datetime, else the closest available one.
+      const steps = decision?.records ?? [];
+      const d = steps.find((s) => s.datetime === a.datetime) ?? steps[0];
+      const tKey = String(a.threshold);
+      const p = d?.threshold_probabilities?.[varKey]?.[tKey];
+      // ponytail: 'isHigh ? 88 : 72' placeholder stays for when the decision
+      // feed is unreachable — the panel then shows a coarse severity hint,
+      // not a calibrated probability.
+      const probability = p != null ? Math.round(p * 100) : isHigh ? 88 : 72;
 
       return {
         type,
         label: a.event,
-        probability: isHigh ? 88 : 72,
+        probability,
         window: `${timeStr} IST`,
-        confidence: 86,
+        confidence: d?.confidence?.score != null ? Math.round(d.confidence.score) : 86,
         severity: isHigh ? 'alert' : 'warning',
         description: `Predicted: ${a.forecast_value} ${unit} (Exceeds ${a.threshold} ${unit} threshold)`,
       };
     });
-  } catch {
-    return MOCK_EXTREME_EVENTS;
-  }
 }
 
 /**
  * Helper to get SkillMetric[] for ModelSkill and ModelPerformancePage.
+ *
+ * One row per lead day (the engine's skill horizon), straight from
+ * outputs/skill_scores_lead.csv: the weighted blend and equal-average methods
+ * plus the raw models. Missing methods are dropped, never invented.
  */
 export async function getSkillMetricsData(): Promise<SkillMetric[]> {
-  try {
-    const skills = await getSkillScores();
-    if (!skills || skills.length === 0) {
-      return MOCK_SKILL_METRICS;
-    }
-
-    const tempSkills = skills.filter(s => s.variable === 'temperature');
-    const getAvgRmse = (mod: string) => {
-      const list = tempSkills.filter(s => s.model.toLowerCase() === mod.toLowerCase());
-      if (list.length === 0) return 1.5;
-      return Math.round((list.reduce((acc, c) => acc + c.rmse, 0) / list.length) * 10) / 10;
-    };
-
-    const ecmwfRmse = getAvgRmse('ecmwf');
-    const gfsRmse = getAvgRmse('gfs');
-    const iconRmse = getAvgRmse('icon');
-
-    return [
-      { period: 'Today (Lead 1)', blended: Math.round(ecmwfRmse * 0.82 * 10) / 10, ai: Math.round(ecmwfRmse * 0.88 * 10) / 10, nwpA: ecmwfRmse, nwpB: gfsRmse, ensemble: iconRmse },
-      { period: 'Lead 2 (48h)', blended: Math.round(ecmwfRmse * 0.86 * 10) / 10, ai: Math.round(ecmwfRmse * 0.91 * 10) / 10, nwpA: Math.round(ecmwfRmse * 1.08 * 10) / 10, nwpB: Math.round(gfsRmse * 1.05 * 10) / 10, ensemble: Math.round(iconRmse * 1.06 * 10) / 10 },
-      { period: 'Lead 3 (72h)', blended: Math.round(ecmwfRmse * 0.90 * 10) / 10, ai: Math.round(ecmwfRmse * 0.94 * 10) / 10, nwpA: Math.round(ecmwfRmse * 1.15 * 10) / 10, nwpB: Math.round(gfsRmse * 1.12 * 10) / 10, ensemble: Math.round(iconRmse * 1.14 * 10) / 10 },
-      { period: 'Monsoon Cycle', blended: Math.round(ecmwfRmse * 0.85 * 10) / 10, ai: Math.round(ecmwfRmse * 0.89 * 10) / 10, nwpA: ecmwfRmse, nwpB: gfsRmse, ensemble: iconRmse },
-    ];
-  } catch {
-    return MOCK_SKILL_METRICS;
+  const skills = await getSkillScores();
+  if (!skills || skills.length === 0) {
+    throw new Error('Skill scores unavailable');
   }
+
+  const LEAD_PERIODS: Record<number, string> = {
+    1: 'Today (Lead 1)',
+    2: 'Lead 2 (48h)',
+    3: 'Lead 3 (72h)',
+  };
+
+  const avgRmse = (lead: number, method: string) => {
+    const list = skills.filter(
+      (s) => s.variable === 'temperature' && Number(s.lead_days) === lead && s.model.toLowerCase() === method
+    );
+    if (list.length === 0) return null;
+    return Math.round((list.reduce((acc, c) => acc + c.rmse, 0) / list.length) * 10) / 10;
+  };
+
+  const out: SkillMetric[] = [];
+  for (const lead of [1, 2, 3]) {
+    const row = {
+      blended: avgRmse(lead, 'weighted_blend'),
+      ai: avgRmse(lead, 'weighted_blend'),
+      nwpA: avgRmse(lead, 'ecmwf'),
+      nwpB: avgRmse(lead, 'gfs'),
+      ensemble: avgRmse(lead, 'equal_avg'),
+    };
+    // A lead with no published scoreable methods is skipped entirely.
+    if (Object.values(row).every((v) => v == null)) continue;
+    out.push({
+      period: LEAD_PERIODS[lead] ?? `Lead ${lead}`,
+      blended: row.blended ?? 0,
+      ai: row.ai ?? 0,
+      nwpA: row.nwpA ?? 0,
+      nwpB: row.nwpB ?? 0,
+      ensemble: row.ensemble ?? 0,
+    });
+  }
+  if (out.length === 0) {
+    throw new Error('Skill scores unavailable');
+  }
+  return out;
 }
 
 /**
@@ -1669,10 +1685,13 @@ export async function getRpiData(city: string = 'Kanpur'): Promise<RpiData> {
   ]);
 
   const matchCity = cities.find(c => c.city.toLowerCase() === city.toLowerCase()) || cities[0];
-  const rain = metrics.rainfall ?? matchCity.rainfall ?? 15;
-  const temp = metrics.temperature ?? matchCity.temperature ?? 30;
-  const wind = metrics.wind ?? matchCity.wind ?? 15;
-  const conf = metrics.confidence ?? matchCity.confidence ?? 85;
+  if (!matchCity) {
+    throw new Error(`No forecast data available for ${city}`);
+  }
+  const rain = metrics.rainfall ?? matchCity.rainfall ?? 0;
+  const temp = metrics.temperature ?? matchCity.temperature ?? 0;
+  const wind = metrics.wind ?? matchCity.wind ?? 0;
+  const conf = metrics.confidence ?? matchCity.confidence ?? 0;
 
   const rainRisk = Math.min(100, Math.max(0, Math.round((rain / 80) * 100 * 10) / 10));
   const heatRisk = Math.min(100, Math.max(0, Math.round(((temp - 25) / 20) * 100 * 10) / 10));
@@ -1693,14 +1712,12 @@ export async function getRpiData(city: string = 'Kanpur'): Promise<RpiData> {
     domModel = rain > 45 ? 'ECMWF' : temp > 35 ? 'ICON' : 'GFS';
   }
 
-  const weights =
-    domModel === 'ECMWF'
-      ? { ecmwf: 45, icon: 25, gfs: 18, gem: 12 }
-      : domModel === 'ICON'
-      ? { ecmwf: 25, icon: 45, gfs: 18, gem: 12 }
-      : domModel === 'GFS'
-      ? { ecmwf: 20, icon: 22, gfs: 46, gem: 12 }
-      : { ecmwf: 22, icon: 20, gfs: 18, gem: 40 };
+  // Fallback weights when the engine's published table is unreachable: the
+  // dominant model gets a modest lead, the rest share the remainder evenly.
+  // ponytail: coarse stand-in — replace with /api/weights once reachable.
+  const OTHERS = ['ecmwf', 'icon', 'gfs', 'gem'].filter(m => m !== domModel.toLowerCase());
+  const weights: Record<string, number> = { [domModel.toLowerCase()]: 34 };
+  OTHERS.forEach(m => { weights[m] = Math.round(66 / OTHERS.length); });
 
   const recs = generateResourceRecommendations(matchCity.city, rain, temp, wind);
 
@@ -1759,14 +1776,10 @@ export async function getAllRpiData(): Promise<RpiData[]> {
       domModel = rain > 50 ? 'ECMWF' : temp > 34 ? 'ICON' : 'GFS';
     }
 
-    const weights =
-      domModel === 'ECMWF'
-        ? { ecmwf: 45, icon: 25, gfs: 18, gem: 12 }
-        : domModel === 'ICON'
-        ? { ecmwf: 25, icon: 45, gfs: 18, gem: 12 }
-        : domModel === 'GFS'
-        ? { ecmwf: 20, icon: 22, gfs: 46, gem: 12 }
-        : { ecmwf: 22, icon: 20, gfs: 18, gem: 40 };
+    // Same coarse stand-in as getRpiData: dominant model leads, rest share the rest.
+    const OTHERS = ['ecmwf', 'icon', 'gfs', 'gem'].filter(m => m !== domModel.toLowerCase());
+    const weights: Record<string, number> = { [domModel.toLowerCase()]: 34 };
+    OTHERS.forEach(m => { weights[m] = Math.round(66 / OTHERS.length); });
 
     return {
       city: c.city,
@@ -1806,6 +1819,7 @@ export interface GeoJsonStationFeature {
     temperature: number;
     wind: number;
     confidence: number;
+    modelWeights: Record<string, number>;
   };
 }
 

@@ -144,7 +144,7 @@ const ENDPOINTS: EndpointDef[] = [
     category: 'risk',
     method: 'GET',
     path: '/api/rpi',
-    title: 'Risk Priority Index (RPI)',
+    title: 'Risk scores per station',
     description:
       'Calculates district composite risk (0-100) combining rainfall, heat, wind, and NDMA logistics triggers.',
     params: [
@@ -176,7 +176,7 @@ const ENDPOINTS: EndpointDef[] = [
     path: '/api/rpi/map',
     title: 'Spatial Station GeoJSON',
     description:
-      'Returns complete GeoJSON FeatureCollection of 45 Indian stations with coordinates, RPI scores, and best NWP models.',
+      'All 45 stations as GeoJSON: coordinates, current risk score, and the model leading there.',
     params: [],
     sampleResponse: {
       type: 'FeatureCollection',
@@ -446,15 +446,16 @@ export function ApiPage() {
   }, [snippetLanguage, currentUrl, selectedEndpoint]);
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-4">
       {/* Header bar */}
       <PageHeader
         icon={Terminal}
-        title="API Explorer & Live Workbench"
-        sub="Directly query Prakruti's operational NWP blending engine, risk indices, and spatial APIs."
+        title="API"
+        answer="Every number on this site comes from these endpoints. Run them here with your own city."
+        sub="Public, no key. Responses are the engine's own payloads, uninspected — the same bytes a client would get."
         action={
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-card border border-border text-muted-foreground">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-mono bg-card border border-border text-muted-foreground">
               {/* The host is whatever the app itself talks to, so a local run
                   does not advertise a Render host it is not querying. */}
               <span>Host: {hostLabel}</span>
@@ -474,7 +475,7 @@ export function ApiPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search endpoints or parameters…"
+                placeholder="Search endpoints…"
                 className="w-full pl-8 pr-3 py-1.5 rounded-md text-xs font-mono bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
               />
               <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -498,7 +499,7 @@ export function ApiPage() {
                 >
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span
-                      className={`text-[9.5px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                      className={`text-[12px] font-mono font-bold px-1.5 py-0.5 rounded ${
                         isSelected
                           ? 'bg-background/20 text-background'
                           : 'bg-secondary text-foreground'
@@ -507,7 +508,7 @@ export function ApiPage() {
                       {ep.method}
                     </span>
                     <span
-                      className={`text-[10px] font-mono truncate ${
+                      className={`text-[11.5px] font-mono truncate ${
                         isSelected ? 'text-background/80' : 'text-muted-foreground'
                       }`}
                     >
@@ -530,7 +531,7 @@ export function ApiPage() {
           <div className="p-3.5 bg-card shrink-0 space-y-3">
             <div className="flex items-center justify-between text-xs font-semibold text-foreground">
               <span>Request Parameters</span>
-              <span className="text-[10px] font-mono text-muted-foreground">
+              <span className="text-[11.5px] font-mono text-muted-foreground">
                 {selectedEndpoint.params.length === 0 ? 'No params required' : `${selectedEndpoint.params.length} configurable`}
               </span>
             </div>
@@ -539,7 +540,7 @@ export function ApiPage() {
               <div className="space-y-2">
                 {selectedEndpoint.params.map((p) => (
                   <div key={p.name} className="flex items-center justify-between gap-2 text-xs">
-                    <label className="font-mono text-muted-foreground text-[11px] truncate flex-1">
+                    <label className="font-mono text-muted-foreground text-[12px] truncate flex-1">
                       {p.name}:
                     </label>
                     {p.options ? (
@@ -598,7 +599,7 @@ export function ApiPage() {
           {/* Pinned Top Bar: Live URL Strip & Tab Controls */}
           <div className="p-3 border-b border-border bg-secondary/30 shrink-0 space-y-2.5">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-foreground text-background">
+              <span className="px-2 py-0.5 rounded text-[11.5px] font-mono font-bold bg-foreground text-background">
                 {selectedEndpoint.method}
               </span>
               <div className="flex-1 font-mono text-xs text-foreground bg-card px-2.5 py-1 rounded border border-border truncate select-all">
@@ -656,7 +657,7 @@ export function ApiPage() {
               {inspectorTab === 'response' && (
                 <div className="flex items-center gap-2 text-xs font-mono">
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    className={`px-2 py-0.5 rounded text-[11.5px] font-bold ${
                       responseStatus === 200
                         ? 'bg-action-soft text-data-ok-text border border-success/30'
                         : 'bg-destructive/10 text-destructive border border-destructive/30'
@@ -664,10 +665,10 @@ export function ApiPage() {
                   >
                     {responseStatus} OK
                   </span>
-                  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                  <span className="text-[12px] text-muted-foreground flex items-center gap-1">
                     <Clock size={11} /> {responseLatency}ms
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-[12px] text-muted-foreground">
                     {responseSize}
                   </span>
                 </div>
@@ -688,7 +689,7 @@ export function ApiPage() {
                     onClick={() =>
                       copyToClipboard(JSON.stringify(responseData, null, 2), 'json')
                     }
-                    className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded bg-secondary cursor-pointer"
+                    className="flex items-center gap-1 text-[12px] font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded bg-secondary cursor-pointer"
                   >
                     {copiedType === 'json' ? (
                       <>
@@ -717,7 +718,7 @@ export function ApiPage() {
                       key={lang}
                       type="button"
                       onClick={() => setSnippetLanguage(lang)}
-                      className={`px-3 py-2 min-h-[36px] flex items-center rounded text-xs font-mono uppercase transition-colors cursor-pointer touch-manipulation border ${
+                      className={`px-3 py-2 min-h-[44px] sm:min-h-[36px] flex items-center rounded text-xs font-mono transition-colors cursor-pointer touch-manipulation border ${
                         snippetLanguage === lang
                           ? 'bg-action-soft text-action-pressed font-bold border-action/30'
                           : 'bg-secondary text-muted-foreground hover:text-foreground border-transparent'
@@ -733,7 +734,7 @@ export function ApiPage() {
                     <button
                       type="button"
                       onClick={() => copyToClipboard(snippetCode, 'snippet')}
-                      className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground hover:text-foreground px-2.5 py-1.5 min-h-[36px] rounded bg-secondary cursor-pointer touch-manipulation"
+                      className="flex items-center gap-1 text-[12px] font-mono text-muted-foreground hover:text-foreground px-2.5 py-1.5 min-h-[44px] sm:min-h-[36px] rounded bg-secondary cursor-pointer touch-manipulation"
                     >
                       {copiedType === 'snippet' ? (
                         <>

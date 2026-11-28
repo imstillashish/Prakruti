@@ -108,8 +108,8 @@ export function IntradayStrip({ live }: { live: LiveConditions }) {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 font-mono text-[10.5px]">
-        <span className="uppercase tracking-[0.08em] text-muted-foreground">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 font-mono text-[11.5px]">
+        <span className="tracking-[0.01em] text-muted-foreground">
           Last 12h · 15-min
         </span>
         {/* Tight on a phone: the label and the clock have to share one line, and

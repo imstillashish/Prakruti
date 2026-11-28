@@ -139,7 +139,7 @@ export function ServiceStatusFooter({
   <span className="text-[12.5px] font-medium tracking-[-0.1px]">
   {allClear ? 'All systems operational' : `${summary.label} — see status`}
   </span>
-  <span className="hidden font-mono text-[10.5px] text-muted-foreground  sm:inline">
+  <span className="hidden font-mono text-[11.5px] text-muted-foreground  sm:inline">
   status.{brand.toLowerCase()}.com
   </span>
   </a>
@@ -171,14 +171,14 @@ export function ServiceStatusFooter({
   />
   <span className="truncate text-[12.5px] font-medium">{service.name}</span>
   </span>
-  <span className="shrink-0 whitespace-nowrap font-mono text-[10.5px] tabular-nums text-muted-foreground ">
+  <span className="shrink-0 whitespace-nowrap font-mono text-[11.5px] tabular-nums text-muted-foreground ">
   {service.uptime}
   </span>
   </div>
   <div className="mt-3">
   <UptimeBars service={service} />
   </div>
-  <div className="mt-2 flex items-center justify-between font-mono text-[9.5px] uppercase tracking-[0.07em] text-muted-foreground ">
+  <div className="mt-2 flex items-center justify-between font-mono text-[12px] uppercase tracking-[0.07em] text-muted-foreground ">
   <span>{service.history.length} days ago</span>
   <span>{tone.label}</span>
   <span>Today</span>
@@ -200,7 +200,7 @@ export function ServiceStatusFooter({
   <span className="whitespace-nowrap text-[12.5px] font-medium">
   {service.name}
   </span>
-  <span className="whitespace-nowrap font-mono text-[10.5px] tabular-nums text-muted-foreground ">
+  <span className="whitespace-nowrap font-mono text-[11.5px] tabular-nums text-muted-foreground ">
   {service.uptime}
   </span>
   </li>

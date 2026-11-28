@@ -3,26 +3,26 @@ import { useState, useEffect, useMemo } from 'react';
 import { ExtremeWeatherPanel } from '@/components/ExtremeWeather';
 import { PageHeader } from '@/components/shell/PageHeader';
 import { Panel } from '@/components/shell/Panel';
+import { Answer } from '@/components/plain/Plain';
 import { Badge } from '@/components/ui/badge';
 import { WeatherMap } from '@/components/WeatherMap';
 import { MapPin, RotateCcw, CheckCircle2, ChevronDown, AlertTriangle } from '@/components/icons';
-import { getAlertsData, MOCK_ALERTS, getAlertState } from '@/lib/api';
+import { getAlertsData, getAlertState } from '@/lib/api';
 import type { Alert } from '@/types';
 
 type SeverityFilter = 'all' | 'danger' | 'warning';
 
 export function ExtremeWeatherPage() {
-  const [alerts, setAlerts] = useState<Alert[]>(MOCK_ALERTS);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // MOCK alerts stand in while the live bulletin fetch lands in place.
   useEffect(() => {
     let mounted = true;
     getAlertsData()
       .then((data) => {
-        if (mounted && data && data.length > 0) setAlerts(data);
+        if (mounted) setAlerts(data);
       })
       .catch(() => {});
     return () => {
@@ -60,28 +60,30 @@ export function ExtremeWeatherPage() {
   }, [alerts, severityFilter, selectedState]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         icon={AlertTriangle}
-        title="Extreme Weather Guidance"
-        sub="Real-time severe event risk, threshold breaches, and emergency advisories"
+        title="Alerts"
+        answer="Two colours, one meaning: red means act now, orange means be ready."
+        sub="Bulletins are issued only where the blend crosses a published hazard threshold — a quiet district is a real all-clear, not missing data."
       />
 
-      {/* items-start: the advisory is a short status card next to a tall map;
-          stretching it left the card hollow. */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <ExtremeWeatherPanel />
-        <WeatherMap />
-      </div>
 
-      {/* Active alerts log */}
-      <Panel
-        title="Active alert registry"
-        subtitle="Gridded hazard threshold breaches from multi-model blending — red is the most severe"
+      {/* The advisory card is short and the registry is long, so both live in
+          the left column. The map sits beside them and sticks while the list
+          scrolls — otherwise the left column ended in dead space. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-6 min-w-0">
+          <ExtremeWeatherPanel />
+
+          {/* Active alerts log */}
+          <Panel
+        title="Every alert this cycle"
+        subtitle="Most severe first"
         term="rpi"
         actions={
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-secondary border border-border text-muted-foreground rounded-full">
-            {filteredAlerts.length} / {alerts.length} Active
+          <span className="text-[11.5px] font-mono font-bold px-1.5 py-0.5 bg-secondary border border-border text-muted-foreground rounded-full">
+            {filteredAlerts.length} of {alerts.length}
           </span>
         }
       >
@@ -99,7 +101,7 @@ export function ExtremeWeatherPage() {
               }`}
             >
               <span>All</span>
-              <span className="text-[10px] px-1 bg-secondary text-muted-foreground font-mono rounded-full">
+              <span className="text-[11.5px] px-1 bg-secondary text-muted-foreground font-mono rounded-full">
                 {alerts.length}
               </span>
             </button>
@@ -115,7 +117,7 @@ export function ExtremeWeatherPage() {
             >
               <span className={`w-2.5 h-1.5 rounded-xs shrink-0 ${severityFilter === 'danger' ? 'bg-white' : 'bg-destructive'}`} />
               <span>Red</span>
-              <span className={`text-[10px] px-1 font-mono rounded-full ${
+              <span className={`text-[11.5px] px-1 font-mono rounded-full ${
                 severityFilter === 'danger' ? 'bg-white/20 text-white' : 'bg-destructive/10 text-destructive'
               }`}>
                 {redCount}
@@ -133,7 +135,7 @@ export function ExtremeWeatherPage() {
             >
               <span className={`w-2.5 h-1.5 rounded-xs shrink-0 ${severityFilter === 'warning' ? 'bg-white' : 'bg-warning'}`} />
               <span>Orange</span>
-              <span className={`text-[10px] px-1 font-mono rounded-full ${
+              <span className={`text-[11.5px] px-1 font-mono rounded-full ${
                 severityFilter === 'warning' ? 'bg-white/20 text-white' : 'bg-card border border-border text-foreground'
               }`}>
                 {orangeCount}
@@ -185,9 +187,10 @@ export function ExtremeWeatherPage() {
           {filteredAlerts.length === 0 ? (
             <div className="py-12 px-4 text-center rounded-md bg-secondary border border-border">
               <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-success" />
-              <h4 className="text-sm font-semibold text-foreground">No active bulletins for this station</h4>
-              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                Model data lands every 6 hours — new advisories appear after the next synoptic cycle.
+              <h4 className="text-[14px] font-medium text-foreground">Nothing to act on here</h4>
+              <p className="mt-1 max-w-sm mx-auto text-[12.5px] leading-relaxed text-muted-foreground">
+                Nothing crossed a danger threshold here this cycle. That is an all-clear, not a gap —
+                the next check runs at 06 UTC.
               </p>
               <button
                 type="button"
@@ -197,7 +200,7 @@ export function ExtremeWeatherPage() {
                 }}
                 className="mt-3 px-3 py-1 rounded-md bg-card text-foreground text-xs font-medium hover:bg-accent border border-border transition-colors duration-100"
               >
-                Reset Filters
+                Show all alerts
               </button>
             </div>
           ) : (
@@ -217,9 +220,9 @@ export function ExtremeWeatherPage() {
                         <AlertTriangle size={12} className={`shrink-0 ${isRed ? 'text-destructive' : 'text-warning'}`} />
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-[13px] font-medium text-foreground truncate">{alert.title}</span>
-                            <Badge variant={isRed ? 'destructive' : 'warning'} className="text-[9px] shrink-0">
-                              {isRed ? 'RED ALERT' : 'ORANGE ALERT'}
+                            <span className="text-[13.5px] font-medium text-foreground truncate">{alert.title}</span>
+                            <Badge variant={isRed ? 'destructive' : 'warning'} className="text-[11.5px] shrink-0">
+                              {isRed ? 'Act now' : 'Be ready'}
                             </Badge>
                           </div>
                           <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
@@ -230,7 +233,7 @@ export function ExtremeWeatherPage() {
                       </div>
                       <div className="text-right shrink-0 font-mono">
                         <div className="text-xs text-muted-foreground font-semibold">{alert.window}</div>
-                        <div className="text-[10px] text-foreground mt-0.5">{alert.timestamp}</div>
+                        <div className="text-[11.5px] text-foreground mt-0.5">{alert.timestamp}</div>
                       </div>
                     </button>
                     {open && (
@@ -254,7 +257,13 @@ export function ExtremeWeatherPage() {
             </ul>
           )}
         </div>
-      </Panel>
+          </Panel>
+        </div>
+
+        <div className="lg:sticky lg:top-4 min-w-0">
+          <WeatherMap />
+        </div>
+      </div>
     </div>
   );
 }

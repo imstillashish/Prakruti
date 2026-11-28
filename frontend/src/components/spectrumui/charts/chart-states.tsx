@@ -30,11 +30,11 @@ function Panel({
   return (
   <div className={cn(frame, className)}>
   <div className="mb-3 flex items-baseline justify-between gap-3">
-  <p className="font-mono text-[11px] font-medium uppercase tracking-wider text-foreground ">
+  <p className="font-mono text-[12px] font-medium tracking-[0.01em] text-foreground ">
   {title}
   </p>
   {hint ? (
-  <p className="font-mono text-[10.5px] text-muted-foreground ">{hint}</p>
+  <p className="font-mono text-[11.5px] text-muted-foreground ">{hint}</p>
   ) : null}
   </div>
   {children}
@@ -119,7 +119,7 @@ export function ChartStatusSwitcher({ className }: { className?: string }) {
   aria-selected={active}
   onClick={() => setStatus(option)}
   className={cn(
-  'rounded-full px-3 py-1 font-mono text-[11px] leading-none transition-colors',
+  'rounded-full px-3 py-1 font-mono text-[12px] leading-none transition-colors',
   'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black/20 ',
   active
   ? 'gradient-animated-ocean text-white '
@@ -169,7 +169,7 @@ export function ChartStateUsage({ className }: { className?: string }) {
   <button
   type="button"
   onClick={() => setStatus('empty')}
-  className="font-mono text-[11px] text-muted-foreground underline underline-offset-2 hover:text-foreground "
+  className="font-mono text-[12px] text-muted-foreground underline underline-offset-2 hover:text-foreground "
   >
   reset to empty
   </button>

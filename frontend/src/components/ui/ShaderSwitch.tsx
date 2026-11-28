@@ -16,32 +16,32 @@ export interface ShaderSwitchProps
 const VARIANTS: Record<
   ShaderVariant,
   {
-    ring: string;
+    focusOutline: string;
     fill: readonly string[];
   }
 > = {
   ocean: {
-    ring: 'focus-visible:ring-action',
+    focusOutline: 'focus-visible:outline-action',
     fill: SHADER_FILL.ocean,
   },
   emerald: {
-    ring: 'focus-visible:ring-success',
+    focusOutline: 'focus-visible:outline-success',
     fill: SHADER_FILL.emerald,
   },
   amber: {
-    ring: 'focus-visible:ring-warning',
+    focusOutline: 'focus-visible:outline-warning',
     fill: SHADER_FILL.amber,
   },
   destructive: {
-    ring: 'focus-visible:ring-destructive',
+    focusOutline: 'focus-visible:outline-destructive',
     fill: SHADER_FILL.destructive,
   },
   neutral: {
-    ring: 'focus-visible:ring-foreground',
+    focusOutline: 'focus-visible:outline-foreground',
     fill: SHADER_FILL.neutral,
   },
   rain: {
-    ring: 'focus-visible:ring-[#0e7490]',
+    focusOutline: 'focus-visible:outline-data-rain',
     fill: SHADER_FILL.rain,
   },
 };
@@ -96,8 +96,8 @@ export const ShaderSwitch = forwardRef<
       onCheckedChange={handleCheckedChange}
       className={cn(
         'relative isolate inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border/80 transition-colors overflow-hidden',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-        v.ring,
+        'focus-visible:outline-2 focus-visible:outline-offset-2',
+        v.focusOutline,
         'disabled:cursor-not-allowed disabled:opacity-50',
         size === 'md' ? 'h-7 w-12' : 'h-5 w-9',
         className

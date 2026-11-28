@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { CheckCircle, Activity, Clock, AlertTriangle, X } from '@/components/icons';
+import { CheckCircle, Clock, AlertTriangle, X } from '@/components/icons';
 import type { IconComponent } from '@/components/icons';
 import { Panel } from '@/components/shell/Panel';
 import { Badge } from '@/components/ui/badge';
-import { MOCK_DATA_SOURCES, ENGINE_STATUS, getForecast } from '@/lib/api';
+import { getCycleState, type CycleState } from '@/lib/api';
 import { DataSource } from '@/types';
 
 const STATUS_CONFIG: Record<DataSource['status'], { icon: IconComponent; color: string; label: string; badge: 'default' | 'warning' | 'destructive' }> = {
@@ -14,37 +14,43 @@ const STATUS_CONFIG: Record<DataSource['status'], { icon: IconComponent; color: 
 };
 
 export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { collapsibleOnPhone?: boolean; collapsibleOnTablet?: boolean }) {
-  const [sources, setSources] = useState<DataSource[]>(MOCK_DATA_SOURCES);
-  const [engineStatus, setEngineStatus] = useState(ENGINE_STATUS);
-  const [isLoading, setIsLoading] = useState(true);
+  // Live per-model ingestion state from the engine's own cycle report; the
+  // empty list is the honest loading/degraded state, never a stand-in feed.
+  const [sources, setSources] = useState<DataSource[]>([]);
+  const [cycle, setCycle] = useState<CycleState | null>(null);
 
   useEffect(() => {
     let mounted = true;
-    getForecast()
-      .then((data) => {
-        if (mounted && data && data.length > 0) {
-          setIsLoading(false);
-        }
-      })
-      .catch(() => {
-        if (mounted) setIsLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
+    getCycleState().then((state) => {
+      if (!mounted) return;
+      setCycle(state);
+      if (state) {
+        setSources(state.expected_models.map((id) => {
+          const status = state.missing_models.includes(id) ? 'unavailable' : 'healthy';
+          return {
+            id,
+            name: id.toUpperCase(),
+            status,
+            lastUpdated: status === 'healthy' ? 'received this cycle' : 'not received',
+            latencyMs: state.models[id]?.rows ?? 0,
+          };
+        }));
+      }
+    });
+    return () => { mounted = false; };
   }, []);
 
   const healthyCount = sources.filter(s => s.status === 'healthy').length;
 
   return (
     <Panel
-      title="Data ingest telemetry"
-      subtitle={`${healthyCount}/${sources.length} feeds operational`}
+      title="Is the data arriving"
+      subtitle={sources.length ? `${healthyCount}/${sources.length} feeds operational` : 'Awaiting engine cycle'}
       collapsibleOnPhone={collapsibleOnPhone}
       collapsibleOnTablet={collapsibleOnTablet}
       actions={
         <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold border bg-secondary text-foreground border-border">
-          Nominal
+          {cycle?.stale ? 'Stale cycle' : sources.length ? 'Nominal' : 'Waiting'}
         </span>
       }
     >
@@ -66,8 +72,10 @@ export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
               </div>
 
               <div className="text-right">
-                <div className="text-xs font-semibold text-foreground">{s.latencyMs}ms latency</div>
-                <div className="text-[10px] text-muted-foreground flex items-center gap-1 justify-end">
+                <div className="text-xs font-semibold text-foreground">
+                  {s.latencyMs > 0 ? `${s.latencyMs.toLocaleString()} rows` : '—'}
+                </div>
+                <div className="text-[11.5px] text-muted-foreground flex items-center gap-1 justify-end">
                   <Clock size={10} />
                   <span>{s.lastUpdated}</span>
                 </div>
@@ -80,9 +88,9 @@ export function DataHealthPanel({ collapsibleOnPhone, collapsibleOnTablet }: { c
       <div
         className="mt-3.5 p-3 rounded-md bg-card border border-border text-xs font-mono text-muted-foreground"
       >
-        <div className="flex items-center justify-between text-[11px]">
-          <span>Cache Invalidation: 60m TTL</span>
-          <span className="text-data-ok-text font-bold">100% Data Integrity</span>
+        <div className="flex items-center justify-between text-[12px]">
+          <span>Cycle ID</span>
+          <span className="text-data-ok-text font-bold">{cycle?.cycle_id ?? '—'}</span>
         </div>
       </div>
     </Panel>

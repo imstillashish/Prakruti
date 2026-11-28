@@ -353,7 +353,7 @@ export function WelcomeSplash() {
             <button
               type="button"
               onClick={() => (lastStep ? dismiss() : go(step + 1))}
-              className="gradient-animated-ocean group flex h-11 flex-1 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold shadow-[0_8px_24px_rgba(13,116,206,0.18)] transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:flex-none"
+              className="gradient-animated-ocean group flex h-11 flex-1 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:flex-none"
             >
               {lastStep ? 'Enter the dashboard' : 'Continue'}
               <ArrowRight size={16} />
@@ -442,7 +442,7 @@ function BlendDiagram() {
           className="welcome-flow"
         />
       </svg>
-      <figcaption className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+      <figcaption className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[12px] tracking-[0.01em] text-muted-foreground">
         {feeds.map(({ model, token }) => (
           <span key={model} className="inline-flex items-center gap-1.5">
             <span
@@ -517,7 +517,7 @@ function SeatsDiagram() {
               className="absolute inset-y-0 left-0 w-[3px]"
               style={{ backgroundColor: `var(${token})` }}
             />
-            <span className="truncate font-mono text-[11px] font-semibold text-foreground">{name}</span>
+            <span className="truncate font-mono text-[12px] font-semibold text-foreground">{name}</span>
           </li>
         ))}
         <motion.li
@@ -527,7 +527,7 @@ function SeatsDiagram() {
           className="relative flex items-center gap-2.5 rounded-md border border-dashed border-input py-2.5 pl-3.5 pr-3"
         >
           <Send size={13} className="shrink-0 text-action" />
-          <span className="truncate font-mono text-[11px] text-muted-foreground">your_model</span>
+          <span className="truncate font-mono text-[12px] text-muted-foreground">your_model</span>
           {!reduce && (
             <motion.span
               aria-hidden
@@ -539,7 +539,7 @@ function SeatsDiagram() {
           )}
         </motion.li>
       </ul>
-      <figcaption className="mt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+      <figcaption className="mt-4 font-mono text-[12px] tracking-[0.01em] text-muted-foreground">
         Six seats filled · the seventh is yours to post
       </figcaption>
     </figure>

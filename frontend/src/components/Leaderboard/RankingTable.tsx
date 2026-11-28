@@ -73,6 +73,9 @@ export function RankingTable({
   }
 
   const metricName = measure === 'extreme' ? 'CSI' : 'MAE';
+  // Plain names for the table headers; the acronyms stay available as title
+  // attributes so a reader who knows them is not slowed down.
+  const metricLabel = measure === 'extreme' ? 'Extreme-event score' : 'Average error';
   const metricDirection = measure === 'extreme' ? 'higher is better' : 'lower is better';
   const colSpan = measure === 'extreme' ? 8 : 7;
 
@@ -104,7 +107,7 @@ export function RankingTable({
                     #{row.rank}
                   </span>
                   {row.rank_low !== null && row.rank_high !== null && (
-                    <span className="text-[11px] font-mono text-muted-foreground">
+                    <span className="text-[12px] font-mono text-muted-foreground">
                       ({row.rank_low}↔{row.rank_high})
                     </span>
                   )}
@@ -119,15 +122,15 @@ export function RankingTable({
                 </div>
                 <div className="flex items-center gap-1.5">
                   {row.tier === 'blend' && (
-                    <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
+                    <span className="text-[11.5px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
                       ours
                     </span>
                   )}
-                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
+                  <span className="text-[11.5px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                     {row.tier}
                   </span>
                   {row.low_sample === 1 && (
-                    <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
+                    <span className="text-[11.5px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
                       low n
                     </span>
                   )}
@@ -156,30 +159,30 @@ export function RankingTable({
                 {measure === 'extreme' ? (
                   <>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">POD</span>
+                      <span className="text-muted-foreground text-[11.5px] block">POD</span>
                       <span>{row.pod !== null ? row.pod.toFixed(2) : '—'}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">FAR</span>
+                      <span className="text-muted-foreground text-[12px] block">False alarms</span>
                       <span>{row.far !== null ? row.far.toFixed(2) : '—'}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">Events</span>
+                      <span className="text-muted-foreground text-[12px] block">Events</span>
                       <span>{row.cases?.toLocaleString() ?? '—'}</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">RMSE</span>
+                      <span className="text-muted-foreground text-[12px] block">Worst misses</span>
                       <span>{row.rmse !== null ? `${row.rmse.toFixed(2)} ${unit}` : '—'}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">Bias</span>
+                      <span className="text-muted-foreground text-[12px] block">Drift</span>
                       <span>{row.bias !== null ? `${row.bias.toFixed(2)} ${unit}` : '—'}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground text-[10px] block">Pairs</span>
+                      <span className="text-muted-foreground text-[12px] block">Matched hours</span>
                       <span>{row.n.toLocaleString()}</span>
                     </div>
                   </>
@@ -205,20 +208,20 @@ export function RankingTable({
             <tr className="border-b border-border bg-muted/40 font-mono text-xs text-muted-foreground">
               <th className="py-2.5 px-4 w-16">Rank</th>
               <th className="py-2.5 px-4">Method</th>
-              <th className="py-2.5 px-4">{metricName} ({unit})</th>
-              <th className="py-2.5 px-4 w-32">95% CI Whisker</th>
+              <th className="py-2.5 px-4">{metricLabel} ({unit})</th>
+              <th className="py-2.5 px-4 w-32" title="95% confidence interval">Range</th>
               {measure === 'extreme' ? (
                 <>
-                  <th className="py-2.5 px-4 text-right">POD</th>
-                  <th className="py-2.5 px-4 text-right">FAR</th>
-                  <th className="py-2.5 px-4 text-right">ETS</th>
+                  <th className="py-2.5 px-4 text-right" title="Probability of detection">Hits</th>
+                  <th className="py-2.5 px-4 text-right" title="False alarm ratio">False alarms</th>
+                  <th className="py-2.5 px-4 text-right" title="Equitable threat score">Skill</th>
                   <th className="py-2.5 px-4 text-right">Events</th>
                 </>
               ) : (
                 <>
-                  <th className="py-2.5 px-4 text-right">RMSE ({unit})</th>
-                  <th className="py-2.5 px-4 text-right">Bias ({unit})</th>
-                  <th className="py-2.5 px-4 text-right">Pairs (n)</th>
+                  <th className="py-2.5 px-4 text-right" title="Root mean square error">Worst misses ({unit})</th>
+                  <th className="py-2.5 px-4 text-right" title="Mean signed error">Drift ({unit})</th>
+                  <th className="py-2.5 px-4 text-right">Matched hours</th>
                 </>
               )}
             </tr>
@@ -252,7 +255,7 @@ export function RankingTable({
                   {/* Rank Cell */}
                   <td className="py-3 px-4 font-mono">
                     <div className="font-semibold text-foreground">#{row.rank}</div>
-                    <div className="text-[10px] text-muted-foreground">
+                    <div className="text-[11.5px] text-muted-foreground">
                       {row.rank_low !== null && row.rank_high !== null
                         ? `${row.rank_low} ↔ ${row.rank_high}`
                         : '—'}
@@ -271,15 +274,15 @@ export function RankingTable({
                         {METHOD_LABELS[row.method] || row.method}
                       </span>
                       {row.tier === 'blend' && (
-                        <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
+                        <span className="text-[11.5px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-xs bg-primary/10 text-primary border border-primary/20">
                           ours
                         </span>
                       )}
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
+                      <span className="text-[11.5px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-muted text-muted-foreground border border-border">
                         {row.tier}
                       </span>
                       {row.low_sample === 1 && (
-                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
+                        <span className="text-[11.5px] font-mono uppercase px-1.5 py-0.5 rounded-xs border border-warning/30 bg-warning/10 text-warning">
                           low n
                         </span>
                       )}
@@ -371,7 +374,7 @@ export function RankingTable({
 
       {/* Disclosures & Metadata Footer */}
       <div className="rounded-md border border-border/60 bg-muted/20 p-2.5 text-xs text-muted-foreground space-y-1 font-mono sm:p-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-1.5 text-[11px] sm:text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-1.5 text-[12px] sm:text-xs">
           <span>
             Ranked by {metricName} ({metricDirection}) · {variable} · {geo === 'IN' ? 'All India' : geo} ·{' '}
             {windowDays === 'full' || !windowDays ? 'Full window' : `${windowDays} days`}
@@ -384,7 +387,7 @@ export function RankingTable({
               type="button"
               onClick={() => setShowMethod(!showMethod)}
               aria-expanded={showMethod}
-              className="relative inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground touch-manipulation after:absolute after:-inset-y-4 after:-inset-x-2 after:content-[''] sm:hidden"
+              className="relative inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[11.5px] uppercase text-muted-foreground transition-colors hover:bg-muted hover:text-foreground touch-manipulation after:absolute after:-inset-y-4 after:-inset-x-2 after:content-[''] sm:hidden"
             >
               Methodology
               <ChevronDown
@@ -398,30 +401,30 @@ export function RankingTable({
           {benchmarkCard && (
             <div className="rounded-md border border-border/60 bg-card p-2.5 space-y-1">
               <div className="flex flex-wrap items-center justify-between gap-1">
-                <span className="font-mono text-[10px] uppercase text-primary">
+                <span className="font-mono text-[11.5px] uppercase text-primary">
                   {benchSpecId(benchmarkCard)}
                 </span>
-                <span className="text-[11px]">
+                <span className="text-[12px]">
                   {benchmarkCard.metric.primary} ({benchmarkCard.metric.direction})
                 </span>
               </div>
-              <div className="text-[11px] leading-snug">
+              <div className="text-[12px] leading-snug">
                 Truth: {benchmarkCard.truth_reference} · {benchmarkCard.sample_sizes.n_min?.toLocaleString() ?? '—'} pairs/method
                 {benchmarkCard.sample_sizes.cases !== null &&
                   ` · ${benchmarkCard.sample_sizes.cases.toLocaleString()} events`}
                 {benchmarkCard.uncertainty && ` · CI: ${benchmarkCard.uncertainty}`}
               </div>
-              <div className="text-[11px] leading-snug text-muted-foreground/80">
+              <div className="text-[12px] leading-snug text-muted-foreground/80">
                 {benchmarkCard.evaluation_period.start} → {benchmarkCard.evaluation_period.end} ·{' '}
                 {benchmarkCard.geography} · {benchmarkCard.seasonal_scope}
               </div>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[12px]">
             <span>no composite index — constituents only (PRD §10.5.A)</span>
             <span>Unconditioned dimensions: weather_regime, season, geographic_unit</span>
           </div>
-          <div className="text-[11px] text-muted-foreground/80">
+          <div className="text-[12px] text-muted-foreground/80">
             Confidence intervals (95%) and rank ranges published for national aggregate only.
             {lowSampleCount > 0 && ` ${lowSampleCount} method(s) flagged with low sample size.`}
           </div>

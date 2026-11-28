@@ -142,17 +142,15 @@ export function ByomPage() {
   }, [modelId, parsed.rows, loadRegistry]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         icon={Cpu}
-        title="Bring Your Own Model"
-        sub="Post a foreign forecast model and the engine tells you what it is worth before admitting it."
+        title="Your model"
+        answer="Send a model's hourly rows and the engine scores it before it is allowed into the blend — including what it would do to everyone else's forecast."
+        sub="No account, no waiting period. The verdict comes back in the response to the same request."
       />
 
-      {/* Hero band: sky atmosphere is hero-only, ink text sits straight on the
-          wash. React Bits' dot field measures the surface and answers the
-          pointer; it is ambient, so it stays aria-hidden and non-interactive. */}
-      <section className="hero-sky relative overflow-hidden rounded-lg border border-border px-5 py-7 sm:px-8 sm:py-9">
+      <section className="hero-sky relative overflow-hidden rounded-lg border border-border px-5 py-6 sm:px-8 sm:py-7">
         {/* ponytail: DotGrid keeps a rAF loop alive for as long as it is mounted,
             and it has no offscreen pause. That is the same cost the welcome splash
             already pays, and this band is one canvas on one tab — acceptable here.
@@ -163,32 +161,17 @@ export function ByomPage() {
         </div>
 
         <div className="relative">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-foreground/70">
-            Open model intake
-          </p>
-          <h2 className="mt-2 max-w-[30ch] text-2xl font-semibold leading-[1.12] tracking-[-0.02em] text-foreground sm:text-3xl">
-            Any model can earn a seat in the blend.
-          </h2>
-          {/* Two sentences on phone, three on wider screens: the phone budget is
-              the binding one, and the third sentence is the same claim again. */}
-          <p className="mt-3 max-w-[62ch] text-sm leading-relaxed text-foreground/80">
-            Six models ship in the blend today — four national weather services, JMA GSM and UKMO
-            Seamless. A seventh does not need a code change: post its hourly rows and the response
-            tells you what it is worth.
-          </p>
-
-          {/* Phone: the three claims, one line each. The supporting sentence is
-              progressive disclosure for a wider screen, not hover-only — the
-              claim itself is always spelled out. */}
-          <ul className="mt-5 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-y-4">
+          {/* Three claims, one line each: what makes an intake verdict trustworthy.
+              Supporting sentences stay tablet+; the claim itself never hides. */}
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-3">
             {CHAIN.map(({ Icon, title, body }) => (
               <li key={title} className="flex gap-3">
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-card">
                   <Icon size={15} className="text-action" />
                 </span>
                 <div className="min-w-0">
-                  <div className="text-[13px] font-semibold text-foreground">{title}</div>
-                  <p className="mt-0.5 hidden text-xs leading-relaxed text-foreground/70 sm:block">
+                  <div className="text-[13px] font-medium text-foreground">{title}</div>
+                  <p className="mt-0.5 hidden text-[12px] leading-relaxed text-foreground/70 sm:block">
                     {body}
                   </p>
                 </div>
@@ -196,12 +179,12 @@ export function ByomPage() {
             ))}
           </ul>
 
-          <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:items-center">
+          <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={submit}
               disabled={!ready}
-              className="gradient-animated-ocean flex h-11 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold shadow-[0_8px_24px_rgba(13,116,206,0.18)] transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-60"
+              className="gradient-animated-ocean flex h-11 items-center justify-center gap-2 rounded-md px-5 text-sm font-semibold transition-transform active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-60"
             >
               {busy ? <RefreshCw size={15} className="animate-spin" /> : <Send size={15} />}
               {busy ? 'Scoring…' : 'Run the sample'}
@@ -214,9 +197,7 @@ export function ByomPage() {
               Raw endpoint in the API Explorer
               <ArrowRight size={15} />
             </button>
-            {/* The endpoint path lives here rather than in a PageHeader action,
-                which stacked its own row on a phone for the same string. */}
-            <span className="flex items-center gap-1.5 font-mono text-[11px] text-foreground/60">
+            <span className="flex items-center gap-1.5 font-mono text-[11.5px] text-foreground/60">
               <Code2 size={12} />
               POST /api/models/{'{model_id}'}/forecasts
             </span>
@@ -241,8 +222,8 @@ export function ByomPage() {
           }
         >
           <label className="block">
-            <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-              model_id
+            <span className="text-[12px] font-medium text-muted-foreground">
+              Model name
             </span>
             <input
               type="text"
@@ -252,7 +233,7 @@ export function ByomPage() {
               autoComplete="off"
               className="mt-1.5 h-11 w-full rounded-md border border-input bg-card px-3 font-mono text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             />
-            <span className="mt-1 block font-mono text-[11px] text-muted-foreground">
+            <span className="mt-1 block font-mono text-[12px] text-muted-foreground">
               {limits.model_id}
               {limits.reserved_ids.length > 0 && ` · reserved: ${limits.reserved_ids.join(', ')}`}
             </span>
@@ -260,10 +241,10 @@ export function ByomPage() {
 
           <div className="mt-4">
             <div className="flex items-baseline justify-between gap-3">
-              <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-                payload
+              <span className="text-[12px] font-medium text-muted-foreground">
+                Hourly rows
               </span>
-              <span className="font-mono text-[11px] text-muted-foreground">
+              <span className="font-mono text-[12px] text-muted-foreground">
                 {parsed.rows ? `${parsed.rows.length} rows` : '—'}
               </span>
             </div>
@@ -273,7 +254,7 @@ export function ByomPage() {
               spellCheck={false}
               rows={7}
               aria-label="JSON payload"
-              className="mt-1.5 w-full resize-y rounded-md border border-input bg-card p-3 font-mono text-[11px] leading-relaxed text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="mt-1.5 w-full resize-y rounded-md border border-input bg-card p-3 font-mono text-[12px] leading-relaxed text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             />
             {/* Both halves of this row are 44px tall: an underline-only text link
                 measured 105x17 and failed the touch tier. */}
@@ -281,11 +262,11 @@ export function ByomPage() {
               <button
                 type="button"
                 onClick={() => setPayload(byomSampleJson())}
-                className="flex h-11 items-center font-mono text-[11px] text-text-link underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="flex h-11 items-center font-mono text-[12px] text-text-link underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 reset to sample
               </button>
-              <span className="font-mono text-[11px] text-muted-foreground">
+              <span className="font-mono text-[12px] text-muted-foreground">
                 ≥{limits.min_rows_per_variable} h matched to score
               </span>
             </div>
@@ -364,23 +345,23 @@ export function ByomPage() {
               >
                 <div className="flex flex-wrap items-center gap-2">
                   {result.status === 'accepted' ? (
-                    <span className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-data-ok-text">
+                    <span className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[12px] font-semibold text-data-ok-text">
                       <CheckCircle2 size={12} />
                       Verified and priced
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-data-watch">
+                    <span className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[12px] font-semibold text-data-watch">
                       <AlertTriangle size={12} />
                       Staged — coverage too thin to score
                     </span>
                   )}
-                  <span className="font-mono text-[11px] text-muted-foreground">
+                  <span className="font-mono text-[12px] text-muted-foreground">
                     covered {result.coverage.matched_actuals} observed hours
                     {' · '}
                     {(result.coverage.share_of_actuals * 100).toFixed(2)}% of the verification window
                   </span>
                   {elapsed !== null && (
-                    <span className="font-mono text-[11px] text-muted-foreground">· {elapsed} ms</span>
+                    <span className="font-mono text-[12px] text-muted-foreground">· {elapsed} ms</span>
                   )}
                 </div>
 
@@ -418,16 +399,16 @@ export function ByomPage() {
                             ['Skill', score.skill !== undefined ? score.skill.toFixed(1) : '—', '/100'],
                           ].map(([label, value, unit]) => (
                             <span key={label} className="flex flex-col">
-                              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+                              <span className="font-mono text-[11.5px] tracking-[0.01em] text-muted-foreground">
                                 {label}
                               </span>
                               <span className="font-mono text-sm font-semibold text-foreground">
                                 {value}
-                                <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">{unit}</span>
+                                <span className="ml-0.5 text-[11.5px] font-normal text-muted-foreground">{unit}</span>
                               </span>
                             </span>
                           ))}
-                          <span className="font-mono text-[11px] text-muted-foreground">n={score.n}</span>
+                          <span className="font-mono text-[12px] text-muted-foreground">n={score.n}</span>
                         </div>
                       );
                     })}
@@ -490,7 +471,7 @@ export function ByomPage() {
                           </span>
                           {delta !== null && (
                             <span
-                              className={`font-mono text-[11px] font-semibold ${
+                              className={`font-mono text-[12px] font-semibold ${
                                 better ? 'text-data-ok-text' : 'text-data-hazard'
                               }`}
                             >
@@ -570,7 +551,7 @@ export function ByomPage() {
                   {['Model', 'Rows', 'Cities', 'Observed hours matched', 'Window'].map((head) => (
                     <th
                       key={head}
-                      className="pb-2 font-mono text-[10px] font-normal uppercase tracking-[0.08em] text-muted-foreground"
+                      className="pb-2 font-mono text-[11.5px] font-normal tracking-[0.01em] text-muted-foreground"
                     >
                       {head}
                     </th>
@@ -583,7 +564,7 @@ export function ByomPage() {
                     <td className="py-2.5 font-mono text-xs font-semibold text-foreground">
                       {model.model}
                       {model.scoreable && (
-                        <span className="ml-2 text-[10px] font-normal text-data-ok-text">scoreable</span>
+                        <span className="ml-2 text-[11.5px] font-normal text-data-ok-text">scoreable</span>
                       )}
                     </td>
                     <td className="py-2.5 font-mono text-xs text-foreground">{model.rows}</td>
@@ -594,7 +575,7 @@ export function ByomPage() {
                         ({(model.share_of_actuals * 100).toFixed(2)}%)
                       </span>
                     </td>
-                    <td className="py-2.5 font-mono text-[11px] text-muted-foreground">
+                    <td className="py-2.5 font-mono text-[12px] text-muted-foreground">
                       {model.from} → {model.to}
                     </td>
                   </tr>

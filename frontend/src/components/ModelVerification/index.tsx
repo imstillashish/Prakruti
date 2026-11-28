@@ -9,10 +9,11 @@ import type { VerificationPayload, ContinuousVerificationRow, CategoricalVerific
 
 const METHOD_DISPLAY: Record<string, string> = {
   ecmwf: 'ECMWF', gfs: 'GFS', icon: 'ICON', gem: 'GEM',
+  jma: 'JMA', ukmo: 'UKMO',
   equal_avg: 'Ensemble mean', weighted_blend: 'Prakruti blend',
 };
 
-const METHOD_ORDER = ['ecmwf', 'gfs', 'icon', 'gem', 'equal_avg', 'weighted_blend'];
+const METHOD_ORDER = ['ecmwf', 'gfs', 'icon', 'gem', 'jma', 'ukmo', 'equal_avg', 'weighted_blend'];
 const VARS = ['temperature', 'rainfall', 'wind_speed'] as const;
 const VAR_SHORT: Record<string, string> = { temperature: 'Temp', rainfall: 'Rain', wind_speed: 'Wind' };
 const VAR_UNIT: Record<string, string> = { temperature: '°C', rainfall: 'mm/h', wind_speed: 'km/h' };
@@ -39,13 +40,13 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
       <table className="w-full text-xs font-mono border-collapse">
         <thead>
           <tr className="border-b border-border text-muted-foreground">
-            <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Method</th>
+            <th className="text-left pb-2 font-semibold tracking-[0.01em] text-[12px]">Method</th>
             {VARS.map((v) => (
               // The MAE/RMSE pair is one array entry, so the key belongs on the
               // fragment itself — React warns when the fragment is unkeyed.
               <Fragment key={v}>
-                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} MAE</th>
-                <th className="text-right pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] px-2">{VAR_SHORT[v]} RMSE</th>
+                <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">{VAR_SHORT[v]} MAE</th>
+                <th className="text-right pb-2 font-semibold tracking-[0.01em] text-[12px] px-2">{VAR_SHORT[v]} RMSE</th>
               </Fragment>
             ))}
           </tr>
@@ -59,7 +60,7 @@ function VerificationTable({ rows }: { rows: ContinuousVerificationRow[] }) {
                   <div className="flex items-center gap-1.5">
                     <ModelEmblem method={m} size={15} />
                     <span>{METHOD_DISPLAY[m] ?? m}</span>
-                    {isOurs && <span className="ml-1 text-[10px] uppercase tracking-wider text-data-ok-text font-bold">ours</span>}
+                    {isOurs && <span className="ml-1 text-[11.5px] tracking-[0.01em] text-data-ok-text font-bold">ours</span>}
                   </div>
                 </td>
                 {VARS.map((v) => {
@@ -95,9 +96,9 @@ function CategoricalTable({ rows }: { rows: CategoricalVerificationRow[] }) {
       <table className="w-full text-xs font-mono border-collapse">
         <thead>
           <tr className="border-b border-border text-muted-foreground">
-            <th className="text-left pb-2 font-semibold uppercase tracking-[0.08em] text-[11px]">Method</th>
+            <th className="text-left pb-2 font-semibold tracking-[0.01em] text-[12px]">Method</th>
             {thresholds.map((t) => (
-              <th key={t} colSpan={2} className="text-center pb-2 font-semibold uppercase tracking-[0.08em] text-[11px] border-l border-border">
+              <th key={t} colSpan={2} className="text-center pb-2 font-semibold tracking-[0.01em] text-[12px] border-l border-border">
                 ≥ {t} mm/h <span className="normal-case font-normal">(POD / FAR)</span>
               </th>
             ))}
@@ -129,7 +130,7 @@ function CategoricalTable({ rows }: { rows: CategoricalVerificationRow[] }) {
           ))}
         </tbody>
       </table>
-      <p className="text-[11px] font-mono text-muted-foreground mt-2">
+      <p className="text-[12px] font-mono text-muted-foreground mt-2">
         POD = hits share of observed events · FAR = false-alarm share of forecasts. Deterministic calls; CSI/ETS/BSS in the API payload.
       </p>
     </div>
@@ -175,8 +176,8 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
 
   return (
     <Panel
-      title="Verification against observed weather"
-      subtitle="61-day truth scoring per model and reference method — lower MAE/RMSE is better, green marks the column best"
+      title="Checked against what happened"
+      subtitle="Each model scored over 61 days against the weather that actually happened. Lower is better; the green cell is the best"
       term="skillScore"
       collapsibleOnPhone
     >
@@ -190,7 +191,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
 
       {!isLoading && meta && (
         <div className="space-y-5">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] font-mono text-muted-foreground">
             <span>{meta.window_start?.slice(0, 10)} → {meta.window_end?.slice(0, 10)}</span>
             <span>N = {meta.n_pairs?.toLocaleString()} city-hours</span>
             <span>truth: {meta.truth_source}</span>
@@ -200,7 +201,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
           <div className="hidden lg:block space-y-5">
             <VerificationTable rows={data?.continuous ?? []} />
             <div className="pt-3 border-t border-border">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground font-mono mb-2">
+              <div className="text-[12px] font-semibold tracking-[0.01em] text-muted-foreground font-mono mb-2">
                 Rainfall event detection
               </div>
               <CategoricalTable rows={data?.categorical ?? []} />
@@ -210,13 +211,13 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
           {/* Mobile & tablet (<1024px): swipeable method cards */}
           <div className="block lg:hidden">
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground font-mono">
+              <span className="text-xs font-semibold tracking-[0.01em] text-muted-foreground font-mono">
                 Method scorecards
               </span>
-              <span className="flex items-center gap-0.5 text-[11px] font-mono text-muted-foreground select-none">
+              <span className="flex items-center gap-0.5 text-[12px] font-mono text-muted-foreground select-none">
                 <ChevronLeft size={11} /><span>swipe</span><ChevronRight size={11} />
               </span>
-              <span className="text-[11px] font-mono text-muted-foreground">
+              <span className="text-[12px] font-mono text-muted-foreground">
                 {methods.findIndex((m) => m === current) + 1}/{methods.length}
               </span>
             </div>
@@ -236,12 +237,12 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-1.5">
                         <ModelEmblem method={m} size={16} />
-                        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
+                        <span className="text-xs font-mono font-semibold tracking-[0.01em] text-foreground">
                           {METHOD_DISPLAY[m] ?? m}
                         </span>
                       </div>
                       {isOurs && (
-                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-foreground text-background">
+                        <span className="text-[11.5px] font-semibold tracking-[0.01em] px-2 py-0.5 rounded-full bg-foreground text-background">
                           Ours
                         </span>
                       )}
@@ -251,7 +252,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
                         const r = cityRows(m).find((x) => x.variable === v);
                         return (
                           <div key={v} className="flex items-center justify-between p-2 rounded bg-secondary/40 border border-border">
-                            <span className="text-[10px] font-mono uppercase text-muted-foreground">{VAR_SHORT[v]}</span>
+                            <span className="text-[11.5px] font-mono text-muted-foreground">{VAR_SHORT[v]}</span>
                             <span className="text-xs font-mono">
                               <span className="font-semibold text-foreground">{fmt(r?.mae)}</span>
                               <span className="text-muted-foreground"> MAE · RMSE </span>
@@ -263,7 +264,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
                       })}
                       {cat.length > 0 && (
                         <div className="flex items-center justify-between p-2 rounded bg-secondary/40 border border-border">
-                          <span className="text-[10px] font-mono uppercase text-muted-foreground">Rain ≥{cat[0].threshold} POD/FAR</span>
+                          <span className="text-[11.5px] font-mono text-muted-foreground">Rain ≥{cat[0].threshold} POD/FAR</span>
                           <span className="text-xs font-mono text-foreground font-semibold">{fmt(cat[0].pod)} / {fmt(cat[0].far)}</span>
                         </div>
                       )}
@@ -290,7 +291,7 @@ export function ModelVerification({ selectedCity = 'Kanpur' }: { selectedCity?: 
             </div>
           </div>
 
-          <p className="text-[11px] font-mono text-muted-foreground">
+          <p className="text-[12px] font-mono text-muted-foreground">
             {meta.crps_note}
           </p>
         </div>

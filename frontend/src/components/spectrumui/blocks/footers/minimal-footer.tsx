@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { MorMark } from '@/components/brand/MorMark';
@@ -81,12 +82,12 @@ export function MinimalFooter({
   <div
   className={cn('flex items-center gap-3', centered && 'order-2 w-full justify-center')}
   >
-  <a href="/" className="relative inline-flex items-center gap-2 rounded-md transition-opacity duration-150 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 after:absolute after:-inset-y-2 after:-inset-x-2 after:content-['']">
+  <Link href="/" className="relative inline-flex items-center gap-2 rounded-md transition-opacity duration-150 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 after:absolute after:-inset-y-2 after:-inset-x-2 after:content-['']">
   <MorMark className="size-7 shrink-0 text-foreground" />
   <span className="whitespace-nowrap text-[14.5px] font-semibold tracking-[-0.3px]">
   {brand}
   </span>
-  </a>
+  </Link>
   <span className="text-[12px] tabular-nums text-muted-foreground ">
   {copyright ?? `© ${brand}`}
   </span>

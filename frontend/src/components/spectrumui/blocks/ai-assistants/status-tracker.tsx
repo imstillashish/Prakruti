@@ -45,7 +45,7 @@ export function StatusTracker({
           />
         </span>
         <span className="shrink-0 text-[12px] text-muted-foreground ">{label}</span>
-        <span className="shrink-0 font-mono text-[10.5px] tabular-nums text-muted-foreground ">
+        <span className="shrink-0 font-mono text-[11.5px] tabular-nums text-muted-foreground ">
           {Math.round(overall * 100)}%
         </span>
       </div>
@@ -93,7 +93,7 @@ export function StatusTracker({
                 </span>
                 <span
                   className={cn(
-                    'whitespace-nowrap font-mono text-[9.5px] uppercase tracking-wide',
+                    'whitespace-nowrap font-mono text-[12px] tracking-[0.01em]',
                     active || completed
                       ? 'text-foreground '
                       : 'text-muted-foreground ',

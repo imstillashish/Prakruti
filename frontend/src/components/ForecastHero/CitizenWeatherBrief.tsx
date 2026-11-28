@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Droplets, Thermometer, ShieldCheck } from '@/components/icons';
+import { Droplets, Thermometer, Wind } from '@/components/icons';
 import type { ForecastMetrics } from '@/types';
 import type { AdvisoryRecord } from '@/lib/api';
 
@@ -27,14 +27,13 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   const rainMm = (metrics as unknown as { rain_mm?: number })?.rain_mm ?? metrics.rainfall ?? 0;
   const tempMax = (metrics as unknown as { temp_max?: number })?.temp_max ?? metrics.temperature ?? 0;
   const windKmh = (metrics as unknown as { wind_kmh?: number })?.wind_kmh ?? metrics.wind ?? 0;
-  const agreement = (metrics as unknown as { ensemble_agreement?: number })?.ensemble_agreement ?? metrics.confidence ?? 0;
 
   // 1. Rain & Commute Guidance
   let rainItem: GuidanceCardItem;
   if (rainMm >= 15) {
     rainItem = {
       key: 'rain',
-      category: 'Rain & Commute',
+      category: 'Rain',
       icon: <Droplets size={16} className="text-data-rain shrink-0" />,
       badge: 'Waterlogging Risk',
       badgeClass: 'border-destructive/30 bg-destructive/5 text-destructive',
@@ -45,7 +44,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else if (rainMm >= 5) {
     rainItem = {
       key: 'rain',
-      category: 'Rain & Commute',
+      category: 'Rain',
       icon: <Droplets size={16} className="text-data-rain shrink-0" />,
       badge: 'Carry Umbrella',
       badgeClass: 'border-border bg-muted/40 text-foreground',
@@ -56,7 +55,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else if (rainMm >= 1) {
     rainItem = {
       key: 'rain',
-      category: 'Rain & Commute',
+      category: 'Rain',
       icon: <Droplets size={16} className="text-data-rain shrink-0" />,
       badge: 'Light Drizzle',
       badgeClass: 'border-border bg-muted/40 text-foreground',
@@ -67,7 +66,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else {
     rainItem = {
       key: 'rain',
-      category: 'Rain & Commute',
+      category: 'Rain',
       icon: <Droplets size={16} className="text-data-rain shrink-0" />,
       badge: 'Dry Roads',
       badgeClass: 'border-border bg-muted/20 text-muted-foreground',
@@ -77,17 +76,12 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
     };
   }
 
-  // If wind is high, augment commute advice
-  if (windKmh >= 45) {
-    rainItem.advice += ` Strong gusts (${Math.round(windKmh)} km/h): ride carefully on two-wheelers and flyovers.`;
-  }
-
   // 2. Heat & Comfort Guidance
   let heatItem: GuidanceCardItem;
   if (tempMax >= 40) {
     heatItem = {
       key: 'heat',
-      category: 'Heat & Comfort',
+      category: 'Heat',
       icon: <Thermometer size={16} className="text-destructive shrink-0" />,
       badge: 'Severe Heat',
       badgeClass: 'border-destructive/30 bg-destructive/5 text-destructive',
@@ -98,7 +92,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else if (tempMax >= 35) {
     heatItem = {
       key: 'heat',
-      category: 'Heat & Comfort',
+      category: 'Heat',
       icon: <Thermometer size={16} className="text-warning shrink-0" />,
       badge: 'Moderate Heat',
       badgeClass: 'border-warning/30 bg-warning/5 text-warning',
@@ -109,7 +103,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else if (tempMax >= 20) {
     heatItem = {
       key: 'heat',
-      category: 'Heat & Comfort',
+      category: 'Heat',
       icon: <Thermometer size={16} className="text-foreground shrink-0" />,
       badge: 'Comfortable',
       badgeClass: 'border-border bg-muted/40 text-foreground',
@@ -120,7 +114,7 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
   } else {
     heatItem = {
       key: 'heat',
-      category: 'Heat & Comfort',
+      category: 'Heat',
       icon: <Thermometer size={16} className="text-foreground shrink-0" />,
       badge: 'Cool Weather',
       badgeClass: 'border-border bg-muted/40 text-foreground',
@@ -130,44 +124,44 @@ function getGuidance(metrics: ForecastMetrics): GuidanceCardItem[] {
     };
   }
 
-  // 3. Trust & Consensus Guidance
-  let trustItem: GuidanceCardItem;
-  if (agreement >= 80) {
-    trustItem = {
-      key: 'trust',
-      category: 'Model Consensus',
-      icon: <ShieldCheck size={16} className="text-success shrink-0" />,
-      badge: '4/4 Models Agree',
-      badgeClass: 'border-success/30 bg-success/5 text-success',
-      headline: 'High Forecast Certainty',
-      advice: 'All 4 global supercomputers (ECMWF, GFS, ICON, GEM) agree on this weather pattern. High reliability.',
-      evidence: `${Math.round(agreement)}% multi-model consensus`,
+  // 3. Wind & Outdoor Safety Guidance
+  let windItem: GuidanceCardItem;
+  if (windKmh >= 45) {
+    windItem = {
+      key: 'wind',
+      category: 'Wind',
+      icon: <Wind size={16} className="text-destructive shrink-0" />,
+      badge: 'High Gusts',
+      badgeClass: 'border-destructive/30 bg-destructive/5 text-destructive',
+      headline: 'Strong surface gusts',
+      advice: 'Take caution on two-wheelers and elevated roads. Secure loose materials and outdoor fixtures.',
+      evidence: `Peak ${Math.round(windKmh)} km/h gusts forecast`,
     };
-  } else if (agreement >= 60) {
-    trustItem = {
-      key: 'trust',
-      category: 'Model Consensus',
-      icon: <ShieldCheck size={16} className="text-warning shrink-0" />,
-      badge: '3/4 Models Agree',
+  } else if (windKmh >= 25) {
+    windItem = {
+      key: 'wind',
+      category: 'Wind',
+      icon: <Wind size={16} className="text-warning shrink-0" />,
+      badge: 'Brisk Breeze',
       badgeClass: 'border-warning/30 bg-warning/5 text-warning',
-      headline: 'Moderate Certainty',
-      advice: '3 of 4 global models align on primary timing. Minor localized variations are possible.',
-      evidence: `${Math.round(agreement)}% multi-model consensus`,
+      headline: 'Brisk surface breeze',
+      advice: 'Noticeable wind in open corridors. Normal transit; monitor conditions for dust drift in dry areas.',
+      evidence: `${Math.round(windKmh)} km/h wind speed forecast`,
     };
   } else {
-    trustItem = {
-      key: 'trust',
-      category: 'Model Consensus',
-      icon: <ShieldCheck size={16} className="text-muted-foreground shrink-0" />,
-      badge: 'Mixed Signals',
+    windItem = {
+      key: 'wind',
+      category: 'Wind',
+      icon: <Wind size={16} className="text-muted-foreground shrink-0" />,
+      badge: 'Calm Air',
       badgeClass: 'border-border bg-muted/20 text-muted-foreground',
-      headline: 'Monitoring Divergence',
-      advice: 'International models show divergent patterns. Check back as new satellite cycles arrive.',
-      evidence: `${Math.round(agreement)}% multi-model consensus`,
+      headline: 'Gentle air movement',
+      advice: 'Calm surface wind throughout the forecast window. Unrestricted outdoor activities and transit.',
+      evidence: `${Math.round(windKmh)} km/h wind speed forecast`,
     };
   }
 
-  return [rainItem, heatItem, trustItem];
+  return [rainItem, heatItem, windItem];
 }
 
 function GuidanceCard({ item }: { item: GuidanceCardItem }) {
@@ -179,7 +173,7 @@ function GuidanceCard({ item }: { item: GuidanceCardItem }) {
             {item.icon}
             <span>{item.category}</span>
           </div>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono border ${item.badgeClass}`}>
+          <span className={`px-2 py-0.5 rounded-full text-[12px] font-mono border ${item.badgeClass}`}>
             {item.badge}
           </span>
         </div>
@@ -190,9 +184,9 @@ function GuidanceCard({ item }: { item: GuidanceCardItem }) {
           {item.advice}
         </p>
       </div>
-      <div className="mt-3 pt-2 border-t border-border/60 text-[11px] font-mono text-muted-foreground/80 flex items-center justify-between">
-        <span>Scientific Basis</span>
-        <span>{item.evidence}</span>
+      <div className="mt-3 pt-2 border-t border-border/60 text-[12px] font-mono flex items-center justify-between">
+        <span className="text-muted-foreground">Measured</span>
+        <span className="font-medium text-foreground">{item.evidence}</span>
       </div>
     </div>
   );
@@ -221,19 +215,19 @@ export function CitizenWeatherBrief({ metrics, city, advisories }: CitizenWeathe
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/70 pb-2 mb-2">
         <div>
           <h3 className="text-sm font-semibold text-foreground tracking-tight">
-            Everyday Citizen Weather Brief
+            What to do about it
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Practical commute and safety guidance for {city}
+            Commute, heat and outdoor guidance for {city}
             {metrics.updatedMinutesAgo !== undefined && (
-              <span className="font-mono ml-1.5 text-[11px] text-muted-foreground/80">
+              <span className="font-mono ml-1.5 text-[12px] text-muted-foreground/80">
                 • Updated {metrics.updatedMinutesAgo}m ago
               </span>
             )}
           </p>
         </div>
-        <span className="text-[11px] font-mono text-muted-foreground">
-          Prakruti 4-Model Consensus
+        <span className="text-[12px] font-mono text-muted-foreground">
+
         </span>
       </div>
 
