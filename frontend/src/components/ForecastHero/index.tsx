@@ -573,7 +573,7 @@ export function ForecastHero({ selectedCity = 'Kanpur', showVerdict = true }: Fo
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.temperature
                           ? `${nowRec.value.temperature.p10.toFixed(1)}–${nowRec.value.temperature.p90.toFixed(1)} °C`
-                          : forecast ? `±${forecast.temperatureUncertainty} °C` : '—'}
+                          : forecast?.temperatureUncertainty != null ? `±${forecast.temperatureUncertainty} °C` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -581,7 +581,7 @@ export function ForecastHero({ selectedCity = 'Kanpur', showVerdict = true }: Fo
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.rainfall
                           ? `${nowRec.value.rainfall.p10.toFixed(1)}–${nowRec.value.rainfall.p90.toFixed(1)} mm`
-                          : forecast ? `±${forecast.rainfallUncertainty} mm` : '—'}
+                          : forecast?.rainfallUncertainty != null ? `±${forecast.rainfallUncertainty} mm` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
@@ -589,7 +589,7 @@ export function ForecastHero({ selectedCity = 'Kanpur', showVerdict = true }: Fo
                       <span className="font-semibold text-foreground">
                         {nowRec?.value?.wind_speed
                           ? `${nowRec.value.wind_speed.p10.toFixed(0)}–${nowRec.value.wind_speed.p90.toFixed(0)} km/h`
-                          : forecast ? `±${forecast.windUncertainty} km/h` : '—'}
+                          : forecast?.windUncertainty != null ? `±${forecast.windUncertainty} km/h` : '—'}
                       </span>
                     </div>
                   </div>

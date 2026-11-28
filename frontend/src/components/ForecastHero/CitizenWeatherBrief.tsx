@@ -219,7 +219,7 @@ export function CitizenWeatherBrief({ metrics, city, advisories }: CitizenWeathe
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             Commute, heat and outdoor guidance for {city}
-            {metrics.updatedMinutesAgo !== undefined && (
+            {metrics.updatedMinutesAgo != null && (
               <span className="font-mono ml-1.5 text-[12px] text-muted-foreground/80">
                 • Updated {metrics.updatedMinutesAgo}m ago
               </span>

@@ -11,10 +11,10 @@ export interface ForecastMetrics {
   confidenceLabel?: string;
   dominantModel?: string;
   explanation?: string;
-  rainfallUncertainty: number;
-  temperatureUncertainty: number;
-  windUncertainty: number;
-  updatedMinutesAgo: number;
+  rainfallUncertainty: number | null;
+  temperatureUncertainty: number | null;
+  windUncertainty: number | null;
+  updatedMinutesAgo: number | null;
 }
 
 export interface ModelWeight {

@@ -686,9 +686,11 @@ export async function getCities(): Promise<CityRecord[]> {
  */
 export async function getForecastMetrics(city: string = 'Kanpur'): Promise<ForecastMetrics> {
   try {
-    const [records, confRecords] = await Promise.all([
+    const [records, confRecords, decision, metadata] = await Promise.all([
       getForecast(city),
       getConfidence(city, 1),
+      getDecision(city).catch(() => null),
+      getMetadata().catch(() => null),
     ]);
     if (!records || records.length === 0) {
       throw new Error(`No forecast data available for ${city}`);
@@ -698,9 +700,20 @@ export async function getForecastMetrics(city: string = 'Kanpur'): Promise<Forec
     const target = records.find(r => r.lead_days === 1) || records[0];
     const confItem = confRecords && confRecords.length > 0 ? confRecords[0] : null;
 
-    const tempDiff = Math.abs((target.temperature ?? target.blend_temperature ?? 0) - (target.blend_temperature ?? 0));
-    const rainDiff = Math.abs((target.rainfall ?? target.blend_rainfall ?? 0) - (target.blend_rainfall ?? 0));
-    const windDiff = Math.abs((target.wind_speed ?? target.blend_wind_speed ?? 0) - (target.blend_wind_speed ?? 0));
+    // Calibrated P10/P90 half-widths from the decision artifact; null when the
+    // feed is down so the UI shows an honest "—" instead of a fabricated spread.
+    const dRec = decision?.records?.find(d => d.lead_days === 1) ?? decision?.records?.[0] ?? null;
+    const halfWidth = (v?: { p10: number; p90: number }) =>
+      v && v.p10 != null && v.p90 != null
+        ? Math.round(((v.p90 - v.p10) / 2) * 10) / 10
+        : null;
+
+    // Freshness = age of the committed cycle timestamp from /api/metadata.
+    let updatedMinutesAgo: number | null = null;
+    if (metadata?.last_updated) {
+      const age = Date.now() - new Date(metadata.last_updated).getTime();
+      if (!isNaN(age) && age >= 0) updatedMinutesAgo = Math.round(age / 60000);
+    }
 
     return {
       rainfall: Math.round((target.rainfall ?? 0) * 10) / 10,
@@ -710,10 +723,10 @@ export async function getForecastMetrics(city: string = 'Kanpur'): Promise<Forec
       confidenceLabel: confItem?.confidence_label,
       dominantModel: confItem?.dominant_model,
       explanation: confItem?.explanation,
-      rainfallUncertainty: Math.max(2, Math.round(rainDiff * 2 + 5)),
-      temperatureUncertainty: Math.max(0.5, Math.round((tempDiff + 0.8) * 10) / 10),
-      windUncertainty: Math.max(1, Math.round(windDiff + 2)),
-      updatedMinutesAgo: 4,
+      temperatureUncertainty: halfWidth(dRec?.value?.temperature),
+      rainfallUncertainty: halfWidth(dRec?.value?.rainfall),
+      windUncertainty: halfWidth(dRec?.value?.wind_speed),
+      updatedMinutesAgo,
     };
   } catch {
     throw new Error(`No forecast data available for ${city}`);

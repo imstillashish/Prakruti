@@ -80,6 +80,7 @@ outputs/*
 !outputs/models/*.joblib
 !outputs/model_weights_lead.csv
 !outputs/skill_scores_lead.csv
+!outputs/skill_scores.csv
 !outputs/blended_forecast.csv
 !outputs/hybrid_forecast.csv
 !outputs/confidence_scores.csv
