@@ -370,7 +370,7 @@ export function ForecastHero({ selectedCity = 'Kanpur', showVerdict = true }: Fo
   const rainSeries = timeline.length >= 2 ? timeline.map((p) => p.rainfall) : forecast ? [forecast.rainfall, forecast.rainfall] : [];
   const tempSeries = timeline.length >= 2 ? timeline.map((p) => p.temperature) : forecast ? [forecast.temperature, forecast.temperature] : [];
   const windSeries = timeline.length >= 2 ? timeline.map((p) => p.wind) : forecast ? [forecast.wind, forecast.wind] : [];
-  const confSeries = timeline.length >= 2 ? timeline.map((p) => p.confidence) : forecast ? [forecast.confidence, forecast.confidence] : [];
+  const confSeries = timeline.length >= 2 ? timeline.map((p) => p.confidence).filter((c): c is number => c != null) : forecast ? [forecast.confidence, forecast.confidence] : [];
 
   return (
     <>

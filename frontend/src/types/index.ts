@@ -32,7 +32,9 @@ export interface TimelinePoint {
   rainfall: number;
   temperature: number;
   wind: number;
-  confidence: number;
+  // Real confidence from the decision payload (0–100); null when the feed is
+  // unavailable — never a fabricated placeholder.
+  confidence: number | null;
   risk: 'low' | 'moderate' | 'high' | 'severe';
   // Calibrated P10/P90 from /api/decision — present only when the decision
   // feed is live; mocks omit them and the band stays hidden.
@@ -47,9 +49,9 @@ export interface TimelinePoint {
 export interface ExtremeEvent {
   type: 'heavy_rainfall' | 'heatwave' | 'high_wind' | 'cyclone' | 'cold_wave';
   label: string;
-  probability: number;
+  probability: number | null;
   window: string;
-  confidence: number;
+  confidence: number | null;
   severity: 'watch' | 'warning' | 'alert';
   description: string;
 }
@@ -151,8 +153,8 @@ export interface RpiData {
   windRisk: number;
   rpiScore: number;
   priority: RpiPriority;
-  dominantModel: string;
-  modelWeights: Record<string, number>;
+  dominantModel: string | null;
+  modelWeights: Record<string, number> | null;
   recommendations: ResourceAction[];
   updatedAt: string;
 }

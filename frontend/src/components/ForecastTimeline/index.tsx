@@ -32,7 +32,7 @@ const VARIABLE_CONFIG: Record<
   wind: { label: 'Wind Speed', unit: 'km/h', color: '#60646c', key: 'wind', bandHigh: 'windP90', bandLow: 'windP10', liveKey: 'wind_speed' },
 };
 
-type ChartDatum = { time: string; label?: string; high?: number; low?: number; confidence: number };
+type ChartDatum = { time: string; label?: string; high?: number; low?: number; confidence: number | null };
 
 const CustomTooltip = ({
   active,
@@ -74,7 +74,7 @@ const CustomTooltip = ({
       )}
       {data && (
         <div className="mt-1 text-[12px] font-medium text-data-ok-text">
-          Confidence {data.confidence}%
+          {data.confidence != null ? `Confidence ${data.confidence}%` : 'Confidence —'}
         </div>
       )}
       <div className="mt-1.5 border-t border-border pt-1.5 text-[11.5px] text-muted-foreground">
@@ -187,6 +187,11 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
     }
   };
 
+  const avgConf = (pts: TimelinePoint[]): number | null => {
+    const vals = pts.map(p => p.confidence).filter((c): c is number => c != null);
+    return vals.length ? Math.round(vals.reduce((s, c) => s + c, 0) / vals.length) : null;
+  };
+
   const dayCards = [
     {
       index: 0,
@@ -196,7 +201,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       rain: d1Points.length > 0 ? Math.max(...d1Points.map(p => p.rainfall)) : 72,
       temp: d1Points.length > 0 ? Math.max(...d1Points.map(p => p.temperature)) : 31.4,
       wind: d1Points.length > 0 ? Math.max(...d1Points.map(p => p.wind)) : 22,
-      confidence: d1Points.length > 0 ? Math.round(d1Points.reduce((s, p) => s + p.confidence, 0) / d1Points.length) : 88,
+      confidence: avgConf(d1Points),
       risk: (d1Points.some(p => p.risk === 'severe') ? 'severe' : d1Points.some(p => p.risk === 'high') ? 'high' : d1Points.some(p => p.risk === 'moderate') ? 'moderate' : 'low') as 'low' | 'moderate' | 'high' | 'severe',
       note: 'Peak precipitation window with active convective boundary',
     },
@@ -208,7 +213,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       rain: d2Point?.rainfall ?? 38,
       temp: d2Point?.temperature ?? 32.1,
       wind: d2Point?.wind ?? 14,
-      confidence: d2Point?.confidence ?? 76,
+      confidence: d2Point?.confidence ?? null,
       risk: (d2Point?.risk ?? 'moderate') as 'low' | 'moderate' | 'high' | 'severe',
       note: 'Gradual convective decay; moderate surface winds',
     },
@@ -220,7 +225,7 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
       rain: d3Point?.rainfall ?? 18,
       temp: d3Point?.temperature ?? 33.2,
       wind: d3Point?.wind ?? 11,
-      confidence: d3Point?.confidence ?? 61,
+      confidence: d3Point?.confidence ?? null,
       risk: (d3Point?.risk ?? 'low') as 'low' | 'moderate' | 'high' | 'severe',
       note: 'Stable synoptic pattern; elevated model spread',
     },
@@ -476,13 +481,15 @@ export function ForecastTimeline({ selectedCity = 'Kanpur', phoneCompact }: Fore
                 <div className="space-y-1.5 mt-auto pt-1">
                   <div className="flex items-center justify-between text-[12px] font-mono text-muted-foreground">
                     <span>AI Confidence</span>
-                    <span className="text-foreground font-semibold">{day.confidence}%</span>
+                    <span className="text-foreground font-semibold">{day.confidence != null ? `${day.confidence}%` : '—'}</span>
                   </div>
                   <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-foreground rounded-full transition-all duration-300"
-                      style={{ width: `${day.confidence}%` }}
-                    />
+                    {day.confidence != null && (
+                      <div
+                        className="h-full bg-foreground rounded-full transition-all duration-300"
+                        style={{ width: `${day.confidence}%` }}
+                      />
+                    )}
                   </div>
                   <p className="text-[12px] text-muted-foreground leading-relaxed pt-1 line-clamp-1">
                     {day.note}

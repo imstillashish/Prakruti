@@ -91,10 +91,10 @@ export function StationDossier({
   const [ndmaCategory, setNdmaCategory] = useState<'all' | 'rain' | 'heat' | 'wind'>('all');
   const [acknowledgedIds, setAcknowledgedIds] = useState<Set<string>>(new Set());
 
-  // Dominant model information
-  const domModel = (rpiData?.dominantModel || 'ECMWF').toUpperCase();
-  const modelMeta = MODEL_INFO[domModel] || MODEL_INFO['ECMWF'];
-  const weights = rpiData?.modelWeights || { ecmwf: 45, icon: 25, gfs: 18, gem: 12 };
+  // Dominant model information — null when the engine hasn't attributed one.
+  const domModel = rpiData?.dominantModel == null ? null : rpiData.dominantModel.toUpperCase();
+  const modelMeta = domModel ? (MODEL_INFO[domModel] || MODEL_INFO['ECMWF']) : null;
+  const weights = rpiData?.modelWeights ?? null;
   const priority = rpiData?.priority || 'Moderate';
   const badgeStyle = PRIORITY_BADGE_STYLE[priority] || PRIORITY_BADGE_STYLE['Moderate'];
 
@@ -254,15 +254,30 @@ export function StationDossier({
                   <span className="text-xs font-semibold text-foreground">Which model to trust most</span>
                 </div>
                 <span
-                  className="px-2 py-0.5 rounded text-[11.5px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
-                  style={{ backgroundColor: modelMeta.hex }}
+                  className="px-2 py-0.5 rounded text-[11.5px] font-mono font-bold uppercase flex items-center gap-1.5"
+                  style={domModel && modelMeta ? { backgroundColor: modelMeta.hex, color: '#fff' } : undefined}
                 >
-                  <ModelEmblem method={domModel} size={14} />
-                  <span>{domModel} Leads</span>
+                  {domModel && modelMeta ? (
+                    <>
+                      <ModelEmblem method={domModel} size={14} />
+                      <span>{domModel} Leads</span>
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground">Unattributed</span>
+                  )}
                 </span>
               </div>
               <div className="text-xs text-muted-foreground leading-relaxed">
-                <strong>{modelMeta.label}</strong> has been most accurate for {rpiData.city} over the scored period, so it counts for most in this answer ({weights[domModel.toLowerCase() as keyof typeof weights] || 45}%).
+                {domModel && modelMeta ? (
+                  <>
+                    <strong>{modelMeta.label}</strong> has been most accurate for {rpiData.city} over the scored period
+                    {weights && domModel && weights[domModel.toLowerCase() as keyof typeof weights] != null
+                      ? `, so it counts for most in this answer (${weights[domModel.toLowerCase() as keyof typeof weights]}%).`
+                      : '.'}
+                  </>
+                ) : (
+                  <>Model attribution for {rpiData.city} isn&apos;t available from the engine right now.</>
+                )}
               </div>
             </div>
 
@@ -276,8 +291,9 @@ export function StationDossier({
                 <span className="text-[11.5px] font-mono text-muted-foreground">Share of the answer</span>
               </div>
 
-              <div className="space-y-2 text-xs font-mono">
-                {Object.entries(weights).map(([model, value]) => {
+              {weights ? (
+                <div className="space-y-2 text-xs font-mono">
+                  {Object.entries(weights).map(([model, value]) => {
                   const meta = MODEL_INFO[model.toUpperCase()] || MODEL_INFO.ECMWF;
                   return (
                     <div key={model}>
@@ -294,7 +310,12 @@ export function StationDossier({
                     </div>
                   );
                 })}
-              </div>
+                </div>
+              ) : (
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                  Kalman weight shares aren&apos;t published by the engine right now — bars will appear once the weight table is reachable.
+                </p>
+              )}
             </div>
           </>
         ) : activeTab === 'ndma' && rpiData ? (
@@ -413,7 +434,7 @@ export function StationDossier({
                         {st.city}
                       </div>
                       <div className="text-[11.5px] font-mono text-muted-foreground truncate">
-                        {st.state} · Model: {st.dominantModel}
+                        {st.state} · Model: {st.dominantModel || 'Unattributed'}
                       </div>
                     </div>
                   </div>

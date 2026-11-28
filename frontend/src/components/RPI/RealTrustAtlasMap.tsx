@@ -127,7 +127,7 @@ export default function RealTrustAtlasMap({
     }
     if (activeModelFilter && activeModelFilter !== 'ALL') {
       return list.filter(
-        (s: RpiData) => (s.dominantModel || 'ECMWF').toUpperCase() === activeModelFilter.toUpperCase()
+        (s: RpiData) => (s.dominantModel ?? '').toUpperCase() === activeModelFilter.toUpperCase()
       );
     }
     return list;

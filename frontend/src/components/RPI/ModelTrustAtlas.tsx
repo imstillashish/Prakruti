@@ -79,9 +79,9 @@ const MODEL_COLOR_CONFIG: Record<
 };
 
 export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustAtlasProps) {
-  const domModel = (rpiData.dominantModel || 'ECMWF').toUpperCase();
-  const modelInfo = MODEL_COLOR_CONFIG[domModel] || MODEL_COLOR_CONFIG['ECMWF'];
-  const weights = rpiData.modelWeights || { ecmwf: 45, icon: 25, gfs: 18, gem: 12 };
+  const domModel = rpiData.dominantModel == null ? null : rpiData.dominantModel.toUpperCase();
+  const modelInfo = domModel ? (MODEL_COLOR_CONFIG[domModel] || MODEL_COLOR_CONFIG['ECMWF']) : null;
+  const weights = rpiData.modelWeights ?? null;
 
   return (
     <section className="relative overflow-hidden rounded-lg border border-border bg-card">
@@ -124,22 +124,38 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                 </span>
               </div>
               <span
-                className="rounded-sm px-2 py-0.5 text-[11.5px] font-mono font-bold text-white uppercase flex items-center gap-1.5"
-                style={{ backgroundColor: modelInfo.hex }}
+                className="rounded-sm px-2 py-0.5 text-[11.5px] font-mono font-bold uppercase flex items-center gap-1.5"
+                style={domModel && modelInfo ? { backgroundColor: modelInfo.hex, color: '#fff' } : undefined}
               >
-                <ModelEmblem method={domModel} size={14} />
-                <span>{domModel} LEADS</span>
+                {domModel && modelInfo ? (
+                  <>
+                    <ModelEmblem method={domModel} size={14} />
+                    <span>{domModel} LEADS</span>
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">UNATTRIBUTED</span>
+                )}
               </span>
             </div>
 
             <div className="p-3 rounded-md bg-secondary border border-border mb-3">
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-xs text-foreground">{modelInfo.label}</span>
-                <span className="text-xs font-mono font-bold" style={{ color: modelInfo.hex }}>
-                  {weights[domModel.toLowerCase() as keyof typeof weights] || 45}% Weight
-                </span>
-              </div>
-              <p className="text-[12px] text-muted-foreground leading-relaxed">{modelInfo.desc}</p>
+              {domModel && modelInfo ? (
+                <>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs text-foreground">{modelInfo.label}</span>
+                    {weights && weights[domModel.toLowerCase() as keyof typeof weights] != null && (
+                      <span className="text-xs font-mono font-bold" style={{ color: modelInfo.hex }}>
+                        {weights[domModel.toLowerCase() as keyof typeof weights]}% Weight
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[12px] text-muted-foreground leading-relaxed">{modelInfo.desc}</p>
+                </>
+              ) : (
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                  The engine hasn&apos;t attributed a dominant model for {rpiData.city} yet — attribution appears once the scoring feed answers.
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-xs font-mono pt-1 text-muted-foreground">
@@ -162,8 +178,9 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
               <span className="text-[11.5px] text-muted-foreground" title="Corrected against observed weather each cycle">Corrected live</span>
             </div>
 
-             <div className="space-y-3">
-               {Object.entries(weights).map(([model, value]) => {
+             {weights ? (
+               <div className="space-y-3">
+                 {Object.entries(weights).map(([model, value]) => {
                  const key = model.toUpperCase();
                  const meta = MODEL_COLOR_CONFIG[key] || MODEL_COLOR_CONFIG.ECMWF;
                  return (
@@ -182,11 +199,16 @@ export function ModelTrustAtlas({ rpiData, stations, onSelectCity }: ModelTrustA
                    </div>
                  );
                })}
-             </div>
+               </div>
+             ) : (
+               <p className="text-[12px] text-muted-foreground leading-relaxed">
+                 Live blend weights aren&apos;t published by the engine right now — the corrected mix will appear here once the weight table is reachable.
+               </p>
+             )}
 
             <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-[12px] font-mono text-muted-foreground">
               <span>Weights Total:</span>
-              <strong className="text-foreground font-bold">100% Normalized</strong>
+              <strong className="text-foreground font-bold">{weights ? '100% Normalized' : '—'}</strong>
             </div>
           </div>
 

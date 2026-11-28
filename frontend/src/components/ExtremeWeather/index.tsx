@@ -134,8 +134,15 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
               >
                 <div className="flex items-center gap-3">
                   {/* Risk Probability meter */}
-                  <div className="flex flex-col items-center shrink-0" title={`Risk Probability: ${event.probability}%`}>
-                    <ProbabilityArc value={event.probability} color={color} />
+                  <div
+                    className="flex flex-col items-center shrink-0"
+                    title={event.probability != null ? `Risk Probability: ${event.probability}%` : 'Risk Probability unavailable'}
+                  >
+                    {event.probability != null ? (
+                      <ProbabilityArc value={event.probability} color={color} />
+                    ) : (
+                      <span className="flex items-center justify-center font-mono text-xs text-muted-foreground">—</span>
+                    )}
                     <span className="text-[9px] font-mono font-medium text-muted-foreground tracking-[0.01em] mt-0.5">
                       Risk Prob.
                     </span>
@@ -151,7 +158,7 @@ export function ExtremeWeatherPanel({ selectedCity = 'Kanpur', collapsibleOnPhon
                     <div className="text-[12px] font-mono font-semibold text-muted-foreground mb-0.5">{event.window}</div>
                     <div className="text-[12px] text-muted-foreground leading-snug line-clamp-2">{event.description}</div>
                     <div className="text-[11.5px] font-mono text-muted-foreground mt-1">
-                      Model Agreement: <span className="font-bold text-foreground">{event.confidence}%</span>
+                      Model Agreement: <span className="font-bold text-foreground">{event.confidence != null ? `${event.confidence}%` : '—'}</span>
                     </div>
                   </div>
 

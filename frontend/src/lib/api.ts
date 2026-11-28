@@ -1142,13 +1142,15 @@ export async function getTimelineData(city: string = 'Kanpur'): Promise<Timeline
       const temp = Math.round((rec.temperature ?? 30) * 10) / 10;
       const wind = Math.round((rec.wind_speed ?? 15) * 10) / 10;
 
-      // Calibrated band + real confidence from the decision payload; the band
-      // stays undefined (hidden) when the feed is unavailable — never synthetic.
+      // Real confidence from the decision payload; null when the feed is
+      // unavailable — never a fabricated placeholder.
       const d = decision?.records?.[idx];
       const confLabel = d?.confidence?.label;
-      const confidence = confLabel
-        ? CONF_FROM_LABEL[confLabel] ?? Math.round(d!.confidence.score ?? 70)
-        : 70;
+      const confidence: number | null = confLabel
+        ? CONF_FROM_LABEL[confLabel] ?? (d!.confidence.score != null ? Math.round(d!.confidence.score) : null)
+        : d?.confidence?.score != null
+          ? Math.round(d.confidence.score)
+          : null;
 
       let risk: 'low' | 'moderate' | 'high' | 'severe' = 'low';
       if (rain > 50 || wind > 35 || temp > 40) risk = 'severe';
@@ -1493,17 +1495,14 @@ export async function getExtremeEventsData(city?: string): Promise<ExtremeEvent[
       const d = steps.find((s) => s.datetime === a.datetime) ?? steps[0];
       const tKey = String(a.threshold);
       const p = d?.threshold_probabilities?.[varKey]?.[tKey];
-      // ponytail: 'isHigh ? 88 : 72' placeholder stays for when the decision
-      // feed is unreachable — the panel then shows a coarse severity hint,
-      // not a calibrated probability.
-      const probability = p != null ? Math.round(p * 100) : isHigh ? 88 : 72;
+      const probability = p != null ? Math.round(p * 100) : null;
 
       return {
         type,
         label: a.event,
         probability,
         window: `${timeStr} IST`,
-        confidence: d?.confidence?.score != null ? Math.round(d.confidence.score) : 86,
+        confidence: d?.confidence?.score != null ? Math.round(d.confidence.score) : null,
         severity: isHigh ? 'alert' : 'warning',
         description: `Predicted: ${a.forecast_value} ${unit} (Exceeds ${a.threshold} ${unit} threshold)`,
       };
@@ -1719,18 +1718,8 @@ export async function getRpiData(city: string = 'Kanpur'): Promise<RpiData> {
   else if (rpiScore > 55) priority = 'High';
   else if (rpiScore > 30) priority = 'Moderate';
 
-  let domModel = confRecords && confRecords.length > 0 ? confRecords[0].dominant_model : matchCity.dominantModel || 'ECMWF';
+  let domModel = confRecords?.[0]?.dominant_model || matchCity.dominantModel || null;
   if (domModel === 'AI') domModel = 'ECMWF';
-  if (!['ECMWF', 'ICON', 'GFS', 'GEM'].includes(domModel)) {
-    domModel = rain > 45 ? 'ECMWF' : temp > 35 ? 'ICON' : 'GFS';
-  }
-
-  // Fallback weights when the engine's published table is unreachable: the
-  // dominant model gets a modest lead, the rest share the remainder evenly.
-  // ponytail: coarse stand-in — replace with /api/weights once reachable.
-  const OTHERS = ['ecmwf', 'icon', 'gfs', 'gem'].filter(m => m !== domModel.toLowerCase());
-  const weights: Record<string, number> = { [domModel.toLowerCase()]: 34 };
-  OTHERS.forEach(m => { weights[m] = Math.round(66 / OTHERS.length); });
 
   const recs = generateResourceRecommendations(matchCity.city, rain, temp, wind);
 
@@ -1749,7 +1738,7 @@ export async function getRpiData(city: string = 'Kanpur'): Promise<RpiData> {
     rpiScore,
     priority,
     dominantModel: domModel,
-    modelWeights: weights,
+    modelWeights: null,
     recommendations: recs,
     updatedAt: new Date().toISOString(),
   };
@@ -1784,15 +1773,7 @@ export async function getAllRpiData(): Promise<RpiData[]> {
     else if (rpiScore > 55) priority = 'High';
     else if (rpiScore > 30) priority = 'Moderate';
 
-    let domModel = c.dominantModel || 'ECMWF';
-    if (domModel === 'AI' || domModel === 'Ensemble') {
-      domModel = rain > 50 ? 'ECMWF' : temp > 34 ? 'ICON' : 'GFS';
-    }
-
-    // Same coarse stand-in as getRpiData: dominant model leads, rest share the rest.
-    const OTHERS = ['ecmwf', 'icon', 'gfs', 'gem'].filter(m => m !== domModel.toLowerCase());
-    const weights: Record<string, number> = { [domModel.toLowerCase()]: 34 };
-    OTHERS.forEach(m => { weights[m] = Math.round(66 / OTHERS.length); });
+    const domModel = c.dominantModel === 'AI' ? 'ECMWF' : c.dominantModel;
 
     return {
       city: c.city,
@@ -1809,7 +1790,7 @@ export async function getAllRpiData(): Promise<RpiData[]> {
       rpiScore,
       priority,
       dominantModel: domModel,
-      modelWeights: weights,
+      modelWeights: null,
       recommendations: generateResourceRecommendations(c.city, rain, temp, wind),
       updatedAt: new Date().toISOString(),
     };
@@ -1827,12 +1808,12 @@ export interface GeoJsonStationFeature {
     state: string;
     rpiScore: number;
     priority: 'Low' | 'Moderate' | 'High' | 'Critical';
-    dominantModel: string;
+    dominantModel: string | null;
     rainfall: number;
     temperature: number;
     wind: number;
     confidence: number;
-    modelWeights: Record<string, number>;
+    modelWeights: Record<string, number> | null;
   };
 }
 

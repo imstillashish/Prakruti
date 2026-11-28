@@ -117,7 +117,7 @@ export function RpiPage({ selectedCity = 'Kanpur', onSelectCity }: RpiPageProps)
         title="Risk map"
         answer={
           rpiData
-            ? `${rpiData.city} is at ${rpiData.priority.toLowerCase()} priority this cycle, and ${rpiData.dominantModel} is the model doing most of the work.`
+            ? `${rpiData.city} is at ${rpiData.priority.toLowerCase()} priority this cycle${rpiData.dominantModel ? `, and ${rpiData.dominantModel} is the model doing most of the work` : ''}.`
             : 'Ranked by how many people a hazard would put at risk, not by how dramatic the number looks.'
         }
         sub="Score combines hazard severity with the population exposed to it. Ties break toward the district with the weaker station network."

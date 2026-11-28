@@ -1336,7 +1336,7 @@ def get_rpi():
         else:
             priority = 'Critical'
 
-        dom_model = c.get('dominant_model') or ('ECMWF' if rain > 40 else 'ICON' if temp > 35 else 'GFS')
+        dom_model = c.get('dominant_model')
         if dom_model == 'AI':
             dom_model = 'ECMWF'
 
@@ -1533,7 +1533,7 @@ def get_rpi_map():
         rpi = round(0.35 * rain_risk + 0.25 * heat_risk + 0.20 * wind_risk + 0.20 * conf, 1)
 
         priority = 'Low' if rpi <= 30 else 'Moderate' if rpi <= 55 else 'High' if rpi <= 75 else 'Critical'
-        dom_model = c.get('dominant_model') or ('ECMWF' if rain > 40 else 'ICON' if temp > 35 else 'GFS')
+        dom_model = c.get('dominant_model')
         if dom_model == 'AI':
             dom_model = 'ECMWF'
 
