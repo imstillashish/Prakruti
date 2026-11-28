@@ -21,10 +21,10 @@ interface Day {
   weekday: string;
   dayNumber: string;
   month: string;
-  high: number;
-  low: number;
-  rainTotal: number;
-  maxWind: number;
+  high: number | null;
+  low: number | null;
+  rainTotal: number | null;
+  maxWind: number | null;
   avgHumidity: number;
   condition: string;
   icon: 'clear' | 'cloud' | 'rain' | 'storm';
@@ -147,16 +147,16 @@ export function OverviewPage({
             <MiniStat
               icon={CloudRain}
               label="Rain, next 24h"
-              value={today ? `${today.rainTotal.toFixed(1)}` : '—'}
+              value={today?.rainTotal != null ? `${today.rainTotal.toFixed(1)}` : '—'}
               unit="mm"
-              note={today ? rainNote(today.rainTotal) : 'No forecast'}
+              note={today?.rainTotal != null ? rainNote(today.rainTotal) : 'No forecast'}
             />
             <MiniStat
               icon={Wind}
               label="Wind"
-              value={today ? `${Math.round(today.maxWind)}` : '—'}
+              value={today?.maxWind != null ? `${Math.round(today.maxWind)}` : '—'}
               unit="km/h"
-              note={today ? windNote(today.maxWind) : 'No forecast'}
+              note={today?.maxWind != null ? windNote(today.maxWind) : 'No forecast'}
             />
             <MiniStat
               icon={ShieldCheck}
@@ -191,12 +191,12 @@ export function OverviewPage({
                       <WeatherGlyph condition={d.icon} />
                     </div>
                     <div className="text-[17px] font-medium tabular-nums text-foreground">
-                      {Math.round(d.high)}°
+                      {d.high != null ? `${Math.round(d.high)}°` : '—'}
                     </div>
                     <div className="text-[12px] tabular-nums text-muted-foreground">
-                      {Math.round(d.low)}°
+                      {d.low != null ? `${Math.round(d.low)}°` : '—'}
                     </div>
-                    {d.rainTotal >= 0.1 && (
+                    {d.rainTotal != null && d.rainTotal >= 0.1 && (
                       <div className="mt-1 text-[11px] tabular-nums text-data-rain">
                         {d.rainTotal.toFixed(1)} mm
                       </div>
@@ -377,10 +377,12 @@ function buildDays(records: ForecastRecord[]): Day[] {
 
   const out: Day[] = [];
   for (const [date, hours] of byDay) {
-    const temps = hours.map((h) => h.blend_temperature ?? 0);
-    const rains = hours.map((h) => h.blend_rainfall ?? 0);
-    const winds = hours.map((h) => h.blend_wind_speed ?? 0);
-    const totalRain = rains.reduce((a, b) => a + b, 0);
+    // Only real values feed the aggregates — a day the blend didn't publish
+    // stays null instead of masquerading as 0°.
+    const temps = hours.map((h) => h.blend_temperature).filter((t): t is number => t != null);
+    const rains = hours.map((h) => h.blend_rainfall).filter((r): r is number => r != null);
+    const winds = hours.map((h) => h.blend_wind_speed).filter((w): w is number => w != null);
+    const totalRain = rains.length ? rains.reduce((a, b) => a + b, 0) : null;
     const d = new Date(`${date}T00:00:00`);
     out.push({
       key: date,
@@ -388,13 +390,13 @@ function buildDays(records: ForecastRecord[]): Day[] {
       weekday: d.toLocaleDateString('en-GB', { weekday: 'short' }),
       dayNumber: String(d.getDate()),
       month: d.toLocaleDateString('en-GB', { month: 'short' }),
-      high: Math.max(...temps),
-      low: Math.min(...temps),
-      rainTotal: Math.round(totalRain * 10) / 10,
-      maxWind: Math.max(...winds),
+      high: temps.length ? Math.max(...temps) : null,
+      low: temps.length ? Math.min(...temps) : null,
+      rainTotal: totalRain != null ? Math.round(totalRain * 10) / 10 : null,
+      maxWind: winds.length ? Math.max(...winds) : null,
       avgHumidity: 0,
       condition: '',
-      icon: conditionFor(totalRain, Math.max(...temps)),
+      icon: conditionFor(totalRain ?? 0, temps.length ? Math.max(...temps) : 0),
       hours: hours.sort((a, b) => a.datetime.localeCompare(b.datetime)),
     });
   }
@@ -428,16 +430,22 @@ function buildSentence({
   }
 
   const clauses: string[] = [];
-  if (today.rainTotal >= 15) clauses.push('expect waterlogging on the main roads');
-  else if (today.rainTotal >= 5) clauses.push('carry an umbrella');
-  else if (today.rainTotal >= 1) clauses.push('expect a few passing showers');
+  if (today.rainTotal != null) {
+    if (today.rainTotal >= 15) clauses.push('expect waterlogging on the main roads');
+    else if (today.rainTotal >= 5) clauses.push('carry an umbrella');
+    else if (today.rainTotal >= 1) clauses.push('expect a few passing showers');
+  }
 
-  if (today.high >= 40) clauses.push('keep out of the sun between noon and three');
-  else if (today.high >= 35) clauses.push('drink water through the afternoon');
-  else if (today.high >= 20 && today.rainTotal < 1) clauses.push('it is comfortable outside');
+  if (today.high != null) {
+    if (today.high >= 40) clauses.push('keep out of the sun between noon and three');
+    else if (today.high >= 35) clauses.push('drink water through the afternoon');
+    else if (today.high >= 20 && (today.rainTotal ?? 0) < 1) clauses.push('it is comfortable outside');
+  }
 
-  if (today.maxWind >= 45) clauses.push('gusts will take the edge off two-wheelers');
-  else if (today.maxWind >= 25) clauses.push('it is breezy in the open');
+  if (today.maxWind != null) {
+    if (today.maxWind >= 45) clauses.push('gusts will take the edge off two-wheelers');
+    else if (today.maxWind >= 25) clauses.push('it is breezy in the open');
+  }
 
   if (clauses.length === 0) {
     return `Nothing in ${city} needs planning around today — it is a quiet day.`;
